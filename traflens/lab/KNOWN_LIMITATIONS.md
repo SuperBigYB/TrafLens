@@ -36,3 +36,19 @@ An additional baseline BEFORE case lost DNS q0 without any injected restart,
 so a complete first-record causal explanation remains open. Post-supply errors
 are deliberately reported as uncertain without replay until server-side
 idempotency is designed. See `README-writer-recovery.md` for the tested boundary.
+
+
+## API follow-up — source c91b1a3c5
+
+The empty-aggregation and nested-dict items above are historical failures. The
+current Server rejects empty functions with one typed HTTP400, and accepts both
+nested JSON mappings and the GUI YAML-text form. Malformed configuration returns
+one valid error object without changing the last good stored value. A real
+candidate first exposed a shared response bug (`DATA` had no value for nil byte
+data); standard encoding/RawMessage and UTF8 checks now close it. HTTP13/13 passes,
+including exact numeric persistence, native Count(row) equivalence and cleanup.
+See [the API guide](../README-api-validation.md) and aggregate evidence.
+
+The custom startup-flag issue remains open. Generic dict/null behavior does not
+validate every Rust Agent field shape or operational range. Post-supply storage
+ambiguity, first-record loss and broad performance validation remain separate.

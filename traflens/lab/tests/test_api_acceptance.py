@@ -9,6 +9,13 @@ spec.loader.exec_module(module)
 
 
 class APIAcceptanceControls(unittest.TestCase):
+    def test_agent_inventory_accepts_empty_null_but_rejects_bad_shapes(self):
+        self.assertEqual(module.agent_identities(None), [])
+        self.assertEqual(module.agent_identities([]), [])
+        for rows in (False, 0, '', {}, [None], [{}]):
+            with self.subTest(rows=rows), self.assertRaises(ValueError):
+                module.agent_identities(rows)
+
     def test_count_control_accepts_one_unsigned_result(self):
         self.assertEqual(module.single_count({'result': {'columns': ['Count(row)'], 'values': [[40]]}}), 40)
 

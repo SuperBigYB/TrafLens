@@ -247,3 +247,26 @@ NPB exclusions for ERSPAN III while retaining its strict direct-link BPF and
 resource limits. These synthetic conversations do not run a real HTTP service
 or DNS resolver. Keep failed Local/default-NPB runs beside the corrected run;
 neither raw send counts nor queue observations alone establish acceptance.
+
+
+## Real API acceptance
+
+`accept-api.py` checks the exact deployed Server commit, resource ownership and
+single-object JSON responses. It uses fixed synthetic requests and a fresh empty
+Agent group, verifies persisted reads and rejected-update atomicity, then deletes
+only that exact empty group/configuration and compares the original inventory.
+Its large integer representation probe is deliberately not assigned to an Agent;
+it is not an operational CPU profile or complete field-range validation.
+
+```sh
+python3 accept-api.py --expected-commit <full-source-sha> \
+  --output /tmp/traflens-lab-20261026/evidence/api-<unique-marker>
+```
+
+Run on the existing isolated lab with its matching lab.py and installed PyYAML
+(verified5.4.1). The output must stay below the private evidence directory and
+must not exist already. `--baseline` sends only read-only queries and preserves
+expected failed contracts as failed results. The supported Count(row) control
+must equal the native ClickHouse count immediately before and after it.
+The checker performs no Server/database replacement or packet capture.
+See [API validation](../README-api-validation.md) for exact scope and results.

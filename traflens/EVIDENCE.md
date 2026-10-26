@@ -137,3 +137,15 @@ and original2023 keeper checks pass. Shared timeout algorithms and inherited
 dependency build qualification are preserved. Raw logs remain ignored; only
 aggregate results/hashes and the private manifest fingerprint are published.
 Runtime eBPF, sustained performance and complete parity remain pending.
+
+
+`evidence/2026-10-27/api-ebpf/summary.json` records final Server sourcec91b1a3c5:
+six Go packages race91 top-level/292 total pass events, local lab134 and actual
+HTTP13/13. Exact JSON integer tokens, YAML alias/merge types, typed400 responses
+and generic500 serialization are covered; Count(row) matches native ClickHouse.
+The first malformed controller DATA failure remains explicit. Only owned Server
+is replaced, with both database identities retained and temporary group cleanup.
+Separate linked-libtrace source624 loads81 program sections/30 wrappers, then
+fully detaches under all-port bypass/zero protocols;20 loopback roundtrips yield
+zero callbacks. This is not Agent payload/ingestion/profiling/performance proof.
+Public counts/hashes reference a private manifest; raw evidence stays ignored.

@@ -352,6 +352,37 @@ process are separate from successful collection and product parity.
  environment/configuration evidence remain ignored. No new runtime deployment or
  traffic acceptance was performed; earlier wire results remain separate.
 
+## API and eBPF runtime checkpoint - 2026-10-27
+
+- Final Server source `c91b1a3c5ee61654d3f5ba89b00d689b21f56614` fixes empty-function query panics and
+ malformed controller error JSON. Empty arguments return one typed400; recovery
+ writes generic500 only before a response is written, otherwise aborting without
+ appending. Nil byte data is null; descriptions and
+ pages are encoded safely, and invalid raw JSON/UTF8 fails before headers.
+- Local UseNumber preserves JSON integer tokens. A bounded linear scanner
+ accepts exact whole decimal/exponent values within Go-int bounds; native YAML
+ float/alias/merge values cannot masquerade as integers. Four inherited test
+ selectors are removed. Generic dict/null and operational range limits remain.
+- Six relevant Go packages pass race:91 top-level/292 total test-pass events.
+ The 2048 bounded rational-oracle vectors are included in one config test.
+ Local lab tools134 pass. Source CI includes config and five API package gates.
+- Actual candidate HTTP13/13 passes: three empty functions, native Count(row)
+ equivalence, nested-map and GUI-text persistence, invalid-update atomicity,
+ exact raw integers/whole decimals/exponents, and empty-group cleanup. Original
+ configurations and inventory are preserved; both database container/start/volume
+ identities survive Server-only replacement. First f980 malformed DATA failure
+ and later observer null-list failure are retained privately.
+- Independent libtrace runtime gate links source624 artifacts:81 loaded program
+ sections and30 attachment wrappers, RUNNING then STOP,20 synthetic TCP roundtrips,
+ zero callbacks. Full port bypass and disabled protocol maps are read back;
+ all owned programs disappear and host BPF/tracefs inventories are restored.
+ This is system-wide-hook lifecycle/rejection proof, not full Agent payload or
+ ingestion/profiling/performance acceptance. The prior jattach build overlay stays
+ qualified. Guides: README-api-validation.md and README-ebpf-runtime.md.
+- Core CI: https://github.com/SuperBigYB/TrafLens/actions/runs/40405314725. Public aggregates:
+ evidence/2026-10-27/api-ebpf/summary.json. Raw HTTP, configs, identifiers,
+ process/container metadata and logs stay ignored locally.
+
 ## Remaining validation and priorities
 
 1. Design persistence/server-side idempotency for ambiguous commits and longer
@@ -365,11 +396,12 @@ process are separate from successful collection and product parity.
 3. Extend Hessian Unicode/map coverage and general TCP streams; keep current
    ASCII and adjacent-window limits explicit. The complete configuration race,
    packet/default-native library and guarded plugin-identity gates now pass.
-4. Validate native eBPF/syscall/profiling at runtime, other protocols and storage
-   robustness; then trace application and GUI. A native build is not runtime proof.
-5. Fix API robustness cases in `lab/KNOWN_LIMITATIONS.md`, then compare pinned
-   candidate/reference collector workloads with loss, CPU/RSS, flow/span rates
-   and visibility delay before performance or full-parity claims.
+4. Extend the passed libtrace lifecycle/rejection gate to full Agent payload
+   acceptance with verified exclusive capture scope and ingestion, then syscall/
+   profiling and trace application/GUI. Loaded BPF is not collected-data proof.
+5. Resolve remaining CLI startup-flag and other API cases in
+   `lab/KNOWN_LIMITATIONS.md`; compare pinned candidate/reference workloads with
+   loss, CPU/RSS, flow/span rates and visibility delay before parity claims.
 
 Both direct links were enabled at runtime only; no management routes/persistent
 network/offload settings were changed. Initial iperf3 4-stream/10-second receiver
@@ -382,7 +414,7 @@ process group. Runtime secrets/logs stay ignored; sanitize evidence before commi
 Keep the hourly task active: full feature/performance parity is not achieved.
 
 Latest completed source CI: both jobs passed for
-`62429a607` in <https://github.com/SuperBigYB/TrafLens/actions/runs/40395398781>.
+`c91b1a3c5` in <https://github.com/SuperBigYB/TrafLens/actions/runs/40405314725>.
 Verify the final documentation head's actual CI separately. Library/build gates
 do not replace runtime or performance validation. See the configuration/plugin,
 tunnel and writer guides and their aggregate evidence.

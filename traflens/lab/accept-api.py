@@ -15,6 +15,16 @@ import uuid
 
 
 MEMBERS = ('VTAP_LCUUIDS', 'DISABLE_VTAP_LCUUIDS', 'PENDING_VTAP_LCUUIDS')
+AGENT_IDENTITY_FIELDS = ('LCUUID', 'NAME', 'TYPE', 'CTRL_IP', 'CTRL_MAC', 'VTAP_GROUP_LCUUID', 'TEAM_ID')
+
+
+def agent_identities(rows):
+    # A nil Go result slice is represented as JSON null by the controller.
+    if rows is None:
+        rows = []
+    if not isinstance(rows, list) or any(not isinstance(row, dict) or not row.get('LCUUID') for row in rows):
+        raise ValueError('Invalid Agent inventory response')
+    return sorted(({key: row.get(key) for key in AGENT_IDENTITY_FIELDS} for row in rows), key=lambda row: row['LCUUID'])
 
 
 def strict_json(body):
@@ -191,9 +201,6 @@ class Check:
         after = self.controller('/v1/vtap-groups/')
         def identities(rows):
             return sorted(({key: g.get(key) for key in ('LCUUID', 'NAME', 'TEAM_ID') + MEMBERS} for g in rows), key=lambda g: g['LCUUID'])
-        agent_keys = ('LCUUID', 'NAME', 'TYPE', 'CTRL_IP', 'CTRL_MAC', 'VTAP_GROUP_LCUUID', 'TEAM_ID')
-        def agent_identities(rows):
-            return sorted(({key: a.get(key) for key in agent_keys} for a in rows), key=lambda a: a['LCUUID'])
         if identities(after) != identities(before) or agent_identities(self.controller('/v1/vtaps/')) != agent_identities(agents_before):
             raise RuntimeError('Original group/Agent inventory changed')
         for group, expected in original_configs.items():

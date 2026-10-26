@@ -177,8 +177,9 @@ cd server
 go test -mod=vendor -race ./agent_config -timeout 120s -count=1
 ```
 
-All 44 top-level tests and 129 total pass events (including 85 subtests) succeed
-with no skips. This includes the four TCP-window cases and repairs the inherited panic plus actual
+All 53 top-level tests and 163 total pass events succeed with no skips.
+The latest API/precision and YAML alias controls are described in
+[the API validation guide](README-api-validation.md). This includes the four TCP-window cases and repairs the inherited panic plus actual
 template, migration and DB/YAML conversion defects. See
 [the configuration and plugin guide](README-config-parity.md) for red controls,
 input contracts and the separate malformed-plugin identity safeguards.

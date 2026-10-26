@@ -1,0 +1,143 @@
+{
+  "schema": "traflens.api-and-libtrace-runtime.v1",
+  "source_commit": "c91b1a3c5ee61654d3f5ba89b00d689b21f56614",
+  "finalization_state": "core_runtime_and_ci_verified",
+  "core_ci": {
+    "url": "https://github.com/SuperBigYB/TrafLens/actions/runs/40405314725",
+    "state": "verified",
+    "source_commit": "c91b1a3c5ee61654d3f5ba89b00d689b21f56614",
+    "jobs_succeeded": 2,
+    "go_race_packages_verified": 6,
+    "packet_library_passed": 382,
+    "tunnel_crate_passed": 28,
+    "window_crate_passed": 21,
+    "packet_gate_total_passed": 431,
+    "packet_failed": 0,
+    "packet_ignored": 0,
+    "embedded_packet_source_exact": true,
+    "python_lab_passed": 133,
+    "proof_sha256": "d2b6da1d80b7b02a0346e79e69c4b36fc0e182c9c297a70f6cc3ef7d78ed7e77"
+  },
+  "go_unit_gates": {
+    "agent_configuration": {
+      "top_level_passed": 53,
+      "all_test_pass_events": 163,
+      "race": true
+    },
+    "agent_configuration_service": {
+      "top_level_passed": 11,
+      "all_test_pass_events": 36,
+      "race": true
+    },
+    "agent_configuration_router": {
+      "top_level_passed": 3,
+      "all_test_pass_events": 23,
+      "race": true
+    },
+    "query_packages": {
+      "packages": 2,
+      "top_level_passed": 17,
+      "all_test_pass_events": 51,
+      "race": true
+    },
+    "shared_http_response": {
+      "top_level_passed": 7,
+      "all_test_pass_events": 19,
+      "race": true
+    },
+    "total_top_level_passed": 91,
+    "total_test_pass_events": 292,
+    "failed": 0,
+    "skipped": 0,
+    "count_qualification": "Totals combine the recorded final owning gates; events include nested subtests.",
+    "exact_integer_oracle_vectors": 2048,
+    "oracle_included_in_configuration_gate": true
+  },
+  "before_query_control": {
+    "source_commit": "155c5ff79ce19d31efd6cf1522c5b40a2b150d31",
+    "malformed_query_responses": 3,
+    "responses_contained_multiple_json_documents": 3,
+    "valid_aggregate_query_passed": true,
+    "aggregate_count": 40,
+    "native_protocol_count": 40,
+    "qualification": "Earlier server baseline, retained separately from candidate acceptance."
+  },
+  "first_candidate_control": {
+    "source_commit": "f9802bfef96909c564a90e7df9b9b9bbb49b8d75",
+    "cases_passed_before_failure": 6,
+    "failed_case_index": 7,
+    "stopped_early": true,
+    "failure": "Typed invalid-input response had a missing raw DATA value and was not a valid complete JSON document.",
+    "temporary_resource_cleanup_succeeded": true,
+    "qualification": "This observed runtime failure triggered the shared HTTP envelope repair; it is retained as a failed control."
+  },
+  "candidate_runtime": {
+    "source_commit": "c91b1a3c5ee61654d3f5ba89b00d689b21f56614",
+    "state": "verified",
+    "cases_passed": 13,
+    "cases_failed": 0,
+    "source_version_verified": true,
+    "resource_identity_unchanged_during_checks": true,
+    "database_instances_preserved": 2,
+    "database_lifecycle_identity_preserved": true,
+    "temporary_configuration_and_group_cleanup_verified": true,
+    "default_group_configuration_unchanged": true,
+    "agent_inventory_unchanged": true,
+    "final_health": {
+      "controller_healthy": true,
+      "mysql_tables": 161,
+      "registered_agents": 0,
+      "query_status": "SUCCESS",
+      "credential_log_scan_clear": true
+    }
+  },
+  "libtrace_no_payload_experiment": {
+    "library_source_commit": "62429a607627051c3f242247ff646c67fee80e3e",
+    "implementation": "Independent C gate linked to verified libtrace and trace-utils artifacts; the complete Agent binary was not run.",
+    "passed": true,
+    "gate_source_sha256": "c59a224a5865ef59b0e85ebdeae4dbc0243f34d22b51fab2e152e33a2b7cce45",
+    "gate_binary_sha256": "8678864d37637500210027f00cb298258b7dd51a08261e230018c193ba865d05",
+    "libtrace_sha256": "cc283bfa1d536007bf57396005a2bb510cddf84bbeb1bcf913e90f0a00da81c2",
+    "trace_utils_sha256": "e6d313f1d47c2b1ae29742c22f6501816ea7c9ffe5abd8a7d2ce01f7ff807bfc",
+    "programs_loaded": 81,
+    "links_attached": 30,
+    "synthetic_tcp_roundtrips": 20,
+    "all_65536_ports_bypassed": true,
+    "all_200_protocols_disabled": true,
+    "allow_bitmap_empty": true,
+    "payload_callbacks": 0,
+    "callback_dereferences_payload": false,
+    "payload_inspected_or_persisted": false,
+    "links_remaining_after_stop": 0,
+    "program_inventory_restored": true,
+    "tracefs_unchanged": true,
+    "qualification": {
+      "hooks_system_wide": true,
+      "process_filter_not_claimed": true,
+      "full_agent_runtime_validated": false,
+      "payload_collection_validated": false,
+      "pipeline_ingestion_validated": false,
+      "performance_parity_validated": false
+    }
+  },
+  "publication_scope": "Only aggregate counts, source/artifact hashes and scope qualifications. Raw requests, responses, configuration, internal identities, environment data and captures remain ignored locally.",
+  "remaining_validation": [
+    "Full Agent eBPF/syscall/profiling collection and ingestion",
+    "Broader real services, storage ambiguity and API robustness",
+    "Sustained candidate/reference performance and complete DeepFlow parity"
+  ],
+  "python_lab_local_passed": 134,
+  "python_lab_source_qualification": "Local134 includes the observer cleanup regression added after core c91; exact-core CI for c91 passed133 tests from its own committed snapshot.",
+  "observer_control": {
+    "source_commit": "c91b1a3c5ee61654d3f5ba89b00d689b21f56614",
+    "business_cases_passed_before_observer_error": 12,
+    "failure": "Observer attempted to iterate a missing empty-group result.",
+    "production_defect": false,
+    "observer_fix_only": true,
+    "null_empty_result_normalized": true,
+    "malformed_inventory_types_still_rejected": true,
+    "qualification": "The initial observer attempt is retained; candidate success refers only to the subsequent complete verified run."
+  },
+  "private_evidence_manifest_sha256": "3edd91fe5ed4ceaf8cb668cef7e5eadfb5e67dc06a8aba9c0eb6d652944d3fb0",
+  "private_evidence_file_count": 160
+}
