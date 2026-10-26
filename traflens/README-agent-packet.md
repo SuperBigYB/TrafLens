@@ -122,20 +122,71 @@ and the caller's offsets, tunnel metadata and synthetic Ethernet headers:
 bash traflens/scripts/agent-packet.sh test-tunnel
 ```
 
-`parser-test` also includes this gate: **127 selected tests total**, comprising
-99 Agent library tests and 28 tunnel-crate tests. Both Cargo invocations retain
-`--locked --no-default-features` and execute tests serially.
+The parser, labeler, time, plugin and tunnel groups retain their original
+127 checks: 99 Agent library tests and 28 tunnel-crate tests.
 
-The broader packet library now completes 307 tests, with 295 passing and 12
-failures. The six original tunnel failures are fixed, thirteen caller
-regressions were added, and the remaining failures match the prior inventory.
-See `README-tunnels.md`, `STATE.md`, `evidence/2026-10-26/tunnels/` and the
-earlier compatible upstream comparison in `evidence/2026-10-26/baseline/`. Selected
-CI success must not be described as a complete library-suite pass.
+## Sliding-window and direction gates
+
+`test-reassembly` runs 21 segmentation-window crate tests, the original Agent
+segmentation PCAP test, 6 MetaPacket regressions and 5 FlowMap integration tests.
+`test-direction` runs 7 service-table tests and the handshake/retransmission
+regression. Run either group independently:
+
+```sh
+bash traflens/scripts/agent-packet.sh test-reassembly
+bash traflens/scripts/agent-packet.sh test-direction
+```
+
+The feature is opt-in through
+`inputs.cbpf.preprocess.packet_segmentation_reassembly`, a list of TCP ports or
+port ranges that defaults to empty. It provides adjacent two-packet sliding
+parsing windows: `p1,p2,p3` produces `p1+p2` and `p2+p3`, then flush returns the
+original `p3`. Payload overlap between windows is intentional. These windows
+improve L7 parsing across a packet boundary; they do not provide a complete
+ordered TCP stream or determine application-message boundaries.
+
+Each flow retains at most one original carrier per direction, each limited to
+64 KiB of owned memory. Cached carriers share a process-wide 64 MiB retained-byte
+budget. Parsing windows that have left the cache are outside that retained
+budget. Oversized or budget-blocked inputs pass through with the previous
+carrier intact. Gaps, overlaps, retransmissions and truncated captures are not
+concatenated. Pure ACKs preserve the pending data window; SYN/FIN/RST packets
+flush their direction and pass through. Original packets feed L4 metrics
+individually; sliding windows and flushed tails feed L7 parsing.
+
+`parser-test` includes both new gates for **168 selected tests**: 119 Agent
+library tests and 49 plugin-crate tests (28 tunnel + 21 segmentation-window).
+All Cargo invocations retain `--locked --no-default-features` and serial test
+execution; the original 127 checks remain included.
+
+The broader packet-mode library run completes 321 tests, with 312 passing and
+9 failures. The segmentation stub, historical handshake expectation and
+service-table port-map failures now pass. The remaining configuration,
+RocketMQ, Hessian, memcached and five WASM failures match the existing inventory.
+See `STATE.md` for the current checkpoint, `README-tunnels.md` and
+`evidence/2026-10-26/tunnels/` for the tunnel checkpoint, and
+`evidence/2026-10-26/baseline/` for the earlier compatible upstream comparison.
+Selected CI success must not be described as a complete library-suite pass.
+
+CI also runs a focused Server configuration gate after the complete Server build:
+
+```sh
+cd server
+go test -mod=vendor ./agent_config -run '^TestTCPWindow' -timeout 120s -count=1
+```
+
+Its four top-level tests and four subcases cover public template-to-JSON metadata,
+the disabled default, YAML/JSON port-list and range roundtrips, and real legacy
+uint16-to-string migration, including empty and boundary inputs. The complete
+`agent_config` package is a separate failing suite: both the pre-change
+`395f155d` snapshot and current package show the same five top-level and seven
+subcase failure names before `TestConvCommentToSection` panics at its inline
+fixture's line326. Cases after that panic are not covered by this comparison.
+The focused CI command does not establish a complete configuration-package pass.
 
 
 The ff05c646d checkpoint also validates ordinary, packed-ref and linked-worktree
 Git metadata watching with three direct-production probes. Its packet binary
 embeds the exact tested source commit. CI checks CommitId against HEAD, so a
 cache artifact with stale source metadata fails the gate. These three watcher
-probes are separate from the 127 selected Cargo tests.
+probes are separate from the 168 selected Cargo tests.

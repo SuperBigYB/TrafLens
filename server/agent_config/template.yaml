@@ -2359,6 +2359,35 @@ inputs:
       #     仅企业版支持解析 ERSPAN 和 TEB。
       # upgrade_from: static_config.trim-tunnel-types
       tunnel_trim_protocols: []
+      # type: string
+      # name:
+      #   en: TCP Parse Window Ports
+      #   ch: TCP 解析窗口端口
+      # unit:
+      # range: []
+      # enum_options: []
+      # modification: agent_restart
+      # ee_feature: false
+      # description:
+      #   en: |-
+      #     TCP ports or inclusive port ranges, for example ["18080", "8000-8010"].
+      #     Empty disables the feature. For configured ports, TrafLens joins two
+      #     consecutive same-direction TCP payloads for application parsing.
+      #     Windows overlap; this is not general TCP stream or message reassembly.
+      #     Sequence gaps, overlap and truncated payloads are not concatenated.
+      #     Original packets retain independent TCP metrics. Pending tails flush
+      #     at the existing flow report tick or flow close, so windows do not cross
+      #     that tick. Retained carriers are capped at 64 KiB each and share a
+      #     process-wide 64 MiB budget; admission failure passes packets through.
+      #   ch: |-
+      #     TCP 端口或闭区间端口范围，例如 ["18080", "8000-8010"]。
+      #     空列表关闭此功能。对配置端口，TrafLens 将同方向序号连续的两个
+      #     TCP 载荷组成应用解析窗口。窗口相互重叠，不是通用 TCP 流或消息重组。
+      #     不拼接序号缺口、重叠或抓包截断的载荷；原始包独立参与 TCP 指标统计。
+      #     缓存尾段在现有流报告 tick 或流结束时输出，窗口不跨该 tick。
+      #     每个缓存载体最多 64 KiB，进程共享 64 MiB 保留预算；无法准入时原样输出。
+      # upgrade_from: static_config.packet-segmentation-reassembly
+      packet_segmentation_reassembly: []
   # type: section
   # name: eBPF
   # description:

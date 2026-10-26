@@ -91,20 +91,30 @@ class PacketProfileTests(unittest.TestCase):
         self.assertEqual(config['outputs']['flow_log']['throttles']['l7_throttle'], 1000)
 
     def test_only_tunnels_use_mirror_capture_for_bidirectional_inner_flows(self):
-        for profile, mode in (('http', 0), ('protocols', 0), ('tunnels', 1)):
+        for profile, mode in (('http', 0), ('protocols', 0), ('tunnels', 1), ('segmentation', 1)):
             with self.subTest(profile=profile):
                 config = configure.profile_config(profile)
                 self.assertEqual(config['inputs']['cbpf']['common']['capture_mode'], mode)
 
     def test_only_tunnels_skip_npb_exclusions_while_bpf_stays_enabled(self):
-        for profile in ('http', 'protocols', 'tunnels'):
+        for profile in ('http', 'protocols', 'tunnels', 'segmentation'):
             with self.subTest(profile=profile):
                 af_packet = configure.profile_config(profile)['inputs']['cbpf']['af_packet']
-                self.assertEqual(af_packet.get('skip_npb_bpf', False), profile == 'tunnels')
+                self.assertEqual(af_packet.get('skip_npb_bpf', False), profile in ('tunnels', 'segmentation'))
                 self.assertFalse(af_packet.get('bpf_filter_disabled', False))
         af_packet = configure.profile_config('tunnels')['inputs']['cbpf']['af_packet']
         self.assertIs(af_packet['skip_npb_bpf'], True)
         self.assertIs(af_packet['bpf_filter_disabled'], False)
+
+    def test_segmentation_only_adds_the_http_port_string_to_tunnel_scope(self):
+        config = configure.profile_config('segmentation')
+        ports = config['inputs']['cbpf']['preprocess'].pop('packet_segmentation_reassembly')
+        self.assertEqual(ports, ['18080'])
+        self.assertTrue(all(type(port) is str and 1 <= int(port) <= 65535 for port in ports))
+        self.assertEqual(config, configure.profile_config('tunnels'))
+        for profile in ('http', 'protocols', 'tunnels'):
+            self.assertNotIn('packet_segmentation_reassembly',
+                             configure.profile_config(profile)['inputs']['cbpf'].get('preprocess', {}))
 
     def test_unknown_profile_rejected(self):
         with self.assertRaises(ValueError):

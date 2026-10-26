@@ -51,6 +51,10 @@ jobs:
       - name: Build the complete community server
         run: make -C traflens server
 
+      - name: Test TCP window schema and legacy upgrade
+        working-directory: server
+        run: go test -mod=vendor ./agent_config -run '^TestTCPWindow' -timeout 120s -count=1
+
       - name: Test queue, LRU and flow metrics
         working-directory: server
         run: go test -mod=vendor -short ./libs/queue ./libs/hmap/lru ./libs/flow-metrics -timeout 120s -count=1
@@ -113,7 +117,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-traflens-packet-rust-1.97.1-
 
-      - name: Test parsers, tunnels, CIDR, time and C plugin contracts
+      - name: Test parsers, tunnels, windows, direction and plugin contracts
         run: bash traflens/scripts/agent-packet.sh parser-test
 
       - name: Build the packet Agent functional binary

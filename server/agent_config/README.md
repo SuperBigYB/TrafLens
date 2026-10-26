@@ -3243,6 +3243,43 @@ inputs:
 Whether to remove the tunnel header in mirrored traffic.
 Only the Enterprise Edition supports decap ERSPAN and TEB.
 
+#### TCP Parse Window Ports {#inputs.cbpf.preprocess.packet_segmentation_reassembly}
+
+**Tags**:
+
+<mark>agent_restart</mark>
+
+**FQCN**:
+
+`inputs.cbpf.preprocess.packet_segmentation_reassembly`
+
+Upgrade from old version: `static_config.packet-segmentation-reassembly`
+
+**Default value**:
+```yaml
+inputs:
+  cbpf:
+    preprocess:
+      packet_segmentation_reassembly: []
+```
+
+**Schema**:
+| Key  | Value                        |
+| ---- | ---------------------------- |
+| Type | string |
+
+**Description**:
+
+TCP ports or inclusive port ranges, for example ["18080", "8000-8010"].
+Empty disables the feature. For configured ports, TrafLens joins two
+consecutive same-direction TCP payloads for application parsing.
+Windows overlap; this is not general TCP stream or message reassembly.
+Sequence gaps, overlap and truncated payloads are not concatenated.
+Original packets retain independent TCP metrics. Pending tails flush
+at the existing flow report tick or flow close, so windows do not cross
+that tick. Retained carriers are capped at 64 KiB each and share a
+process-wide 64 MiB budget; admission failure passes packets through.
+
 ## eBPF {#inputs.ebpf}
 
 ### Disabled {#inputs.ebpf.disabled}

@@ -98,6 +98,16 @@ use packet_sequence_block::PacketSequenceBlock;
 
 const DEFAULT_SOCKET_CLOSE_TIMEOUT: Timestamp = Timestamp::from_secs(1);
 
+#[derive(Clone, Copy)]
+enum MetricParseMode {
+    TransportAndApplication,
+    ApplicationOnly,
+}
+
+#[cfg(test)]
+#[path = "flow_map_reassembly_tests.rs"]
+mod reassembly_tests;
+
 pub struct Config<'a> {
     pub flow: &'a FlowConfig,
     pub log_parser: &'a LogParserConfig,
@@ -659,7 +669,7 @@ impl FlowMap {
                         continue;
                     }
                     // 未超时Flow的统计信息发送到队列下游
-                    self.node_updated_aftercare(&flow_config, node, timestamp, None);
+                    self.node_updated_aftercare(config, node, timestamp, None);
                     // Enterprise Edition Feature: packet-sequence
                     if let Some(q) = self.pseq_output.as_mut() {
                         if let Some(block) = node.packet_sequence_block.take() {
@@ -780,12 +790,7 @@ impl FlowMap {
 
                 let node = &mut nodes[index];
                 // 1. 输出上一个统计周期的统计信息
-                self.node_updated_aftercare(
-                    &flow_config,
-                    node,
-                    pkt_timestamp.into(),
-                    Some(meta_packet),
-                );
+                self.node_updated_aftercare(config, node, pkt_timestamp.into(), Some(meta_packet));
 
                 let flow = &node.tagged_flow.flow;
                 // PCAP and L7 Log
@@ -917,16 +922,22 @@ impl FlowMap {
         let mut count = 0;
 
         if flow_config.collector_enabled {
-            if let Some(tcp_segments) = node.tcp_segments.as_mut() {
-                if let Some(mut packets) = tcp_segments.inject(meta_packet.to_owned_segment()) {
-                    let mut packets = packets
-                        .drain(..)
-                        .map(|x| x.into_any().downcast::<MetaPacket>().unwrap())
-                        .collect::<Vec<Box<MetaPacket>>>();
-                    for packet in &mut packets {
-                        let direction =
-                            packet.lookup_key.direction == PacketDirection::ClientToServer;
-                        count += self.collect_metric(config, node, packet, direction, false);
+            if node.tcp_segments.is_some() {
+                let direction = meta_packet.lookup_key.direction == PacketDirection::ClientToServer;
+                if Self::collect_tcp_transport(node, meta_packet, direction) {
+                    let packets = node
+                        .tcp_segments
+                        .as_mut()
+                        .unwrap()
+                        .inject(meta_packet.to_owned_segment());
+                    if let Some(mut packets) = packets {
+                        let mut packets = packets
+                            .drain(..)
+                            .map(|x| x.into_any().downcast::<MetaPacket>().unwrap())
+                            .collect::<Vec<Box<MetaPacket>>>();
+                        for packet in &mut packets {
+                            count += self.collect_reassembled_metric(config, node, packet);
+                        }
                     }
                 }
             } else {
@@ -1348,15 +1359,17 @@ impl FlowMap {
         node.packet_sequence_block = None; // Enterprise Edition Feature: packet-sequence
         node.residual_request = 0;
 
-        if PacketSegmentationReassembly::does_support()
+        node.tcp_segments = if PacketSegmentationReassembly::does_support()
             && meta_packet.lookup_key.proto == IpProtocol::TCP
             && meta_packet.ebpf_type == EbpfType::None
             && config
                 .flow
                 .need_to_reassemble(lookup_key.src_port, lookup_key.dst_port)
         {
-            node.tcp_segments = Some(PacketSegmentationReassembly::default())
-        }
+            Some(PacketSegmentationReassembly::default())
+        } else {
+            None
+        };
 
         #[cfg(any(target_os = "linux", target_os = "android"))]
         let local_epc_id = match config.ebpf.as_ref() {
@@ -1714,6 +1727,86 @@ impl FlowMap {
         is_first_packet_direction: bool,
         is_first_packet: bool,
     ) -> i32 {
+        self.collect_metric_with_mode(
+            config,
+            node,
+            meta_packet,
+            is_first_packet_direction,
+            is_first_packet,
+            MetricParseMode::TransportAndApplication,
+        )
+    }
+
+    fn collect_tcp_transport(
+        node: &mut FlowNode,
+        meta_packet: &MetaPacket,
+        is_first_packet_direction: bool,
+    ) -> bool {
+        let Some(log) = node.meta_flow_log.as_mut() else {
+            return true;
+        };
+        log.parse_l4(meta_packet, is_first_packet_direction).is_ok()
+    }
+
+    fn align_packet_direction(node: &FlowNode, meta_packet: &mut MetaPacket) -> bool {
+        let key = &node.tagged_flow.flow.flow_key;
+        let source = meta_packet.lookup_key.src_ip;
+        let port = meta_packet.lookup_key.src_port;
+        let forward = key.ip_src == source && key.port_src == port;
+        let backward = key.ip_dst == source && key.port_dst == port;
+        // Equal or unmatched endpoints cannot establish a new orientation.
+        // Keep the direction already supplied by matching/reversal in that case.
+        meta_packet.lookup_key.direction = match (forward, backward) {
+            (true, false) => PacketDirection::ClientToServer,
+            (false, true) => PacketDirection::ServerToClient,
+            _ => meta_packet.lookup_key.direction,
+        };
+        meta_packet.lookup_key.direction == PacketDirection::ClientToServer
+    }
+
+    fn collect_reassembled_metric(
+        &mut self,
+        config: &Config,
+        node: &mut FlowNode,
+        meta_packet: &mut MetaPacket,
+    ) -> i32 {
+        // An earlier output in the same batch can rectify the flow direction.
+        let direction = Self::align_packet_direction(node, meta_packet);
+        self.collect_metric_with_mode(
+            config,
+            node,
+            meta_packet,
+            direction,
+            false,
+            MetricParseMode::ApplicationOnly,
+        )
+    }
+
+    fn flush_reassembled_metrics(&mut self, config: &Config, node: &mut FlowNode) {
+        if !config.flow.collector_enabled {
+            return;
+        }
+        let packets = node
+            .tcp_segments
+            .as_mut()
+            .and_then(|segments| segments.flush());
+        if let Some(packets) = packets {
+            for packet in packets {
+                let mut packet = packet.into_any().downcast::<MetaPacket>().unwrap();
+                self.collect_reassembled_metric(config, node, &mut packet);
+            }
+        }
+    }
+
+    fn collect_metric_with_mode(
+        &mut self,
+        config: &Config,
+        node: &mut FlowNode,
+        meta_packet: &mut MetaPacket,
+        is_first_packet_direction: bool,
+        is_first_packet: bool,
+        mode: MetricParseMode,
+    ) -> i32 {
         let flow_config = &config.flow;
         let log_parser_config = &config.log_parser;
         let consistent_timestamp_in_l7_metrics = config.flow.consistent_timestamp_in_l7_metrics;
@@ -1735,22 +1828,45 @@ impl FlowMap {
 
             for packet in meta_packet {
                 let ret = if ip_protocol == IpProtocol::UDP || ip_protocol == IpProtocol::TCP {
-                    log.parse(
-                        flow_config,
-                        log_parser_config,
-                        packet,
-                        is_first_packet_direction,
-                        Self::l7_metrics_enabled(flow_config, &node.tagged_flow.flow.signal_source),
-                        Self::l7_log_parse_enabled(
+                    match mode {
+                        MetricParseMode::TransportAndApplication => log.parse(
                             flow_config,
-                            &node.tagged_flow.flow.signal_source,
-                            &packet.lookup_key,
+                            log_parser_config,
+                            packet,
+                            is_first_packet_direction,
+                            Self::l7_metrics_enabled(
+                                flow_config,
+                                &node.tagged_flow.flow.signal_source,
+                            ),
+                            Self::l7_log_parse_enabled(
+                                flow_config,
+                                &node.tagged_flow.flow.signal_source,
+                                &packet.lookup_key,
+                            ),
+                            &mut self.app_table,
+                            local_epc,
+                            remote_epc,
+                            &self.l7_protocol_checker,
                         ),
-                        &mut self.app_table,
-                        local_epc,
-                        remote_epc,
-                        &self.l7_protocol_checker,
-                    )
+                        MetricParseMode::ApplicationOnly => log.parse_l7(
+                            flow_config,
+                            log_parser_config,
+                            packet,
+                            Self::l7_metrics_enabled(
+                                flow_config,
+                                &node.tagged_flow.flow.signal_source,
+                            ),
+                            Self::l7_log_parse_enabled(
+                                flow_config,
+                                &node.tagged_flow.flow.signal_source,
+                                &packet.lookup_key,
+                            ),
+                            &mut self.app_table,
+                            local_epc,
+                            remote_epc,
+                            &self.l7_protocol_checker,
+                        ),
+                    }
                 } else {
                     log.parse_l3(
                         flow_config,
@@ -1897,16 +2013,21 @@ impl FlowMap {
         let mut count = 0;
 
         if flow_config.collector_enabled {
-            if let Some(tcp_segments) = node.tcp_segments.as_mut() {
-                if let Some(mut packets) = tcp_segments.inject(meta_packet.to_owned_segment()) {
-                    let mut packets = packets
-                        .drain(..)
-                        .map(|x| x.into_any().downcast::<MetaPacket>().unwrap())
-                        .collect::<Vec<Box<MetaPacket>>>();
-                    for packet in &mut packets {
-                        let direction =
-                            packet.lookup_key.direction == PacketDirection::ClientToServer;
-                        count += self.collect_metric(config, &mut node, packet, direction, false);
+            if node.tcp_segments.is_some() {
+                if Self::collect_tcp_transport(&mut node, meta_packet, !reverse) {
+                    let packets = node
+                        .tcp_segments
+                        .as_mut()
+                        .unwrap()
+                        .inject(meta_packet.to_owned_segment());
+                    if let Some(mut packets) = packets {
+                        let mut packets = packets
+                            .drain(..)
+                            .map(|x| x.into_any().downcast::<MetaPacket>().unwrap())
+                            .collect::<Vec<Box<MetaPacket>>>();
+                        for packet in &mut packets {
+                            count += self.collect_reassembled_metric(config, &mut node, packet);
+                        }
                     }
                 }
             } else {
@@ -2110,21 +2231,7 @@ impl FlowMap {
         timeout: Duration,
         meta_packet: Option<&mut MetaPacket>,
     ) {
-        if config.flow.collector_enabled {
-            if let Some(tcp_segments) = node.tcp_segments.as_mut() {
-                if let Some(mut packets) = tcp_segments.flush() {
-                    let mut packets = packets
-                        .drain(..)
-                        .map(|x| x.into_any().downcast::<MetaPacket>().unwrap())
-                        .collect::<Vec<Box<MetaPacket>>>();
-                    for packet in &mut packets {
-                        let direction =
-                            packet.lookup_key.direction == PacketDirection::ClientToServer;
-                        self.collect_metric(config, &mut node, packet, direction, false);
-                    }
-                }
-            }
-        }
+        self.flush_reassembled_metrics(config, &mut node);
 
         // 统计数据输出前矫正流方向
         self.update_flow_direction(&mut node, meta_packet);
@@ -2215,10 +2322,10 @@ impl FlowMap {
     // go 版本的copyAndOutput
     fn node_updated_aftercare(
         &mut self,
-        config: &FlowConfig,
+        config: &Config,
         node: &mut FlowNode,
         timestamp: Duration,
-        meta_packet: Option<&mut MetaPacket>,
+        mut meta_packet: Option<&mut MetaPacket>,
     ) {
         // if this function is called by inject_flush_ticker (no meta_packet),
         // skip statistical interval check because timestamp will be equal to
@@ -2228,13 +2335,23 @@ impl FlowMap {
                 || timestamp >= node.tagged_flow.flow.flow_stat_time + STATISTICAL_INTERVAL
                 || timestamp < node.tagged_flow.flow.flow_stat_time)
         {
+            // Use the existing report tick as the pending application's latency
+            // bound. Parsing windows deliberately do not span report boundaries.
+            self.flush_reassembled_metrics(config, node);
+            // Tail inference may have reversed the flow after match_node set
+            // the next original packet's direction against the old key.
+            if node.tcp_segments.is_some() {
+                if let Some(packet) = meta_packet.as_deref_mut() {
+                    Self::align_packet_direction(node, packet);
+                }
+            }
             self.update_flow_direction(node, meta_packet); // 每个流统计数据输出前矫正流方向
             node.tagged_flow.flow.close_type = CloseType::ForcedReport;
             let flow = &mut node.tagged_flow.flow;
-            if !config.collector_enabled {
+            if !config.flow.collector_enabled {
                 return;
             }
-            flow.set_tap_side(config.agent_type, config.cloud_gateway_traffic);
+            flow.set_tap_side(config.flow.agent_type, config.flow.cloud_gateway_traffic);
 
             let mut collect_stats = false;
             if flow.flow_key.proto == IpProtocol::TCP
@@ -3802,48 +3919,89 @@ mod tests {
 
     #[test]
     fn test_handshake_retrans() {
-        let (module_config, mut flow_map, output_queue_receiver) =
-            _new_flow_map_and_receiver(AgentType::TtProcess, None, false);
-        let config = Config {
-            flow: &module_config.flow,
-            log_parser: &module_config.log_parser,
-            collector: &module_config.collector,
-            #[cfg(any(target_os = "linux", target_os = "android"))]
-            ebpf: None,
-        };
-
-        let capture = Capture::load_pcap("resources/test/flow_generator/handshake-retrans.pcap");
-        let packets = capture.collect::<Vec<_>>();
-
-        flow_map.reset_start_time(packets[0].lookup_key.timestamp.into());
-        let dst_mac = packets[0].lookup_key.dst_mac;
-        let timestamp = time::SystemTime::now()
-            .duration_since(time::UNIX_EPOCH)
-            .unwrap();
-        for mut packet in packets {
-            packet.lookup_key.timestamp = Duration::new(
-                timestamp.as_secs(),
-                Duration::from(packet.lookup_key.timestamp).subsec_nanos(),
-            )
-            .into();
-            packet.lookup_key.direction = if packet.lookup_key.dst_mac == dst_mac {
-                PacketDirection::ClientToServer
-            } else {
-                PacketDirection::ServerToClient
+        // Since upstream 03f6ecf5e, the first ACK ends the handshake. Running
+        // both prefixes proves that a later duplicate ACK adds no RTT sample
+        // and does not extend the full handshake time.
+        let mut first_ack_stats = None;
+        for packet_count in [5, 6] {
+            let (module_config, mut flow_map, output_queue_receiver) =
+                _new_flow_map_and_receiver(AgentType::TtProcess, None, false);
+            let config = Config {
+                flow: &module_config.flow,
+                log_parser: &module_config.log_parser,
+                collector: &module_config.collector,
+                #[cfg(any(target_os = "linux", target_os = "android"))]
+                ebpf: None,
             };
-            flow_map.inject_meta_packet(&config, &mut packet);
+
+            let packets =
+                Capture::load_pcap("resources/test/flow_generator/handshake-retrans.pcap")
+                    .collect::<Vec<_>>();
+            assert_eq!(packets.len(), 6);
+            assert!(packets[0].is_syn() && packets[1].is_syn());
+            assert!(packets[2].is_syn_ack() && packets[3].is_syn_ack());
+            assert!(packets[4].is_ack() && packets[5].is_ack());
+            let captured_start = Duration::from(packets[0].lookup_key.timestamp);
+            let offsets = packets
+                .iter()
+                .map(|packet| {
+                    (Duration::from(packet.lookup_key.timestamp) - captured_start).as_micros()
+                })
+                .collect::<Vec<_>>();
+            assert_eq!(offsets, vec![0, 0, 943, 1886, 2198, 2510]);
+
+            // Keep original interpacket deltas with a fixed, nonzero anchor.
+            let timestamp = Duration::from_secs(1_700_211_431);
+            flow_map.reset_start_time(timestamp);
+            let dst_mac = packets[0].lookup_key.dst_mac;
+            for mut packet in packets.into_iter().take(packet_count) {
+                packet.lookup_key.timestamp =
+                    (timestamp + Duration::from(packet.lookup_key.timestamp) - captured_start)
+                        .into();
+                packet.lookup_key.direction = if packet.lookup_key.dst_mac == dst_mac {
+                    PacketDirection::ClientToServer
+                } else {
+                    PacketDirection::ServerToClient
+                };
+                flow_map.inject_meta_packet(&config, &mut packet);
+            }
+            flow_map.inject_flush_ticker(&config, timestamp.add(Duration::from_secs(120)));
+            let tagged_flow = output_queue_receiver.recv(Some(TIME_UNIT)).unwrap();
+            let stats = &tagged_flow.flow.flow_perf_stats.as_ref().unwrap().tcp;
+            let actual = (
+                stats.rtt_client_max,
+                stats.rtt_client_sum,
+                stats.rtt_client_count,
+                stats.rtt_server_max,
+                stats.rtt_server_sum,
+                stats.rtt_server_count,
+                stats.rtt,
+            );
+            let first_syn = offsets[0] as u32;
+            let first_syn_ack = offsets[2] as u32;
+            let last_syn_ack = offsets[3] as u32;
+            let first_ack = offsets[4] as u32;
+            assert_eq!(
+                actual,
+                (
+                    first_ack - first_syn_ack,
+                    first_ack - first_syn_ack,
+                    1,
+                    last_syn_ack - first_syn,
+                    (first_syn_ack - first_syn) + (last_syn_ack - first_syn),
+                    2,
+                    first_ack - first_syn,
+                ),
+                "packet_count={packet_count}",
+            );
+            if let Some(expected) = first_ack_stats {
+                assert_eq!(
+                    actual, expected,
+                    "duplicate ACK must not extend handshake RTT"
+                );
+            } else {
+                first_ack_stats = Some(actual);
+            }
         }
-
-        flow_map.inject_flush_ticker(&config, timestamp.add(Duration::from_secs(120)));
-
-        let tagged_flow = output_queue_receiver.recv(Some(TIME_UNIT)).unwrap();
-        let perf_stats = &tagged_flow.flow.flow_perf_stats.as_ref().unwrap().tcp;
-        assert_eq!(perf_stats.rtt_client_max, 1567);
-        assert_eq!(perf_stats.rtt_client_sum, 2822);
-        assert_eq!(perf_stats.rtt_client_count, 2);
-        assert_eq!(perf_stats.rtt_server_max, 1886);
-        assert_eq!(perf_stats.rtt_server_sum, 2829);
-        assert_eq!(perf_stats.rtt_server_count, 2);
-        assert_eq!(perf_stats.rtt, 2510);
     }
 }

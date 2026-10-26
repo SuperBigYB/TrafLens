@@ -114,6 +114,97 @@ def peel(frame):
 
 
 class TunnelWireTests(unittest.TestCase):
+    def test_zero_split_preserves_the_previous_default_bytes_and_documents(self):
+        default = tunnel.generate("tn-split-default", tunnel.FLAVORS)
+        self.assertEqual(default, tunnel.generate("tn-split-default", tunnel.FLAVORS, http_split_at=0))
+        self.assertEqual(hashlib.sha256(tunnel.pcap_bytes(default[0])).hexdigest(),
+                         "816e452aef2d8a27d8b2adb190d6a2002aaf18332f86f0cbd6f46cb2aa8eb3bf")
+        self.assertEqual(hashlib.sha256(json.dumps(default[1], sort_keys=True).encode()).hexdigest(),
+                         "f2d9bb0f1f5c154f6887fe502687fb81fb05c14f13642893feb137dc9bf25c19")
+        self.assertEqual(hashlib.sha256(json.dumps(default[2], sort_keys=True).encode()).hexdigest(),
+                         "606f9c005b2a336587383e556167998d47622a33ff0fc38fa489dcc9dc785d0e")
+
+    def test_split_http_matrix_checksums_sequence_ack_and_original_application_bytes(self):
+        original, expected, before = tunnel.generate("tn-split-wire", tunnel.FLAVORS)
+        frames, split_expected, manifest = tunnel.generate("tn-split-wire", tunnel.FLAVORS, http_split_at=2)
+        self.assertEqual(split_expected, expected)
+        self.assertEqual((len(frames), manifest["frame_count"], manifest["request_count"]), (300, 300, 40))
+        self.assertEqual(manifest["http_segmentation"], {
+            "split_at_bytes": 2, "http_request_count": 20, "split_message_count": 40,
+            "data_packet_count": 80, "additional_frames": 40})
+        self.assertEqual(sorted(index for row in manifest["requests"] for index in row["frame_indices"]),
+                         list(range(300)))
+        for previous, record in zip(before["requests"], manifest["requests"]):
+            with self.subTest(flavor=record["flavor"], ip=record["ip_version"], protocol=record["protocol"]):
+                for key in ("request_resource", "expected_l7", "inner_5tuple", "tunnel"):
+                    self.assertEqual(record[key], previous[key])
+                # peel/read_ip independently validate every outer/inner IP/TCP/UDP checksum.
+                baseline = [peel(original[index])[0] for index in previous["frame_indices"]]
+                decoded = [peel(frames[index])[0] for index in record["frame_indices"]]
+                if record["protocol"] == 120:
+                    self.assertEqual(decoded, baseline)
+                    self.assertNotIn("http_segmentation", record)
+                    continue
+                self.assertEqual(len(decoded), 13)
+                next_sequence, payloads, indices, lengths, flags_by_direction = {}, {}, {}, {}, {}
+                controls = []
+                for index, (_, source, _, protocol, body) in zip(record["frame_indices"], decoded):
+                    self.assertEqual(protocol, 6)
+                    reverse = source == record["inner_5tuple"]["server_ip"]
+                    seq, ack = struct.unpack_from("!II", body, 4)
+                    flags = body[13]
+                    data = body[(body[12] >> 4) * 4:]
+                    if reverse in next_sequence:
+                        self.assertEqual(seq, next_sequence[reverse])
+                    else:
+                        self.assertTrue(flags & 2)
+                    self.assertEqual(ack, next_sequence[not reverse] if flags & 0x10 else 0)
+                    next_sequence[reverse] = seq + len(data) + bool(flags & 2) + bool(flags & 1)
+                    if data:
+                        payloads.setdefault(reverse, []).append(data)
+                        indices.setdefault(reverse, []).append(index)
+                        lengths.setdefault(reverse, []).append(len(data))
+                        flags_by_direction.setdefault(reverse, []).append(flags)
+                    else:
+                        controls.append(body)
+                self.assertEqual(controls, [body for _, _, _, _, body in baseline if len(body) == (body[12] >> 4) * 4])
+                for reverse, side, prefix in ((False, "request", b"GE"), (True, "response", b"HT")):
+                    self.assertEqual(payloads[reverse][0], prefix)
+                    self.assertEqual(flags_by_direction[reverse], [0x10, 0x18])
+                    unfragmented = [body[(body[12] >> 4) * 4:] for _, source, _, _, body in baseline
+                                    if (source == record["inner_5tuple"]["server_ip"]) == reverse
+                                    and len(body) > (body[12] >> 4) * 4]
+                    self.assertEqual(b"".join(payloads[reverse]), b"".join(unfragmented))
+                    self.assertEqual(record["http_segmentation"][side + "_frame_indices"], indices[reverse])
+                    self.assertEqual(record["http_segmentation"][side + "_payload_lengths"], lengths[reverse])
+                self.assertEqual(record["http_segmentation"]["split_at_bytes"], 2)
+                self.assertEqual(record["http_segmentation"]["data_packet_count"], 4)
+
+    def test_invalid_split_offsets_and_split_aggregate_caps(self):
+        for offset in (-1, 1.5, True, 100000):
+            with self.subTest(offset=offset), self.assertRaises(ValueError):
+                tunnel.generate("tn-split-invalid", http_split_at=offset)
+        self.assertEqual(len(tunnel.generate("tn-split-limits", tunnel.FLAVORS, 3, http_split_at=2)[0]), 900)
+        with self.assertRaises(ValueError):
+            tunnel.generate("tn-split-limits", tunnel.FLAVORS, 4, http_split_at=2)
+
+    def test_cli_split_plan_exports_manifest_without_opening_raw_socket(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary) / "split-plan"
+            argv = ["tunnel-traffic.py", "plan", "--marker", "tn-split-plan", "--flavors", "all",
+                    "--http-split-at", "2", "--output-dir", str(output)]
+            with mock.patch.object(tunnel.sys, "argv", argv), \
+                    mock.patch.object(tunnel.socket, "socket") as raw, \
+                    mock.patch.object(tunnel.sys, "stdout", new_callable=io.StringIO) as stdout:
+                self.assertEqual(tunnel.main(), 0)
+            raw.assert_not_called()
+            self.assertEqual(json.loads(stdout.getvalue())["frame_count"], 300)
+            self.assertFalse(json.loads(stdout.getvalue())["executed"])
+            manifest = json.loads((output / "manifest.json").read_text())
+            self.assertEqual(manifest["http_segmentation"]["split_at_bytes"], 2)
+            self.assertEqual(len(json.loads((output / "expected-http.json").read_text())["records"]), 20)
+            self.assertEqual(len(json.loads((output / "expected-dns.json").read_text())["records"]), 20)
+
     def test_independent_checksum_and_dns_vectors(self):
         self.assertEqual(tunnel.checksum(bytes.fromhex("0001f203f4f5f6f7")), 0x220d)
         query, response = tunnel.dns_pair(0x1234, "example.test", "198.18.0.1")

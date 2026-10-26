@@ -5,7 +5,7 @@ fail() { printf 'TrafLens packet agent: %s\n' "$*" >&2; exit 1; }
 usage() {
   cat <<'USAGE'
 Usage: bash traflens/scripts/agent-packet.sh [mode]
-Modes: build (default), build-release, test-http, test-dns, test-mysql, test-labeler, test-time, test-plugin, test-tunnel, parser-test
+Modes: build (default), build-release, test-http, test-dns, test-mysql, test-labeler, test-time, test-plugin, test-tunnel, test-reassembly, test-direction, parser-test
 
 Uses existing Rust/Cargo 1.97.1 and --locked --no-default-features.
 This builds the packet agent without eBPF, syscall tracing or profiling.
@@ -17,7 +17,7 @@ mode=${1:-build}
 if [[ "$mode" == --help || "$mode" == -h ]]; then usage; exit 0; fi
 [[ $# -le 1 ]] || { usage >&2; exit 2; }
 case "$mode" in
-  build|build-release|test-http|test-dns|test-mysql|test-labeler|test-time|test-plugin|test-tunnel|parser-test) ;;
+  build|build-release|test-http|test-dns|test-mysql|test-labeler|test-time|test-plugin|test-tunnel|test-reassembly|test-direction|parser-test) ;;
   *) usage >&2; fail "unknown mode: $mode" ;;
 esac
 
@@ -115,6 +115,16 @@ tunnel_test() {
   "$cargo_bin" test --locked --no-default-features --package tunnel --lib -- --test-threads=1
   parser_test common::decapsulate
 }
+reassembly_test() {
+  "$cargo_bin" test --locked --no-default-features --package packet_segmentation_reassembly --lib -- --test-threads=1
+  parser_test flow_generator::flow_node::tests::test_packet_segmentation_reassembly
+  parser_test common::meta_packet::segment_regression
+  parser_test flow_generator::flow_map::reassembly_tests
+}
+direction_test() {
+  parser_test flow_generator::service_table::tests
+  parser_test flow_generator::flow_map::tests::test_handshake_retrans
+}
 case "$mode" in
   build) exec "$cargo_bin" build --locked --no-default-features --bin deepflow-agent ;;
   build-release) exec "$cargo_bin" build --locked --no-default-features --release --bin deepflow-agent ;;
@@ -124,6 +134,8 @@ case "$mode" in
   test-labeler) parser_test policy::labeler::tests ;;
   test-time) parser_test flow_generator::protocol_logs::tests ;;
   test-tunnel) tunnel_test ;;
+  test-reassembly) reassembly_test ;;
+  test-direction) direction_test ;;
   test-plugin)
     make -B -C resources/test/plugins
     parser_test plugin::c_ffi
@@ -139,5 +151,7 @@ case "$mode" in
     parser_test plugin::c_ffi
     parser_test plugin::shared_obj::test
     tunnel_test
+    reassembly_test
+    direction_test
     ;;
 esac

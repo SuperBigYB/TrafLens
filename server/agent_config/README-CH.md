@@ -3185,6 +3185,40 @@ inputs:
 流量镜像（虚拟或物理）模式下，deepflow-agent 需要剥离的隧道头协议类型。
 仅企业版支持解析 ERSPAN 和 TEB。
 
+#### TCP 解析窗口端口 {#inputs.cbpf.preprocess.packet_segmentation_reassembly}
+
+**标签**:
+
+<mark>agent_restart</mark>
+
+**FQCN**:
+
+`inputs.cbpf.preprocess.packet_segmentation_reassembly`
+
+Upgrade from old version: `static_config.packet-segmentation-reassembly`
+
+**默认值**:
+```yaml
+inputs:
+  cbpf:
+    preprocess:
+      packet_segmentation_reassembly: []
+```
+
+**模式**:
+| Key  | Value                        |
+| ---- | ---------------------------- |
+| Type | string |
+
+**详细描述**:
+
+TCP 端口或闭区间端口范围，例如 ["18080", "8000-8010"]。
+空列表关闭此功能。对配置端口，TrafLens 将同方向序号连续的两个
+TCP 载荷组成应用解析窗口。窗口相互重叠，不是通用 TCP 流或消息重组。
+不拼接序号缺口、重叠或抓包截断的载荷；原始包独立参与 TCP 指标统计。
+缓存尾段在现有流报告 tick 或流结束时输出，窗口不跨该 tick。
+每个缓存载体最多 64 KiB，进程共享 64 MiB 保留预算；无法准入时原样输出。
+
 ## eBPF {#inputs.ebpf}
 
 ### Disabled {#inputs.ebpf.disabled}

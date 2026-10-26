@@ -1308,27 +1308,12 @@ impl<'a> MetaPacket<'a> {
 
     #[inline]
     pub fn to_owned_segment(&self) -> Box<dyn Segment> {
-        let raw = self.raw.as_ref().unwrap().to_vec();
-
-        Box::new(MetaPacket {
-            lookup_key: self.lookup_key.clone(),
-            raw: Some(RawPacket::from(raw)),
-            packet_len: self.packet_len,
-            l3_payload_len: self.l3_payload_len,
-            l4_payload_len: self.l4_payload_len,
-            tcp_options_flag: self.tcp_options_flag,
-            protocol_data: self.protocol_data.clone(),
-            tap_port: self.tap_port,
-            signal_source: self.signal_source,
-            payload_len: self.payload_len,
-            raw_payload_len: self.payload_len,
-            sub_packets: self.sub_packets.clone(),
-            header_type: self.header_type,
-            l2_l3_opt_size: self.l2_l3_opt_size,
-            l4_opt_size: self.l4_opt_size,
-            flow_id: self.flow_id,
-            ..Default::default()
-        })
+        // A delayed parse must retain the original flow/tunnel/policy context.
+        // Restart the iterator for this independent parse view, while retaining
+        // raw_payload_len from the original packet for TCP accounting.
+        let mut segment = self.clone().into_owned();
+        segment.sub_packet_index = 0;
+        Box::new(segment)
     }
 
     #[inline]
@@ -1487,24 +1472,92 @@ impl Segment for MetaPacket<'static> {
     }
 
     fn merge_segments(&mut self, payload: &[u8]) {
-        if let Some(raw) = self.raw.as_mut() {
-            raw.append(payload);
-            self.packet_len += payload.len() as u32;
-            self.payload_len += payload.len() as u16;
-            self.l4_payload_len += payload.len() as u16;
+        if payload.is_empty() || self.raw.is_none() || self.l4_payload_len == 0 {
+            return;
         }
+        let Ok(additional) = u16::try_from(payload.len()) else {
+            return;
+        };
+        let Some(current) = self.get_l4_payload() else {
+            return;
+        };
+        if current.len() < usize::from(self.l4_payload_len) {
+            return; // A snaplen gap cannot be filled by later sequence bytes.
+        }
+        let padding = current.len() - usize::from(self.l4_payload_len);
+        let Some(packet_len) = self.packet_len.checked_add(u32::from(additional)) else {
+            return;
+        };
+        let Some(payload_len) = self.payload_len.checked_add(additional) else {
+            return;
+        };
+        let Some(l4_payload_len) = self.l4_payload_len.checked_add(additional) else {
+            return;
+        };
+        let raw = self.raw.as_mut().unwrap();
+        raw.to_owned_vec();
+        let RawPacket::OwnedVec(bytes) = raw else {
+            unreachable!();
+        };
+        // Ethernet padding is not TCP data and must not appear between segments.
+        bytes.truncate(bytes.len() - padding);
+        bytes.extend_from_slice(payload);
+        self.packet_len = packet_len;
+        self.payload_len = payload_len;
+        self.l4_payload_len = l4_payload_len;
     }
 
     fn get_payload(&self) -> &[u8] {
-        self.get_l4_payload().unwrap()
+        if self.raw.is_none() || self.l4_payload_len == 0 {
+            return &[];
+        }
+        self.get_l4_payload()
+            .map(|payload| &payload[..payload.len().min(usize::from(self.l4_payload_len))])
+            .unwrap_or_default()
     }
 
     fn next_tcp_seq(&self) -> u32 {
-        self.get_tcp_seq() + self.l4_payload_len as u32
+        // Payload cursor only: SYN/FIN/RST packets bypass the parse window.
+        self.get_tcp_seq()
+            .wrapping_add(u32::from(self.l4_payload_len))
     }
 
     fn get_payload_length(&self) -> u16 {
         self.l4_payload_len
+    }
+
+    fn reverse_direction(&mut self) {
+        self.lookup_key.direction = if self.is_c2s() {
+            PacketDirection::ServerToClient
+        } else {
+            PacketDirection::ClientToServer
+        };
+    }
+
+    fn memory_size(&self) -> usize {
+        let raw = match self.raw.as_ref() {
+            Some(RawPacket::OwnedVec(bytes)) => bytes.capacity(),
+            Some(raw) => raw.len(),
+            None => 0,
+        };
+        let sack = match &self.protocol_data {
+            ProtocolData::TcpHeader(header) => header.sack.as_ref().map_or(0, Vec::capacity),
+            _ => 0,
+        };
+        std::mem::size_of::<Self>()
+            .saturating_add(raw)
+            .saturating_add(sack)
+            .saturating_add(self.raw_from_ebpf.capacity())
+            .saturating_add(
+                self.sub_packets
+                    .capacity()
+                    .saturating_mul(std::mem::size_of::<SubPacket>()),
+            )
+    }
+
+    fn is_control(&self) -> bool {
+        matches!(&self.protocol_data, ProtocolData::TcpHeader(header)
+            if header.flags.intersects(TcpFlags::SYN | TcpFlags::FIN | TcpFlags::RST))
     }
 }
 
@@ -1695,3 +1748,7 @@ mod tests {
         assert_eq!(start.get_captured_byte(), 32_768);
     }
 }
+
+#[cfg(test)]
+#[path = "meta_packet_segment_regression.rs"]
+mod segment_regression;

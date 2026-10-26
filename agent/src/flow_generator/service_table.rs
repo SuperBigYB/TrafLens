@@ -215,12 +215,12 @@ impl ServiceTable {
                     flow_dst_score = Self::MAX_SCORE;
                     match (flow_src_key, flow_dst_key) {
                         (ServiceKey::V4(flow_src_key), ServiceKey::V4(flow_dst_key)) => {
-                            self.ipv4.put(flow_src_key, flow_src_score);
-                            self.ipv4.pop(&flow_dst_key);
+                            self.ipv4.pop(&flow_src_key);
+                            self.ipv4.put(flow_dst_key, flow_dst_score);
                         }
                         (ServiceKey::V6(flow_src_key), ServiceKey::V6(flow_dst_key)) => {
-                            self.ipv6.put(flow_src_key, flow_src_score);
-                            self.ipv6.pop(&flow_dst_key);
+                            self.ipv6.pop(&flow_src_key);
+                            self.ipv6.put(flow_dst_key, flow_dst_score);
                         }
                         _ => unimplemented!(),
                     }
@@ -384,20 +384,25 @@ impl ServiceTable {
 
         match (flow_src_key, flow_dst_key) {
             (ServiceKey::V4(flow_src_key), ServiceKey::V4(flow_dst_key)) => {
-                if self.port_map.contains(&flow_src_key.port) {
-                    flow_src_score = Self::MAX_SCORE_FROM_CONFIG;
-                    self.ipv4.put(flow_src_key, flow_src_score);
-                } else if let Some(score) = self.ipv4.get(&flow_src_key) {
+                if let Some(score) = self.ipv4.get(&flow_src_key) {
                     flow_src_score = *score;
                 }
-                if self.port_map.contains(&flow_dst_key.port) {
-                    flow_dst_score = Self::MAX_SCORE_FROM_CONFIG;
-                    self.ipv4.put(flow_dst_key, flow_dst_score);
-                } else if let Some(score) = self.ipv4.get(&flow_dst_key) {
+                if self.port_map.contains(&flow_src_key.port) {
+                    flow_src_score = flow_src_score.max(Self::MAX_SCORE_FROM_CONFIG);
+                    self.ipv4.put(flow_src_key, flow_src_score);
+                }
+                if let Some(score) = self.ipv4.get(&flow_dst_key) {
                     flow_dst_score = *score;
                 }
-                if flow_src_score == Self::MAX_SCORE || flow_dst_score == Self::MAX_SCORE {
-                    // 一旦有一侧发送过SYN|ACK，无需更新
+                if self.port_map.contains(&flow_dst_key.port) {
+                    flow_dst_score = flow_dst_score.max(Self::MAX_SCORE_FROM_CONFIG);
+                    self.ipv4.put(flow_dst_key, flow_dst_score);
+                }
+                // Explicit evidence outranks packet counts: SYN_ACK > L7 >
+                // configured ports. Do not decay or replace it on a new flow.
+                if flow_src_score >= Self::MAX_SCORE_FROM_CONFIG
+                    || flow_dst_score >= Self::MAX_SCORE_FROM_CONFIG
+                {
                     return (flow_src_score, flow_dst_score);
                 }
 
@@ -423,20 +428,25 @@ impl ServiceTable {
                 )
             }
             (ServiceKey::V6(flow_src_key), ServiceKey::V6(flow_dst_key)) => {
-                if self.port_map.contains(&flow_src_key.port) {
-                    flow_src_score = Self::MAX_SCORE_FROM_CONFIG;
-                    self.ipv6.put(flow_src_key, flow_src_score);
-                } else if let Some(score) = self.ipv6.get(&flow_src_key) {
+                if let Some(score) = self.ipv6.get(&flow_src_key) {
                     flow_src_score = *score;
                 }
-                if self.port_map.contains(&flow_dst_key.port) {
-                    flow_dst_score = Self::MAX_SCORE_FROM_CONFIG;
-                    self.ipv6.put(flow_dst_key, flow_dst_score);
-                } else if let Some(score) = self.ipv6.get(&flow_dst_key) {
+                if self.port_map.contains(&flow_src_key.port) {
+                    flow_src_score = flow_src_score.max(Self::MAX_SCORE_FROM_CONFIG);
+                    self.ipv6.put(flow_src_key, flow_src_score);
+                }
+                if let Some(score) = self.ipv6.get(&flow_dst_key) {
                     flow_dst_score = *score;
                 }
-                if flow_src_score == Self::MAX_SCORE || flow_dst_score == Self::MAX_SCORE {
-                    // 一旦有一侧发送过SYN|ACK，无需更新
+                if self.port_map.contains(&flow_dst_key.port) {
+                    flow_dst_score = flow_dst_score.max(Self::MAX_SCORE_FROM_CONFIG);
+                    self.ipv6.put(flow_dst_key, flow_dst_score);
+                }
+                // Explicit evidence outranks packet counts: SYN_ACK > L7 >
+                // configured ports. Do not decay or replace it on a new flow.
+                if flow_src_score >= Self::MAX_SCORE_FROM_CONFIG
+                    || flow_dst_score >= Self::MAX_SCORE_FROM_CONFIG
+                {
                     return (flow_src_score, flow_dst_score);
                 }
 
@@ -847,77 +857,213 @@ mod tests {
         }
     }
 
+    fn score_keys(src_port: u16, dst_port: u16) -> [(ServiceKey, ServiceKey); 2] {
+        [("192.0.2.1", "192.0.2.2"), ("2001:db8::1", "2001:db8::2")].map(|(src, dst)| {
+            (
+                ServiceKey::new(src.parse().unwrap(), EPC_DEEPFLOW as i16, src_port),
+                ServiceKey::new(dst.parse().unwrap(), EPC_DEEPFLOW as i16, dst_port),
+            )
+        })
+    }
+
+    fn tcp_packet_score(
+        table: &mut ServiceTable,
+        first: bool,
+        src: ServiceKey,
+        dst: ServiceKey,
+    ) -> (u8, u8) {
+        table.get_tcp_score(
+            first,
+            false,
+            PacketDirection::ClientToServer,
+            TcpFlags::PSH,
+            false,
+            false,
+            src,
+            dst,
+        )
+    }
+
     #[test]
     fn port_map() {
-        let server_port = vec![80];
-        let mut table = ServiceTable::new(10, 10, &server_port);
-        let flow_src_key = ServiceKey::new(
-            Ipv6Addr::from_str("1002:1003:4421:5566:7788:99aa:bbcc:ddee")
-                .unwrap()
-                .into(),
-            EPC_DEEPFLOW as i16,
-            80,
-        );
-        let flow_dst_key = ServiceKey::new(
-            Ipv6Addr::from_str("1002:1003:4421:5566:7788:99aa:bbcc:ddee")
-                .unwrap()
-                .into(),
-            EPC_DEEPFLOW as i16,
-            53,
-        );
+        // The original 2024 test assumed a configured hint was not cached when
+        // opposite SYN_ACK evidence caused an early return. The 2026-03 cache
+        // change invalidated that assumption. Check priority and stable reads
+        // explicitly instead of expecting an unrelated later packet to clear it.
+        for (configured, other) in score_keys(80, 53) {
+            let mut table = ServiceTable::new(10, 10, &vec![80]);
+            for _ in 0..3 {
+                for first in [true, false] {
+                    assert_eq!(
+                        tcp_packet_score(&mut table, first, configured, other),
+                        (ServiceTable::MAX_SCORE_FROM_CONFIG, ServiceTable::MIN_SCORE),
+                    );
+                    assert_eq!(
+                        tcp_packet_score(&mut table, first, other, configured),
+                        (ServiceTable::MIN_SCORE, ServiceTable::MAX_SCORE_FROM_CONFIG),
+                    );
+                }
+            }
 
-        let (src_score, _) = table.get_tcp_score(
-            true,
-            false,
-            PacketDirection::ClientToServer,
-            TcpFlags::PSH,
-            false,
-            false,
-            flow_src_key,
-            flow_dst_key,
-        );
-        assert_eq!(src_score, ServiceTable::MAX_SCORE_FROM_CONFIG - 1);
-        let (src_score, dst_score) = table.get_tcp_score(
-            false,
-            false,
-            PacketDirection::ClientToServer,
-            TcpFlags::SYN_ACK,
-            false,
-            false,
-            flow_dst_key,
-            flow_src_key,
-        );
-        assert_eq!(src_score, ServiceTable::MAX_SCORE);
-        assert_eq!(dst_score, 0);
+            assert_eq!(
+                table.get_tcp_score(
+                    false,
+                    false,
+                    PacketDirection::ClientToServer,
+                    TcpFlags::SYN_ACK,
+                    false,
+                    false,
+                    other,
+                    configured,
+                ),
+                (ServiceTable::MAX_SCORE, ServiceTable::MIN_SCORE),
+            );
+            for first in [true, false, true, false] {
+                let scores = tcp_packet_score(&mut table, first, configured, other);
+                assert_eq!(
+                    scores,
+                    (ServiceTable::MAX_SCORE_FROM_CONFIG, ServiceTable::MAX_SCORE)
+                );
+                assert!(ServiceTable::is_client_to_server(scores.0, scores.1));
+            }
+            assert_eq!(
+                table.get_ebpf_tcp_score(0, true, false, other, configured),
+                (ServiceTable::MAX_SCORE, true),
+            );
+        }
+    }
 
-        let (src_score, dst_score) = table.get_tcp_score(
-            true,
-            false,
-            PacketDirection::ClientToServer,
-            TcpFlags::PSH,
-            false,
-            false,
-            flow_src_key,
-            flow_dst_key,
-        );
-        assert_eq!(src_score, ServiceTable::MAX_SCORE_FROM_CONFIG);
-        assert_eq!(dst_score, ServiceTable::MAX_SCORE);
+    #[test]
+    fn learned_server_evidence_survives_new_flow_and_configured_hints() {
+        for ports in [vec![], vec![80, 53]] {
+            for (server, client) in score_keys(80, 53) {
+                for learned_score in [ServiceTable::MAX_SCORE_FROM_L7, ServiceTable::MAX_SCORE] {
+                    let mut table = ServiceTable::new(10, 10, &ports);
+                    if learned_score == ServiceTable::MAX_SCORE {
+                        table.get_tcp_score(
+                            true,
+                            false,
+                            PacketDirection::ServerToClient,
+                            TcpFlags::SYN_ACK,
+                            false,
+                            false,
+                            server,
+                            client,
+                        );
+                    } else {
+                        table.reset_score(client, server);
+                    }
+                    assert_eq!(
+                        tcp_packet_score(&mut table, false, server, client),
+                        (learned_score, ServiceTable::MIN_SCORE),
+                    );
+                    let client_hint = if ports.is_empty() {
+                        ServiceTable::MIN_SCORE
+                    } else {
+                        ServiceTable::MAX_SCORE_FROM_CONFIG
+                    };
+                    for _ in 0..3 {
+                        for first in [true, false] {
+                            let scores = tcp_packet_score(&mut table, first, server, client);
+                            assert_eq!(scores, (learned_score, client_hint));
+                            assert!(!ServiceTable::is_client_to_server(scores.0, scores.1));
+                            let scores = tcp_packet_score(&mut table, first, client, server);
+                            assert_eq!(scores, (client_hint, learned_score));
+                            assert!(ServiceTable::is_client_to_server(scores.0, scores.1));
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-        let (src_score, dst_score) = table.get_tcp_score(
-            false,
-            false,
-            PacketDirection::ClientToServer,
-            TcpFlags::PSH,
-            false,
-            false,
-            flow_src_key,
-            flow_dst_key,
-        );
-        assert_eq!(src_score, 0);
-        assert_eq!(dst_score, ServiceTable::MAX_SCORE);
+    #[test]
+    fn packet_scores_still_learn_decay_and_stop_below_configured_evidence() {
+        for (client, server) in score_keys(1234, 80) {
+            let mut table = ServiceTable::new(10, 10, &vec![]);
+            for expected in [1, 2] {
+                assert_eq!(
+                    tcp_packet_score(&mut table, true, client, server),
+                    (ServiceTable::MIN_SCORE, expected),
+                );
+                assert_eq!(
+                    tcp_packet_score(&mut table, false, client, server),
+                    (ServiceTable::MIN_SCORE, expected),
+                );
+            }
+            assert_eq!(tcp_packet_score(&mut table, true, server, client), (1, 1));
+            assert_eq!(tcp_packet_score(&mut table, false, server, client), (1, 1));
+            for _ in 0..260 {
+                tcp_packet_score(&mut table, true, client, server);
+            }
+            assert_eq!(
+                tcp_packet_score(&mut table, false, client, server),
+                (ServiceTable::MIN_SCORE, ServiceTable::MAX_SCORE_FROM_PACKET),
+            );
+        }
+    }
 
-        let (score, reverse) = table.get_ebpf_tcp_score(0, true, false, flow_dst_key, flow_src_key);
-        assert_eq!(score, ServiceTable::MAX_SCORE);
-        assert_eq!(reverse, true);
+    #[test]
+    fn explicit_tcp_flags_and_reverse_flow_keep_their_cache_direction() {
+        for (src, dst) in score_keys(80, 53) {
+            let mut table = ServiceTable::new(10, 10, &vec![80, 53]);
+            tcp_packet_score(&mut table, true, src, dst);
+            assert_eq!(
+                table
+                    .get_tcp_score(
+                        true,
+                        false,
+                        PacketDirection::ClientToServer,
+                        TcpFlags::SYN,
+                        false,
+                        false,
+                        src,
+                        dst,
+                    )
+                    .0,
+                ServiceTable::MIN_SCORE,
+            );
+            assert_eq!(
+                tcp_packet_score(&mut table, false, src, dst).0,
+                ServiceTable::MIN_SCORE,
+            );
+
+            for direction in [
+                PacketDirection::ClientToServer,
+                PacketDirection::ServerToClient,
+            ] {
+                let mut table = ServiceTable::new(10, 10, &vec![80, 53]);
+                tcp_packet_score(&mut table, true, src, dst);
+                let expected = if direction == PacketDirection::ClientToServer {
+                    (ServiceTable::MAX_SCORE, ServiceTable::MIN_SCORE)
+                } else {
+                    (ServiceTable::MIN_SCORE, ServiceTable::MAX_SCORE)
+                };
+                assert_eq!(
+                    table.get_tcp_score(
+                        false,
+                        true,
+                        direction,
+                        TcpFlags::PSH,
+                        false,
+                        false,
+                        src,
+                        dst,
+                    ),
+                    expected,
+                );
+                assert_eq!(tcp_packet_score(&mut table, false, src, dst), expected);
+                assert_eq!(
+                    tcp_packet_score(&mut table, false, dst, src),
+                    (expected.1, expected.0),
+                );
+                let refreshed = (
+                    expected.0.max(ServiceTable::MAX_SCORE_FROM_CONFIG),
+                    expected.1.max(ServiceTable::MAX_SCORE_FROM_CONFIG),
+                );
+                assert_eq!(tcp_packet_score(&mut table, true, src, dst), refreshed);
+                assert_eq!(tcp_packet_score(&mut table, false, src, dst), refreshed);
+            }
+        }
     }
 }

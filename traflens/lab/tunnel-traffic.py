@@ -244,10 +244,12 @@ def validate_limits(count, pps, timeout):
         raise ValueError("Timeout must be 1-120 seconds")
 
 
-def generate(marker, flavors=BASIC_FLAVORS, count=1):
+def generate(marker, flavors=BASIC_FLAVORS, count=1, *, http_split_at=0):
     if not isinstance(marker, str) or not MARKER.fullmatch(marker):
         raise ValueError("Marker must be a lowercase DNS label of 1-24 characters")
     validate_limits(count, MAX_PPS, MAX_TIMEOUT)
+    if type(http_split_at) is not int or http_split_at < 0:
+        raise ValueError("HTTP split offset must be a nonnegative integer")
     if not flavors or len(set(flavors)) != len(flavors) or any(f not in FLAVORS for f in flavors):
         raise ValueError("Invalid or repeated tunnel flavors")
     frames, requests = [], []
@@ -293,6 +295,24 @@ def generate(marker, flavors=BASIC_FLAVORS, count=1):
                             "tunnel": tunnel_properties(flavor)}
                     if protocol == "http":
                         wire = http_conversation(resource, token, ordinal)
+                        if http_split_at:
+                            split_wire = []
+                            for reverse, seq, ack, flags, data in wire:
+                                if not data:
+                                    split_wire.append((reverse, seq, ack, flags, data))
+                                    continue
+                                if http_split_at >= len(data):
+                                    raise ValueError("HTTP split offset must leave two nonempty fragments per message")
+                                split_wire.extend([
+                                    (reverse, seq, ack, flags & ~0x08, data[:http_split_at]),
+                                    (reverse, (seq + http_split_at) & 0xffffffff, ack, flags, data[http_split_at:]),
+                                ])
+                            wire = split_wire
+                            info["http_segmentation"] = {
+                                "split_at_bytes": http_split_at, "message_count": 2, "data_packet_count": 4,
+                                "request_frame_indices": [], "response_frame_indices": [],
+                                "request_payload_lengths": [], "response_payload_lengths": [],
+                            }
                     else:
                         ident = 0xa000 + ordinal
                         query, response = dns_pair(ident, resource, address)
@@ -300,6 +320,10 @@ def generate(marker, flavors=BASIC_FLAVORS, count=1):
                         info["dns"] = {"id": ident, "name": resource, "type": "A",
                                        "rcode": 0, "address": address, "ttl": TTL}
                     for reverse, seq, ack, flags, data in wire:
+                        if protocol == "http" and http_split_at and data:
+                            side = "response" if reverse else "request"
+                            info["http_segmentation"][side + "_frame_indices"].append(len(frames))
+                            info["http_segmentation"][side + "_payload_lengths"].append(len(data))
                         source, destination = (server, client) if reverse else (client, server)
                         sport, dport = (server_port, port) if reverse else (port, server_port)
                         transport = (tcp_packet(source, destination, sport, dport, seq, ack, flags, data)
@@ -324,6 +348,13 @@ def generate(marker, flavors=BASIC_FLAVORS, count=1):
                           "receiver_interface": "enp1s0f0"},
                 "acceptance_files": {"http": "expected-http.json", "dns": "expected-dns.json"},
                 "requests": requests}
+    if http_split_at:
+        http_count = len(expected["http"]["records"])
+        manifest["http_segmentation"] = {
+            "split_at_bytes": http_split_at, "http_request_count": http_count,
+            "split_message_count": 2 * http_count, "data_packet_count": 4 * http_count,
+            "additional_frames": 2 * http_count,
+        }
     return frames, expected, manifest
 
 
@@ -505,6 +536,8 @@ def main():
     parser.add_argument("--marker", required=True)
     parser.add_argument("--flavors", default="basic", help="basic, all, or comma-separated known flavors")
     parser.add_argument("--count", type=int, default=1)
+    parser.add_argument("--http-split-at", type=int, default=0,
+                        help="Split each HTTP request/response at this byte offset; 0 preserves the original frames")
     parser.add_argument("--pps", type=float, default=MAX_PPS)
     parser.add_argument("--timeout", type=float, default=MAX_TIMEOUT)
     parser.add_argument("--interface", default=INTERFACE)
@@ -517,7 +550,8 @@ def main():
         if args.interface != INTERFACE:
             raise ValueError("Only the fixed enp2s0f0 interface is allowed")
         validate_limits(args.count, args.pps, args.timeout)
-        frames, expected, manifest = generate(args.marker, select_flavors(args.flavors), args.count)
+        frames, expected, manifest = generate(args.marker, select_flavors(args.flavors), args.count,
+                                              http_split_at=args.http_split_at)
         validate_frames(frames)
         if (len(frames) - 1) / args.pps >= args.timeout:
             raise ValueError("Rate/timeout cannot accommodate the generated workload")

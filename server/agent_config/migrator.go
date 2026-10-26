@@ -19,6 +19,7 @@ package agent_config
 import (
 	"fmt"
 	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/baidubce/bce-sdk-go/util/log"
@@ -188,7 +189,24 @@ func (m *Upgrader) lowerToHigher(lowerVerData interface{}, ancestor string, high
 }
 
 func (m *Upgrader) fmtLowerVersionValue(longKey string, value interface{}) interface{} {
-	if longKey == "max_collect_pps" {
+	if longKey == "static_config.packet-segmentation-reassembly" {
+		// The legacy []uint16 becomes integer YAML items; the Agent's new
+		// port/range configuration is a string list. Preserve malformed values
+		// rather than broadening the legacy uint16 input contract here.
+		items, ok := value.([]interface{})
+		if !ok {
+			return value
+		}
+		ports := make([]string, len(items))
+		for index, item := range items {
+			port, ok := item.(int)
+			if !ok || port < 0 || port > 65535 {
+				return value
+			}
+			ports[index] = strconv.Itoa(port)
+		}
+		return ports
+	} else if longKey == "max_collect_pps" {
 		switch value := value.(type) {
 		case int:
 			return value * 1000

@@ -646,6 +646,23 @@ impl FlowLog {
         remote_epc: i32,
         checker: &L7ProtocolChecker,
     ) -> Result<L7ParseResult> {
+        self.parse_l4(packet, is_first_packet_direction)?;
+        self.parse_l7(
+            flow_config,
+            log_parser_config,
+            packet,
+            l7_performance_enabled,
+            l7_log_parse_enabled,
+            app_table,
+            local_epc,
+            remote_epc,
+            checker,
+        )
+    }
+
+    // Transport metrics must observe original packets in arrival order, before
+    // any application parsing window delays or appends their payloads.
+    pub fn parse_l4(&mut self, packet: &MetaPacket, is_first_packet_direction: bool) -> Result<()> {
         if let Some(l4) = self.l4.as_mut() {
             if let Err(e) = l4.parse(packet, is_first_packet_direction) {
                 if let Error::RetransPacket = e {
@@ -653,7 +670,21 @@ impl FlowLog {
                 }
             }
         }
+        Ok(())
+    }
 
+    pub fn parse_l7(
+        &mut self,
+        flow_config: &FlowConfig,
+        log_parser_config: &LogParserConfig,
+        packet: &mut MetaPacket,
+        l7_performance_enabled: bool,
+        l7_log_parse_enabled: bool,
+        app_table: &mut AppTable,
+        local_epc: i32,
+        remote_epc: i32,
+        checker: &L7ProtocolChecker,
+    ) -> Result<L7ParseResult> {
         if l7_performance_enabled || l7_log_parse_enabled {
             // 抛出错误由flowMap.FlowPerfCounter处理
             return self.l7_parse(

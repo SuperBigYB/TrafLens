@@ -68,7 +68,7 @@ def profile_config(profile):
         request_log["application_protocol_inference"]["enabled_protocols"] = ["HTTP", "DNS", "MySQL"]
         request_log["filters"]["port_number_prefilters"] = {
             "HTTP": "18080", "DNS": "18053", "MySQL": "18060"}
-    elif profile == "tunnels":
+    elif profile in ("tunnels", "segmentation"):
         # Retained tunnels use the outer MACs; mirror mode keeps both L2 ends
         # neutral so the inner request and response share one flow.
         config["inputs"]["cbpf"]["common"]["capture_mode"] = 1
@@ -90,6 +90,8 @@ def profile_config(profile):
         request_log["application_protocol_inference"]["enabled_protocols"] = ["HTTP", "DNS"]
         request_log["filters"]["port_number_prefilters"] = {"HTTP": "18080", "DNS": "18053"}
         request_log["filters"]["tag_filters"] = {"HTTP": [], "DNS": []}
+        if profile == "segmentation":
+            config["inputs"]["cbpf"]["preprocess"]["packet_segmentation_reassembly"] = ["18080"]
     elif profile != "http":
         raise ValueError("Unknown packet smoke profile")
     return config
@@ -98,7 +100,7 @@ def profile_config(profile):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=pathlib.Path, default=pathlib.Path("/tmp/traflens-lab-20261026"))
-    parser.add_argument("--profile", choices=("http", "protocols", "tunnels"), default="http")
+    parser.add_argument("--profile", choices=("http", "protocols", "tunnels", "segmentation"), default="http")
     parser.add_argument("--update-owned-agent", action="store_true",
                         help="After stopping the lab Agent, allow its exact registered dev-79 identity")
     args = parser.parse_args()
