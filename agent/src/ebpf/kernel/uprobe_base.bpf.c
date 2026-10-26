@@ -658,7 +658,7 @@ TP_SCHED_PROG(process_exit) (struct sched_comm_exit_ctx *ctx) {
 	return do_process_exit((void *)ctx);
 }
 
-static inline int kernel_clone_exit(bool is_kprobe, bool maybe_thread,
+static __attribute__((always_inline)) inline int kernel_clone_exit(bool is_kprobe, bool maybe_thread,
 				    long ret, void *ctx)
 {
 	// For tracepoint: error or parent process
