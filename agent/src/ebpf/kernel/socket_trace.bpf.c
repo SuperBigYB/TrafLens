@@ -23,6 +23,7 @@
 #include "config.h"
 #include "include/socket_trace.h"
 #include "include/task_struct_utils.h"
+#include "include/socket_scope.h"
 
 #define OFFSET_READY		1
 #define OFFSET_NO_READY    	0
@@ -182,6 +183,21 @@ MAP_ARRAY(proto_infer_cache_map, __u32, struct proto_infer_cache_t, PROTO_INFER_
 #endif
 // Store IO event information
 MAP_PERARRAY(io_event_buffer, __u32, struct __io_event_buffer, 1, FEATURE_FLAG_SOCKET_TRACER)
+MAP_ARRAY(socket_scope_map, __u32, struct socket_scope_config, 1, FEATURE_FLAG_SOCKET_TRACER)
+
+static __inline bool socket_scope_matches_current(void)
+{
+	__u32 zero = 0;
+	const struct socket_scope_config *scope = socket_scope_map__lookup(&zero);
+	/* get_current_task/helper 35 already exists in the legacy objects.
+	 * The pointer-chain reads use only legacy probe_read/helper 4. */
+	if (!scope)
+		return false;
+	if (scope->netns_id == 0)
+		return true;
+	return socket_scope_allows_task(scope, (void *)bpf_get_current_task());
+}
+
 /* *INDENT-ON* */
 
 static __inline bool is_protocol_enabled(int protocol)
@@ -467,6 +483,8 @@ static __inline int infer_iovecs_copy(struct infer_data_s *infer_buf,
 
 static __inline struct member_fields_offset *retrieve_ready_kern_offset(void)
 {
+	if (!socket_scope_matches_current())
+		return NULL;
 	__u32 k0 = 0;
 	struct member_fields_offset *offset = members_offset__lookup(&k0);
 	if (!offset)
@@ -1804,6 +1822,10 @@ static __inline int process_data(struct pt_regs *ctx, __u64 id,
 				 ssize_t bytes_count,
 				 const struct process_data_extra *extra)
 {
+	/* Reject before socket inference or any user-payload copy. */
+	if (!socket_scope_matches_current())
+		return -1;
+
 	if (!extra)
 		return -1;
 
@@ -2911,6 +2933,9 @@ static __inline void __push_close_event(__u64 pid_tgid, __u64 uid, __u64 seq,
 					struct member_fields_offset *offset,
 					void *ctx)
 {
+	if (!socket_scope_matches_current())
+		return;
+
 	__u32 k0 = 0;
 	struct tracer_ctx_s *tracer_ctx = tracer_ctx_map__lookup(&k0);
 	if (tracer_ctx == NULL)
@@ -3352,6 +3377,9 @@ static __inline int __output_data_common(void *ctx,
 					 int max_size, bool is_close,
 					 __u32 reassembly_bytes)
 {
+	if (!socket_scope_matches_current())
+		return 0;
+
 	__u32 k0 = 0;
 	char *buffer = NULL;
 

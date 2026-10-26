@@ -148,6 +148,8 @@ pub enum Error {
     EbpfL7GetLogInfoError,
     #[error("ebpf disabled.")]
     EbpfDisabled,
+    #[error("ebpf socket netns scope initialization failed ({0}).")]
+    EbpfNetnsScope(i32),
 }
 
 pub type Result<T, E = Error> = std::result::Result<T, E>;
@@ -863,6 +865,17 @@ impl EbpfCollector {
         config: &EbpfConfig,
         stats_collector: &stats::Collector,
     ) -> Result<ConfigHandle> {
+        // Scope must be installed before any load/attach. Never fall back to
+        // unscoped capture if validation or the native setter fails.
+        if let Some(inode) = config.socket_netns_inode {
+            if config.ebpf.validate_socket_tracer_scope().is_err() {
+                return Err(Error::EbpfNetnsScope(-libc::EINVAL));
+            }
+            let result = ebpf::set_socket_tracer_netns_scope(inode);
+            if result != 0 {
+                return Err(Error::EbpfNetnsScope(result));
+            }
+        }
         // ebpf core modules init
         let mut handle = ConfigHandle::default();
         let is_uprobe_meltdown = crate::utils::guard::is_kernel_ebpf_uprobe_meltdown();
@@ -1599,6 +1612,12 @@ impl EbpfCollector {
     }
 
     pub fn on_config_change(&mut self, config: &EbpfConfig) {
+        if config.socket_netns_inode.is_some()
+            && config.ebpf.validate_socket_tracer_scope().is_err()
+        {
+            warn!("Reject unsafe socket netns scope collector reconfiguration");
+            return;
+        }
         unsafe {
             let ecfg = &config.ebpf.profile;
             let is_uprobe_meltdown = crate::utils::guard::is_kernel_ebpf_uprobe_meltdown();

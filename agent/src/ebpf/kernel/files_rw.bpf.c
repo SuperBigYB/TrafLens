@@ -330,6 +330,9 @@ static __inline int trace_io_event_common(void *ctx,
 					  enum traffic_direction direction,
 					  __u64 pid_tgid)
 {
+	if (!socket_scope_matches_current())
+		return -1;
+
 	__u64 latency = 0, curr_ts;
 	__u64 trace_id = 0;
 	__u32 k0 = 0;

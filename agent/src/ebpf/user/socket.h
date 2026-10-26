@@ -431,6 +431,18 @@ prefetch_and_process_data(struct bpf_tracer *t, int id, int nb_rx, void **datas_
 	}
 }
 
+/**
+ * Exclusive current-task netns scope for socket tracer records (including its
+ * TLS/Go/UNIX/file-I/O paths). Not a socket-owner or continuous-profiler filter.
+ * inode=0 preserves legacy behavior; inode>UINT32_MAX returns -EINVAL.
+ * Set before running_socket_tracer: later changes return -EBUSY, including
+ * after a failed load. Repeated scoped starts return -EALREADY and require a
+ * fresh process. Scoped load needs validated kernel BTF or fails before
+ * attaching any hooks. Builds with separate AI-agent file-event emitters reject
+ * a nonzero scope with -ENOTSUP. Caller must hold the namespace alive and prevent
+ * cross-namespace transfer of external socket FDs.
+ */
+int set_socket_tracer_netns_scope(uint64_t inode);
 int set_data_limit_max(int limit_size);
 int set_ai_agent_data_limit_max(int limit_size);
 int set_go_tracing_timeout(int timeout);

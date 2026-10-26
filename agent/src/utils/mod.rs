@@ -16,6 +16,8 @@
 
 pub(crate) mod cgroups;
 pub(crate) mod command;
+#[cfg(target_os = "linux")]
+pub(crate) mod ebpf_scope;
 pub mod environment;
 pub(crate) mod guard;
 pub mod hasher;

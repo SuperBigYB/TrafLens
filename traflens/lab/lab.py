@@ -225,7 +225,7 @@ def start(args):
         "-p", args.host_ip + ":20035:20035/tcp", "-p", args.host_ip + ":20033:20033/tcp",
         "-p", args.host_ip + ":20033:20033/udp", "-p", "127.0.0.1:20416:20416/tcp",
         "-p", "127.0.0.1:20417:20417/tcp",
-    ], server_image, [], args.recreate or args.recreate_server)
+    ], server_image, ["-f", "/etc/server.yaml"], args.recreate or args.recreate_server)
     value = wait_for("Controller", health, args.timeout)
     actual_server = inspect("container", PREFIX + "-server")
     report = {

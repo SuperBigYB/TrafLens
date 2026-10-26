@@ -651,6 +651,10 @@ extern "C" {
     //   成功返回0，否则返回非0
     pub fn bpf_tracer_init(log_file: *const c_char, is_stdout: bool) -> c_int;
 
+    // Startup-only current-task network namespace fence. Zero preserves the
+    // original behavior; Rust calls this only for an explicitly pinned scope.
+    pub fn set_socket_tracer_netns_scope(inode: u64) -> c_int;
+
     // 所有tracer启动完毕后，最后显示调用bpf_tracer_finish()来通知主程序
     pub fn bpf_tracer_finish();
 

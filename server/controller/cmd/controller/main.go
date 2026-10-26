@@ -17,9 +17,12 @@
 package main
 
 import (
+	"flag"
+
 	"github.com/deepflowio/deepflow/server/controller/controller"
 )
 
 func main() {
+	flag.Parse()
 	controller.Start(nil, "", "", "", nil)
 }

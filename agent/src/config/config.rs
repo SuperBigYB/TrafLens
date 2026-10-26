@@ -19,7 +19,7 @@ use std::env;
 use std::fs;
 use std::io;
 use std::net::{IpAddr, ToSocketAddrs};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::time::Duration;
 
 #[cfg(feature = "extended_observability")]
@@ -165,9 +165,55 @@ pub struct Config {
     pub cgroups_disabled: bool,
     pub liveness_probe_enabled: bool,
     pub liveness_probe_port: u16,
+    /// Startup-only local socket-tracer fence. This is not a controller setting.
+    pub ebpf_socket_netns_scope: Option<PathBuf>,
+    /// Derived from a validated, pinned namespace FD; never deserialize an inode.
+    #[serde(skip)]
+    pub(crate) ebpf_socket_netns_inode: Option<u64>,
 }
 
 impl Config {
+    /// Reject an unsafe controller candidate before any component or callback
+    /// can apply it. Scope itself is local, immutable bootstrap state.
+    pub(crate) fn validate_socket_tracer_scope(
+        &self,
+        user: &UserConfig,
+    ) -> Result<(), ConfigError> {
+        if self.ebpf_socket_netns_scope.is_none() && self.ebpf_socket_netns_inode.is_none() {
+            return Ok(());
+        }
+        let invalid = |reason: &str| {
+            ConfigError::RuntimeConfigInvalid(format!("socket netns scope: {reason}"))
+        };
+        if self.ebpf_socket_netns_scope.is_none()
+            || !matches!(self.ebpf_socket_netns_inode, Some(1..=0xffff_ffff))
+        {
+            return Err(invalid("namespace FD has not been validated and pinned"));
+        }
+        let cbpf = &user.inputs.cbpf;
+        let packet = &cbpf.af_packet;
+        let special = &cbpf.special_network;
+        if !packet.interface_regex.is_empty()
+            || packet.inner_interface_capture_enabled
+            || !packet.extra_netns_regex.is_empty()
+            || !packet.src_interfaces.is_empty()
+            || !packet.bond_interfaces.is_empty()
+            || special.dpdk.source != DpdkSource::None
+            || special.libpcap.enabled
+            || !special.vhost_user.vhost_socket_path.is_empty()
+            || !special.physical_switch.sflow_ports.is_empty()
+            || !special.physical_switch.netflow_ports.is_empty()
+        {
+            return Err(invalid(
+                "packet capture and alternate packet inputs must be disabled",
+            ));
+        }
+        if user.inputs.integration.enabled || user.inputs.vector.enabled {
+            return Err(invalid("integration and vector inputs must be disabled"));
+        }
+        user.inputs.ebpf.validate_socket_tracer_scope()
+    }
+
     pub fn load_from_file<T: AsRef<Path>>(path: T) -> Result<Self, ConfigError> {
         let contents =
             fs::read_to_string(path).map_err(|e| ConfigError::YamlConfigInvalid(e.to_string()))?;
@@ -329,6 +375,8 @@ impl Default for Config {
             cgroups_disabled: false,
             liveness_probe_enabled: true,
             liveness_probe_port: 39090,
+            ebpf_socket_netns_scope: None,
+            ebpf_socket_netns_inode: None,
         }
     }
 }
@@ -1525,6 +1573,46 @@ pub struct Ebpf {
     pub network: EbpfNetwork,
     #[serde(skip)]
     pub java_symbol_file_refresh_defer_interval: i32,
+}
+
+impl Ebpf {
+    pub(crate) fn validate_socket_tracer_scope(&self) -> Result<(), ConfigError> {
+        let invalid = |reason: &str| {
+            ConfigError::RuntimeConfigInvalid(format!("socket netns scope: {reason}"))
+        };
+        if !self.profile.on_cpu.disabled
+            || !self.profile.off_cpu.disabled
+            || !self.profile.memory.disabled
+            || !self.profile.unwinding.dwarf_disabled
+        {
+            return Err(invalid(
+                "all continuous profiling and DWARF unwinding must be disabled",
+            ));
+        }
+        if self.file.io_event.collect_mode != 0 {
+            return Err(invalid("file IO collection must be disabled"));
+        }
+        let up = &self.socket.uprobe;
+        if up.tls.enabled
+            || up.golang.enabled
+            || !up.dpdk.command.is_empty()
+            || !up.dpdk.rx_hooks.is_empty()
+            || !up.dpdk.tx_hooks.is_empty()
+        {
+            return Err(invalid(
+                "TLS, Go and DPDK uprobes are outside the initial scoped profile",
+            ));
+        }
+        if self.socket.sock_ops.tcp_option_trace.enabled
+            || self.network.nic_opt_enabled
+            || !self.network.nic_optimize.is_empty()
+        {
+            return Err(invalid(
+                "sockops tracing and NIC optimization must be disabled",
+            ));
+        }
+        Ok(())
+    }
 }
 
 impl Default for Ebpf {
@@ -4444,5 +4532,156 @@ inputs:
         assert!(error.contains("invalid value: string \"invalid_syscall\""));
         assert!(error
             .contains("read|readv|recvfrom|recvmsg|recvmmsg|sendmsg|sendmmsg|sendto|write|writev"));
+    }
+}
+
+#[cfg(test)]
+mod socket_tracer_scope_tests {
+    use super::*;
+
+    fn scoped() -> (Config, UserConfig) {
+        let mut bootstrap = Config::default();
+        bootstrap.ebpf_socket_netns_scope = Some(PathBuf::from("/proc/self/ns/net"));
+        bootstrap.ebpf_socket_netns_inode = Some(123);
+        let mut user = UserConfig::default();
+        user.inputs.cbpf.af_packet.interface_regex.clear();
+        user.inputs.ebpf.profile.on_cpu.disabled = true;
+        user.inputs.ebpf.profile.off_cpu.disabled = true;
+        user.inputs.ebpf.profile.memory.disabled = true;
+        user.inputs.ebpf.file.io_event.collect_mode = 0;
+        user.inputs.integration.enabled = false;
+        (bootstrap, user)
+    }
+
+    #[test]
+    fn scope_default_preserves_existing_profiles() {
+        assert_eq!(Config::default().ebpf_socket_netns_scope, None);
+        assert_eq!(Config::default().ebpf_socket_netns_inode, None);
+        assert!(Config::default()
+            .validate_socket_tracer_scope(&UserConfig::default())
+            .is_ok());
+        let (bootstrap, user) = scoped();
+        assert!(bootstrap.validate_socket_tracer_scope(&user).is_ok());
+    }
+
+    #[test]
+    fn scope_bootstrap_inode_cannot_be_deserialized() {
+        let bootstrap = Config::load("controller-ips: [127.0.0.1]\nebpf-socket-netns-scope: /proc/self/ns/net\nebpf-socket-netns-inode: 321\n").unwrap();
+        assert_eq!(
+            bootstrap.ebpf_socket_netns_scope,
+            Some(PathBuf::from("/proc/self/ns/net"))
+        );
+        assert_eq!(bootstrap.ebpf_socket_netns_inode, None);
+        // Unknown controller-side fields cannot alter the local bootstrap.
+        let user: UserConfig = serde_yaml::from_str(
+            "ebpf-socket-netns-scope: /proc/self/ns/pid\nebpf-socket-netns-inode: 999\n",
+        )
+        .unwrap();
+        let local = bootstrap.clone();
+        assert!(local.validate_socket_tracer_scope(&user).is_err());
+        assert_eq!(bootstrap, local);
+    }
+
+    #[test]
+    fn scope_rejects_each_unfenced_capture_and_profile_path() {
+        let cases: &[(&str, fn(&mut UserConfig))] = &[
+            ("AF_PACKET", |u| {
+                u.inputs.cbpf.af_packet.interface_regex = "lo".into()
+            }),
+            ("inner interfaces", |u| {
+                u.inputs.cbpf.af_packet.inner_interface_capture_enabled = true
+            }),
+            ("extra netns", |u| {
+                u.inputs.cbpf.af_packet.extra_netns_regex = ".*".into()
+            }),
+            ("deprecated interfaces", |u| {
+                u.inputs.cbpf.af_packet.src_interfaces.push("lo".into())
+            }),
+            ("bond interfaces", |u| {
+                u.inputs
+                    .cbpf
+                    .af_packet
+                    .bond_interfaces
+                    .push(BondInterface::default())
+            }),
+            ("DPDK", |u| {
+                u.inputs.cbpf.special_network.dpdk.source = DpdkSource::PDump
+            }),
+            ("eBPF DPDK", |u| {
+                u.inputs.cbpf.special_network.dpdk.source = DpdkSource::Ebpf
+            }),
+            ("libpcap", |u| {
+                u.inputs.cbpf.special_network.libpcap.enabled = true
+            }),
+            ("vhost", |u| {
+                u.inputs.cbpf.special_network.vhost_user.vhost_socket_path = "/tmp/vhost".into()
+            }),
+            ("sflow", |u| {
+                u.inputs
+                    .cbpf
+                    .special_network
+                    .physical_switch
+                    .sflow_ports
+                    .push(6343)
+            }),
+            ("netflow", |u| {
+                u.inputs
+                    .cbpf
+                    .special_network
+                    .physical_switch
+                    .netflow_ports
+                    .push(2055)
+            }),
+            ("onCPU", |u| u.inputs.ebpf.profile.on_cpu.disabled = false),
+            ("offCPU", |u| u.inputs.ebpf.profile.off_cpu.disabled = false),
+            ("memory", |u| u.inputs.ebpf.profile.memory.disabled = false),
+            ("fileIO", |u| u.inputs.ebpf.file.io_event.collect_mode = 1),
+            ("DWARF", |u| {
+                u.inputs.ebpf.profile.unwinding.dwarf_disabled = false
+            }),
+            ("sockops", |u| {
+                u.inputs.ebpf.socket.sock_ops.tcp_option_trace.enabled = true
+            }),
+            ("NIC optimize", |u| {
+                u.inputs.ebpf.network.nic_opt_enabled = true
+            }),
+            ("TLS", |u| u.inputs.ebpf.socket.uprobe.tls.enabled = true),
+            ("Go", |u| u.inputs.ebpf.socket.uprobe.golang.enabled = true),
+            ("DPDK command", |u| {
+                u.inputs.ebpf.socket.uprobe.dpdk.command = "test".into()
+            }),
+            ("DPDK rx", |u| {
+                u.inputs
+                    .ebpf
+                    .socket
+                    .uprobe
+                    .dpdk
+                    .rx_hooks
+                    .push("test".into())
+            }),
+            ("DPDK tx", |u| {
+                u.inputs
+                    .ebpf
+                    .socket
+                    .uprobe
+                    .dpdk
+                    .tx_hooks
+                    .push("test".into())
+            }),
+            ("integration", |u| u.inputs.integration.enabled = true),
+            ("vector", |u| u.inputs.vector.enabled = true),
+        ];
+        for (name, mutate) in cases {
+            let (bootstrap, mut user) = scoped();
+            let previous = user.clone();
+            mutate(&mut user);
+            assert!(
+                bootstrap.validate_socket_tracer_scope(&user).is_err(),
+                "{name}"
+            );
+            // Rejecting a candidate must not rewrite it to silently disable paths.
+            assert_ne!(user, previous, "{name}");
+            assert_eq!(bootstrap.ebpf_socket_netns_inode, Some(123));
+        }
     }
 }

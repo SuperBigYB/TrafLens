@@ -1378,6 +1378,8 @@ pub struct EbpfConfig {
     pub process_matcher: Vec<ProcessMatcher>,
     pub io_event: EbpfFileIoEvent,
     pub dpdk_enabled: bool,
+    /// Copied only from validated local bootstrap state, never UserConfig.
+    pub socket_netns_inode: Option<u64>,
 }
 
 #[cfg(any(target_os = "linux", target_os = "android"))]
@@ -1413,6 +1415,7 @@ impl fmt::Debug for EbpfConfig {
             .field("l7_protocol_ports", &self.l7_protocol_ports)
             .field("ebpf", &self.ebpf)
             .field("dpdk_enabled", &self.dpdk_enabled)
+            .field("socket_netns_inode", &self.socket_netns_inode)
             .finish()
     }
 }
@@ -2529,6 +2532,7 @@ impl TryFrom<(Config, UserConfig)> for ModuleConfig {
                 process_matcher: conf.inputs.proc.process_matcher.clone(),
                 io_event: conf.inputs.ebpf.file.io_event,
                 dpdk_enabled: conf.inputs.cbpf.special_network.dpdk.source == DpdkSource::Ebpf,
+                socket_netns_inode: static_config.ebpf_socket_netns_inode,
             },
             metric_server: MetricServerConfig {
                 enabled: conf.inputs.integration.enabled,
@@ -3129,6 +3133,21 @@ impl ConfigHandler {
         }
     }
 
+    // Pure preflight: a rejected external candidate must not touch the current
+    // configuration, start components, or enqueue reconfiguration callbacks.
+    fn accept_socket_tracer_scope(
+        &self,
+        user_config: &UserConfig,
+        exception_handler: &ExceptionHandler,
+    ) -> bool {
+        if let Err(e) = self.static_config.validate_socket_tracer_scope(user_config) {
+            warn!("Reject unsafe scoped configuration: {e}");
+            exception_handler.set(agent::Exception::InvalidConfiguration, Some(e.to_string()));
+            return false;
+        }
+        true
+    }
+
     pub fn on_config(
         &mut self,
         user_config: UserConfig,
@@ -3141,6 +3160,9 @@ impl ConfigHandler {
         agent_id: &AgentId,
         first_run: bool,
     ) -> Vec<fn(&ConfigHandler, &mut AgentComponents)> {
+        if !self.accept_socket_tracer_scope(&user_config, exception_handler) {
+            return vec![];
+        }
         let candidate_config = &mut self.candidate_config;
         let static_config = &self.static_config;
         let config = &mut candidate_config.user_config;
@@ -6047,6 +6069,66 @@ mod tests {
         thread,
     };
 
+    #[test]
+    fn scope_rejected_reload_preserves_live_and_bootstrap_state() {
+        let mut bootstrap = Config::default();
+        bootstrap.controller_ips = vec!["127.0.0.1".into()];
+        bootstrap.ebpf_socket_netns_scope = Some("/proc/self/ns/net".into());
+        bootstrap.ebpf_socket_netns_inode = Some(123);
+        let mut handler = ConfigHandler::new(
+            bootstrap.clone(),
+            "127.0.0.1".parse().unwrap(),
+            MacAddr::ZERO,
+        );
+        let mut safe = UserConfig::default();
+        safe.inputs.cbpf.af_packet.interface_regex.clear();
+        safe.inputs.ebpf.profile.on_cpu.disabled = true;
+        safe.inputs.ebpf.file.io_event.collect_mode = 0;
+        safe.inputs.integration.enabled = false;
+        handler.candidate_config = (bootstrap.clone(), safe.clone()).try_into().unwrap();
+        handler
+            .current_config
+            .store(Arc::new(handler.candidate_config.clone()));
+        let previous_candidate = handler.candidate_config.clone();
+        let previous_live = handler.current_config.load_full();
+        let exceptions = ExceptionHandler::default();
+        let mut unsafe_config = safe.clone();
+        unsafe_config.inputs.ebpf.profile.on_cpu.disabled = false;
+        assert!(!handler.accept_socket_tracer_scope(&unsafe_config, &exceptions));
+        assert!(exceptions.has(agent::Exception::InvalidConfiguration));
+        assert_eq!(handler.candidate_config, previous_candidate);
+        assert!(Arc::ptr_eq(
+            &handler.current_config.load_full(),
+            &previous_live
+        ));
+        assert_eq!(handler.static_config, bootstrap);
+        // A later safe controller candidate still cannot replace the local scope.
+        safe.global.common.agent_id = 42;
+        assert!(handler.accept_socket_tracer_scope(&safe, &exceptions));
+        assert_eq!(handler.static_config.ebpf_socket_netns_inode, Some(123));
+        assert_eq!(
+            handler.static_config.ebpf_socket_netns_scope,
+            bootstrap.ebpf_socket_netns_scope
+        );
+    }
+
+    #[cfg(all(target_os = "linux", feature = "libtrace"))]
+    #[test]
+    fn scope_projection_comes_only_from_local_bootstrap() {
+        let mut bootstrap = Config::default();
+        bootstrap.controller_ips = vec!["127.0.0.1".into()];
+        bootstrap.ebpf_socket_netns_inode = Some(123);
+        let mut user = UserConfig::default();
+        let first: ModuleConfig = (bootstrap.clone(), user.clone()).try_into().unwrap();
+        assert_eq!(first.ebpf.socket_netns_inode, Some(123));
+        user.global.common.agent_id = 42;
+        user.inputs.ebpf.socket.kprobe.disabled = true;
+        let second: ModuleConfig = (bootstrap.clone(), user.clone()).try_into().unwrap();
+        assert_eq!(second.ebpf.socket_netns_inode, Some(123));
+        bootstrap.ebpf_socket_netns_inode = None;
+        let none: ModuleConfig = (bootstrap, user).try_into().unwrap();
+        assert_eq!(none.ebpf.socket_netns_inode, None);
+    }
     #[test]
     fn test_new_trie() {
         let trie = HttpEndpointTrie::new();

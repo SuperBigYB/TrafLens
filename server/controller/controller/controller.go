@@ -18,7 +18,6 @@ package controller
 
 import (
 	"context"
-	"flag"
 	"os"
 	"strconv"
 	"time"
@@ -62,7 +61,6 @@ type Controller struct{}
 
 func Start(ctx context.Context, revision, configPath, serverLogFile string, shared *servercommon.ControllerIngesterShared) {
 	common.InitEnvData()
-	flag.Parse()
 
 	serverCfg := config.DefaultConfig()
 	serverCfg.Load(configPath)

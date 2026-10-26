@@ -45,6 +45,7 @@
 #include "common_utils.h"
 #include "extended/extended.h"
 #include "trace_utils.h"
+#include "socket_scope.h"
 
 #include "socket_trace_bpf_common.c"
 #include "socket_trace_bpf_3_10_0.c"
@@ -67,6 +68,23 @@ static bool virtual_file_collect_enable; // Whether to enable virtual file colle
  * The default is 'false'.
  */
 static bool g_disable_syscall_tracing;
+static struct socket_scope_state socket_scope_state;
+static pthread_mutex_t socket_scope_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+int set_socket_tracer_netns_scope(uint64_t inode)
+{
+	if (inode > UINT32_MAX)
+		return -EINVAL;
+#ifdef EXTENDED_AI_AGENT_FILE_IO
+	/* Extension-only emitters are not covered by the public socket fence. */
+	if (inode != 0)
+		return -ENOTSUP;
+#endif
+	pthread_mutex_lock(&socket_scope_mutex);
+	int ret = socket_scope_set(&socket_scope_state, inode);
+	pthread_mutex_unlock(&socket_scope_mutex);
+	return ret;
+}
 
 /*
  * tracer_hooks_detach() and tracer_hooks_attach() will become terrible
@@ -134,6 +152,51 @@ static uint64_t hooked_socket_syscalls_bitmap = HOOKED_SOCKET_SYSCALL_ALL;
 static uint32_t conf_socket_map_max_reclaim;
 
 struct bpf_tracer *g_tracer;
+
+/* Only for scope validation/map-install failure before probes/readers/worker
+ * creation. Called under release_bpf_tracer's registry lock; its generic tail
+ * releases the tracer lock and registry slot. Do not use for a live tracer. */
+static int release_unattached_socket_scope(struct bpf_tracer *tracer)
+{
+	if (g_tracer == tracer)
+		g_tracer = NULL;
+	struct ebpf_object *obj = tracer->obj;
+	tracer->obj = NULL;
+	if (obj != NULL) {
+		/* release_object owns local BTF, but does not free vmlinux BTF. */
+		if (!DF_IS_ERR_OR_NULL(obj->btf_vmlinux) &&
+			obj->btf_vmlinux != obj->btf)
+			btf__free(obj->btf_vmlinux);
+		obj->btf_vmlinux = NULL;
+		release_object(obj);
+	}
+	struct tracer_probes_conf *tps = tracer->tps;
+	tracer->tps = NULL;
+	if (tps != NULL) {
+		for (int i = 0; i < tps->kprobes_nr; i++)
+			free(tps->ksymbols[i].func);
+		for (int i = 0; i < tps->tps_nr; i++)
+			free(tps->tps[i].name);
+		for (int i = 0; i < tps->kfuncs_nr; i++)
+			free(tps->kfuncs[i].name);
+		/* No uprobe symbols have been created before tracer_probes_init. */
+		free(tps);
+	}
+	struct list_head *entry, *next;
+	list_for_each_safe(entry, next, &tracer->maps_conf_head) {
+		struct map_config *config = container_of(entry, struct map_config, list);
+		list_head_del(entry);
+		free(config);
+	}
+	pthread_mutex_destroy(&tracer->mutex_probes_lock);
+	return 0;
+}
+
+static void discard_unattached_socket_scope(struct bpf_tracer *tracer)
+{
+	tracer->release_cb = release_unattached_socket_scope;
+	release_bpf_tracer(SK_TRACER_NAME);
+}
 bpf_offset_param_t g_kern_offsets;
 
 /*
@@ -3052,6 +3115,15 @@ int running_socket_tracer(tracer_callback_t handle,
 			     sys_cpus_count);
 		return -EINVAL;
 	}
+	/* Freeze for this process, even if loading later fails. A live scope
+	 * cannot be widened accidentally by a retry or concurrent setter. */
+	pthread_mutex_lock(&socket_scope_mutex);
+	__u32 scope_netns;
+	ret = socket_scope_begin(&socket_scope_state, &scope_netns);
+	pthread_mutex_unlock(&socket_scope_mutex);
+	if (ret != 0)
+		return ret;
+
 	// Ensure that the number of worker threads does not exceed the
 	// number of CPUs
 	if (thread_nr > sys_cpus_count)
@@ -3157,6 +3229,23 @@ int running_socket_tracer(tracer_callback_t handle,
 		}
 
 		return -EINVAL;
+	}
+
+	/* Array-map zero initialization preserves the legacy disabled scope. */
+	if (scope_netns != 0) {
+		/* No probes, readers or socket worker threads exist at this point. */
+		struct socket_scope_config scope_config;
+		ret = socket_scope_resolve(tracer->obj->btf_vmlinux, scope_netns, &scope_config);
+		if (ret != 0) {
+			ebpf_warning("Cannot validate exclusive socket netns scope.\n");
+			discard_unattached_socket_scope(tracer);
+			return ret;
+		}
+		if (!bpf_table_set_value(tracer, "__socket_scope_map", 0, &scope_config)) {
+			ebpf_warning("Cannot install exclusive socket netns scope.\n");
+			discard_unattached_socket_scope(tracer);
+			return -EIO;
+		}
 	}
 
 	/*

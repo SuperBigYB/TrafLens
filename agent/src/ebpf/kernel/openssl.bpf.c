@@ -129,6 +129,9 @@ static int get_fd_from_openssl_ssl(void *ssl)
 // int SSL_write(SSL *ssl, const void *buf, int num);
 UPROG(openssl_write_enter) (struct pt_regs *ctx)
 {
+	if (!socket_scope_matches_current())
+		return 0;
+
 	void *ssl = (void *)PT_REGS_PARM1(ctx);
 	int fd = get_fd_from_openssl_ssl(ssl);
 	__u64 id = bpf_get_current_pid_tgid();
@@ -145,6 +148,9 @@ UPROG(openssl_write_enter) (struct pt_regs *ctx)
 // int SSL_write(SSL *ssl, const void *buf, int num);
 UPROG(openssl_write_exit) (struct pt_regs *ctx)
 {
+	if (!socket_scope_matches_current())
+		return 0;
+
 	__u64 id = bpf_get_current_pid_tgid();
 	struct ssl_ctx_struct *ssl_ctx = ssl_ctx_map__lookup(&id);
 	if (!ssl_ctx)
@@ -186,6 +192,9 @@ UPROG(openssl_write_exit) (struct pt_regs *ctx)
 // int SSL_read(SSL *ssl, void *buf, int num);
 UPROG(openssl_read_enter) (struct pt_regs *ctx)
 {
+	if (!socket_scope_matches_current())
+		return 0;
+
 	void *ssl = (void *)PT_REGS_PARM1(ctx);
 	int fd = get_fd_from_openssl_ssl(ssl);
 	__u64 id = bpf_get_current_pid_tgid();
@@ -202,6 +211,9 @@ UPROG(openssl_read_enter) (struct pt_regs *ctx)
 // int SSL_read(SSL *ssl, void *buf, int num);
 UPROG(openssl_read_exit) (struct pt_regs *ctx)
 {
+	if (!socket_scope_matches_current())
+		return 0;
+
 	__u64 id = bpf_get_current_pid_tgid();
 	struct ssl_ctx_struct *ssl_ctx = ssl_ctx_map__lookup(&id);
 	if (!ssl_ctx)

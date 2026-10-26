@@ -464,7 +464,7 @@ impl Trident {
                 }
             }
         }
-        let config = match agent_mode {
+        let mut config = match agent_mode {
             RunningMode::Managed => {
                 match Config::load_from_file(config_path.as_ref()) {
                     Ok(conf) => conf,
@@ -492,6 +492,14 @@ impl Trident {
                 conf
             }
         };
+        #[cfg(not(target_os = "linux"))]
+        if config.ebpf_socket_netns_scope.is_some() {
+            return Err(anyhow!(
+                "socket netns scope requires a Linux libtrace build"
+            ));
+        }
+        #[cfg(target_os = "linux")]
+        crate::utils::ebpf_scope::prepare_socket_tracer_scope(&mut config)?;
         #[cfg(target_os = "linux")]
         if !config.pid_file.is_empty() {
             if let Err(e) = crate::utils::pid_file::open(&config.pid_file) {
@@ -2243,6 +2251,9 @@ impl AgentComponents {
         let static_config = &config_handler.static_config;
         let candidate_config = &config_handler.candidate_config;
         let user_config = &candidate_config.user_config;
+        // This also covers initial component creation if the first controller
+        // candidate was rejected and the dummy default was left untouched.
+        static_config.validate_socket_tracer_scope(user_config)?;
         let ctrl_ip = config_handler.ctrl_ip;
         let max_memory = config_handler.candidate_config.environment.max_memory;
         let process_threshold = config_handler
@@ -3061,6 +3072,13 @@ impl AgentComponents {
                     log::error!("ebpf collector error: {:?}", e);
                 }
             };
+        }
+
+        #[cfg(all(unix, feature = "libtrace"))]
+        if static_config.ebpf_socket_netns_inode.is_some() && ebpf_dispatcher_component.is_none() {
+            return Err(anyhow!(
+                "scoped socket tracer did not initialize; refusing agent startup"
+            ));
         }
 
         let otel_queue_name = "1-otel-to-sender";

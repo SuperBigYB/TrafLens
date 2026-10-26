@@ -45,6 +45,9 @@ jobs:
       - name: Test host preflight tooling
         run: make -C traflens test
 
+      - name: Test kernel namespace scope guards without attachment
+        run: python3 agent/src/ebpf/test/test_socket_scope.py -v
+
       - name: Test lab wire fixtures, ownership and acceptance
         run: python3 -m unittest discover -s traflens/lab/tests -p 'test_*.py' -v
 
@@ -57,7 +60,7 @@ jobs:
 
       - name: Test controller and query API input validation
         working-directory: server
-        run: go test -mod=vendor -race -short ./controller/http/common/response ./controller/http/service/agent ./controller/http/router/agent ./querier/engine/clickhouse ./querier/querier -timeout 120s -count=1
+        run: go test -mod=vendor -race -short ./controller/controller ./controller/http/common/response ./controller/http/service/agent ./controller/http/router/agent ./querier/engine/clickhouse ./querier/querier -timeout 120s -count=1
 
       - name: Test queue, LRU and flow metrics
         working-directory: server

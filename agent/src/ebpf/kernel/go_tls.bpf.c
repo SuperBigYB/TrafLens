@@ -70,6 +70,9 @@ do { \
  */
 UPROG(go_tls_write_enter) (struct pt_regs *ctx)
 {
+	if (!socket_scope_matches_current())
+		return 0;
+
 	DEFINE_DBG_DATA(dbg_data);
 	submit_debug(1, 0, 0);
 	struct tls_conn c = {};
@@ -114,6 +117,9 @@ UPROG(go_tls_write_enter) (struct pt_regs *ctx)
 
 UPROG(go_tls_write_exit) (struct pt_regs *ctx)
 {
+	if (!socket_scope_matches_current())
+		return 0;
+
 	DEFINE_DBG_DATA(dbg_data);
 	submit_debug(2, 0, 0);
 	struct tls_conn *c;
@@ -194,6 +200,9 @@ UPROG(go_tls_write_exit) (struct pt_regs *ctx)
  */
 UPROG(go_tls_read_enter) (struct pt_regs *ctx)
 {
+	if (!socket_scope_matches_current())
+		return 0;
+
 	DEFINE_DBG_DATA(dbg_data);
 	submit_debug(3, 0, 0);
 	__u64 id = bpf_get_current_pid_tgid();
@@ -239,6 +248,9 @@ UPROG(go_tls_read_enter) (struct pt_regs *ctx)
 
 UPROG(go_tls_read_exit) (struct pt_regs *ctx)
 {
+	if (!socket_scope_matches_current())
+		return 0;
+
 	DEFINE_DBG_DATA(dbg_data);
 	submit_debug(4, 0, 0);
 
