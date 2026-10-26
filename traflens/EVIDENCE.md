@@ -104,3 +104,15 @@ are zero. Three-case lease cleanup and stopped observers/Agent are verified.
 The119 helper tests and precise source/binary hashes accompany raw PCAP, expected
 records, queries and traces. Synthetic conversations, low rate and selected
 protocols do not establish real-service, loss/reorder, eBPF or performance parity.
+
+
+`evidence/2026-10-27/tcp-window/summary.json` publishes aggregate results for
+source155c5ff79:168 selected Rust,124 Python,4 focusedGo and41 native test passes;
+full packet321=312PASS/9FAIL and the inherited agent_config failure/panic
+comparison remain explicit. Default native build qualification includes its
+pre-existing dependency Makefile patch. Synthetic300-frame split-HTTP/DNS
+acceptance passes exactHTTP20/DNS20 and40associated flow/tunnel checks twice,
+frame bytes/order/drop0 and final cleanup. Complete raw PCAPs, queries, detailed
+internal environment/process/container evidence and logs remain in ignored local
+storage. The public summary includes their manifest fingerprint, not raw data.
+General streams, live eBPF, sustained performance and full parity remain pending.

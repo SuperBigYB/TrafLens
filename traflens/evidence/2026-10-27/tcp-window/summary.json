@@ -1,0 +1,63 @@
+{
+  "source_commit": "155c5ff79ce19d31efd6cf1522c5b40a2b150d31",
+  "core_ci": {
+    "run_id": 40371413194,
+    "url": "https://github.com/SuperBigYB/TrafLens/actions/runs/40371413194",
+    "server": "success",
+    "packet_agent": "success"
+  },
+  "unit": {
+    "selected_rust_passed": 168,
+    "selected_rust_failed": 0,
+    "selected_rust_ignored": 0,
+    "lab_python_passed": 124,
+    "focused_go_top_level_passed": 4,
+    "focused_go_subcases_passed": 4
+  },
+  "broader_suites": {
+    "packet_total": 321,
+    "packet_passed": 312,
+    "packet_known_failed": 9,
+    "full_agent_config_passed": false,
+    "parent_comparison_same_observed_top_level_failures": 5,
+    "parent_comparison_same_observed_subcase_failures": 7,
+    "same_panic_observed": true,
+    "cases_after_panic_verified": false
+  },
+  "native": {
+    "profile": "release",
+    "default_features": true,
+    "selected_tests_passed": 41,
+    "embedded_revision_matches": true,
+    "missing_linked_libraries": false,
+    "bpf_elf_objects_verified": 10,
+    "main_repository_clean_at_build": true,
+    "dependency_qualification": "Existing jattach Makefile static-library build patch; all10 non-Makefile files including5 C sources and26 OTel files match their dependency pins."
+  },
+  "synthetic_wire": {
+    "http_split_at_bytes": 2,
+    "sent_frames": 300,
+    "received_frames": 300,
+    "ordered_frame_bytes_equal": true,
+    "capture_kernel_drops": 0,
+    "http_exact_sessions": 20,
+    "dns_exact_sessions": 20,
+    "associated_flow_metadata_and_closure_passed": 40,
+    "consecutive_exact_reads": 2,
+    "rate_packets_per_second": 20,
+    "actual_application_servers": false
+  },
+  "cleanup": {
+    "temporary_network_leases_removed": true,
+    "agent_and_observers_stopped": true,
+    "only_owned_server_recreated": true,
+    "databases_and_unrelated_containers_unchanged": true
+  },
+  "public_data_policy": "Result aggregates only. Raw PCAPs, queries, internal addresses/MACs, process/container metadata, configuration and detailed runtime artifacts remain in ignored local evidence and are not published.",
+  "private_evidence_manifest_sha256": "3384f4b7603b5cc2cce95fab3322e90cbc5d0ac978b4ec1d7f0cb15308d1741c",
+  "limits": [
+    "Adjacent two-packet parse windows, not arbitrary TCP stream/message reassembly",
+    "No live eBPF proof",
+    "No sustained throughput or complete DeepFlow parity claim"
+  ]
+}

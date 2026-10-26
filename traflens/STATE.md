@@ -272,6 +272,40 @@ process are separate from successful collection and product parity.
   Sources, raw PCAPs/queries, failures and exact hashes are under
   evidence/2026-10-27/tunnel-wire/. See README-tunnel-wire.md for commands.
 
+## Adjacent TCP-window checkpoint - 2026-10-27
+
+- Source `155c5ff79ce19d31efd6cf1522c5b40a2b150d31` replaces the community
+  segmentation stub with opt-in adjacent two-packet sliding parse windows.
+  Original packets feed L4 once; windows/tails feed L7. Tests cover TCP sequence
+  wrap/gaps/truncation/control boundaries, metadata ownership, byte budget,
+  interleaved ACK/retransmission metrics, report-tail drain and direction changes.
+- The controller exposes the disabled-by-default port-list setting. Four focused
+  Go tests cover template metadata, round trips and numeric legacy-list upgrade.
+  Configured service scores and reverse cache updates are repaired; the stale
+  handshake fixture follows the existing first-ACK completion algorithm.
+- All168 selected Rust and124 lab Python tests pass. Full packet-library result
+  is321=312PASS/9FAIL, no ignored tests. Full agent_config retains the same
+  observed5 top-level and7 subcase failure names/panic as isolated parent395f;
+  cases after the panic remain unverified. Focused success is not a full pass.
+- Actual case sw20261027a1 passes300 ordered byte-identical received frames,
+  zero kernel capture drops, exact HTTP20/DNS20 multisets twice, and all40
+  associated tunnel metadata/flow closures twice. Both HTTP directions split
+  after two bytes. Profile segmentation retains strict Mirror capture scope,
+  Agent2CPU/1024MiB,20pps, bounded100s capture/90s observers/240s link leases.
+  Both temporary network leases clean completely; Agent and observers stop.
+  Only owned Server is recreated; both databases retain identity/start times.
+- Live packet Agent and Server embed155c5ff79. Separate default-feature optimized
+  native Release passes41 selected tests, exact version/ldd/libtrace and10BPF
+  ELF checks. Primary repository is clean; archived jattach dependency has one
+  pre-existing Makefile static-library build patch. All10 non-Makefile files,
+  including5 C sources, and26 OTel files match pins. Patch/hashes and the BPF
+  proof-glob correction are retained; dependency build metadata is qualified.
+- Core CI40371413194 passes both jobs, including168 Cargo/124 lab/focusedGo and
+  embedded CommitId gates. Public result summary and guide: README-tcp-window.md and
+  evidence/2026-10-27/tcp-window/summary.json. Full raw evidence stays ignored
+  locally. No general TCP stream, live eBPF, sustained
+  performance or complete DeepFlow parity is claimed.
+
 ## Remaining validation and priorities
 
 1. Design persistence/server-side idempotency for ambiguous commits and longer
@@ -282,10 +316,10 @@ process are separate from successful collection and product parity.
    and sustained workloads; extend protocol
    acceptance to a real MySQL database, DNS error/truncation/TCP,
    reconnects, TLS, loss, agent/server restart and sustained workloads.
-3. Resolve the remaining 12 packet-library failures: segmentation/reassembly
-   stub, defaults/snapshot/PCAP/Hessian compatibility,
-   handshake RTT and service score assertions, and five packet-mode WASM fixture
-   cases (four also fail in native mode with different assertions). Keep expected behavior intact and validate the feature-mode matrix.
+3. Resolve the remaining9 packet-library failures: defaults, RocketMQ, Hessian2,
+   memcached and5 packet-mode WASM cases (four also fail in native mode with
+   different assertions). Investigate inherited full agent_config failures/panic
+   separately. Keep expected behavior intact and validate the feature matrix.
 4. Validate native eBPF/syscall/profiling at runtime, other protocols and storage
    robustness; then trace application and GUI. A native build is not runtime proof.
 5. Fix API robustness cases in `lab/KNOWN_LIMITATIONS.md`, then compare pinned
@@ -302,7 +336,7 @@ supervisors expire after 15 minutes or three exits, and stop only their own chil
 process group. Runtime secrets/logs stay ignored; sanitize evidence before commit.
 Keep the hourly task active: full feature/performance parity is not achieved.
 
-Latest completed CI before this wire checkpoint: both jobs passed for
-`4e1b7d502` in <https://github.com/SuperBigYB/TrafLens/actions/runs/40346563645>.
+Latest completed core CI: both jobs passed for
+`155c5ff79` in <https://github.com/SuperBigYB/TrafLens/actions/runs/40371413194>.
 Verify the new head's actual CI result; selected gates do not replace the known
 full-suite failures. See the tunnel and writer READMEs and their evidence.
