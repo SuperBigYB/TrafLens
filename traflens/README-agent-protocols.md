@@ -104,9 +104,8 @@ downloading TinyGo.
 Public results are aggregate summaries. Detailed test logs and working artifacts
 remain in ignored local storage. Passing library and native build gates does
 not establish live eBPF tracing, sustained throughput, storage robustness,
-arbitrary TCP stream reconstruction or complete DeepFlow parity. The inherited
-full Server configuration-package failures remain a separate task; its focused
-TCP-window configuration tests are checked independently.
-
-Valid stable-ID merge streams are covered; malformed or changing merge identities
-remain a separate validation task.
+arbitrary TCP stream reconstruction or complete DeepFlow parity. The follow-up [configuration and plugin checkpoint](README-config-parity.md)
+closes the complete Server configuration-package failures and protects malformed
+or changing plugin merge identities. Its whole-package race gate and conservative
+batch/cache contract are documented separately. Shared timeout accounting is
+unchanged; RTT thresholds do not expire cache entries.

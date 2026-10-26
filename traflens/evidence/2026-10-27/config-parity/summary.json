@@ -1,0 +1,169 @@
+{
+  "schema": "traflens.config-and-plugin-parity.v1",
+  "source_commit": "62429a607627051c3f242247ff646c67fee80e3e",
+  "core_ci_url": "https://github.com/SuperBigYB/TrafLens/actions/runs/40395398781",
+  "server_configuration": {
+    "command": "go test -mod=vendor -race ./agent_config -timeout 120s -count=1",
+    "top_level_passed": 44,
+    "all_test_pass_events": 129,
+    "failed": 0,
+    "skipped": 0,
+    "scope": "Entire package; pass events include nested subtests, not independent top-level tests."
+  },
+  "packet_library": {
+    "passed": 382,
+    "failed": 0,
+    "ignored": 0
+  },
+  "plugin_crates": {
+    "tunnel_passed": 28,
+    "sliding_window_passed": 21
+  },
+  "packet_gate_total_passed": 431,
+  "native_gate_total_passed": 442,
+  "native_default_library": {
+    "passed": 393,
+    "failed": 0,
+    "ignored": 0
+  },
+  "scoped_plugin_tests": {
+    "passed": 56,
+    "failed": 0,
+    "ignored": 0,
+    "included_in_library_totals": true,
+    "initial_real_wasm_control": {
+      "passed": 1,
+      "failed": 4
+    },
+    "unchanged_algorithm_direct_control_cases": 12
+  },
+  "python_lab_passed": 124,
+  "python_distribution_passed": 18,
+  "local_binaries": {
+    "server": {
+      "source_version_exact": true,
+      "sha256": "3f96ddb425d07f2b2e9bb7ea61ada7d37a04a93b33837e8dc178c5dc1951aa84"
+    },
+    "packet_agent": {
+      "source_version_exact": true,
+      "sha256": "d3151cf6533b6c2027f5226c804c4caa5ab13b6b563f2dcc2bb33a1e80646b11"
+    }
+  },
+  "native_build": {
+    "schema": "traflens.native-library-gate.v1",
+    "source_commit": "62429a607627051c3f242247ff646c67fee80e3e",
+    "source_bundle_sha256": "480b5a754675377a957927ea24c81f932fca6ba8f07e9913bd3c057bcc94a999",
+    "source_bundle_base": "913231d6a7918edadd8db48a4e5d38ec9b76601d",
+    "source_clean_before": true,
+    "source_clean_after": true,
+    "clean_scope": "Main tracked source; pinned archive dependencies have disclosed preexisting jattach Makefile static-build overlay.",
+    "image": "ghcr.io/deepflowio/rust-build@sha256:b018b2a5970d3c8f36a95f56dec56ad780020ec782419e42c571c7be5867d310",
+    "rust": "1.97.1",
+    "toolchain_qualification": {
+      "final_gcc": "11.2.1",
+      "final_shell": "login",
+      "prior_core_linker_incident": {
+        "source_commit": "aa1bda6468f2132c8aca1d2186ae25e1e9b32b2d",
+        "failure": "Non-login shell selected GCC 4.8.5 C++ runtime.",
+        "resolution": "Restore prior login-shell profile selecting image GCC 11.2.1 runtime.",
+        "source_or_dependency_change_for_environment_fix": false
+      }
+    },
+    "profile": "release",
+    "default_features": [
+      "libtrace"
+    ],
+    "locked": true,
+    "offline": true,
+    "limits": {
+      "cpus": 4,
+      "memory_bytes": 8589934592,
+      "network": "none",
+      "capabilities": "drop ALL",
+      "no_new_privileges": true
+    },
+    "pass": true,
+    "library_tests_listed": 393,
+    "suites": {
+      "full-library": {
+        "exit_code": 0,
+        "test_summaries": [
+          {
+            "status": "ok",
+            "passed": 393,
+            "failed": 0,
+            "ignored": 0
+          }
+        ]
+      },
+      "tunnel": {
+        "exit_code": 0,
+        "test_summaries": [
+          {
+            "status": "ok",
+            "passed": 28,
+            "failed": 0,
+            "ignored": 0
+          }
+        ]
+      },
+      "window": {
+        "exit_code": 0,
+        "test_summaries": [
+          {
+            "status": "ok",
+            "passed": 21,
+            "failed": 0,
+            "ignored": 0
+          }
+        ]
+      }
+    },
+    "original_2023_go_fixture_passed": true,
+    "binary_sha256": "c5f5432cee7a17d47009d8bcb0eed5eb72f51c8bdc8c1d008afc3a11e4a0414d",
+    "binary_size_bytes": 77943616,
+    "commit_version_exact": true,
+    "ldd_missing": false,
+    "libtrace_sha256": "cc283bfa1d536007bf57396005a2bb510cddf84bbeb1bcf913e90f0a00da81c2",
+    "bpf_compilation_artifacts": 10,
+    "live_ebpf_load_attach_validated": false,
+    "dependency_overlay": {
+      "component": "jattach Makefile",
+      "preexisting_build_only": true,
+      "upstream_sha256": "b89fae15a808414c953e7d737729b6104cee948d40e802ffedf7afdcc28942ba",
+      "actual_sha256": "779dae6560ae146a969dcda58ad934ffba5d5e7d37d9110360c90af765991fb9",
+      "patch_sha256": "196bc0b7c230013ad562f87517f410f81aea76f26f1256b61c24b31ffb5a91de",
+      "c_source_files_matching": 5,
+      "c_source_files_total": 5,
+      "new_dependency_changes_this_run": false
+    },
+    "legacy_keeper_unchanged_from_prior_core": true,
+    "legacy_keeper_source_hashes": {
+      "agent/src/plugin/wasm/test.rs": "394103ab830148efe43b0116174a7f90f4c192d632bbaac2221d4b7edc56d880",
+      "agent/resources/test/plugins/wasm_test.wasm.gz": "b1c8d8d78643bbc1dd532b2ca3b392d18fa20b9bd76fbd253859a50d624c15a8"
+    }
+  },
+  "conversion_contract": [
+    "Invalid static YAML, CSV and recognized matcher fields return errors.",
+    "Unit overflow leaves the destination model unchanged; representable zero and signed values retain existing conversion policy.",
+    "Migration state is reset per call; profiling features and canonical static tagged-only path are preserved.",
+    "Embedded strings and integer precision survive JSON normalization; malformed metadata returns errors."
+  ],
+  "plugin_contract": [
+    "Missing multi-merge request ID is rejected; explicit zero remains valid.",
+    "WASM batches are validated atomically against active entries and batch-local modes before performance/cache mutation.",
+    "One callback cannot mix modes for the same key, including completion-and-reuse interpretations.",
+    "C retains existing per-item rejection behavior; peek does not refresh LRU order.",
+    "RTT threshold does not expire cache entries; normal closure, flow removal or capacity eviction releases mode restrictions.",
+    "Shared performance and timeout algorithms are unchanged; existing arrival-order timeout differences are preserved."
+  ],
+  "private_evidence_manifest_sha256": "d001913e5ec974473a3171fcdb0558345c5365459f9e87e928b229eac4da92b6",
+  "private_evidence_files": 171,
+  "publication_scope": "Aggregate counts, source/fixture hashes and code qualification only. Detailed logs, configuration, environment metadata and captured traffic stay ignored locally.",
+  "remaining_validation": [
+    "Hessian full map/Unicode support and general TCP streams",
+    "Live eBPF/syscall/profiling runtime acceptance",
+    "Storage ambiguous-commit recovery, API robustness and broader real services",
+    "Sustained candidate/reference performance and complete DeepFlow parity"
+  ]
+}

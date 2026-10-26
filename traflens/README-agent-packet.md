@@ -154,8 +154,8 @@ concatenated. Pure ACKs preserve the pending data window; SYN/FIN/RST packets
 flush their direction and pass through. Original packets feed L4 metrics
 individually; sliding windows and flushed tails feed L7 parsing.
 
-`parser-test` now gates the complete packet Agent library (**371 tests**),
-then both plugin crates (**28 tunnel + 21 window**), for **420 passes** with
+`parser-test` now gates the complete packet Agent library (**382 tests**),
+then both plugin crates (**28 tunnel + 21 window**), for **431 passes** with
 zero failures or ignored tests. `test-library` runs the complete library alone;
 all former focused commands remain available. The WASM integrity check precedes
 tests, and the existing C plugin is built first. Locked dependency versions,
@@ -163,27 +163,25 @@ tests, and the existing C plugin is built first. Locked dependency versions,
 
 The earlier TCP-window checkpoint's321 tests had9 known failures. Those cases
 now pass after configuration, public fixture, Hessian and WASM contract repairs.
-The separate default-feature optimized native library passes382 tests,
+The separate default-feature optimized native library passes393 tests,
 including the unchanged original2023 SDK integration; its two plugin crates
-also pass49. See `README-agent-protocols.md` and
-`evidence/2026-10-27/agent-protocols/summary.json` for scope and qualifications.
+also pass49. See [the configuration and plugin guide](README-config-parity.md) and
+[its aggregate evidence](evidence/2026-10-27/config-parity/summary.json) for current
+scope, counts and qualifications.
 Full library success in these modes is not live eBPF or performance parity.
 
-CI also runs a focused Server configuration gate after the complete Server build:
+CI runs the complete Server configuration race gate after the Server build:
 
 ```sh
 cd server
-go test -mod=vendor ./agent_config -run '^TestTCPWindow' -timeout 120s -count=1
+go test -mod=vendor -race ./agent_config -timeout 120s -count=1
 ```
 
-Its four top-level tests and four subcases cover public template-to-JSON metadata,
-the disabled default, YAML/JSON port-list and range roundtrips, and real legacy
-uint16-to-string migration, including empty and boundary inputs. The complete
-`agent_config` package is a separate failing suite: both the pre-change
-`395f155d` snapshot and current package show the same five top-level and seven
-subcase failure names before `TestConvCommentToSection` panics at its inline
-fixture's line326. Cases after that panic are not covered by this comparison.
-The focused CI command does not establish a complete configuration-package pass.
+All 44 top-level tests and 129 total pass events (including 85 subtests) succeed
+with no skips. This includes the four TCP-window cases and repairs the inherited panic plus actual
+template, migration and DB/YAML conversion defects. See
+[the configuration and plugin guide](README-config-parity.md) for red controls,
+input contracts and the separate malformed-plugin identity safeguards.
 
 
 The ff05c646d checkpoint also validates ordinary, packed-ref and linked-worktree

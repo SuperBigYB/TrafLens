@@ -126,3 +126,14 @@ logs/failed controls remain local; only aggregates and a manifest fingerprint
 are published. The existing public PCAP packet-record bytes are unchanged.
 Malformed identity streams, full Go configuration failures, live eBPF,
 sustained performance and complete product parity remain separate validation.
+
+
+`evidence/2026-10-27/config-parity/summary.json` records source62429a607:
+complete Go configuration race44 top-level/129 total pass events, packet431
+and native442 library/crate passes, scoped plugin56 (included in library
+counts), lab124 and distribution18. It closes the configuration panic/failures
+and malformed merge-identity work left open above. Version/ldd/libtrace/tenBPF
+and original2023 keeper checks pass. Shared timeout algorithms and inherited
+dependency build qualification are preserved. Raw logs remain ignored; only
+aggregate results/hashes and the private manifest fingerprint are published.
+Runtime eBPF, sustained performance and complete parity remain pending.

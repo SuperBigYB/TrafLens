@@ -331,6 +331,27 @@ process are separate from successful collection and product parity.
   logs and environment evidence remain ignored. Guide: README-agent-protocols.md.
   Live eBPF, sustained workloads and complete DeepFlow parity remain pending.
 
+## Configuration and plugin checkpoint - 2026-10-27
+
+- Core `62429a607627051c3f242247ff646c67fee80e3e` closes the inherited full Go configuration suite:
+ 44 top-level/129 total pass events (85 subtests) under `-race`, no failures or skips. CI now
+ gates the entire package. Template bounds/types/recursive errors, embedded JSON
+ string preservation, legacy profiling/tagged-only migration, reusable upgrader
+ state, DB/YAML error propagation and atomic unit-overflow rejection are repaired.
+- Missing plugin merge IDs and mixed active/batch merge modes fail before shared
+ cache/performance mutation. Read-only peek preserves LRU order; C retains its
+ per-item rejection contract. Conservative same-key batch mode changes are
+ rejected. Shared timeout algorithms remain unchanged; RTT threshold is not TTL.
+- Complete packet382+28+21=431 and native393+28+21=442 pass,
+ no failures/ignored tests. Scoped56 plugin cases include real host-import guests,
+ C collision and12 direct unchanged-algorithm baseline controls. Python124+18 pass.
+ Exact-source Server/packet/native binaries build; native original2023 keeper,
+ version/ldd/libtrace/tenBPF checks pass. Existing jattach build overlay is qualified.
+- Core CI: https://github.com/SuperBigYB/TrafLens/actions/runs/40395398781. Guide: README-config-parity.md.
+ Aggregate evidence: evidence/2026-10-27/config-parity/summary.json. Raw logs and
+ environment/configuration evidence remain ignored. No new runtime deployment or
+ traffic acceptance was performed; earlier wire results remain separate.
+
 ## Remaining validation and priorities
 
 1. Design persistence/server-side idempotency for ambiguous commits and longer
@@ -341,10 +362,9 @@ process are separate from successful collection and product parity.
    and sustained workloads; extend protocol
    acceptance to a real MySQL database, DNS error/truncation/TCP,
    reconnects, TLS, loss, agent/server restart and sustained workloads.
-3. Repair the inherited full agent_config failures/panic, and validate malformed
-   plugin merge streams with missing/changing session identity. Extend Hessian
-   Unicode/map coverage separately; keep current ASCII limits explicit. The
-   complete packet/default-native Agent-library gates currently pass.
+3. Extend Hessian Unicode/map coverage and general TCP streams; keep current
+   ASCII and adjacent-window limits explicit. The complete configuration race,
+   packet/default-native library and guarded plugin-identity gates now pass.
 4. Validate native eBPF/syscall/profiling at runtime, other protocols and storage
    robustness; then trace application and GUI. A native build is not runtime proof.
 5. Fix API robustness cases in `lab/KNOWN_LIMITATIONS.md`, then compare pinned
@@ -362,6 +382,7 @@ process group. Runtime secrets/logs stay ignored; sanitize evidence before commi
 Keep the hourly task active: full feature/performance parity is not achieved.
 
 Latest completed source CI: both jobs passed for
-`913231d6a` in <https://github.com/SuperBigYB/TrafLens/actions/runs/40387456209>.
-Verify the new head's actual CI result; selected gates do not replace the known
-full-suite failures. See the tunnel and writer READMEs and their evidence.
+`62429a607` in <https://github.com/SuperBigYB/TrafLens/actions/runs/40395398781>.
+Verify the final documentation head's actual CI separately. Library/build gates
+do not replace runtime or performance validation. See the configuration/plugin,
+tunnel and writer guides and their aggregate evidence.

@@ -1,6 +1,8 @@
 # TrafLens distribution
 
 Current validation and next steps: [STATE.md](STATE.md).
+The complete configuration race gate and plugin merge safeguards are documented
+in [the configuration and plugin guide](README-config-parity.md).
 For the packet Agent see [its build/test entry point](README-agent-packet.md);
 the full libtrace release build is documented in
 [the native build procedure](README-agent-native.md). The reproducible isolated
