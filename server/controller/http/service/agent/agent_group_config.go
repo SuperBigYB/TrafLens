@@ -34,6 +34,7 @@ import (
 	"github.com/deepflowio/deepflow/server/controller/db/metadb"
 	"github.com/deepflowio/deepflow/server/controller/db/metadb/model"
 	httpcommon "github.com/deepflowio/deepflow/server/controller/http/common"
+	"github.com/deepflowio/deepflow/server/controller/http/common/response"
 	httpmodel "github.com/deepflowio/deepflow/server/controller/http/model"
 	"github.com/deepflowio/deepflow/server/controller/http/service"
 	"github.com/deepflowio/deepflow/server/controller/trisolaris/refresh"
@@ -294,15 +295,24 @@ func (a *AgentGroupConfig) GetAgentGroupConfigs(dataType int) (interface{}, erro
 
 func (a *AgentGroupConfig) getStringYaml(data interface{}, dataType int) (string, error) {
 	if dataType == DataTypeJSON {
-		bytes, err := agentconf.ConvertJSONToYAMLAndValidate(data.(map[string]interface{}))
-		return string(bytes), err
-	} else {
-		err := agentconf.ValidateYAML(data.([]byte))
-		if err != nil {
-			return "", fmt.Errorf("yaml validate failed: %v, please check the yaml format", err)
+		object, ok := data.(map[string]interface{})
+		if !ok || object == nil {
+			return "", response.ServiceError(httpcommon.INVALID_POST_DATA, "JSON configuration must be an object")
 		}
-		return string(data.([]byte)), nil
+		wire, err := agentconf.ConvertJSONToYAMLAndValidate(object)
+		if err != nil {
+			return "", response.ServiceError(httpcommon.INVALID_POST_DATA, fmt.Sprintf("invalid JSON configuration: %v", err))
+		}
+		return string(wire), nil
 	}
+	wire, ok := data.([]byte)
+	if !ok {
+		return "", response.ServiceError(httpcommon.INVALID_POST_DATA, "YAML configuration must be bytes")
+	}
+	if err := agentconf.ValidateYAML(wire); err != nil {
+		return "", response.ServiceError(httpcommon.INVALID_POST_DATA, fmt.Sprintf("yaml validate failed: %v, please check the yaml format", err))
+	}
+	return string(wire), nil
 }
 
 func (a *AgentGroupConfig) CreateAgentGroupConfig(groupLcuuid string, data interface{}, dataType int) ([]byte, error) {

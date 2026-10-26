@@ -85,6 +85,10 @@ func GetTagFunction(name string, args []string, alias string, e *CHEngine) (Stat
 }
 
 func GetAggFunc(name string, args []string, alias string, derivativeArgs []string, e *CHEngine) (Statement, int, string, error) {
+	if len(args) == 0 {
+		return nil, 0, "", common.NewError(common.INVALID_POST_DATA,
+			fmt.Sprintf("function [%s] requires at least one argument", name))
+	}
 	db := e.DB
 	isDerivative := e.IsDerivative
 	derivativeGroupBy := e.DerivativeGroupBy

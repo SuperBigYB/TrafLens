@@ -254,7 +254,7 @@ func getAgentID(c *gin.Context, db *metadb.DB) (int, error) {
 	if err != nil {
 		var agent metadbmodel.VTap
 		if err := db.Where("name = ?", agentIDentStr).First(&agent).Error; err != nil {
-			return 0, fmt.Errorf("failed to get agent by name(%s), error: %s", err.Error())
+			return 0, fmt.Errorf("failed to get agent by name(%s), error: %s", agentIDentStr, err.Error())
 		}
 		return agent.ID, nil
 	}

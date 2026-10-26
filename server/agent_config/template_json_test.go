@@ -541,9 +541,6 @@ func TestConvertTemplateYAMLToJSON(t *testing.T) {
 	}
 	outputDir := t.TempDir()
 	for _, tt := range tests {
-		if tt.name != "case01" {
-			continue
-		}
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := ConvertTemplateYAMLToJSON(tt.args.dynamicOpts)
 			if (err != nil) != tt.wantErr {
@@ -737,7 +734,7 @@ outputs:
 				"processors": map[string]interface{}{
 					"request_log": map[string]interface{}{
 						"filters": map[string]interface{}{
-							"port_number_prefilters": "HTTP: 1-6\nHTTP2: 9-10",
+							"port_number_prefilters": "HTTP: 1-6\nHTTP2: 9-10\n",
 						},
 					},
 				},
@@ -767,9 +764,6 @@ outputs:
 	}
 	keyToComment, _ := NewTemplateFormatter(YamlAgentGroupConfigTemplate).GenerateKeyToComment()
 	for _, tt := range tests {
-		if tt.name != "case03" {
-			continue
-		}
 		t.Run(tt.name, func(t *testing.T) {
 			dataFmt := NewDataFormatter()
 			if len(tt.args.yamlData) == 0 {
@@ -845,7 +839,7 @@ outputs:
 					"processors": map[string]interface{}{
 						"request_log": map[string]interface{}{
 							"filters": map[string]interface{}{
-								"port_number_prefilters": "HTTP: 1-6\nHTTP2: 9-10",
+								"port_number_prefilters": "HTTP: 1-6\nHTTP2: 9-10\n",
 							},
 						},
 					},
@@ -1371,9 +1365,6 @@ global:
 		},
 	}
 	for _, tt := range tests {
-		if tt.name != "case10" {
-			continue
-		}
 		t.Run(tt.name, func(t *testing.T) {
 			if err := ValidateYAML(tt.args.yamlData); (err != nil) != tt.wantErr {
 				t.Errorf("ValidateYAML() error = %v, wantErr %v", err, tt.wantErr)
@@ -1450,16 +1441,9 @@ func TestConvertJSONToYAMLAndValidate(t *testing.T) {
 					},
 				},
 			},
-			want: []byte(`inputs:
-  ebpf:
-    socket:
-      preprocess:
-        out_of_order_reassembly_protocols:
-          - HTTP
-          - Dubbo
-          - SOFARPC
-`),
-			wantErr: false,
+			// Removed from the community template; unknown legacy paths remain errors.
+			want:    []byte{},
+			wantErr: true,
 		},
 		{
 			name: "case04",
@@ -1547,15 +1531,18 @@ func TestConvertJSONToYAMLAndValidate(t *testing.T) {
 			want: []byte(`inputs:
   cbpf:
     af_packet:
-      bond_interfaces: "- slave_interfaces:\n  - eth0\n  - eth1\n- slave_interfaces:\n  - eth2\n  - eth3\n"
+      bond_interfaces:
+        - slave_interfaces:
+            - eth0
+            - eth1
+        - slave_interfaces:
+            - eth2
+            - eth3
 `),
 			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
-		if tt.name != "case06" {
-			continue
-		}
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := ConvertJSONToYAMLAndValidate(tt.args.jsonData)
 			if (err != nil) != tt.wantErr {

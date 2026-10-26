@@ -55,6 +55,10 @@ jobs:
         working-directory: server
         run: go test -mod=vendor -race ./agent_config -timeout 120s -count=1
 
+      - name: Test controller and query API input validation
+        working-directory: server
+        run: go test -mod=vendor -race -short ./controller/http/service/agent ./controller/http/router/agent ./querier/engine/clickhouse ./querier/querier -timeout 120s -count=1
+
       - name: Test queue, LRU and flow metrics
         working-directory: server
         run: go test -mod=vendor -short ./libs/queue ./libs/hmap/lru ./libs/flow-metrics -timeout 120s -count=1

@@ -155,8 +155,10 @@ func ErrHandle() gin.HandlerFunc {
 				var buf [4096]byte
 				n := runtime.Stack(buf[:], false)
 				log.Error(string(buf[:n]))
-				router.BadRequestResponse(c, common.SERVER_ERROR, fmt.Sprintf("%v", err))
-				c.JSON(500, err)
+				c.Abort()
+				if !c.Writer.Written() {
+					router.InternalErrorResponse(c, nil, nil, common.SERVER_ERROR, "internal server error")
+				}
 				return
 			}
 		}()

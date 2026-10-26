@@ -17,6 +17,8 @@
 package agent
 
 import (
+	stdjson "encoding/json"
+	"fmt"
 	"io"
 
 	"github.com/gin-gonic/gin"
@@ -85,11 +87,29 @@ func getJsonAgentGroupConfigs(cfg *config.ControllerConfig) gin.HandlerFunc {
 	}
 }
 
+// Number preservation is local to these configuration routes, not Gin global state.
+func decodeAgentConfigJSON(reader io.Reader) (map[string]interface{}, error) {
+	decoder := stdjson.NewDecoder(reader)
+	decoder.UseNumber()
+	var object map[string]interface{}
+	if err := decoder.Decode(&object); err != nil {
+		return nil, err
+	}
+	if object == nil {
+		return nil, fmt.Errorf("JSON configuration must be an object")
+	}
+	var extra interface{}
+	if err := decoder.Decode(&extra); err != io.EOF {
+		return nil, fmt.Errorf("JSON configuration must contain exactly one object")
+	}
+	return object, nil
+}
+
 func postJsonAgentGroupConfig(cfg *config.ControllerConfig) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var postData map[string]interface{}
-		if err := c.ShouldBindJSON(&postData); err != nil {
-			response.JSON(c, response.SetError(err))
+		postData, err := decodeAgentConfigJSON(c.Request.Body)
+		if err != nil {
+			response.JSON(c, response.SetError(response.ServiceError(common.INVALID_POST_DATA, err.Error())))
 			return
 		}
 		groupLcuuid := c.Param("group-lcuuid")
@@ -100,9 +120,9 @@ func postJsonAgentGroupConfig(cfg *config.ControllerConfig) gin.HandlerFunc {
 
 func putJsonAgentGroupConfig(cfg *config.ControllerConfig) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var postData map[string]interface{}
-		if err := c.ShouldBindJSON(&postData); err != nil {
-			response.JSON(c, response.SetError(err))
+		postData, err := decodeAgentConfigJSON(c.Request.Body)
+		if err != nil {
+			response.JSON(c, response.SetError(response.ServiceError(common.INVALID_POST_DATA, err.Error())))
 			return
 		}
 		groupLcuuid := c.Param("group-lcuuid")

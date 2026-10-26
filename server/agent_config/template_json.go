@@ -20,6 +20,7 @@ import (
 	jsoniter "github.com/json-iterator/go"
 
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 
@@ -92,6 +93,9 @@ func ValidateYAML(yamlData []byte) error {
 	err = dataFmt.LoadYAMLData(yamlData)
 	if err != nil {
 		return fmt.Errorf("new data formatter error: %v", err)
+	}
+	if err := dataFmt.validateYAMLDictValues("", dataFmt.mapData, KeyToComment); err != nil {
+		return err
 	}
 	err = dataFmt.fmtMapValAndRefresh(KeyToComment, true)
 	if err != nil {
@@ -175,7 +179,7 @@ func validateNodeAgainstTemplate(node, nodeTemplate *yaml.Node) error {
 		if nodeTemplate.Tag == "!!null" { // TODO more strict validation
 			return nil
 		}
-		if (nodeTemplate.Tag == "!!float" && node.Tag == "!!int") || (nodeTemplate.Tag == "!!int" && node.Tag == "!!float") {
+		if nodeTemplate.Tag == "!!float" && node.Tag == "!!int" {
 			return nil
 		}
 		if node.Tag != nodeTemplate.Tag {
@@ -608,6 +612,8 @@ func (f *LineFormatter) replaceTemplateSyntax(i int) {
 type DynamicOptions map[string]*yaml.Node
 
 type DataFormatter struct {
+	// Only decoded JSON numbers may be normalized to integer schema fields.
+	jsonInput    bool
 	keyToComment KeyToComment
 
 	formattedYAMLData []byte // 与 template.yaml 文件格式一致的 yaml 数据
@@ -624,7 +630,12 @@ func (f *DataFormatter) setKeyToComment(keyToComment KeyToComment) {
 }
 
 func (f *DataFormatter) LoadMapData(data map[string]interface{}) error {
-	f.mapData = data
+	f.jsonInput = true
+	converted, err := f.prepareJSONNumbers(data, "")
+	if err != nil {
+		return err
+	}
+	f.mapData = converted.(map[string]interface{})
 	yamlData, err := f.mapToYAML()
 	if err != nil {
 		return fmt.Errorf("convert json to yaml error: %v", err)
@@ -657,6 +668,7 @@ func (f *DataFormatter) mapToYAML() ([]byte, error) {
 }
 
 func (f *DataFormatter) LoadYAMLData(yamlData []byte) error {
+	f.jsonInput = false
 	var mapData map[string]interface{}
 	err := yaml.Unmarshal(yamlData, &mapData)
 	if err != nil {
@@ -700,7 +712,31 @@ func (f *DataFormatter) fmtMapValAndRefresh(keyToComment KeyToComment, dictValTo
 		if err != nil {
 			return fmt.Errorf("unmarshal yaml to node error: %v", err)
 		}
+		preserveYAMLFloatTags(&yamlNode, f.yamlNode)
 		f.yamlNode = &yamlNode
+	}
+	return nil
+}
+
+// Native Agent YAML requires actual collections; GUI JSON may carry YAML text.
+func (f *DataFormatter) validateYAMLDictValues(ancestor string, data interface{}, comments KeyToComment) error {
+	mapping, ok := data.(map[string]interface{})
+	if !ok {
+		return nil
+	}
+	for key, value := range mapping {
+		path := f.appendAncestor(ancestor, key)
+		if f.isDictValue(comments[path]) {
+			switch value.(type) {
+			case map[string]interface{}, []interface{}, nil:
+			default:
+				return fmt.Errorf("YAML dict must be a mapping or sequence, key: %s", path)
+			}
+			continue
+		}
+		if err := f.validateYAMLDictValues(path, value, comments); err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -745,13 +781,34 @@ func (f *DataFormatter) fmtVal(ancestors string, data interface{}, keyToComment 
 				case int:
 					data[key] = value
 				case float64:
-					data[key] = int(value)
-					keyToComment["valueChanged"] = make(map[string]interface{})
+					if !f.jsonInput {
+						return fmt.Errorf("YAML float is invalid for integer field, key: %s", newAncestors)
+					}
+					if f.jsonInput {
+						upper := math.Ldexp(1, strconv.IntSize-1)
+						if math.IsNaN(value) || math.IsInf(value, 0) || math.Trunc(value) != value || value < -upper || value >= upper {
+							return fmt.Errorf("JSON integer is inexact or out of range, key: %s", newAncestors)
+						}
+						data[key] = int(value)
+						keyToComment["valueChanged"] = make(map[string]interface{})
+					}
 				}
 			}
 			if err := f.fmtVal(newAncestors, data[key], keyToComment, dictValToStr); err != nil {
 				return err
 			}
+		}
+	case []interface{}:
+		// Sequences inherit the field metadata. YAML decoding has already resolved
+		// aliases and merge keys, so numeric types must be checked before re-encode.
+		for _, item := range data {
+			if err := f.fmtVal(ancestors, item, keyToComment, dictValToStr); err != nil {
+				return err
+			}
+		}
+	case float64:
+		if !f.jsonInput && f.isIntValue(keyToComment[ancestors]) {
+			return fmt.Errorf("YAML float is invalid for integer field, key: %s", ancestors)
 		}
 	default:
 		return nil
@@ -811,6 +868,11 @@ func (f *DataFormatter) dictToString(data interface{}) (string, error) {
 	if str, ok := data.(string); ok {
 		return f.listToString(str)
 	}
+	switch data.(type) {
+	case map[string]interface{}, []interface{}, nil:
+	default:
+		return "", fmt.Errorf("dict value must be a mapping or sequence")
+	}
 	var buf strings.Builder
 	enc := yaml.NewEncoder(&buf)
 	enc.SetIndent(2)
@@ -822,15 +884,19 @@ func (f *DataFormatter) dictToString(data interface{}) (string, error) {
 }
 
 func (f *DataFormatter) listToString(data string) (string, error) {
-	var list []interface{}
-	err := yaml.Unmarshal([]byte(data), &list)
-	if err != nil {
-		return "", fmt.Errorf("unmarshal data to list error: %v", err)
+	var collection interface{}
+	if err := yaml.Unmarshal([]byte(data), &collection); err != nil {
+		return "", fmt.Errorf("unmarshal dict collection: %w", err)
 	}
-
-	// 将解析后的切片重新编码为 YAML 格式
-	yamlOutput, err := yaml.Marshal(list)
-	return string(yamlOutput), err
+	switch collection.(type) {
+	case map[string]interface{}, []interface{}:
+	case nil:
+		collection = []interface{}{}
+	default:
+		return "", fmt.Errorf("dict text must contain a mapping or sequence")
+	}
+	output, err := yaml.Marshal(collection)
+	return string(output), err
 }
 
 func (f *DataFormatter) isKeyComment(key string) bool {
