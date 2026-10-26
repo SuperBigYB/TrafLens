@@ -18,6 +18,7 @@ package agent_config
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"reflect"
 	"strings"
 
@@ -255,7 +256,7 @@ static_config:
     process_matcher:
       - enabled_features:
           - ebpf.profile.on_cpu
-        match_regex: on-cpu-profile-.*      
+        match_regex: on-cpu-profile-.*
         only_with_tag: true
       - enabled_features:
           - ebpf.profile.off_cpu
@@ -280,11 +281,11 @@ static_config:
 				t.Errorf("Upgrade() error = \"%v\", wantErr \"%v\"", err, tt.wantErr)
 				return
 			}
-			os.Mkdir("test_tmp", 0755)
-			if err := os.WriteFile(fmt.Sprintf("test_tmp/upgrade_%s.yaml", tt.name), got, os.ModePerm); err != nil {
+			tempDir := t.TempDir()
+			if err := os.WriteFile(filepath.Join(tempDir, fmt.Sprintf("upgrade_%s.yaml", tt.name)), got, os.ModePerm); err != nil {
 				t.Fatalf("Failed to write to file: %v", err)
 			}
-			if err := os.WriteFile(fmt.Sprintf("test_tmp/upgrade_%s_want.yaml", tt.name), tt.want, os.ModePerm); err != nil {
+			if err := os.WriteFile(filepath.Join(tempDir, fmt.Sprintf("upgrade_%s_want.yaml", tt.name)), tt.want, os.ModePerm); err != nil {
 				t.Fatalf("Failed to write to file: %v", err)
 			}
 			if string(got) != string(tt.want) {
@@ -326,7 +327,7 @@ func TestFmtLowerVersionValue(t *testing.T) {
 					},
 				},
 			},
-			want: []int{1, 2},
+			want: []string{"lcuuid1", "lcuuid2"},
 		},
 		{
 			name: "case04",
@@ -340,7 +341,7 @@ func TestFmtLowerVersionValue(t *testing.T) {
 					},
 				},
 			},
-			want: []int{1, 2},
+			want: []interface{}{"lcuuid1", "lcuuid2"},
 		},
 		{
 			name: "case04",

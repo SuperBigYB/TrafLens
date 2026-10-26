@@ -51,9 +51,9 @@ jobs:
       - name: Build the complete community server
         run: make -C traflens server
 
-      - name: Test TCP window schema and legacy upgrade
+      - name: Test complete configuration conversion and upgrade package
         working-directory: server
-        run: go test -mod=vendor ./agent_config -run '^TestTCPWindow' -timeout 120s -count=1
+        run: go test -mod=vendor -race ./agent_config -timeout 120s -count=1
 
       - name: Test queue, LRU and flow metrics
         working-directory: server

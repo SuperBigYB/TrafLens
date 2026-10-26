@@ -487,6 +487,10 @@ impl RrtCache {
         self.logs.get(key)
     }
 
+    pub(crate) fn peek(&self, key: &LogCacheKey) -> Option<&LogCache> {
+        self.logs.peek(key)
+    }
+
     pub fn get_mut(&mut self, key: &LogCacheKey) -> Option<&mut LogCache> {
         self.logs.get_mut(key)
     }

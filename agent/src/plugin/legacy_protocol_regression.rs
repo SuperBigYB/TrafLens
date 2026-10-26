@@ -48,7 +48,7 @@ fn message_prefix(direction: PacketDirection, request_id: bool) -> Vec<u8> {
         }
     }
     string(&mut wire, "legacy-example");
-    wire.push(0x81); // merge and end of this direction
+    wire.push(if request_id { 0x81 } else { 0 }); // Merge requires a stream ID.
     wire
 }
 
@@ -94,14 +94,14 @@ fn old_request_and_response_without_biz_trailer_are_accepted() {
             assert_eq!(info.trace.trace_ids, ["trace"]);
             assert_eq!(info.trace.span_id.as_deref(), Some("span"));
             assert_eq!(info.trace.parent_span_id.as_deref(), Some("parent"));
-            assert!(info.need_protocol_merge);
+            assert_eq!(info.need_protocol_merge, request_id);
             assert_eq!(
                 info.is_req_end,
-                direction == PacketDirection::ClientToServer
+                request_id && direction == PacketDirection::ClientToServer
             );
             assert_eq!(
                 info.is_resp_end,
-                direction == PacketDirection::ServerToClient
+                request_id && direction == PacketDirection::ServerToClient
             );
             if direction == PacketDirection::ClientToServer {
                 assert_eq!(info.req.resource, "/resource");
@@ -590,5 +590,169 @@ fn pre_protocol_string_2023_layout_rejects_a_business_trailer() {
         let mut attributes = pre_protocol_string_message(direction, true, true, true);
         attributes.push(7); // Old uncounted KV block must consume every byte.
         assert!(CustomInfo::try_from((attributes.as_slice(), direction)).is_err());
+    }
+}
+
+#[test]
+fn malformed_merge_identity_is_rejected_for_both_legacy_and_protobuf() {
+    for direction in [
+        PacketDirection::ClientToServer,
+        PacketDirection::ServerToClient,
+    ] {
+        for end in [false, true] {
+            let mut legacy = message(direction, false, false, None);
+            legacy[message_prefix(direction, false).len() - 1] = if end { 0x81 } else { 0x80 };
+            assert!(CustomInfo::try_from((legacy.as_slice(), direction)).is_err());
+            for asynchronous in [false, true] {
+                let pb_info = pb::AppInfo {
+                    is_end: Some(end),
+                    request_id: None,
+                    is_async: Some(asynchronous),
+                    ..Default::default()
+                };
+                let mut wire = b"PB".to_vec();
+                wire.extend(pb_info.encode_to_vec());
+                assert!(CustomInfo::try_from((wire.as_slice(), direction)).is_err());
+            }
+        }
+    }
+}
+
+#[test]
+fn explicit_zero_merge_identity_is_valid() {
+    let pb_info = pb::AppInfo {
+        is_end: Some(true),
+        request_id: Some(0),
+        ..Default::default()
+    };
+    let mut wire = b"PB".to_vec();
+    wire.extend(pb_info.encode_to_vec());
+    assert_eq!(
+        CustomInfo::try_from((wire.as_slice(), PacketDirection::ClientToServer))
+            .unwrap()
+            .request_id,
+        Some(0)
+    );
+}
+
+#[cfg(any(target_os = "linux", target_os = "android"))]
+#[test]
+fn c_and_wasm_metadata_can_share_a_cache_key_with_opposite_merge_modes() {
+    let packet = MetaPacket::default();
+    let cache = Rc::new(RefCell::new(L7PerfCache::new(4)));
+    let mut param = ParseParam::new(
+        &packet,
+        Some(cache.clone()),
+        Default::default(),
+        Default::default(),
+        true,
+        true,
+    );
+    param.time = 100;
+    param.rrt_timeout = 1000;
+    let wasm = perf_message(true, PacketDirection::ClientToServer, true);
+    let mut raw = super::c_ffi::ParseInfo::default();
+    raw.msg_type = LogMessageType::Request as u8;
+    raw.has_request_id = 1;
+    raw.request_id = 777;
+    let c = CustomInfo::try_from(raw).unwrap();
+    assert!(wasm.need_merge());
+    assert!(!c.need_merge());
+    let key = LogCacheKey::new(&param, wasm.session_id(), wasm.is_reversed());
+    assert!(key == LogCacheKey::new(&param, c.session_id(), c.is_reversed()));
+    assert!(c.validate_merge_cache(&param).is_ok());
+    assert_eq!(wasm.perf_stats(&param).unwrap().request_count, 1);
+    param.time = 130;
+    assert!(c.validate_merge_cache(&param).is_err());
+    {
+        let cache = cache.borrow();
+        let entry = cache.rrt_cache.peek(&key).unwrap();
+        assert_eq!(entry.time, 100);
+        assert!(entry.multi_merge_info.is_some());
+    }
+    param.time = 150;
+    param.direction = PacketDirection::ServerToClient;
+    let response = perf_message(true, param.direction, true);
+    assert!(response.validate_merge_cache(&param).is_ok());
+    let stats = response.perf_stats(&param).unwrap();
+    assert_eq!(
+        (stats.response_count, stats.rrt_count, stats.rrt_sum),
+        (1, 1, 50)
+    );
+    assert!(cache.borrow().rrt_cache.peek(&key).is_none());
+    // Once the merged session closes, the C plugin may reuse its session ID.
+    assert!(c.validate_merge_cache(&param).is_ok());
+}
+
+#[test]
+fn unchanged_perf_algorithm_baseline_at_timeout_boundaries() {
+    // Direct control: no decoder, WASM/C wrapper, new validation helper, or
+    // new peek method is called. The shared algorithm, CustomInfo trait/cache
+    // conversion and cache implementation match HEAD byte for byte.
+    for merged in [false, true] {
+        for request_first in [false, true] {
+            for age in [999, 1000, 1001] {
+                let packet = MetaPacket::default();
+                let cache = Rc::new(RefCell::new(L7PerfCache::new(4)));
+                let mut param = ParseParam::new(
+                    &packet,
+                    Some(cache.clone()),
+                    Default::default(),
+                    #[cfg(any(target_os = "linux", target_os = "android"))]
+                    Default::default(),
+                    true,
+                    true,
+                );
+                param.flow_id = 42;
+                // Response-first means reordered arrival, with its original
+                // later capture timestamp retained. RTT must stay positive.
+                param.time = if request_first { 100 } else { 100 + age };
+                param.rrt_timeout = 1000;
+                let direct = |request: bool| CustomInfo {
+                    msg_type: if request {
+                        LogMessageType::Request
+                    } else {
+                        LogMessageType::Response
+                    },
+                    request_id: Some(777),
+                    need_protocol_merge: merged,
+                    is_req_end: merged && request,
+                    is_resp_end: merged && !request,
+                    ..Default::default()
+                };
+                param.direction = if request_first {
+                    PacketDirection::ClientToServer
+                } else {
+                    PacketDirection::ServerToClient
+                };
+                let first = direct(request_first).perf_stats(&param);
+                if request_first {
+                    assert_eq!(first.unwrap().request_count, 1);
+                } else {
+                    assert!(first.is_none());
+                }
+                param.time = if request_first { 100 + age } else { 100 };
+                param.direction = if request_first {
+                    PacketDirection::ServerToClient
+                } else {
+                    PacketDirection::ClientToServer
+                };
+                let stats = direct(!request_first).perf_stats(&param).unwrap();
+                assert_eq!(stats.request_count, u32::from(!request_first));
+                assert_eq!(stats.response_count, 1);
+                assert_eq!(stats.rrt_count, u32::from(age <= 1000));
+                assert_eq!(stats.rrt_sum, if age <= 1000 { age } else { 0 });
+                let mut cache = cache.borrow_mut();
+                let timeout = cache.timeout_cache.get_or_insert_mut(42);
+                let expected_timeout = u64::from(age > 1000 && !(merged && request_first));
+                println!("original baseline merged={merged} request_first={request_first} age={age}: response={} rrt={} timeout={} pending={}", stats.response_count, stats.rrt_count, timeout.timeout[0], timeout.in_cache[0]);
+                assert_eq!(
+                    (timeout.in_cache[0], timeout.timeout[0]),
+                    (0, expected_timeout)
+                );
+                let key = LogCacheKey::new(&param, Some(777), false);
+                assert!(cache.rrt_cache.get(&key).is_none());
+            }
+        }
     }
 }

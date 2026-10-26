@@ -23,13 +23,15 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/baidubce/bce-sdk-go/util/log"
 	"gopkg.in/yaml.v3"
 )
 
 var DeprecatedTapSideID = []int{48, 49, 50}
 
 func convertDBToYAML(dbData *AgentGroupConfigModel) ([]byte, error) {
+	if dbData == nil {
+		return nil, fmt.Errorf("nil legacy DB configuration")
+	}
 	yamlData := &AgentGroupConfig{}
 	ignoreName := []string{"ID", "VTapGroupLcuuid", "VTapGroupID", "Lcuuid", "YamlConfig",
 		"L4LogTapTypes", "L4LogIgnoreTapSides", "L7LogIgnoreTapSides",
@@ -42,7 +44,7 @@ func convertDBToYAML(dbData *AgentGroupConfigModel) ([]byte, error) {
 		if err := yaml.Unmarshal([]byte(*dbData.YamlConfig), yamlConfig); err == nil {
 			yamlData.YamlConfig = yamlConfig
 		} else {
-			log.Error("failed to unmarshal %s yaml config: %v", dbData.VTapGroupLcuuid, err)
+			return nil, fmt.Errorf("invalid legacy static_config: %w", err)
 		}
 	}
 
@@ -51,7 +53,7 @@ func convertDBToYAML(dbData *AgentGroupConfigModel) ([]byte, error) {
 		if err == nil {
 			yamlData.L4LogTapTypes = append(yamlData.L4LogTapTypes, cL4LogTapTypes...)
 		} else {
-			log.Error("failed to convert %s L4LogTapTypes: %v", dbData.VTapGroupLcuuid, err)
+			return nil, fmt.Errorf("invalid legacy L4LogTapTypes: %w", err)
 		}
 	}
 	if dbData.L4LogIgnoreTapSides != nil {
@@ -59,7 +61,7 @@ func convertDBToYAML(dbData *AgentGroupConfigModel) ([]byte, error) {
 		if err == nil {
 			yamlData.L4LogIgnoreTapSides = append(yamlData.L4LogIgnoreTapSides, tapSides...)
 		} else {
-			log.Error("failed to convert %s L4LogIgnoreTapSides: %v", dbData.VTapGroupLcuuid, err)
+			return nil, fmt.Errorf("invalid legacy L4LogIgnoreTapSides: %w", err)
 		}
 	}
 	if dbData.L7LogIgnoreTapSides != nil {
@@ -67,7 +69,7 @@ func convertDBToYAML(dbData *AgentGroupConfigModel) ([]byte, error) {
 		if err == nil {
 			yamlData.L7LogIgnoreTapSides = append(yamlData.L7LogIgnoreTapSides, tapSides...)
 		} else {
-			log.Error("failed to convert %s L7LogIgnoreTapSides: %v", dbData.VTapGroupLcuuid, err)
+			return nil, fmt.Errorf("invalid legacy L7LogIgnoreTapSides: %w", err)
 		}
 	}
 	if dbData.L7LogStoreTapTypes != nil {
@@ -75,7 +77,7 @@ func convertDBToYAML(dbData *AgentGroupConfigModel) ([]byte, error) {
 		if err == nil {
 			yamlData.L7LogStoreTapTypes = append(yamlData.L7LogStoreTapTypes, cL7LogStoreTapTypes...)
 		} else {
-			log.Error("failed to convert %s L7LogStoreTapTypes: %v", dbData.VTapGroupLcuuid, err)
+			return nil, fmt.Errorf("invalid legacy L7LogStoreTapTypes: %w", err)
 		}
 	}
 	if dbData.DecapType != nil {
@@ -83,7 +85,7 @@ func convertDBToYAML(dbData *AgentGroupConfigModel) ([]byte, error) {
 		if err == nil {
 			yamlData.DecapType = append(yamlData.DecapType, cDecapType...)
 		} else {
-			log.Error("failed to convert %s DecapType: %v", dbData.VTapGroupLcuuid, err)
+			return nil, fmt.Errorf("invalid legacy DecapType: %w", err)
 		}
 	}
 	if dbData.Domains != nil {
@@ -127,29 +129,61 @@ func convertDBToYAML(dbData *AgentGroupConfigModel) ([]byte, error) {
 	return yaml.Marshal(yamlData)
 }
 
+// Conversion errors leave the caller's model unchanged. Do not log entire
+// configuration documents: static configuration may contain sensitive values.
 func convertYAMLToDB(yamlBytes []byte, dbData *AgentGroupConfigModel) error {
+	if dbData == nil {
+		return fmt.Errorf("nil legacy DB destination")
+	}
 	yamlData := &AgentGroupConfig{}
 	if err := yaml.Unmarshal(yamlBytes, yamlData); err != nil {
-		log.Error("failed to unmarshal yaml config: %s, yaml: %s", err.Error(), string(yamlBytes))
-		return fmt.Errorf("failed to unmarshal yaml config: %v", err)
+		return fmt.Errorf("failed to unmarshal legacy YAML configuration: %w", err)
 	}
+	var staticConfig *string
 	if yamlData.YamlConfig != nil {
-		b, err := yaml.Marshal(yamlData.YamlConfig)
-		if err == nil {
-			dbYamlConfig := string(b)
-			dbData.YamlConfig = &dbYamlConfig
-		} else {
-			log.Error("failed to marshal %s yaml config: %v", yamlData.VTapGroupLcuuid, err)
+		encoded, err := yaml.Marshal(yamlData.YamlConfig)
+		if err != nil {
+			return fmt.Errorf("failed to marshal legacy static_config: %w", err)
 		}
-	} else {
-		dbData.YamlConfig = nil
+		value := string(encoded)
+		staticConfig = &value
 	}
-
-	convertToDb(yamlData, dbData)
+	converted := *dbData
+	if err := convertToDb(yamlData, &converted); err != nil {
+		return err
+	}
+	converted.YamlConfig = staticConfig
+	*dbData = converted
 	return nil
 }
 
-func convertToDb(sData *AgentGroupConfig, tData *AgentGroupConfigModel) {
+func validateLegacyRateUnits(data *AgentGroupConfig) error {
+	maxInt := int64(^uint(0) >> 1)
+	if data.MaxCollectPps != nil {
+		value := int64(*data.MaxCollectPps)
+		if value > maxInt/1000 || value < (-maxInt-1)/1000 {
+			return fmt.Errorf("max_collect_pps overflows DB packet-per-second units")
+		}
+	}
+	max64 := int64(^uint64(0) >> 1)
+	for name, value := range map[string]*int64{
+		"max_npb_bps":      data.MaxNpbBps,
+		"max_tx_bandwidth": data.MaxTxBandwidth,
+	} {
+		if value != nil && (*value > max64/1000000 || *value < (-max64-1)/1000000) {
+			return fmt.Errorf("%s overflows DB bit-per-second units", name)
+		}
+	}
+	return nil
+}
+
+func convertToDb(sData *AgentGroupConfig, tData *AgentGroupConfigModel) error {
+	if sData == nil || tData == nil {
+		return fmt.Errorf("nil legacy conversion source or destination")
+	}
+	if err := validateLegacyRateUnits(sData); err != nil {
+		return err
+	}
 	ignoreName := []string{"ID", "YamlConfig", "Lcuuid", "VTapGroupLcuuid", "VTapGroupID",
 		"L4LogTapTypes", "L4LogIgnoreTapSides", "L7LogIgnoreTapSides",
 		"L7LogStoreTapTypes", "DecapType", "Domains", "MaxCollectPps", "MaxNpbBps", "MaxTxBandwidth",
@@ -222,6 +256,7 @@ func convertToDb(sData *AgentGroupConfig, tData *AgentGroupConfigModel) {
 	} else {
 		tData.SoPlugins = nil
 	}
+	return nil
 }
 func copyStruct(from, to interface{}, ignoreName []string) {
 	fromValue := reflect.ValueOf(from)

@@ -224,7 +224,9 @@ func (f *TemplateFormatter) mapToJSON(d DynamicOptions) ([]byte, error) {
 		return nil, fmt.Errorf("LoadYAMLData data formatter error: %v", err)
 	}
 	keyToComment := make(KeyToComment)
-	f.generateKeyComment(f.mapData, "", keyToComment)
+	if err := f.generateKeyComment(f.mapData, "", keyToComment); err != nil {
+		return nil, err
+	}
 	err = f.DataFormatter.fmtMapValAndRefresh(keyToComment, true)
 	if err != nil {
 		return nil, fmt.Errorf("convert dict value to string error: %v", err)
@@ -331,14 +333,14 @@ func (f *TemplateFormatter) fillingOrder(node *yaml.Node) (interface{}, error) {
 		return seq, nil
 	case yaml.ScalarNode:
 		if node.Tag == "!!int" {
-			var err error
 			if intValue, err := strconv.Atoi(node.Value); err == nil {
 				return intValue, nil
 			}
-			if intValue, err := strconv.ParseInt(node.Value, 0, 64); err == nil {
-				return intValue, nil
+			intValue, err := strconv.ParseInt(node.Value, 0, 64)
+			if err != nil {
+				return nil, fmt.Errorf("invalid integer %q: %w", node.Value, err)
 			}
-			return nil, err
+			return intValue, nil
 		} else if node.Tag == "!!bool" {
 			boolValue, err := strconv.ParseBool(node.Value)
 			if err != nil {
@@ -369,24 +371,31 @@ func (f *TemplateFormatter) GenerateKeyToComment() (KeyToComment, error) {
 	}
 
 	keyToComment := make(KeyToComment)
-	f.generateKeyComment(f.mapData, "", keyToComment)
+	if err := f.generateKeyComment(f.mapData, "", keyToComment); err != nil {
+		return nil, err
+	}
 	return keyToComment, nil
 }
 
-func (f *TemplateFormatter) generateKeyComment(data interface{}, ancestors string, result KeyToComment) interface{} {
-	switch data := data.(type) {
-	case map[string]interface{}:
-		for key, value := range data {
-			newAncestors := f.appendAncestor(ancestors, key)
-			if f.isKeyComment(key) {
-				result[newAncestors] = f.generateKeyComment(value, newAncestors, result).(map[string]interface{})
-			}
-			f.generateKeyComment(value, newAncestors, result)
-		}
-	default:
-		return data
+func (f *TemplateFormatter) generateKeyComment(data interface{}, ancestors string, result KeyToComment) error {
+	mapping, ok := data.(map[string]interface{})
+	if !ok {
+		return nil
 	}
-	return data
+	for key, value := range mapping {
+		newAncestors := f.appendAncestor(ancestors, key)
+		if f.isKeyComment(key) {
+			comment, ok := value.(map[string]interface{})
+			if !ok {
+				return fmt.Errorf("metadata for %s must be a mapping", newAncestors)
+			}
+			result[newAncestors] = comment
+		}
+		if err := f.generateKeyComment(value, newAncestors, result); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // LineFormatter 将 template.yaml 文件中的注释转换为 yaml section。
@@ -440,6 +449,9 @@ func (f *LineFormatter) Format() ([]byte, error) {
 }
 
 func (f *LineFormatter) convCommentToSection(start int) (end int, commentLines []string, err error) {
+	if start < 0 || start >= len(f.lines) {
+		return 0, nil, fmt.Errorf("comment start is out of range: %d", start)
+	}
 	i := start
 	for ; i < len(f.lines); i++ {
 		if !f.isCommentLine(f.lines[i]) {
@@ -460,9 +472,12 @@ func (f *LineFormatter) convCommentToSection(start int) (end int, commentLines [
 		commentLines = append(commentLines, f.indentLine(f.uncommentLine(f.lines[i]), 1))
 	}
 
+	if i >= len(f.lines) {
+		return 0, nil, fmt.Errorf("comment at line %d has no following key", start+1)
+	}
 	keyCommentLine, err := f.keyLineToKeyCommentLine(f.lines[i])
 	if err != nil {
-		return 0, nil, fmt.Errorf(err.Error()+" at line: %d", i)
+		return 0, nil, fmt.Errorf("%w at line: %d", err, i+1)
 	}
 	return i - 1, append([]string{keyCommentLine}, commentLines...), nil
 }
@@ -527,21 +542,27 @@ func (f *LineFormatter) appendDictValueComments(start int, result []string) (end
 }
 
 func (f *LineFormatter) convDictValueCommentToSection(start int, yamlIndentCount int, result []string) (end int, appendedResult []string, err error) {
-	i := start
-	commentFlagLineNum := i
+	if start < 0 || start >= len(f.lines) {
+		return 0, nil, fmt.Errorf("dict metadata at line %d has no following key", start+1)
+	}
+	if !f.isCommentLine(f.lines[start]) {
+		return start - 1, result, nil
+	}
+	if !f.isDictValueCommentLine(f.lines[start]) {
+		return 0, nil, fmt.Errorf("expected dict metadata separator at line %d", start+1)
+	}
 	commentLines := make([]string, 0)
-	var fieldNameLineNum int
+	i := start + 1
 	for ; i < len(f.lines); i++ {
 		if !f.isCommentLine(f.lines[i]) {
-			return i - 1, result, nil
+			if len(commentLines) == 0 {
+				// Preserve empty/TODO-only legacy schema separators.
+				return i - 1, result, nil
+			}
+			return 0, nil, fmt.Errorf("dict metadata at line %d has no default document", start+1)
 		}
 		if f.isDictValueCommentLine(f.lines[i]) {
-			if i == commentFlagLineNum {
-				continue
-			} else {
-				fieldNameLineNum = i + 1
-				break
-			}
+			break
 		}
 		if f.isTodoCommentLine(f.lines[i]) {
 			i = f.ignoreTodoComments(i)
@@ -549,15 +570,17 @@ func (f *LineFormatter) convDictValueCommentToSection(start int, yamlIndentCount
 		}
 		commentLines = append(commentLines, f.indentLine(f.uncommentLine(f.lines[i]), yamlIndentCount+1))
 	}
-
-	fieldName := f.indentLine(f.uncommentLine(f.lines[fieldNameLineNum]), yamlIndentCount)
-	fieldNameComment, err := f.keyLineToKeyCommentLine(f.indentLine(f.uncommentLine(f.lines[fieldNameLineNum]), yamlIndentCount))
-	if err != nil {
-		return 0, nil, fmt.Errorf(err.Error()+" at line: %d", i)
+	fieldLine := i + 1
+	if fieldLine >= len(f.lines) || !f.isCommentLine(f.lines[fieldLine]) || f.isDictValueCommentLine(f.lines[fieldLine]) {
+		return 0, nil, fmt.Errorf("dict metadata at line %d has no default field", start+1)
 	}
-	commentSection := append([]string{fieldName, fieldNameComment}, commentLines...)
-	result = append(result, commentSection...)
-	return f.convDictValueCommentToSection(fieldNameLineNum+1, yamlIndentCount, result)
+	fieldName := f.indentLine(f.uncommentLine(f.lines[fieldLine]), yamlIndentCount)
+	fieldNameComment, err := f.keyLineToKeyCommentLine(fieldName)
+	if err != nil {
+		return 0, nil, fmt.Errorf("%w at line: %d", err, fieldLine+1)
+	}
+	result = append(result, append([]string{fieldName, fieldNameComment}, commentLines...)...)
+	return f.convDictValueCommentToSection(fieldLine+1, yamlIndentCount, result)
 }
 
 func (f *LineFormatter) ignoreTodoComments(start int) (end int) {
@@ -698,20 +721,22 @@ func (f *DataFormatter) fmtVal(ancestors string, data interface{}, keyToComment 
 					}
 					data[key] = valueStr
 				} else {
-					if strings.HasPrefix(strings.TrimSpace(value.(string)), "-") {
-						var valueMap map[string]interface{}
-						err := yaml.Unmarshal([]byte(key+":\n"+value.(string)), &valueMap)
-						if err != nil {
-							return fmt.Errorf("unmarshal string to map error: %v, key: %s", err, newAncestors)
+					switch typed := value.(type) {
+					case string:
+						var converted interface{}
+						if err := yaml.Unmarshal([]byte(typed), &converted); err != nil {
+							return fmt.Errorf("unmarshal dict value: %w, key: %s", err, newAncestors)
 						}
-						data[key] = valueMap[key]
-					} else {
-						var valueMap map[string]interface{}
-						err := yaml.Unmarshal([]byte(value.(string)), &valueMap)
-						if err != nil {
-							return fmt.Errorf("unmarshal string to map error: %v, key: %s", err, newAncestors)
+						switch converted.(type) {
+						case map[string]interface{}, []interface{}, nil:
+							data[key] = converted
+						default:
+							return fmt.Errorf("dict value must be a mapping or sequence, key: %s", newAncestors)
 						}
-						data[key] = valueMap
+					case map[string]interface{}, []interface{}, nil:
+						// LoadMapData and validation may normalize the same value twice.
+					default:
+						return fmt.Errorf("dict value must be YAML text, mapping or sequence, key: %s", newAncestors)
 					}
 				}
 				keyToComment["valueChanged"] = make(map[string]interface{})
@@ -724,7 +749,9 @@ func (f *DataFormatter) fmtVal(ancestors string, data interface{}, keyToComment 
 					keyToComment["valueChanged"] = make(map[string]interface{})
 				}
 			}
-			f.fmtVal(newAncestors, value, keyToComment, dictValToStr)
+			if err := f.fmtVal(newAncestors, data[key], keyToComment, dictValToStr); err != nil {
+				return err
+			}
 		}
 	default:
 		return nil
@@ -732,15 +759,52 @@ func (f *DataFormatter) fmtVal(ancestors string, data interface{}, keyToComment 
 	return nil
 }
 
-func (f *DataFormatter) formatJson(data interface{}) ([]byte, error) {
-	indenttedJson, err := json.MarshalIndent(data, "", "  ")
-	if err != nil {
-		return nil, fmt.Errorf("marshal json error: %v", err)
+// Normalize actual map values rather than editing serialized JSON text: a
+// description or user value can legitimately contain the substring ": null".
+func normalizeJSONMapValues(data interface{}, mapValue bool) interface{} {
+	switch value := data.(type) {
+	case map[string]interface{}:
+		if value == nil {
+			if mapValue {
+				return []interface{}{}
+			}
+			return nil
+		}
+		result := make(map[string]interface{}, len(value))
+		for key, child := range value {
+			result[key] = normalizeJSONMapValues(child, true)
+		}
+		return result
+	case []interface{}:
+		if value == nil {
+			if mapValue {
+				return []interface{}{}
+			}
+			return nil
+		}
+		result := make([]interface{}, len(value))
+		for i, child := range value {
+			result[i] = normalizeJSONMapValues(child, false)
+		}
+		return result
+	case nil:
+		if mapValue {
+			return []interface{}{}
+		}
+	case string:
+		if mapValue && value == "null" {
+			return ""
+		}
 	}
-	jsonStr := strings.ReplaceAll(string(indenttedJson), ": null", ": []")
-	// replace "null" value to empty string
-	jsonStr = strings.ReplaceAll(jsonStr, ": \"null\"", ": \"\"")
-	return []byte(jsonStr), nil
+	return data
+}
+
+func (f *DataFormatter) formatJson(data interface{}) ([]byte, error) {
+	encoded, err := json.MarshalIndent(normalizeJSONMapValues(data, false), "", "  ")
+	if err != nil {
+		return nil, fmt.Errorf("marshal json error: %w", err)
+	}
+	return encoded, nil
 }
 
 func (f *DataFormatter) dictToString(data interface{}) (string, error) {

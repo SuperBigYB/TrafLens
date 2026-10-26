@@ -19,6 +19,7 @@ package agent_config
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -185,11 +186,11 @@ func TestConvDictValueCommentToSection(t *testing.T) {
 			}
 			if len(gotLines) != len(wantLines) {
 				t.Errorf("convDictValueCommentToSection() = \"%v\", want \"%v\"", string(gotLines), string(wantLines))
-				os.Mkdir("test_tmp", 0755)
-				if err := os.WriteFile(fmt.Sprintf("test_tmp/dict_comments_%s_got.yaml", tt.name), gotLines, os.ModePerm); err != nil {
+				outputDir := t.TempDir()
+				if err := os.WriteFile(filepath.Join(outputDir, fmt.Sprintf("dict_comments_%s_got.yaml", tt.name)), gotLines, os.ModePerm); err != nil {
 					t.Fatalf("Failed to write to file: %v", err)
 				}
-				if err := os.WriteFile(fmt.Sprintf("test_tmp/dict_comments_%s_want.yaml", tt.name), wantLines, os.ModePerm); err != nil {
+				if err := os.WriteFile(filepath.Join(outputDir, fmt.Sprintf("dict_comments_%s_want.yaml", tt.name)), wantLines, os.ModePerm); err != nil {
 					t.Fatalf("Failed to write to file: %v", err)
 				}
 			}
@@ -301,9 +302,11 @@ global:
 			want: []string{
 				"      process_matcher_comment:",
 				"        type: dict",
-				"        value_comment:",
+				"        value_comments:",
+				"          match_regex: \"\"",
 				"          match_regex_comment:",
 				"            upgrade_from: static_config.os-proc-regex.match-regex",
+				"          rewrite_name: \"\"",
 				"          rewrite_name_comment:",
 				"            type: string",
 				"            upgrade_from: static_config.os-proc-regex.rewrite-name",
@@ -320,7 +323,7 @@ global:
 				return
 			}
 			if len(detailCommentlines) != len(tt.want) {
-				t.Errorf("convCommentToSection() = \"%v\", want \"%v\"", detailCommentlines, tt.want)
+				t.Fatalf("convCommentToSection() = \"%v\", want \"%v\"", detailCommentlines, tt.want)
 			}
 			for i := 0; i < len(detailCommentlines); i++ {
 				if detailCommentlines[i] != tt.want[i] {
@@ -431,8 +434,8 @@ global:
 				t.Errorf("stripLines() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			os.Mkdir("test_tmp", 0755)
-			if err := os.WriteFile(fmt.Sprintf("test_tmp/stripped_lines_%s.yaml", tt.name), lines, os.ModePerm); err != nil {
+			outputDir := t.TempDir()
+			if err := os.WriteFile(filepath.Join(outputDir, fmt.Sprintf("stripped_lines_%s.yaml", tt.name)), lines, os.ModePerm); err != nil {
 				t.Fatalf("Failed to write to file: %v", err)
 			}
 		})
@@ -536,7 +539,7 @@ func TestConvertTemplateYAMLToJSON(t *testing.T) {
 			wantErr: false,
 		},
 	}
-	os.Mkdir("test_tmp", 0755)
+	outputDir := t.TempDir()
 	for _, tt := range tests {
 		if tt.name != "case01" {
 			continue
@@ -548,7 +551,7 @@ func TestConvertTemplateYAMLToJSON(t *testing.T) {
 				t.Errorf("ParseYAMLToJson() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if err = os.WriteFile(fmt.Sprintf("test_tmp/conv_tmpl_%s.json", tt.name), got, os.ModePerm); err != nil {
+			if err = os.WriteFile(filepath.Join(outputDir, fmt.Sprintf("conv_tmpl_%s.json", tt.name)), got, os.ModePerm); err != nil {
 				t.Fatalf("Failed to write to file: %v", err)
 			}
 		})
@@ -562,7 +565,7 @@ func TestGenerateKeyToComment(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    map[string]interface{}
+		want    KeyToComment
 		wantErr bool
 	}{
 		{
@@ -587,7 +590,7 @@ inputs:
     # type: string
     proc_dir_path: /proc`),
 			},
-			want: map[string]interface{}{
+			want: KeyToComment{
 				"global": map[string]interface{}{
 					"type": "section",
 				},
@@ -636,21 +639,25 @@ inputs:
       process_matcher:
         - match_regex: deepflow-.*`),
 			},
-			want: map[string]interface{}{
+			want: KeyToComment{
 				"inputs.proc.tag_extraction.process_matcher": map[string]interface{}{
 					"type": "dict",
-					"match_regex_comment": map[string]interface{}{
-						"upgrade_from": "static_config.os-proc-regex.match-regex",
-					},
-					"rewrite_name_comment": map[string]interface{}{
-						"type":         "string",
-						"upgrade_from": "static_config.os-proc-regex.rewrite-name",
+					"value_comments": map[string]interface{}{
+						"match_regex": "",
+						"match_regex_comment": map[string]interface{}{
+							"upgrade_from": "static_config.os-proc-regex.match-regex",
+						},
+						"rewrite_name": "",
+						"rewrite_name_comment": map[string]interface{}{
+							"type":         "string",
+							"upgrade_from": "static_config.os-proc-regex.rewrite-name",
+						},
 					},
 				},
-				"inputs.proc.tag_extraction.process_matcher.match_regex": map[string]interface{}{
+				"inputs.proc.tag_extraction.process_matcher.value_comments.match_regex": map[string]interface{}{
 					"upgrade_from": "static_config.os-proc-regex.match-regex",
 				},
-				"inputs.proc.tag_extraction.process_matcher.rewrite_name": map[string]interface{}{
+				"inputs.proc.tag_extraction.process_matcher.value_comments.rewrite_name": map[string]interface{}{
 					"type":         "string",
 					"upgrade_from": "static_config.os-proc-regex.rewrite-name",
 				},
@@ -664,9 +671,7 @@ inputs:
 				t.Errorf("GenerateKeyToComment() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			for k, v := range got {
-				assert.EqualValues(t, tt.want[k], v)
-			}
+			assert.EqualValues(t, tt.want, got)
 		})
 	}
 }
@@ -944,8 +949,8 @@ outputs:
 				t.Errorf("DataConvertToJSON() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			os.Mkdir("test_tmp", 0755)
-			if err = os.WriteFile("test_tmp/data_fmt_conv.json", got, os.ModePerm); err != nil {
+			outputDir := t.TempDir()
+			if err = os.WriteFile(filepath.Join(outputDir, "data_fmt_conv.json"), got, os.ModePerm); err != nil {
 				t.Fatalf("Failed to write to file: %v", err)
 			}
 		})
@@ -1002,8 +1007,8 @@ outputs:
 				t.Errorf("DataConvertToJSON() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			os.Mkdir("test_tmp", 0755)
-			if err = os.WriteFile("test_tmp/conv_yaml_to_json.json", got, os.ModePerm); err != nil {
+			outputDir := t.TempDir()
+			if err = os.WriteFile(filepath.Join(outputDir, "conv_yaml_to_json.json"), got, os.ModePerm); err != nil {
 				t.Fatalf("Failed to write to file: %v", err)
 			}
 		})
@@ -1145,11 +1150,28 @@ func TestConvertConfigYAMLToJSON(t *testing.T) {
 	// Set the count of test files to process (you can modify this value)
 	count := 1
 
+	inputDir := t.TempDir()
+	fixture := []byte(`inputs:
+  proc:
+    enabled: true
+    proc_dir_path: /proc
+    process_matcher:
+      - match_regex: "fixture-worker"
+        match_type: ProcessName
+outputs:
+  flow_log:
+    filters:
+      l7_capture_network_types: [0, 1]
+`)
+
 	// Generate test file names based on count
 	testFiles := []string{}
 	for i := 1; i <= count; i++ {
 		filename := fmt.Sprintf("test_config_%d.yaml", i)
 		testFiles = append(testFiles, filename)
+		if err := os.WriteFile(filepath.Join(inputDir, filename), fixture, 0600); err != nil {
+			t.Fatal(err)
+		}
 	}
 
 	if len(testFiles) == 0 {
@@ -1168,7 +1190,7 @@ func TestConvertConfigYAMLToJSON(t *testing.T) {
 
 		t.Run(testName, func(t *testing.T) {
 			// Read the test config file
-			yamlData, err := os.ReadFile(filename)
+			yamlData, err := os.ReadFile(filepath.Join(inputDir, filename))
 			if err != nil {
 				t.Fatalf("Failed to read test file %s: %v", filename, err)
 			}
@@ -1195,11 +1217,11 @@ func TestConvertConfigYAMLToJSON(t *testing.T) {
 			successfulConversions++
 
 			// Ensure output directory exists
-			os.Mkdir("test_tmp", 0755)
+			outputDir := t.TempDir()
 
 			// Write the JSON output for inspection
 			jsonFilename := strings.TrimSuffix(filename, ".yaml") + ".json"
-			outputPath := fmt.Sprintf("test_tmp/conv_%s", jsonFilename)
+			outputPath := filepath.Join(outputDir, fmt.Sprintf("conv_%s", jsonFilename))
 			if err = os.WriteFile(outputPath, got, os.ModePerm); err != nil {
 				t.Fatalf("Failed to write to file %s: %v", outputPath, err)
 			}
@@ -1541,8 +1563,8 @@ func TestConvertJSONToYAMLAndValidate(t *testing.T) {
 				return
 			}
 			assert.EqualValues(t, string(tt.want), string(got))
-			os.Mkdir("test_tmp", 0755)
-			if err = os.WriteFile("test_tmp/json_to_yaml.yaml", got, os.ModePerm); err != nil {
+			outputDir := t.TempDir()
+			if err = os.WriteFile(filepath.Join(outputDir, "json_to_yaml.yaml"), got, os.ModePerm); err != nil {
 				t.Fatalf("Failed to write to file: %v", err)
 			}
 		})

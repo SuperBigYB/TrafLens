@@ -60,10 +60,22 @@ func newUpgrader(toolData MigrationToolData) *Upgrader {
 }
 
 func (m *Upgrader) Upgrade(bytes []byte) ([]byte, error) {
+	// An Upgrader can be reused; manual fields belong to this input only.
+	m.spacialLowerVersionKeyToValue = make(map[string]interface{})
 	lowerVerData := make(map[string]interface{})
 	err := yaml.Unmarshal(bytes, &lowerVerData)
 	if err != nil {
 		return []byte{}, fmt.Errorf("failed to unmarshal yaml: %v to map", err)
+	}
+	if err := m.validateLegacyMigrationData(lowerVerData, ""); err != nil {
+		return nil, err
+	}
+	if rootFlag, present := lowerVerData["os-proc-sync-tagged-only"]; present {
+		if static, ok := lowerVerData["static_config"].(map[string]interface{}); ok {
+			if staticFlag, present := static["os-proc-sync-tagged-only"]; present && rootFlag != staticFlag {
+				return nil, fmt.Errorf("conflicting os-proc-sync-tagged-only aliases")
+			}
+		}
 	}
 	result := make(map[string]interface{})
 	m.lowerToHigher(lowerVerData, "", result)
@@ -71,96 +83,95 @@ func (m *Upgrader) Upgrade(bytes []byte) ([]byte, error) {
 	return mapToYaml(result)
 }
 
+// Validate values used by manual matcher conversion before any type assertion.
+func (m *Upgrader) validateLegacyMigrationData(data interface{}, ancestor string) error {
+	values, ok := data.(map[string]interface{})
+	if !ok {
+		return nil
+	}
+	for key, value := range values {
+		path := m.appendAncestor(ancestor, key)
+		switch path {
+		case "static_config.ebpf.uprobe-process-name-regexs.golang-symbol", "static_config.ebpf.on-cpu-profile.regex", "static_config.ebpf.off-cpu-profile.regex":
+			if _, ok := value.(string); !ok {
+				return fmt.Errorf("%s must be a string", path)
+			}
+		case "os-proc-sync-tagged-only", "static_config.os-proc-sync-tagged-only":
+			if _, ok := value.(bool); !ok {
+				return fmt.Errorf("%s must be a boolean", path)
+			}
+		case "static_config.os-proc-regex":
+			items, ok := value.([]interface{})
+			if !ok {
+				return fmt.Errorf("%s must be a list of matchers", path)
+			}
+			for index, item := range items {
+				matcher, ok := item.(map[string]interface{})
+				if !ok {
+					return fmt.Errorf("%s[%d] must be a matcher object", path, index)
+				}
+				for _, field := range []string{"match-regex", "match-type", "action", "rewrite-name"} {
+					if v, present := matcher[field]; present {
+						if _, ok := v.(string); !ok {
+							return fmt.Errorf("%s[%d].%s must be a string", path, index, field)
+						}
+					}
+				}
+				if action, present := matcher["action"]; present && action != "accept" && action != "drop" {
+					return fmt.Errorf("%s[%d].action must be accept or drop", path, index)
+				}
+			}
+		}
+		if err := m.validateLegacyMigrationData(value, path); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (m *Upgrader) appendSpecialLowerVersionKeyToValue(result map[string]interface{}) {
-	hasProcessMatcher := false
-	if inputs, ok := result["inputs"]; ok {
-		if proc, ok := inputs.(map[string]interface{})["proc"]; ok {
-			if _, ok := proc.(map[string]interface{})["process_matcher"]; ok {
-				hasProcessMatcher = true
-				if lowerVal, ok := m.spacialLowerVersionKeyToValue["static_config.ebpf.uprobe-process-name-regexs.golang-symbol"]; ok {
-					switch value := proc.(map[string]interface{})["process_matcher"].(type) {
-					case []interface{}:
-						value = append(value, interface{}(map[string]interface{}{"match_regex": lowerVal}))
-						proc.(map[string]interface{})["process_matcher"] = value
-					case []map[string]interface{}:
-						value = append(value, map[string]interface{}{"match_regex": lowerVal})
-						proc.(map[string]interface{})["process_matcher"] = value
-					default:
-					}
-				}
-
-				if lowerVal, ok := m.spacialLowerVersionKeyToValue["static_config.ebpf.on-cpu-profile.regex"]; ok {
-					switch value := proc.(map[string]interface{})["process_matcher"].(type) {
-					case []interface{}:
-						value = append(value, interface{}(map[string]interface{}{"match_regex": lowerVal}))
-						proc.(map[string]interface{})["process_matcher"] = value
-					case []map[string]interface{}:
-						value = append(value, map[string]interface{}{"match_regex": lowerVal})
-						proc.(map[string]interface{})["process_matcher"] = value
-					default:
-					}
-				}
-				if lowerVal, ok := m.spacialLowerVersionKeyToValue["static_config.ebpf.off-cpu-profile.regex"]; ok {
-					switch value := proc.(map[string]interface{})["process_matcher"].(type) {
-					case []interface{}:
-						value = append(value, interface{}(map[string]interface{}{"match_regex": lowerVal}))
-						proc.(map[string]interface{})["process_matcher"] = value
-					case []map[string]interface{}:
-						value = append(value, map[string]interface{}{"match_regex": lowerVal})
-						proc.(map[string]interface{})["process_matcher"] = value
-					default:
-					}
-				}
-
-				if lowerVal, ok := m.spacialLowerVersionKeyToValue["os-proc-sync-tagged-only"]; ok {
-					switch value := proc.(map[string]interface{})["process_matcher"].(type) {
-					case []interface{}:
-						for i := range value {
-							value[i].(map[string]interface{})["only_with_tag"] = lowerVal
-						}
-					case []map[string]interface{}:
-						for i := range value {
-							value[i]["only_with_tag"] = lowerVal
-						}
-					default:
+	var matchers []map[string]interface{}
+	if inputs, ok := result["inputs"].(map[string]interface{}); ok {
+		if proc, ok := inputs["proc"].(map[string]interface{}); ok {
+			switch value := proc["process_matcher"].(type) {
+			case []map[string]interface{}:
+				matchers = value
+			case []interface{}:
+				for _, item := range value {
+					if matcher, ok := item.(map[string]interface{}); ok {
+						matchers = append(matchers, matcher)
 					}
 				}
 			}
 		}
 	}
-	if !hasProcessMatcher {
-		onlyWithTag, onlyWithTagOK := m.spacialLowerVersionKeyToValue["os-proc-sync-tagged-only"]
-		var processMatchers []interface{}
-		if lowerVal, ok := m.spacialLowerVersionKeyToValue["static_config.ebpf.uprobe-process-name-regexs.golang-symbol"]; ok {
-			value := make(map[string]interface{})
-			value["match_regex"] = lowerVal
-			if onlyWithTagOK {
-				value["only_with_tag"] = onlyWithTag
-			}
-			processMatchers = append(processMatchers, value)
+	// Order is independent of map iteration and retains existing matcher order.
+	for _, source := range []struct{ key, feature string }{
+		{"static_config.ebpf.uprobe-process-name-regexs.golang-symbol", ""},
+		{"static_config.ebpf.on-cpu-profile.regex", "ebpf.profile.on_cpu"},
+		{"static_config.ebpf.off-cpu-profile.regex", "ebpf.profile.off_cpu"},
+	} {
+		regex, ok := m.spacialLowerVersionKeyToValue[source.key].(string)
+		if !ok || regex == "" {
+			continue
 		}
-		if lowerVal, ok := m.spacialLowerVersionKeyToValue["static_config.ebpf.on-cpu-profile.regex"]; ok {
-			value := make(map[string]interface{})
-			value["match_regex"] = lowerVal
-			if onlyWithTagOK {
-				value["only_with_tag"] = onlyWithTag
-			}
-			value["enabled_features"] = []string{"ebpf.profile.on_cpu"}
-			processMatchers = append(processMatchers, value)
+		matcher := map[string]interface{}{"match_regex": regex}
+		if source.feature != "" {
+			matcher["enabled_features"] = []string{source.feature}
 		}
-		if lowerVal, ok := m.spacialLowerVersionKeyToValue["static_config.ebpf.off-cpu-profile.regex"]; ok {
-			value := make(map[string]interface{})
-			value["match_regex"] = lowerVal
-			if onlyWithTagOK {
-				value["only_with_tag"] = onlyWithTag
-			}
-			value["enabled_features"] = []string{"ebpf.profile.off_cpu"}
-			processMatchers = append(processMatchers, value)
+		matchers = append(matchers, matcher)
+	}
+	tagged, hasTagged := m.spacialLowerVersionKeyToValue["static_config.os-proc-sync-tagged-only"].(bool)
+	if !hasTagged {
+		tagged, hasTagged = m.spacialLowerVersionKeyToValue["os-proc-sync-tagged-only"].(bool)
+	}
+	if hasTagged {
+		for _, matcher := range matchers {
+			matcher["only_with_tag"] = tagged
 		}
-
-		if len(processMatchers) > 0 {
-			m.setNestedValue(result, "inputs.proc.process_matcher", processMatchers)
-		}
+	}
+	if len(matchers) > 0 {
+		m.setNestedValue(result, "inputs.proc.process_matcher", matchers)
 	}
 }
 
@@ -169,17 +180,26 @@ func (m *Upgrader) lowerToHigher(lowerVerData interface{}, ancestor string, high
 	case map[string]interface{}:
 		for key, value := range data {
 			newAncestor := m.appendAncestor(ancestor, key)
+			manual := slices.Contains(m.lowerVersionKeysNeedHandleManually, newAncestor)
+			if manual {
+				m.setSpecialLowerVersionKeyToValue(newAncestor, value)
+			}
+			// This target is inside a list, so generic nested-map assignment is invalid.
+			if newAncestor == "static_config.os-proc-sync-tagged-only" {
+				continue
+			}
 			if higher, ok := m.lowerVerToHigherVerKey[newAncestor]; ok {
 				lowers := m.higherVerToLowerVerKeys[higher]
 				if len(lowers) > 1 {
+					if manual {
+						continue
+					}
 					for _, lower := range lowers {
 						log.Warnf("%s has been upgraded to %s, please configure it manually", lower, higher)
 					}
 				} else {
 					m.setNestedValue(higherVerData, higher, m.fmtLowerVersionValue(newAncestor, value))
 				}
-			} else if slices.Contains(m.lowerVersionKeysNeedHandleManually, newAncestor) {
-				m.setSpecialLowerVersionKeyToValue(newAncestor, value)
 			}
 			m.lowerToHigher(value, newAncestor, higherVerData)
 		}
@@ -533,6 +553,7 @@ func (p *MigrationToolData) fmtDictValKeyMap() {
 		// 升级 static_config.os-proc-sync-tagged-only 时，需要：
 		//  1. 将 inputs.proc.process_matcher 里所有的 only_with_tag 设置为 static_config.os-proc-sync-tagged-only
 		"os-proc-sync-tagged-only",
+		"static_config.os-proc-sync-tagged-only",
 		// 升级 static_config.ebpf.uprobe-process-name-regexs.golang-symbol 时，需要：
 		//  1. 将 inputs.proc.symbol_table.golang_specific.enabled 设置为 true
 		//  2. 新增一条 inputs.proc.process_matcher

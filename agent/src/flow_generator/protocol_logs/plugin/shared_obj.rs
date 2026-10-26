@@ -172,6 +172,14 @@ impl L7ProtocolParserInterface for SoLog {
                                 info.proto_str = self.proto_str.clone();
                                 info.proto = self.proto_num.unwrap();
                                 set_captured_byte!(info, param);
+                                if let Err(error) = info.validate_merge_cache(param) {
+                                    counter.fail_cnt.fetch_add(1, Ordering::Relaxed);
+                                    error!(
+                                        "so plugin {} rejected merge metadata: {}",
+                                        c.name, error
+                                    );
+                                    continue;
+                                }
 
                                 if param.parse_perf {
                                     let mut perf_stat = L7PerfStats::default();

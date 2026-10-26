@@ -32,7 +32,7 @@ use crate::{
     common::{
         flow::PacketDirection,
         l7_protocol_info::{L7ProtocolInfo, L7ProtocolInfoInterface},
-        l7_protocol_log::{LogCache, MultiMergeInfo},
+        l7_protocol_log::{LogCache, LogCacheKey, MultiMergeInfo, ParseParam},
     },
     config::handler::LogParserConfig,
     flow_generator::{
@@ -126,6 +126,41 @@ pub struct CustomInfo {
 }
 
 impl CustomInfo {
+    pub(crate) fn validate_merge_identity(&self) -> Result<(), Error> {
+        if self.need_protocol_merge && self.request_id.is_none() {
+            return Err(Error::WasmSerializeFail(
+                "plugin multi-message merge requires a request ID".to_string(),
+            ));
+        }
+        Ok(())
+    }
+
+    pub(crate) fn validate_merge_cache(&self, param: &ParseParam) -> Result<(), Error> {
+        self.validate_merge_identity()?;
+        if !param.parse_perf || !self.needs_session_aggregation() {
+            return Ok(());
+        }
+        let Some(cache) = param.l7_perf_cache.as_ref() else {
+            return Ok(());
+        };
+        let key = LogCacheKey::new(param, self.session_id(), self.is_reversed());
+        // rrt_timeout limits RTT accounting; it does not expire cache entries.
+        // Even an older entry reaches the shared merge operation before that
+        // threshold is checked. Preserve it until normal closure/flow removal
+        // or capacity eviction instead of reinterpreting its merge mode.
+        if cache
+            .borrow()
+            .rrt_cache
+            .peek(&key)
+            .is_some_and(|cached| cached.multi_merge_info.is_some() != self.need_merge())
+        {
+            return Err(Error::WasmSerializeFail(
+                "plugin changed merge mode while its session cache is active".to_string(),
+            ));
+        }
+        Ok(())
+    }
+
     /*
         req len:        4 bytes: | 1 bit: is nil? | 31bit length |
 
@@ -583,11 +618,15 @@ impl TryFrom<(&[u8], PacketDirection)> for CustomInfo {
         //
         // so in the legacy protocol, the first byte will not have the first bit as 0 and other bits as 1
         // we put a magic `PB` in front to represent protobuf serialized data
-        if buf.len() >= 2 && &buf[..2] == b"PB" {
-            Self::from_protobuf(&buf[2..], dir)
+        let info = if buf.len() >= 2 && &buf[..2] == b"PB" {
+            Self::from_protobuf(&buf[2..], dir)?
         } else {
-            Self::from_legacy_protocol(buf, dir)
-        }
+            Self::from_legacy_protocol(buf, dir)?
+        };
+        // Structural layout selection is complete before semantic validation:
+        // invalid current metadata must not trigger an old-layout retry.
+        info.validate_merge_identity()?;
+        Ok(info)
     }
 }
 
