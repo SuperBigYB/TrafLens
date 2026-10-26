@@ -24,6 +24,7 @@ env:
 
 jobs:
   build_agent:
+    if: github.repository == 'deepflowio/deepflow'
     name: build agent
     runs-on: "cirun-aws-amd64-32c--${{ github.run_id }}"
     steps:
@@ -182,6 +183,7 @@ jobs:
           ossutil cp -rf agent/pkg/TencentBlueKing/deepflow-agent.tgz oss://deepflow-ce/tencentblueking/agent/stable/deepflow-agent.tgz
 
   build_agent_arm64:
+    if: github.repository == 'deepflowio/deepflow'
     name: build agent arm64
     runs-on: "cirun-aws-arm64-32c--${{ github.run_id }}"
     steps:
@@ -324,6 +326,7 @@ jobs:
             package-artifact-arm64.tar
 
   build_agent_image:
+    if: github.repository == 'deepflowio/deepflow'
     name: build agent image
     needs:
     - build_agent
@@ -469,7 +472,7 @@ jobs:
   build_agent_static_link:
     name: build agent static link
     runs-on: "cirun-aws-amd64-32c--${{ github.run_id }}"
-    if: "startsWith(github.ref, 'refs/tags/')"
+    if: github.repository == 'deepflowio/deepflow' && startsWith(github.ref, 'refs/tags/')
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -577,7 +580,7 @@ jobs:
   build_agent_arm64_static_link:
     name: build agent arm64 static link
     runs-on: "cirun-aws-arm64-32c--${{ github.run_id }}"
-    if: "startsWith(github.ref, 'refs/tags/')"
+    if: github.repository == 'deepflowio/deepflow' && startsWith(github.ref, 'refs/tags/')
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -672,7 +675,7 @@ jobs:
   upload_arm64_artifact:
     name: upload arm64 artifact
     runs-on: ubuntu-latest
-    if: "startsWith(github.ref, 'refs/tags/')"
+    if: github.repository == 'deepflowio/deepflow' && startsWith(github.ref, 'refs/tags/')
     needs:
     - build_agent_arm64_static_link
     steps:

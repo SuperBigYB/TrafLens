@@ -11,6 +11,7 @@ on:
         type: string
 jobs:
   clear_branch:
+    if: github.repository == 'deepflowio/deepflow'
     runs-on: ubuntu-latest
     env:
       SKIP_PATTERNS: |

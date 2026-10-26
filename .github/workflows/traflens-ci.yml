@@ -1,0 +1,72 @@
+name: TrafLens CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: traflens-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Build and validate TrafLens
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      GOMAXPROCS: '2'
+      GOFLAGS: '-p=2'
+      TRAFLENS_DOWNLOAD_TOOLS: '1'
+    steps:
+      - name: Checkout candidate and reference history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up the pinned server Go toolchain
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: server/go.mod
+          cache-dependency-path: |
+            server/go.sum
+            traflens/protocol-smoke/go.sum
+
+      - name: Install native build prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y protobuf-compiler python3-venv make patch gcc
+
+      - name: Test host preflight tooling
+        run: make -C traflens test
+
+      - name: Build the complete community server
+        run: make -C traflens server
+
+      - name: Test queue, LRU and flow metrics
+        working-directory: server
+        run: go test -mod=vendor -short ./libs/queue ./libs/hmap/lru ./libs/flow-metrics -timeout 120s -count=1
+
+      - name: Check candidate against upstream wire fixtures
+        run: make -C traflens protocol-test
+
+      - name: Package the validated server
+        run: |
+          mkdir -p artifacts
+          mv server/bin/deepflow-server artifacts/traflens-server-linux-amd64
+          artifacts/traflens-server-linux-amd64 -v > artifacts/version.txt
+          cd artifacts
+          sha256sum traflens-server-linux-amd64 > SHA256SUMS
+
+      - name: Retain the binary, source version and checksum
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: traflens-server-linux-amd64-${{ github.sha }}
+          path: artifacts/
+          retention-days: 7
+          if-no-files-found: error

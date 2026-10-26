@@ -8,6 +8,7 @@ name: verify server
 
 jobs:
   verify_server:
+    if: github.repository == 'deepflowio/deepflow'
     name: verify server
     runs-on: ubuntu-latest
     steps:

@@ -8,6 +8,7 @@ on:
 
 jobs:
   verify_server:
+    if: github.repository == 'deepflowio/deepflow'
     name: verify server
     runs-on: "cirun-aws-amd64-32c--${{ github.run_id }}"
     steps:

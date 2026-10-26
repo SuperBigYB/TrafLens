@@ -24,6 +24,7 @@ env:
 
 jobs:
   build_server:
+    if: github.repository == 'deepflowio/deepflow'
     name: build server
     runs-on: "cirun-aws-amd64-32c--${{ github.run_id }}"
     steps:

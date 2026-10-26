@@ -7,6 +7,7 @@ on:
 
 jobs:
   verify_cli:
+    if: github.repository == 'deepflowio/deepflow'
     name: verify cli
     runs-on: ubuntu-latest
     steps:

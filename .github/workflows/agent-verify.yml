@@ -8,6 +8,7 @@ name: verify agent
 
 jobs:
   verify_agent:
+    if: github.repository == 'deepflowio/deepflow'
     name: verify agent
     runs-on: "cirun-aws-amd64-32c--${{ github.run_id }}"
     steps:
@@ -48,6 +49,7 @@ jobs:
           cargo fmt --all -- --check"
 
   verify_agent_arm64:
+    if: github.repository == 'deepflowio/deepflow'
     name: verify agent arm64
     runs-on: "cirun-aws-arm64-32c--${{ github.run_id }}"
     steps:

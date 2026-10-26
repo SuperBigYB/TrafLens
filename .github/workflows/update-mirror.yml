@@ -16,6 +16,7 @@ env:
 
 jobs:
   update_mirror:
+    if: github.repository == 'deepflowio/deepflow'
     name: update mirror
     runs-on: ubuntu-latest
     steps:

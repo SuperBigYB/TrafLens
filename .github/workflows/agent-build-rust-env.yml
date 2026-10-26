@@ -10,6 +10,7 @@ name: build agent env
 
 jobs:
   build_agent_env:
+    if: github.repository == 'deepflowio/deepflow'
     name: build agent env
     runs-on: "cirun-aws-amd64-32c--${{ github.run_id }}"
     steps:
@@ -57,6 +58,7 @@ jobs:
             "${{ secrets.REGISTRY_ALIYUN_ADDR }}/public/rust-build:latest"
 
   build_agent_env_arm64:
+    if: github.repository == 'deepflowio/deepflow'
     name: build agent env arm64
     runs-on: "cirun-aws-arm64-32c--${{ github.run_id }}"
     steps:

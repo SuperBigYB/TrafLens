@@ -24,6 +24,7 @@ on:
 
 jobs:
   build_docker_compose:
+    if: github.repository == 'deepflowio/deepflow'
     name: build docker_compose
     runs-on: ubuntu-latest
     steps:

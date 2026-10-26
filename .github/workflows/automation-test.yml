@@ -36,6 +36,7 @@ on:
 
 jobs:
   test:
+    if: github.repository == 'deepflowio/deepflow'
     runs-on: ubuntu-latest
     timeout-minutes: 200
     steps:

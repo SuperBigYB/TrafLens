@@ -14,6 +14,7 @@ permissions: write-all
 
 jobs:
   update_changelog:
+    if: github.repository == 'deepflowio/deepflow'
     runs-on: ubuntu-latest
     strategy:
       matrix:

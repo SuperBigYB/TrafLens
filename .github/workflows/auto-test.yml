@@ -19,6 +19,7 @@ env:
 
 jobs:
   ignore:
+    if: github.repository == 'deepflowio/deepflow'
     name: ignore
     runs-on: ubuntu-latest
     steps:

@@ -20,6 +20,7 @@ on:
 
 jobs:
   build_cli:
+    if: github.repository == 'deepflowio/deepflow'
     name: build cli
     runs-on: ubuntu-latest
     steps:
