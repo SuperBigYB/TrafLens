@@ -15,7 +15,11 @@ import (
 	"github.com/ClickHouse/ch-go/proto"
 )
 
-const writeRetryBackoff = 100 * time.Millisecond
+const (
+	writeRetryBackoff    = 100 * time.Millisecond
+	writeRetryMaxBackoff = time.Second
+	writeMaxAttempts     = 13 // initial attempt plus twelve retries, within the batch deadline
+)
 
 type queryConnection interface {
 	Do(context.Context, ch.Query) error
@@ -137,15 +141,17 @@ func (c *Cache) write(ctx context.Context) error {
 		return &batchWriteError{err: errors.New("nonempty cache has no input rows")}
 	}
 	var failure *batchWriteError
-	for attempt := 0; attempt <= RETRY_COUNT; attempt++ {
+	backoff := writeRetryBackoff
+	for attempt := 0; attempt < writeMaxAttempts; attempt++ {
 		if attempt > 0 {
-			timer := time.NewTimer(writeRetryBackoff)
+			timer := time.NewTimer(backoff)
 			select {
 			case <-ctx.Done():
 				timer.Stop()
 				return &batchWriteError{err: ctx.Err()}
 			case <-timer.C:
 			}
+			backoff = min(backoff*2, writeRetryMaxBackoff)
 		}
 		if err := ctx.Err(); err != nil {
 			return &batchWriteError{err: err}

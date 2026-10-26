@@ -326,7 +326,7 @@ func TestWriteBoundsDialRetriesAndFinalizesOnce(t *testing.T) {
 		return nil, &net.OpError{Op: "dial", Err: syscall.ECONNREFUSED}
 	}
 	w.Write(0, cache)
-	if dials != RETRY_COUNT+1 || qc.counter.WriteFailedCount != 2 || qc.counter.WriteSuccessCount != 0 || qc.counter.WriteUncertainCount != 0 || qc.counter.RetryCount != 2 || qc.counter.RetryFailedCount != 2 {
+	if dials != writeMaxAttempts || qc.counter.WriteFailedCount != 2 || qc.counter.WriteSuccessCount != 0 || qc.counter.WriteUncertainCount != 0 || qc.counter.RetryCount != int64(writeMaxAttempts-1) || qc.counter.RetryFailedCount != int64(writeMaxAttempts-1) {
 		t.Fatalf("unbounded/incorrect retry: dials=%d counter=%+v", dials, qc.counter)
 	}
 	assertFinalized(t, cache, block)
@@ -485,5 +485,32 @@ func TestWriteEmptySampleEOSIsBoundedWithoutSupply(t *testing.T) {
 		t.Fatalf("empty sample/EOS was supplied or retried: err=%v dials=%d counter=%+v", err, dials, qc.counter)
 	}
 	checkWire(t, done, 0, nil)
+	assertFinalized(t, cache, block)
+}
+
+func TestWriteRecoversAfterTransientDialRefusal(t *testing.T) {
+	w, qc, cache, block := testWriter(t)
+	const recoveryDelay = 550 * time.Millisecond
+	start := time.Now()
+	var dials int
+	var done <-chan wireOutcome
+	qc.dial = func(ctx context.Context, _ ch.Options) (writeConnection, error) {
+		dials++
+		if time.Since(start) < recoveryDelay {
+			return nil, &net.OpError{Op: "dial", Err: syscall.ECONNREFUSED}
+		}
+		var conn writeConnection
+		var err error
+		conn, done, err = wireConnection(ctx, "")
+		return conn, err
+	}
+	w.Write(0, cache)
+	if qc.counter.WriteSuccessCount != 2 || qc.counter.WriteFailedCount != 0 || qc.counter.WriteUncertainCount != 0 || dials < 2 || qc.counter.RetryCount != int64(dials-1) || qc.counter.RetryFailedCount != int64(dials-2) {
+		t.Fatalf("batch lost before backend recovered after %s: elapsed=%s dials=%d counter=%+v", recoveryDelay, time.Since(start), dials, qc.counter)
+	}
+	if elapsed := time.Since(start); elapsed < recoveryDelay || elapsed > FLUSH_TIMEOUT+time.Second {
+		t.Fatalf("recovery outside bounded window: %s", elapsed)
+	}
+	checkWire(t, done, 1, []uint64{11, 22})
 	assertFinalized(t, cache, block)
 }
