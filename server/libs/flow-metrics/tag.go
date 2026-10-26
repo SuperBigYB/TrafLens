@@ -596,15 +596,61 @@ func unmarshalUint16s(s string) ([]uint16, error) {
 func (t *Tag) MarshalTo(b []byte) int {
 	offset := 0
 
-	// 在InfluxDB的line protocol中，tag紧跟在measurement name之后，总会以逗号开头
 	if t.GlobalThreadID != 0 { // FIXME: zero写入的数据此字段总为0，目前无需该字段
 		offset += copy(b[offset:], ",_tid=")
 		offset += copy(b[offset:], strconv.FormatUint(uint64(t.GlobalThreadID), 10))
 	}
-
 	if t.Code&ACLGID != 0 {
 		offset += copy(b[offset:], ",acl_gid=")
 		offset += copy(b[offset:], strconv.FormatUint(uint64(t.ACLGID), 10))
+	}
+	if t.Code&VTAPID != 0 {
+		offset += copy(b[offset:], ",agent_id=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.VTAPID), 10))
+	}
+	if t.Code&L7Protocol != 0 {
+		offset += copy(b[offset:], ",app_instance="+t.AppInstance)
+		offset += copy(b[offset:], ",app_service="+t.AppService)
+	}
+	if t.Code&Resource != 0 {
+		offset += copy(b[offset:], ",auto_instance_id=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.AutoInstanceID), 10))
+	}
+	if t.Code&ResourcePath != 0 {
+		offset += copy(b[offset:], ",auto_instance_id_0=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.AutoInstanceID), 10))
+		offset += copy(b[offset:], ",auto_instance_id_1=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.AutoInstanceID1), 10))
+	}
+	if t.Code&Resource != 0 {
+		offset += copy(b[offset:], ",auto_instance_type=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.AutoInstanceType), 10))
+	}
+	if t.Code&ResourcePath != 0 {
+		offset += copy(b[offset:], ",auto_instance_type_0=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.AutoInstanceType), 10))
+		offset += copy(b[offset:], ",auto_instance_type_1=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.AutoInstanceType1), 10))
+	}
+	if t.Code&Resource != 0 {
+		offset += copy(b[offset:], ",auto_service_id=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.AutoServiceID), 10))
+	}
+	if t.Code&ResourcePath != 0 {
+		offset += copy(b[offset:], ",auto_service_id_0=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.AutoServiceID), 10))
+		offset += copy(b[offset:], ",auto_service_id_1=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.AutoServiceID1), 10))
+	}
+	if t.Code&Resource != 0 {
+		offset += copy(b[offset:], ",auto_service_type=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.AutoServiceType), 10))
+	}
+	if t.Code&ResourcePath != 0 {
+		offset += copy(b[offset:], ",auto_service_type_0=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.AutoServiceType), 10))
+		offset += copy(b[offset:], ",auto_service_type_1=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.AutoServiceType1), 10))
 	}
 	if t.Code&AZID != 0 {
 		offset += copy(b[offset:], ",az_id=")
@@ -616,17 +662,20 @@ func (t *Tag) MarshalTo(b []byte) int {
 		offset += copy(b[offset:], ",az_id_1=")
 		offset += copy(b[offset:], strconv.FormatUint(uint64(t.AZID1), 10))
 	}
-
-	if t.Code&Direction != 0 {
-		if t.Role == ROLE_CLIENT {
-			offset += copy(b[offset:], ",role=c2s")
-		} else if t.Role == ROLE_SERVER {
-			offset += copy(b[offset:], ",role=s2c")
-		} else if t.Role == ROLE_LOCAL {
-			offset += copy(b[offset:], ",role=local")
-		} else {
-			offset += copy(b[offset:], ",role=rest")
-		}
+	if t.Code&L7Protocol != 0 {
+		offset += copy(b[offset:], ",biz_type=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.BizType), 10))
+	}
+	if t.Code&TAPType != 0 {
+		offset += copy(b[offset:], ",capture_network_type_id=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.TAPType), 10))
+	}
+	if t.Code&TAPPort != 0 {
+		offset += copy(b[offset:], ",capture_nic=")
+		offset += putTAPPort(b[offset:], uint64(t.TAPPort))
+	}
+	if t.Code&L7Protocol != 0 {
+		offset += copy(b[offset:], ",endpoint="+t.Endpoint)
 	}
 	if t.Code&GPID != 0 {
 		offset += copy(b[offset:], ",gprocess_id=")
@@ -649,32 +698,41 @@ func (t *Tag) MarshalTo(b []byte) int {
 		offset += copy(b[offset:], strconv.FormatUint(uint64(t.HostID1), 10))
 	}
 	if t.Code&IP != 0 {
+		offset += copy(b[offset:], ",ip=")
 		if t.IsIPv4 == 0 {
-			offset += copy(b[offset:], ",ip=")
 			offset += copy(b[offset:], t.IP6.String())
+		} else {
+			offset += copy(b[offset:], utils.IpFromUint32(t.IP).String())
+		}
+	}
+	if t.Code&IPPath != 0 {
+		offset += copy(b[offset:], ",ip_0=")
+		if t.IsIPv4 == 0 {
+			offset += copy(b[offset:], t.IP6.String())
+		} else {
+			offset += copy(b[offset:], utils.IpFromUint32(t.IP).String())
+		}
+		offset += copy(b[offset:], ",ip_1=")
+		if t.IsIPv4 == 0 {
+			offset += copy(b[offset:], t.IP61.String())
+		} else {
+			offset += copy(b[offset:], utils.IpFromUint32(t.IP1).String())
+		}
+	}
+	if t.Code&IP != 0 {
+		if t.IsIPv4 == 0 {
 			offset += copy(b[offset:], ",ip_version=6")
 		} else {
-			offset += copy(b[offset:], ",ip=")
-			offset += copy(b[offset:], utils.IpFromUint32(t.IP).String())
 			offset += copy(b[offset:], ",ip_version=4")
 		}
 	}
 	if t.Code&IPPath != 0 {
 		if t.IsIPv4 == 0 {
-			offset += copy(b[offset:], ",ip_0=")
-			offset += copy(b[offset:], t.IP6.String())
-			offset += copy(b[offset:], ",ip_1=")
-			offset += copy(b[offset:], t.IP61.String())
-			offset += copy(b[offset:], ",is_version=6")
+			offset += copy(b[offset:], ",ip_version=6")
 		} else {
-			offset += copy(b[offset:], ",ip_0=")
-			offset += copy(b[offset:], utils.IpFromUint32(t.IP).String())
-			offset += copy(b[offset:], ",ip_1=")
-			offset += copy(b[offset:], utils.IpFromUint32(t.IP1).String())
 			offset += copy(b[offset:], ",ip_version=4")
 		}
 	}
-
 	if t.Code&IsKeyService != 0 {
 		if t.IsKeyService == 1 {
 			offset += copy(b[offset:], ",is_key_service=1")
@@ -682,18 +740,21 @@ func (t *Tag) MarshalTo(b []byte) int {
 			offset += copy(b[offset:], ",is_key_service=0")
 		}
 	}
-
 	if t.Code&L3Device != 0 {
 		offset += copy(b[offset:], ",l3_device_id=")
 		offset += copy(b[offset:], strconv.FormatUint(uint64(t.L3DeviceID), 10))
-		offset += copy(b[offset:], ",l3_device_type=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.L3DeviceType), 10))
 	}
 	if t.Code&L3DevicePath != 0 {
 		offset += copy(b[offset:], ",l3_device_id_0=")
 		offset += copy(b[offset:], strconv.FormatUint(uint64(t.L3DeviceID), 10))
 		offset += copy(b[offset:], ",l3_device_id_1=")
 		offset += copy(b[offset:], strconv.FormatUint(uint64(t.L3DeviceID1), 10))
+	}
+	if t.Code&L3Device != 0 {
+		offset += copy(b[offset:], ",l3_device_type=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.L3DeviceType), 10))
+	}
+	if t.Code&L3DevicePath != 0 {
 		offset += copy(b[offset:], ",l3_device_type_0=")
 		offset += copy(b[offset:], strconv.FormatUint(uint64(t.L3DeviceType), 10))
 		offset += copy(b[offset:], ",l3_device_type_1=")
@@ -712,170 +773,6 @@ func (t *Tag) MarshalTo(b []byte) int {
 	if t.Code&L7Protocol != 0 {
 		offset += copy(b[offset:], ",l7_protocol=")
 		offset += copy(b[offset:], strconv.FormatUint(uint64(t.L7Protocol), 10))
-		offset += copy(b[offset:], ",app_service="+t.AppService)
-		offset += copy(b[offset:], ",app_instance="+t.AppInstance)
-		offset += copy(b[offset:], ",endpoint="+t.Endpoint)
-		offset += copy(b[offset:], ",biz_type=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.BizType), 10))
-	}
-	if t.Code&MAC != 0 {
-		// 不存入tsdb中
-		//offset += copy(b[offset:], ",mac=")
-		//offset += copy(b[offset:], utils.Uint64ToMac(t.MAC).String())
-	}
-	if t.Code&MACPath != 0 {
-		// 不存入tsdb中
-		//offset += copy(b[offset:], ",mac_0=")
-		//offset += copy(b[offset:], utils.Uint64ToMac(t.MAC).String())
-		//offset += copy(b[offset:], ",mac_1=")
-		//offset += copy(b[offset:], utils.Uint64ToMac(t.MAC1).String())
-	}
-
-	if t.Code&PodClusterID != 0 {
-		offset += copy(b[offset:], ",pod_cluster_id=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodClusterID), 10))
-	}
-
-	if t.Code&PodClusterIDPath != 0 {
-		offset += copy(b[offset:], ",pod_cluster_id_0=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodClusterID), 10))
-		offset += copy(b[offset:], ",pod_cluster_id_1=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodClusterID1), 10))
-	}
-
-	if t.Code&PodGroupID != 0 {
-		offset += copy(b[offset:], ",pod_group_id=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodGroupID), 10))
-	}
-
-	if t.Code&PodGroupIDPath != 0 {
-		offset += copy(b[offset:], ",pod_group_id_0=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodGroupID), 10))
-		offset += copy(b[offset:], ",pod_group_id_1=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodGroupID1), 10))
-	}
-
-	if t.Code&PodID != 0 {
-		offset += copy(b[offset:], ",pod_id=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodID), 10))
-	}
-
-	if t.Code&PodIDPath != 0 {
-		offset += copy(b[offset:], ",pod_id_0=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodID), 10))
-		offset += copy(b[offset:], ",pod_id_1=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodID1), 10))
-	}
-
-	if t.Code&PodNodeID != 0 {
-		offset += copy(b[offset:], ",pod_node_id=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodNodeID), 10))
-	}
-
-	if t.Code&PodNodeIDPath != 0 {
-		offset += copy(b[offset:], ",pod_node_id_0=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodNodeID), 10))
-		offset += copy(b[offset:], ",pod_node_id_1=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodNodeID1), 10))
-	}
-
-	if t.Code&PodNSID != 0 {
-		offset += copy(b[offset:], ",pod_ns_id=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodNSID), 10))
-	}
-
-	if t.Code&PodNSIDPath != 0 {
-		offset += copy(b[offset:], ",pod_ns_id_0=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodNSID), 10))
-		offset += copy(b[offset:], ",pod_ns_id_1=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodNSID1), 10))
-	}
-
-	if t.Code&Protocol != 0 {
-		offset += copy(b[offset:], ",protocol=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.Protocol), 10))
-	}
-
-	if t.Code&RegionID != 0 {
-		offset += copy(b[offset:], ",region_id=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.RegionID), 10))
-	}
-	if t.Code&RegionIDPath != 0 {
-		offset += copy(b[offset:], ",region_id_0=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.RegionID), 10))
-		offset += copy(b[offset:], ",region_id_1=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.RegionID1), 10))
-	}
-
-	if t.Code&Resource != 0 {
-		offset += copy(b[offset:], ",auto_instance_id=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.AutoInstanceID), 10))
-		offset += copy(b[offset:], ",auto_instance_type=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.AutoInstanceType), 10))
-		offset += copy(b[offset:], ",auto_service_id=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.AutoServiceID), 10))
-		offset += copy(b[offset:], ",auto_service_type=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.AutoServiceType), 10))
-	}
-	if t.Code&ResourcePath != 0 {
-		offset += copy(b[offset:], ",auto_instance_id_0=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.AutoInstanceID), 10))
-		offset += copy(b[offset:], ",auto_instance_type_0=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.AutoInstanceType), 10))
-		offset += copy(b[offset:], ",auto_service_id_0=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.AutoServiceID), 10))
-		offset += copy(b[offset:], ",auto_service_type_0=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.AutoServiceType), 10))
-
-		offset += copy(b[offset:], ",auto_instance_id_1=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.AutoInstanceID1), 10))
-		offset += copy(b[offset:], ",auto_instance_type_1=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.AutoInstanceType1), 10))
-		offset += copy(b[offset:], ",auto_service_id_1=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.AutoServiceID1), 10))
-		offset += copy(b[offset:], ",auto_service_type_1=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.AutoServiceType1), 10))
-	}
-
-	if t.Code&SignalSource != 0 {
-		offset += copy(b[offset:], ",signal_source=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.SignalSource), 10))
-	}
-
-	if t.Code&ServerPort != 0 {
-		offset += copy(b[offset:], ",server_port=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.ServerPort), 10))
-	}
-
-	if t.Code&ServiceID != 0 {
-		offset += copy(b[offset:], ",service_id=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.ServiceID), 10))
-	}
-
-	if t.Code&ServiceIDPath != 0 {
-		offset += copy(b[offset:], ",service_id_0=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.ServiceID), 10))
-		offset += copy(b[offset:], ",service_id_1=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.ServiceID1), 10))
-	}
-
-	if t.Code&SubnetID != 0 {
-		offset += copy(b[offset:], ",subnet_id=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.SubnetID), 10))
-	}
-	if t.Code&SubnetIDPath != 0 {
-		offset += copy(b[offset:], ",subnet_id_0=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.SubnetID), 10))
-		offset += copy(b[offset:], ",subnet_id_1=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.SubnetID1), 10))
-	}
-	if t.Code&TunnelIPID != 0 {
-		offset += copy(b[offset:], ",tunnel_ip_id=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.TunnelIPID), 10))
-	}
-	if t.Code&TAPPort != 0 {
-		offset += copy(b[offset:], ",capture_nic=")
-		offset += putTAPPort(b[offset:], uint64(t.TAPPort))
 	}
 	if t.Code&TAPSide != 0 {
 		switch t.TAPSide {
@@ -903,15 +800,129 @@ func (t *Tag) MarshalTo(b []byte) int {
 			offset += copy(b[offset:], ",observation_point=s-gw")
 		}
 	}
-	if t.Code&TAPType != 0 {
-		offset += copy(b[offset:], ",capture_network_type_id=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.TAPType), 10))
+	if t.Code&PodClusterID != 0 {
+		offset += copy(b[offset:], ",pod_cluster_id=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodClusterID), 10))
+	}
+	if t.Code&PodClusterIDPath != 0 {
+		offset += copy(b[offset:], ",pod_cluster_id_0=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodClusterID), 10))
+		offset += copy(b[offset:], ",pod_cluster_id_1=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodClusterID1), 10))
+	}
+	if t.Code&PodGroupID != 0 {
+		offset += copy(b[offset:], ",pod_group_id=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodGroupID), 10))
+	}
+	if t.Code&PodGroupIDPath != 0 {
+		offset += copy(b[offset:], ",pod_group_id_0=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodGroupID), 10))
+		offset += copy(b[offset:], ",pod_group_id_1=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodGroupID1), 10))
+	}
+	if t.Code&PodID != 0 {
+		offset += copy(b[offset:], ",pod_id=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodID), 10))
+	}
+	if t.Code&PodIDPath != 0 {
+		offset += copy(b[offset:], ",pod_id_0=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodID), 10))
+		offset += copy(b[offset:], ",pod_id_1=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodID1), 10))
+	}
+	if t.Code&PodNodeID != 0 {
+		offset += copy(b[offset:], ",pod_node_id=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodNodeID), 10))
+	}
+	if t.Code&PodNodeIDPath != 0 {
+		offset += copy(b[offset:], ",pod_node_id_0=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodNodeID), 10))
+		offset += copy(b[offset:], ",pod_node_id_1=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodNodeID1), 10))
+	}
+	if t.Code&PodNSID != 0 {
+		offset += copy(b[offset:], ",pod_ns_id=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodNSID), 10))
+	}
+	if t.Code&PodNSIDPath != 0 {
+		offset += copy(b[offset:], ",pod_ns_id_0=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodNSID), 10))
+		offset += copy(b[offset:], ",pod_ns_id_1=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.PodNSID1), 10))
+	}
+	if t.Code&Protocol != 0 {
+		offset += copy(b[offset:], ",protocol=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.Protocol), 10))
+	}
+	if t.Code&RegionID != 0 {
+		offset += copy(b[offset:], ",region_id=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.RegionID), 10))
+	}
+	if t.Code&RegionIDPath != 0 {
+		offset += copy(b[offset:], ",region_id_0=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.RegionID), 10))
+		offset += copy(b[offset:], ",region_id_1=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.RegionID1), 10))
+	}
+	if t.Code&Direction != 0 {
+		if t.Role == ROLE_CLIENT {
+			offset += copy(b[offset:], ",role=c2s")
+		} else if t.Role == ROLE_SERVER {
+			offset += copy(b[offset:], ",role=s2c")
+		} else if t.Role == ROLE_LOCAL {
+			offset += copy(b[offset:], ",role=local")
+		} else {
+			offset += copy(b[offset:], ",role=rest")
+		}
+	}
+	if t.Code&ServerPort != 0 {
+		offset += copy(b[offset:], ",server_port=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.ServerPort), 10))
+	}
+	if t.Code&ServiceID != 0 {
+		offset += copy(b[offset:], ",service_id=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.ServiceID), 10))
+	}
+	if t.Code&ServiceIDPath != 0 {
+		offset += copy(b[offset:], ",service_id_0=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.ServiceID), 10))
+		offset += copy(b[offset:], ",service_id_1=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.ServiceID1), 10))
+	}
+	if t.Code&SignalSource != 0 {
+		offset += copy(b[offset:], ",signal_source=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.SignalSource), 10))
+	}
+	if t.Code&SubnetID != 0 {
+		offset += copy(b[offset:], ",subnet_id=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.SubnetID), 10))
+	}
+	if t.Code&SubnetIDPath != 0 {
+		offset += copy(b[offset:], ",subnet_id_0=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.SubnetID), 10))
+		offset += copy(b[offset:], ",subnet_id_1=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.SubnetID1), 10))
 	}
 	if t.Code&VTAPID != 0 {
-		offset += copy(b[offset:], ",agent_id=")
-		offset += copy(b[offset:], strconv.FormatUint(uint64(t.VTAPID), 10))
 		offset += copy(b[offset:], ",team_id=")
 		offset += copy(b[offset:], strconv.FormatUint(uint64(t.TeamID), 10))
+	}
+	if t.Code&TunnelIPID != 0 {
+		offset += copy(b[offset:], ",tunnel_ip_id=")
+		offset += copy(b[offset:], strconv.FormatUint(uint64(t.TunnelIPID), 10))
+	}
+
+	if t.Code&MAC != 0 {
+		// 不存入tsdb中
+		//offset += copy(b[offset:], ",mac=")
+		//offset += copy(b[offset:], utils.Uint64ToMac(t.MAC).String())
+	}
+	if t.Code&MACPath != 0 {
+		// 不存入tsdb中
+		//offset += copy(b[offset:], ",mac_0=")
+		//offset += copy(b[offset:], utils.Uint64ToMac(t.MAC).String())
+		//offset += copy(b[offset:], ",mac_1=")
+		//offset += copy(b[offset:], utils.Uint64ToMac(t.MAC1).String())
 	}
 
 	return offset
@@ -1349,6 +1360,14 @@ func ReleaseTag(tag *Tag) {
 func CloneTag(tag *Tag) *Tag {
 	newTag := AcquireTag()
 	newTag.Field = tag.Field
+	if tag.IP6 != nil {
+		newTag.IP6 = make(net.IP, len(tag.IP6))
+		copy(newTag.IP6, tag.IP6)
+	}
+	if tag.IP61 != nil {
+		newTag.IP61 = make(net.IP, len(tag.IP61))
+		copy(newTag.IP61, tag.IP61)
+	}
 	newTag.Code = tag.Code
 	newTag.id = tag.id
 	return newTag

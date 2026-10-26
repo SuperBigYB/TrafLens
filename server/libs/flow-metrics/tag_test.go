@@ -44,11 +44,11 @@ func TestHasEdgeTagField(t *testing.T) {
 
 func TestInt16Unmarshal(t *testing.T) {
 	for i := math.MinInt16; i <= math.MaxInt16; i++ {
-		v, _ := unmarshalUint16WithSpecialID(marshalUint16WithSpecialID(int16(i)))
-		if int16(i) != v {
+		v, err := unmarshalUint16WithSpecialID(marshalUint16WithSpecialID(int16(i)))
+		if err != nil || int16(i) != v {
 			t.Errorf("Int16序列化反序列化[%d]不正确", i)
 		}
-		v = unmarshalInt32WithSpecialID(marshalInt32WithSpecialID(int16(i)))
+		v = unmarshalInt32WithSpecialID(MarshalInt32WithSpecialID(int32(i)))
 		if int16(i) != v {
 			t.Errorf("Int32序列化反序列化[%d]不正确", i)
 		}
@@ -72,16 +72,59 @@ func TestCloneTagWithIPv6Fields(t *testing.T) {
 		ip[i] = byte(i)
 	}
 	tagOrigin := AcquireTag()
-	tagOrigin.Field = AcquireField()
-	tagOrigin.IsIPv6 = 1
+	defer ReleaseTag(tagOrigin)
+	tagOrigin.Field = Field{IsIPv4: 0}
 	tagOrigin.IP6 = ip[:net.IPv6len]
+	tagOrigin.IP61 = append(net.IP(nil), ip[:]...)
+	tagOrigin.Code = IPPath
+	tagOrigin.GlobalThreadID = 112
+	tagOrigin.id = "original"
 	tagCloned := CloneTag(tagOrigin)
+	defer ReleaseTag(tagCloned)
 	if !tagCloned.IP6.Equal(tagOrigin.IP6) {
 		t.Error("CloneTag产生的tag和原tag字段不一致")
+	}
+	if !tagCloned.IP61.Equal(tagOrigin.IP61) || tagCloned.Code != tagOrigin.Code ||
+		tagCloned.GlobalThreadID != tagOrigin.GlobalThreadID || tagCloned.id != tagOrigin.id {
+		t.Error("CloneTag did not preserve destination IPv6 or tag metadata")
 	}
 	tagCloned.IP6[0] = 255
 	if tagCloned.IP6.Equal(tagOrigin.IP6) {
 		t.Error("CloneTag产生的tag和原tag共享了字段")
+	}
+	tagCloned.IP61[0] = 254
+	if tagCloned.IP61.Equal(tagOrigin.IP61) {
+		t.Error("CloneTag shares the destination IPv6 backing array")
+	}
+	tagOrigin.IP6[1] = 253
+	tagOrigin.IP61[1] = 252
+	if tagCloned.IP6[1] != 1 || tagCloned.IP61[1] != 1 {
+		t.Error("mutating the original IPv6 fields changed the clone")
+	}
+}
+
+func TestCloneTagWithNilAndEmptyIPv6Fields(t *testing.T) {
+	for _, tc := range []struct {
+		name string
+		ip6  net.IP
+		ip61 net.IP
+	}{
+		{name: "nil"},
+		{name: "empty", ip6: net.IP{}, ip61: net.IP{}},
+		{name: "mixed", ip61: net.IP{}},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			original := &Tag{Field: Field{IP6: tc.ip6, IP61: tc.ip61}, Code: IPPath, id: "empty"}
+			cloned := CloneTag(original)
+			defer ReleaseTag(cloned)
+			if (cloned.IP6 == nil) != (tc.ip6 == nil) || (cloned.IP61 == nil) != (tc.ip61 == nil) ||
+				len(cloned.IP6) != len(tc.ip6) || len(cloned.IP61) != len(tc.ip61) {
+				t.Error("CloneTag changed nil or empty IPv6 fields")
+			}
+			if cloned.Code != original.Code || cloned.id != original.id {
+				t.Error("CloneTag did not preserve tag metadata")
+			}
+		})
 	}
 }
 
@@ -104,9 +147,9 @@ func parseTagkeys(b []byte) []string {
 }
 
 func TestMarshallToInfluxdb(t *testing.T) {
-	b := make([]byte, 1024)
-	f := Field{}
-	tag := &Tag{&f, 0, ""}
+	b := make([]byte, MAX_STRING_LENGTH)
+	f := Field{IsIPv4: 1}
+	tag := &Tag{Field: f}
 	tag.GlobalThreadID = 112
 	tag.Code = ^(HostIDPath | IPPath | L3DevicePath | L3EpcIDPath | RegionIDPath | SubnetIDPath | PodNodeIDPath | AZIDPath | PodGroupIDPath | PodNSIDPath | PodIDPath | PodClusterIDPath | ResourcePath)
 
@@ -142,18 +185,62 @@ func TestMarshallToInfluxdb(t *testing.T) {
 	}
 }
 
+func TestMarshalTagIPv6Path(t *testing.T) {
+	tag := Tag{
+		Field: Field{IP6: net.ParseIP("2001:db8::1"), IP61: net.ParseIP("2001:db8::2")},
+		Code:  IPPath,
+	}
+	if actual := tag.ToKVString(); actual != ",ip_0=2001:db8::1,ip_1=2001:db8::2,ip_version=6" {
+		t.Fatalf("invalid IPv6 path tags: %s", actual)
+	}
+}
+
+func TestMarshalTagMixedCodesAreSorted(t *testing.T) {
+	for _, ipv4 := range []uint8{0, 1} {
+		tag := Tag{
+			Field: Field{GlobalThreadID: 112, IsIPv4: ipv4,
+				IP6: net.ParseIP("2001:db8::1"), IP61: net.ParseIP("2001:db8::2")},
+			Code: ^Code(0),
+		}
+		keys := parseTagkeys([]byte(tag.ToKVString()))
+		if len(keys) != 77 {
+			t.Fatalf("IPv4=%d: serialized %d keys, want 77", ipv4, len(keys))
+		}
+		if !sort.StringsAreSorted(keys) {
+			t.Errorf("IPv4=%d: tag keys are not sorted: %v", ipv4, keys)
+		}
+	}
+}
+
+func TestMarshalTagResourceFields(t *testing.T) {
+	tag := Tag{
+		Field: Field{
+			AutoInstanceID: 1, AutoInstanceID1: 2, AutoInstanceType: 3, AutoInstanceType1: 4,
+			AutoServiceID: 5, AutoServiceID1: 6, AutoServiceType: 7, AutoServiceType1: 8,
+		},
+		Code: Resource | ResourcePath,
+	}
+	expected := ",auto_instance_id=1,auto_instance_id_0=1,auto_instance_id_1=2" +
+		",auto_instance_type=3,auto_instance_type_0=3,auto_instance_type_1=4" +
+		",auto_service_id=5,auto_service_id_0=5,auto_service_id_1=6" +
+		",auto_service_type=7,auto_service_type_0=7,auto_service_type_1=8"
+	if actual := tag.ToKVString(); actual != expected {
+		t.Fatalf("resource tag values or order changed: %s", actual)
+	}
+}
+
 func checkTagAndMiniTagEqual(tag *Tag, miniTag *MiniTag) bool {
-	if miniTag.Code&Direction != 0 && miniTag.HasEdgeTagField() || tag.Code&TAPSide != 0 {
-		if miniTag.Code&Direction == 0 || !miniTag.HasEdgeTagField() {
-			return false
-		}
-		if tag.Code&TAPSide == 0 {
-			return false
-		}
-		if tag.Code & ^TAPSide != miniTag.Code & ^Direction {
-			return false
-		}
-	} else if tag.Code != miniTag.Code {
+	expectedCode := miniTag.Code
+	if expectedCode&Direction != 0 && expectedCode.HasEdgeTagField() {
+		expectedCode = expectedCode&^Direction | TAPSide
+	}
+	// Decoding legacy agent tags adds process and signal-source dimensions.
+	if expectedCode&IPPath != 0 {
+		expectedCode |= GPIDPath | SignalSource
+	} else if expectedCode != TRAFFIC_POLICY {
+		expectedCode |= GPID | SignalSource
+	}
+	if tag.Code != expectedCode {
 		return false
 	}
 	if tag.GlobalThreadID != miniTag.GlobalThreadID {
@@ -161,16 +248,17 @@ func checkTagAndMiniTagEqual(tag *Tag, miniTag *MiniTag) bool {
 	}
 
 	srcIP, dstIP := miniTag.IP(), miniTag.IP1()
-	srcEpc, dstEpc := miniTag.L3EpcID, miniTag.L3EpcID1
+	srcEpc := MarshalInt32WithSpecialID(int32(miniTag.L3EpcID))
+	dstEpc := MarshalInt32WithSpecialID(int32(miniTag.L3EpcID1))
 
 	code := tag.Code
 
 	if code&IP != 0 {
-		if tag.IsIPv6 != 0 && miniTag.IsIPv6 != 0 {
+		if tag.IsIPv4 == 0 && miniTag.IsIPv6 != 0 {
 			if !tag.IP6.Equal(srcIP) {
 				return false
 			}
-		} else if tag.IsIPv6 == 0 && miniTag.IsIPv6 == 0 {
+		} else if tag.IsIPv4 != 0 && miniTag.IsIPv6 == 0 {
 			if tag.IP != binary.BigEndian.Uint32(srcIP) {
 				return false
 			}
@@ -185,14 +273,14 @@ func checkTagAndMiniTagEqual(tag *Tag, miniTag *MiniTag) bool {
 	}
 
 	if code&IPPath != 0 {
-		if tag.IsIPv6 != 0 && miniTag.IsIPv6 != 0 {
+		if tag.IsIPv4 == 0 && miniTag.IsIPv6 != 0 {
 			if !tag.IP6.Equal(srcIP) {
 				return false
 			}
 			if !tag.IP61.Equal(dstIP) {
 				return false
 			}
-		} else if tag.IsIPv6 == 0 && miniTag.IsIPv6 == 0 {
+		} else if tag.IsIPv4 != 0 && miniTag.IsIPv6 == 0 {
 			if tag.IP != binary.BigEndian.Uint32(srcIP) {
 				return false
 			}
@@ -243,15 +331,12 @@ func checkTagAndMiniTagEqual(tag *Tag, miniTag *MiniTag) bool {
 		}
 	}
 
-	if code&TagType != 0 {
-		if tag.TagType != miniTag.TagType {
-			return false
-		}
+	if code&Direction != 0 && tag.Role != miniTag.Direction.ToRole() {
+		return false
 	}
-	if code&TagValue != 0 {
-		if tag.TagValue != miniTag.TagValue {
-			return false
-		}
+	// The protobuf transport shares server_port with tunnel_ip_id.
+	if code&TunnelIPID != 0 && tag.TunnelIPID != miniTag.ServerPort {
+		return false
 	}
 	return true
 }
@@ -271,10 +356,9 @@ func TestEncodeMiniTag(t *testing.T) {
 			Direction:  ClientToServer,
 			TAPType:    CLOUD,
 			ACLGID:     16,
-			TagType:    TAG_TYPE_TUNNEL_IP_ID,
-			TagValue:   18,
+			TunnelIPID: 5324,
 		},
-		Code: IP | L3EpcID | VTAPID | Protocol | ServerPort | Direction | TAPType | ACLGID | TagType | TagValue,
+		Code: IP | L3EpcID | VTAPID | Protocol | ServerPort | Direction | TAPType | ACLGID | TunnelIPID,
 	}
 
 	pbMtagE := &pb.MiniTag{}
@@ -285,7 +369,7 @@ func TestEncodeMiniTag(t *testing.T) {
 	pbMtagD := &pb.MiniTag{}
 	decoder.ReadPB(pbMtagD)
 
-	sideTag := &Tag{Field: &Field{}}
+	sideTag := &Tag{}
 	sideTag.ReadFromPB(pbMtagD)
 
 	if !checkTagAndMiniTagEqual(sideTag, sideMiniTag) {
@@ -309,10 +393,9 @@ func TestEncodeMiniTag(t *testing.T) {
 			Direction:  ClientToServer,
 			TAPType:    CLOUD,
 			ACLGID:     16,
-			TagType:    TAG_TYPE_TUNNEL_IP_ID,
-			TagValue:   18,
+			TunnelIPID: 5324,
 		},
-		Code: IPPath | L3EpcIDPath | VTAPID | Protocol | ServerPort | Direction | TAPType | ACLGID | TagType | TagValue,
+		Code: IPPath | L3EpcIDPath | VTAPID | Protocol | ServerPort | Direction | TAPType | ACLGID | TunnelIPID,
 	}
 
 	pbMtagE.Reset()
@@ -321,7 +404,7 @@ func TestEncodeMiniTag(t *testing.T) {
 	decoder.Init(encoder.Bytes())
 
 	pbMtagD.Reset()
-	edgeTag := &Tag{Field: &Field{}}
+	edgeTag := &Tag{}
 	decoder.ReadPB(pbMtagD)
 	edgeTag.ReadFromPB(pbMtagD)
 
@@ -341,7 +424,7 @@ func TestEncodeMiniTag(t *testing.T) {
 
 	pbMtagD.Reset()
 	decoder.ReadPB(pbMtagD)
-	edgeTag = &Tag{Field: &Field{}}
+	edgeTag = &Tag{}
 	edgeTag.ReadFromPB(pbMtagD)
 
 	if !checkTagAndMiniTagEqual(edgeTag, edgeMiniTag) {

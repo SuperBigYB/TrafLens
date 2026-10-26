@@ -119,7 +119,14 @@ func TestMerge(t *testing.T) {
 		t.Errorf("Traffic ConcurrentMerge failed, expected:%v, actual:%v", t2, t1)
 	}
 
-	l1, l2 := &Latency{}, &Latency{1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}
+	l1, l2 := &Latency{}, &Latency{
+		RTTMax: 1, RTTClientMax: 1, RTTServerMax: 1,
+		SRTMax: 1, ARTMax: 1, RRTMax: 1, CITMax: 1,
+		RTTSum: 2, RTTClientSum: 2, RTTServerSum: 2,
+		SRTSum: 2, ARTSum: 2, RRTSum: 2, CITSum: 2,
+		RTTCount: 2, RTTClientCount: 2, RTTServerCount: 2,
+		SRTCount: 2, ARTCount: 2, RRTCount: 2, CITCount: 2,
+	}
 	initMeter(l1, 1)
 	l1.ConcurrentMerge(l1)
 	if *l1 != *l2 {
@@ -155,8 +162,42 @@ func TestMarshalAnomaly(t *testing.T) {
 		"client_establish_other_rst=1i,server_establish_other_rst=1i," +
 		"tcp_timeout=1i," +
 		"client_establish_fail=3i,server_establish_fail=4i,tcp_establish_fail=7i," +
-		"l7_client_error=1i,l7_server_error=1i,l7_timeout=1i,l7_error=2i"
+		"l7_client_error=1i,l7_server_error=1i,l7_timeout=1i,l7_error=2i,ooo_tx=1i,ooo_rx=1i"
 	if string(actual[:n]) != expected {
 		t.Errorf("Anomaly MarshalTo failed, \n\texpected:%v\n\tactual:  %v\n", expected, string(actual[:n]))
+	}
+}
+
+func TestAnomalyMergeOutOfOrderCounters(t *testing.T) {
+	a := Anomaly{OooTx: 3, OooRx: 5}
+	b := Anomaly{OooTx: 7, OooRx: 11}
+	a.ConcurrentMerge(&b)
+	if a.OooTx != 10 || a.OooRx != 16 {
+		t.Fatalf("out-of-order counts were lost: %+v", a)
+	}
+	if b.OooTx != 7 || b.OooRx != 11 {
+		t.Fatal("merge modified its source")
+	}
+	b.SequentialMerge(&b)
+	if b.OooTx != 14 || b.OooRx != 22 {
+		t.Fatalf("self merge did not preserve both counts: %+v", b)
+	}
+}
+
+func TestMarshalLatencyClientIdleTime(t *testing.T) {
+	latency := Latency{CITSum: 17, CITCount: 2, CITMax: 11}
+	buffer := make([]byte, 1024)
+	size := latency.MarshalTo(buffer)
+	if actual := string(buffer[:size]); actual != "cit_sum=17i,cit_count=2i,cit_max=11i" {
+		t.Fatalf("invalid client idle time fields: %s", actual)
+	}
+}
+
+func TestMarshalPerformanceSynackRegression(t *testing.T) {
+	performance := Performance{RetransSynack: 3}
+	buffer := make([]byte, 1024)
+	size := performance.MarshalTo(buffer)
+	if actual := string(buffer[:size]); actual != "retrans_synack=3i" {
+		t.Fatalf("invalid SYNACK retransmission field: %s", actual)
 	}
 }

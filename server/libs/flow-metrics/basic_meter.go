@@ -320,7 +320,7 @@ func (l *Latency) SequentialMerge(other *Latency) {
 
 func (l *Latency) MarshalTo(b []byte) int {
 	fields := []string{"rtt_sum=", "rtt_client_sum=", "rtt_server_sum=", "srt_sum=", "art_sum=", "rrt_sum=", "cit_sum=",
-		"rtt_count=", "rtt_client_count=", "rtt_server_count=", "srt_count=", "art_count=", "rrt_count=", "cit_count",
+		"rtt_count=", "rtt_client_count=", "rtt_server_count=", "srt_count=", "art_count=", "rrt_count=", "cit_count=",
 		"rtt_max=", "rtt_client_max=", "rtt_server_max=", "srt_max=", "art_max=", "rrt_max=", "cit_max="}
 	values := []uint64{
 		l.RTTSum, l.RTTClientSum, l.RTTServerSum, l.SRTSum, l.ARTSum, l.RRTSum, l.CITSum,
@@ -429,7 +429,7 @@ func (a *Performance) SequentialMerge(other *Performance) {
 
 func (a *Performance) MarshalTo(b []byte) int {
 	fields := []string{
-		"retrans_tx=", "retrans_rx=", "retrans=", "zero_win_tx=", "zero_win_rx=", "zero_win=", "retrans_syn=", "retrans_synack",
+		"retrans_tx=", "retrans_rx=", "retrans=", "zero_win_tx=", "zero_win_rx=", "zero_win=", "retrans_syn=", "retrans_synack=",
 	}
 	values := []uint64{
 		a.RetransTx, a.RetransRx, a.RetransTx + a.RetransRx, a.ZeroWinTx, a.ZeroWinRx, a.ZeroWinTx + a.ZeroWinRx, uint64(a.RetransSyn), uint64(a.RetransSynack),
@@ -568,12 +568,18 @@ func (a *Anomaly) ConcurrentMerge(other *Anomaly) {
 	a.ServerEstablishReset += other.ServerEstablishReset
 	a.TCPTimeout += other.TCPTimeout
 
+	a.ClientEstablishFail += other.ClientEstablishFail
+	a.ServerEstablishFail += other.ServerEstablishFail
+	a.TCPEstablishFail += other.TCPEstablishFail
+	a.TCPTransferFail += other.TCPTransferFail
+	a.TCPRstFail += other.TCPRstFail
+
 	a.L7ClientError += other.L7ClientError
 	a.L7ServerError += other.L7ServerError
 	a.L7Timeout += other.L7Timeout
 
-	a.OooTx = other.OooTx
-	a.OooRx = other.OooRx
+	a.OooTx += other.OooTx
+	a.OooRx += other.OooRx
 }
 
 func (a *Anomaly) SequentialMerge(other *Anomaly) {
@@ -590,7 +596,7 @@ func (a *Anomaly) MarshalTo(b []byte) int {
 		"tcp_timeout=",
 		"client_establish_fail=", "server_establish_fail=", "tcp_establish_fail=",
 		"l7_client_error=", "l7_server_error=", "l7_timeout=", "l7_error=",
-		"ooo_tx", "ooo_rx",
+		"ooo_tx=", "ooo_rx=",
 	}
 	clientFail := a.ClientAckMiss + a.ClientSourcePortReuse + a.ClientEstablishReset
 	serverFail := a.ServerSynMiss + a.ServerReset + a.ServerQueueLack + a.ServerEstablishReset

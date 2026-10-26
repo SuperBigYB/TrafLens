@@ -36,10 +36,14 @@ func fillMetrics(hint uint64, m *UsageMeter) {
 
 func TestVTAPMeterEnDecode(t *testing.T) {
 	m := UsageMeter{}
-	pbEncode := &pb.UsageMeter{}
 	fillMetrics(1, &m)
+	pbEncode := &pb.UsageMeter{
+		PacketTx: m.PacketTx, PacketRx: m.PacketRx,
+		ByteTx: m.ByteTx, ByteRx: m.ByteRx,
+		L3ByteTx: m.L3ByteTx, L3ByteRx: m.L3ByteRx,
+		L4ByteTx: m.L4ByteTx, L4ByteRx: m.L4ByteRx,
+	}
 	encoder := codec.SimpleEncoder{}
-	m.WriteToPB(pbEncode)
 	encoder.WritePB(pbEncode)
 
 	decoder := codec.SimpleDecoder{}
