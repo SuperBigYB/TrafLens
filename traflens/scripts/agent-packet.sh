@@ -5,7 +5,7 @@ fail() { printf 'TrafLens packet agent: %s\n' "$*" >&2; exit 1; }
 usage() {
   cat <<'USAGE'
 Usage: bash traflens/scripts/agent-packet.sh [mode]
-Modes: build (default), build-release, test-http, test-dns, test-mysql, test-labeler, test-time, test-plugin, parser-test
+Modes: build (default), build-release, test-http, test-dns, test-mysql, test-labeler, test-time, test-plugin, test-tunnel, parser-test
 
 Uses existing Rust/Cargo 1.97.1 and --locked --no-default-features.
 This builds the packet agent without eBPF, syscall tracing or profiling.
@@ -17,7 +17,7 @@ mode=${1:-build}
 if [[ "$mode" == --help || "$mode" == -h ]]; then usage; exit 0; fi
 [[ $# -le 1 ]] || { usage >&2; exit 2; }
 case "$mode" in
-  build|build-release|test-http|test-dns|test-mysql|test-labeler|test-time|test-plugin|parser-test) ;;
+  build|build-release|test-http|test-dns|test-mysql|test-labeler|test-time|test-plugin|test-tunnel|parser-test) ;;
   *) usage >&2; fail "unknown mode: $mode" ;;
 esac
 
@@ -111,6 +111,10 @@ cd -- "$repo_root/agent"
 parser_test() {
   "$cargo_bin" test --locked --no-default-features --lib "$1" -- --test-threads=1
 }
+tunnel_test() {
+  "$cargo_bin" test --locked --no-default-features --package tunnel --lib -- --test-threads=1
+  parser_test common::decapsulate
+}
 case "$mode" in
   build) exec "$cargo_bin" build --locked --no-default-features --bin deepflow-agent ;;
   build-release) exec "$cargo_bin" build --locked --no-default-features --release --bin deepflow-agent ;;
@@ -119,6 +123,7 @@ case "$mode" in
   test-mysql) parser_test flow_generator::protocol_logs::sql::mysql::tests ;;
   test-labeler) parser_test policy::labeler::tests ;;
   test-time) parser_test flow_generator::protocol_logs::tests ;;
+  test-tunnel) tunnel_test ;;
   test-plugin)
     make -B -C resources/test/plugins
     parser_test plugin::c_ffi
@@ -133,5 +138,6 @@ case "$mode" in
     make -B -C resources/test/plugins
     parser_test plugin::c_ffi
     parser_test plugin::shared_obj::test
+    tunnel_test
     ;;
 esac

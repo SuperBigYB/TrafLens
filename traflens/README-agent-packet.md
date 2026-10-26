@@ -102,15 +102,33 @@ library or eBPF runtime suites pass.
 
 ## Time and C plugin contract gate
 
-`parser-test` now includes 15 response-time boundary tests, 5 packet-mode C
-process-name/ABI tests and 2 real shared-object integrations, for 73 selected
-tests total. Use `test-time` or `test-plugin` to run these groups alone. The
+`parser-test` includes 15 response-time boundary tests, 5 packet-mode C
+process-name/ABI tests and 2 real shared-object integrations. The protocol,
+labeler, time and plugin groups retain their original 73 Agent tests.
+Use `test-time` or `test-plugin` to run these groups alone. The
 plugin gate forces a native `make -B -C agent/resources/test/plugins` rebuild
 before loading the fixture, so it uses the current architecture and C header.
 There are 55 independent C/Rust struct size/alignment/field-offset comparisons.
 The additional libtrace process-name test belongs to the native feature gate.
 
-The broader packet library run completes 294 tests, with 276 passing and 18
-failures. See `STATE.md` and `evidence/2026-10-26/baseline/` for the compatible
-upstream comparison and explicit fixture/feature/implementation gaps. Selected
+## Tunnel contract gate
+
+`test-tunnel` runs all 28 tunnel-crate wire tests, followed by the 26 Agent
+`common::decapsulate` tests. These cover GPE/NSH, Tencent GRE, ERSPAN and TEB,
+including checked-in PCAPs, header truncation, IPv4 options, snaplen capture,
+and the caller's offsets, tunnel metadata and synthetic Ethernet headers:
+
+```sh
+bash traflens/scripts/agent-packet.sh test-tunnel
+```
+
+`parser-test` also includes this gate: **127 selected tests total**, comprising
+99 Agent library tests and 28 tunnel-crate tests. Both Cargo invocations retain
+`--locked --no-default-features` and execute tests serially.
+
+The broader packet library now completes 307 tests, with 295 passing and 12
+failures. The six original tunnel failures are fixed, thirteen caller
+regressions were added, and the remaining failures match the prior inventory.
+See `README-tunnels.md`, `STATE.md`, `evidence/2026-10-26/tunnels/` and the
+earlier compatible upstream comparison in `evidence/2026-10-26/baseline/`. Selected
 CI success must not be described as a complete library-suite pass.

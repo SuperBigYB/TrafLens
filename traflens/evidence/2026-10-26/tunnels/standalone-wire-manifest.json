@@ -1,0 +1,14 @@
+{
+  "head": "52fa57a8b48fb54cb290364fe7d7c7f60d6aa077",
+  "rustc": "rustc 1.97.1 (8bab26f4f 2026-07-14)",
+  "source_sha256": {
+    "gre.rs": "1da0cb7fcbe5ae64b39d71c8092d40b21fe2264165157c296a0675bd1c5af152",
+    "tencent_gre.rs": "de481d1c9ec5c3facb0094254a672b6ec171d38b10860f32db9014fffa2e9ac0",
+    "vxlan_gpe.rs": "36fac28cb2a6bfaa182b7275ff3c394113f6c8007048b4820f5d0517f2a7a02c"
+  },
+  "binary_sha256": {
+    "wire-tests": "3619302b0e98477f9b8de54661c97193cbcecc23b2dae38428b71e0498f0de2f",
+    "vxlan-pcap-probe": "3d7363ad99a576e76b8c8aa4a93a35125819a897527846afbc525c0b534e28a2",
+    "tencent-pcap-probe": "2b74ef60c19595105cd6da542d775e8a189e07884a6d62ed763a5371416d22cf"
+  }
+}

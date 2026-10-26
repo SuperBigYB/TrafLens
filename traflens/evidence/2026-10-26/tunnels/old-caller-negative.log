@@ -1,0 +1,104 @@
+   Compiling deepflow-agent v0.1.0 (/root/yb/git/TrafLens/agent)
+    Finished `test` profile [unoptimized] target(s) in 5.46s
+     Running unittests src/lib.rs (target/debug/deps/deepflow_agent-9aeed2f6c031f05e)
+
+running 13 tests
+test common::decapsulate::regression::fragmented_underlay_is_not_misinterpreted_as_a_tunnel_header ... ok
+test common::decapsulate::regression::ipip_inner_length_must_fit_logical_outer_but_capture_may_be_short ... FAILED
+test common::decapsulate::regression::ipip_unrepresentable_offsets_do_not_mutate_or_wrap ... FAILED
+test common::decapsulate::regression::ipv4_options_are_used_for_udp_and_vni_offsets ... FAILED
+test common::decapsulate::regression::ipv4_options_tlv_lengths_are_validated_before_udp_dispatch ... FAILED
+test common::decapsulate::regression::ipv6_geneve_returns_inner_ethernet_offset ... FAILED
+test common::decapsulate::regression::minimal_ipip_packets_do_not_need_an_erspan_sized_guard ... FAILED
+test common::decapsulate::regression::nested_tencent_preserves_the_outermost_tunnel_identity ... ok
+test common::decapsulate::regression::payload_snaplen_is_allowed_but_declared_header_bounds_are_enforced ... FAILED
+test common::decapsulate::regression::public_decapsulators_reject_short_and_extreme_inputs_without_panicking ... FAILED
+test common::decapsulate::regression::short_udp_length_cannot_consume_padding_as_tunnel_data ... ok
+test common::decapsulate::regression::tencent_rewrite_keeps_original_outer_addresses ... FAILED
+test common::decapsulate::regression::udp_declared_length_must_fit_logical_ip_even_with_padding ... FAILED
+
+failures:
+
+---- common::decapsulate::regression::ipip_inner_length_must_fit_logical_outer_but_capture_may_be_short stdout ----
+
+thread 'common::decapsulate::regression::ipip_inner_length_must_fit_logical_outer_but_capture_may_be_short' (215367) panicked at src/common/decapsulate_regression.rs:337:9:
+assertion `left == right` failed
+  left: 6
+ right: 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- common::decapsulate::regression::ipip_unrepresentable_offsets_do_not_mutate_or_wrap stdout ----
+
+thread 'common::decapsulate::regression::ipip_unrepresentable_offsets_do_not_mutate_or_wrap' (215368) panicked at src/common/decapsulate.rs:732:9:
+attempt to subtract with overflow
+
+---- common::decapsulate::regression::ipv4_options_are_used_for_udp_and_vni_offsets stdout ----
+
+thread 'common::decapsulate::regression::ipv4_options_are_used_for_udp_and_vni_offsets' (215369) panicked at src/common/decapsulate_regression.rs:94:5:
+assertion `left == right` failed
+  left: 0
+ right: 40
+
+---- common::decapsulate::regression::ipv4_options_tlv_lengths_are_validated_before_udp_dispatch stdout ----
+
+thread 'common::decapsulate::regression::ipv4_options_tlv_lengths_are_validated_before_udp_dispatch' (215370) panicked at src/common/decapsulate_regression.rs:317:5:
+assertion `left == right` failed
+  left: 0
+ right: 40
+
+---- common::decapsulate::regression::ipv6_geneve_returns_inner_ethernet_offset stdout ----
+
+thread 'common::decapsulate::regression::ipv6_geneve_returns_inner_ethernet_offset' (215371) panicked at src/common/decapsulate_regression.rs:134:5:
+assertion `left == right` failed
+  left: 36
+ right: 56
+
+---- common::decapsulate::regression::minimal_ipip_packets_do_not_need_an_erspan_sized_guard stdout ----
+
+thread 'common::decapsulate::regression::minimal_ipip_packets_do_not_need_an_erspan_sized_guard' (215372) panicked at src/common/decapsulate_regression.rs:187:5:
+assertion `left == right` failed
+  left: 0
+ right: 6
+
+---- common::decapsulate::regression::payload_snaplen_is_allowed_but_declared_header_bounds_are_enforced stdout ----
+
+thread 'common::decapsulate::regression::payload_snaplen_is_allowed_but_declared_header_bounds_are_enforced' (215374) panicked at src/common/decapsulate_regression.rs:105:5:
+assertion `left == right` failed
+  left: 0
+ right: 40
+
+---- common::decapsulate::regression::public_decapsulators_reject_short_and_extreme_inputs_without_panicking stdout ----
+
+thread 'common::decapsulate::regression::public_decapsulators_reject_short_and_extreme_inputs_without_panicking' (215375) panicked at src/common/decapsulate.rs:260:28:
+index out of bounds: the len is 0 but the index is 0
+
+---- common::decapsulate::regression::tencent_rewrite_keeps_original_outer_addresses stdout ----
+
+thread 'common::decapsulate::regression::tencent_rewrite_keeps_original_outer_addresses' (215377) panicked at src/common/decapsulate_regression.rs:147:5:
+assertion `left == right` failed
+  left: 10.1.0.0
+ right: 10.1.2.3
+
+---- common::decapsulate::regression::udp_declared_length_must_fit_logical_ip_even_with_padding stdout ----
+
+thread 'common::decapsulate::regression::udp_declared_length_must_fit_logical_ip_even_with_padding' (215378) panicked at src/common/decapsulate_regression.rs:298:13:
+assertion `left == right` failed
+  left: 0
+ right: 40
+
+
+failures:
+    common::decapsulate::regression::ipip_inner_length_must_fit_logical_outer_but_capture_may_be_short
+    common::decapsulate::regression::ipip_unrepresentable_offsets_do_not_mutate_or_wrap
+    common::decapsulate::regression::ipv4_options_are_used_for_udp_and_vni_offsets
+    common::decapsulate::regression::ipv4_options_tlv_lengths_are_validated_before_udp_dispatch
+    common::decapsulate::regression::ipv6_geneve_returns_inner_ethernet_offset
+    common::decapsulate::regression::minimal_ipip_packets_do_not_need_an_erspan_sized_guard
+    common::decapsulate::regression::payload_snaplen_is_allowed_but_declared_header_bounds_are_enforced
+    common::decapsulate::regression::public_decapsulators_reject_short_and_extreme_inputs_without_panicking
+    common::decapsulate::regression::tencent_rewrite_keeps_original_outer_addresses
+    common::decapsulate::regression::udp_declared_length_must_fit_logical_ip_even_with_padding
+
+test result: FAILED. 3 passed; 10 failed; 0 ignored; 0 measured; 294 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`

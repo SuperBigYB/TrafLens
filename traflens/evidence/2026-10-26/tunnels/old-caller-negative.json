@@ -1,0 +1,17 @@
+{
+  "baseline_caller": "52fa57a8b48fb54cb290364fe7d7c7f60d6aa077",
+  "scope": "old caller plus current new decoder modules and new regression tests; not pristine upstream",
+  "argv": [
+    "cargo",
+    "test",
+    "--locked",
+    "--no-default-features",
+    "--lib",
+    "common::decapsulate::regression",
+    "--",
+    "--test-threads=1"
+  ],
+  "exit_code": 101,
+  "candidate_caller_sha256": "ed311d521f040087ca812f46bc269243be9d1ae3822e157482b3e3dcd7c51b34",
+  "source_restored": true
+}

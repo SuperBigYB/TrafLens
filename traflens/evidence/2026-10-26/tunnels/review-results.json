@@ -1,0 +1,29 @@
+{
+  "expected_offsets": {
+    "control_valid_vxlan": 40,
+    "UDP65535_exceeds_outer_IP54": 0,
+    "IPv4_option_length1": 0,
+    "control_short_declared_IP": 0,
+    "control_short_declared_UDP": 0,
+    "IPIP_inner500_exceeds_outer_payload20_with_padding": 0,
+    "control_valid_snaplen_udp": 40,
+    "control_valid_snaplen_ipip_v4": 6,
+    "IPIP_inner_v6_540_exceeds_outer_payload40": 0,
+    "control_valid_snaplen_ipip_v6": 6
+  },
+  "actual_offsets": {
+    "control_valid_vxlan": 40,
+    "UDP65535_exceeds_outer_IP54": 0,
+    "IPv4_option_length1": 0,
+    "control_short_declared_IP": 0,
+    "control_short_declared_UDP": 0,
+    "IPIP_inner500_exceeds_outer_payload20_with_padding": 0,
+    "control_valid_snaplen_udp": 40,
+    "control_valid_snaplen_ipip_v4": 6,
+    "IPIP_inner_v6_540_exceeds_outer_payload40": 0,
+    "control_valid_snaplen_ipip_v6": 6
+  },
+  "all_match": true,
+  "updated_source_prefix_sha256": "716d98f7408999c92dfdba131cd8406d62679181c22714d3f52f77ed32d6580b",
+  "source": "verbatim production prefix; existing dependency rlibs, no full Agent build"
+}

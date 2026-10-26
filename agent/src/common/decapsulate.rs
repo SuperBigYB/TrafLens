@@ -251,87 +251,175 @@ impl TunnelInfo {
         self.dst = Ipv4Addr::from(bytes::read_u32_be(&l3_packet[IP6_DIP_OFFSET..]));
     }
 
+    // Captures may omit payload, but all inspected headers must be present and
+    // inside the declared IP length. Unreassembled outer fragments are not tunnels.
+    fn ipv4_packet(packet: &[u8], l2_len: usize) -> Option<(&[u8], usize, usize)> {
+        if l2_len < ETH_HEADER_SIZE {
+            return None;
+        }
+        let l3 = packet.get(l2_len..)?;
+        if l3.len() < IPV4_HEADER_SIZE || l3[0] >> 4 != 4 {
+            return None;
+        }
+        let header_size = usize::from(l3[0] & 0xf) * 4;
+        let total = usize::from(u16::from_be_bytes([l3[2], l3[3]]));
+        if header_size < IPV4_HEADER_SIZE
+            || header_size > l3.len()
+            || total < header_size
+            || u16::from_be_bytes([l3[6], l3[7]]) & 0x3fff != 0
+        {
+            return None;
+        }
+        if !Self::valid_ipv4_options(&l3[IPV4_HEADER_SIZE..header_size]) {
+            return None;
+        }
+        Some((&l3[..total.min(l3.len())], header_size, total))
+    }
+
+    fn valid_ipv4_options(options: &[u8]) -> bool {
+        let mut offset = 0;
+        while offset < options.len() {
+            match options[offset] {
+                0 => return true,
+                1 => offset += 1,
+                _ => {
+                    let Some(&length) = options.get(offset + 1) else {
+                        return false;
+                    };
+                    if length < 2 || usize::from(length) > options.len() - offset {
+                        return false;
+                    }
+                    offset += usize::from(length);
+                }
+            }
+        }
+        true
+    }
+
+    fn ipv6_packet(packet: &[u8], l2_len: usize) -> Option<(&[u8], usize)> {
+        if l2_len < ETH_HEADER_SIZE {
+            return None;
+        }
+        let l3 = packet.get(l2_len..)?;
+        if l3.len() < IPV6_HEADER_SIZE || l3[0] >> 4 != 6 {
+            return None;
+        }
+        let total = IPV6_HEADER_SIZE + usize::from(u16::from_be_bytes([l3[4], l3[5]]));
+        Some((&l3[..total.min(l3.len())], total))
+    }
+
+    fn udp_payload(
+        l3: &[u8],
+        ip_header_size: usize,
+        ip_total_len: usize,
+    ) -> Option<(&[u8], usize)> {
+        let udp = l3.get(ip_header_size..)?;
+        if udp.len() < UDP_HEADER_SIZE {
+            return None;
+        }
+        let total = usize::from(u16::from_be_bytes([udp[4], udp[5]]));
+        if total < UDP_HEADER_SIZE || total > ip_total_len.checked_sub(ip_header_size)? {
+            return None;
+        }
+        Some((
+            &udp[UDP_HEADER_SIZE..total.min(udp.len())],
+            ip_header_size + UDP_HEADER_SIZE,
+        ))
+    }
+
+    fn has_inner_ethernet(payload: &[u8], offset: usize) -> bool {
+        payload
+            .get(offset..)
+            .is_some_and(|inner| inner.len() >= ETH_HEADER_SIZE)
+    }
+
     pub fn decapsulate_udp(
         &mut self,
         packet: &mut [u8],
         l2_len: usize,
         tunnel_types: &TunnelTypeBitmap,
     ) -> usize {
-        let mac_prefix_0 = packet[0];
-        let mac_prefix_1 = packet[1];
-        let l3_packet = &packet[l2_len..];
-        let dst_port_offset = FIELD_OFFSET_DPORT - ETH_HEADER_SIZE;
-        if dst_port_offset + PORT_LEN > l3_packet.len() {
+        if self.tier >= TUNNEL_TIER_LIMIT {
             return 0;
         }
-        let dst_port = bytes::read_u16_le(&l3_packet[FIELD_OFFSET_DPORT - ETH_HEADER_SIZE..]);
+        let Some((l3, header, total)) = Self::ipv4_packet(packet, l2_len) else {
+            return 0;
+        };
+        if l3[FIELD_OFFSET_PROTO - ETH_HEADER_SIZE] != u8::from(IpProtocol::UDP)
+            || Self::udp_payload(l3, header, total).is_none()
+        {
+            return 0;
+        }
+        let dst_port = bytes::read_u16_le(&l3[header + 2..]);
+        let src_port = bytes::read_u16_le(&l3[header..]);
         match dst_port {
             LE_VXLAN_PROTO_UDP_DPORT | LE_VXLAN_PROTO_UDP_DPORT2 | LE_VXLAN_PROTO_UDP_DPORT3
                 if tunnel_types.has(TunnelType::Vxlan) =>
             {
-                return self.decapsulate_vxlan(packet, l2_len);
+                self.decapsulate_vxlan(packet, l2_len)
             }
             LE_GPE_VXLAN_PROTO_UDP_DPORT if tunnel_types.has(TunnelType::VxlanNsh) => {
-                return self.decapsulate_gpe_vxlan(packet, l2_len);
+                self.decapsulate_gpe_vxlan(packet, l2_len)
             }
             LE_GENEVE_PROTO_UDP_DPORT if tunnel_types.has(TunnelType::Geneve) => {
-                return self.decapsulate_geneve(packet, l2_len);
+                self.decapsulate_geneve(packet, l2_len)
             }
-            _ => {}
-        }
-
-        // NOTE:
-        //     In this scenario, other components of DeepFlow set the destination MAC address to FF:FF
-        // in advance, and in order to improve the balance of VXLAN traffic, the UDP port was changed
-        // to a port number that supports the hash according to the inner ip.
-        if mac_prefix_0 == 0xff && mac_prefix_1 == 0xff && tunnel_types.has(TunnelType::Vxlan) {
-            let src_port = bytes::read_u16_le(&l3_packet[FIELD_OFFSET_SPORT - ETH_HEADER_SIZE..]);
-            if src_port == dst_port {
-                return self.decapsulate_vxlan(packet, l2_len);
+            _ if packet[0] == 0xff
+                && packet[1] == 0xff
+                && src_port == dst_port
+                && tunnel_types.has(TunnelType::Vxlan) =>
+            {
+                self.decapsulate_vxlan(packet, l2_len)
             }
+            _ => 0,
         }
-
-        0
     }
 
     pub fn decapsulate_gpe_vxlan(&mut self, packet: &mut [u8], l2_len: usize) -> usize {
+        if self.tier >= TUNNEL_TIER_LIMIT || Self::ipv4_packet(packet, l2_len).is_none() {
+            return 0;
+        }
+        let mut outer = *self;
+        if self.tier == 0 {
+            outer.decapsulate_addr(&packet[l2_len..]);
+            outer.decapsulate_mac(packet);
+        }
         let Some((offset, id)) = decapsulate_gpe_vxlan(packet, l2_len) else {
             return 0;
         };
-
         if self.tier == 0 {
-            self.decapsulate_addr(&packet[l2_len..]);
-            self.decapsulate_mac(packet);
-            self.tunnel_type = TunnelType::VxlanNsh;
-            self.id = id;
+            outer.tunnel_type = TunnelType::VxlanNsh;
+            outer.id = id;
         }
-        self.tier += 1;
-
+        outer.tier += 1;
+        *self = outer;
         offset
     }
 
     pub fn decapsulate_vxlan(&mut self, packet: &[u8], l2_len: usize) -> usize {
-        let l3_packet = &packet[l2_len..];
-        if l3_packet.len() < FIELD_OFFSET_VXLAN_FLAGS + VXLAN_HEADER_SIZE {
+        if self.tier >= TUNNEL_TIER_LIMIT {
             return 0;
         }
-
-        if l3_packet[FIELD_OFFSET_VXLAN_FLAGS - ETH_HEADER_SIZE] != VXLAN_FLAGS {
+        let Some((l3, header, total)) = Self::ipv4_packet(packet, l2_len) else {
+            return 0;
+        };
+        if l3[FIELD_OFFSET_PROTO - ETH_HEADER_SIZE] != u8::from(IpProtocol::UDP) {
             return 0;
         }
-
-        // 仅保存最外层的隧道信息
+        let Some((payload, start)) = Self::udp_payload(l3, header, total) else {
+            return 0;
+        };
+        if !Self::has_inner_ethernet(payload, VXLAN_HEADER_SIZE) || payload[0] != VXLAN_FLAGS {
+            return 0;
+        }
         if self.tier == 0 {
-            self.decapsulate_addr(l3_packet);
+            self.decapsulate_addr(l3);
             self.decapsulate_mac(packet);
             self.tunnel_type = TunnelType::Vxlan;
-            self.id =
-                bytes::read_u32_be(&l3_packet[FIELD_OFFSET_VXLAN_VNI - ETH_HEADER_SIZE..]) >> 8;
+            self.id = bytes::read_u32_be(&payload[4..]) >> 8;
         }
         self.tier += 1;
-
-        // return offset start from L3
-        FIELD_OFFSET_VXLAN_FLAGS - ETH_HEADER_SIZE + VXLAN_HEADER_SIZE
+        start + VXLAN_HEADER_SIZE
     }
 
     fn calc_gre_option_size(flags: u16) -> usize {
@@ -356,12 +444,14 @@ impl TunnelInfo {
         gre_protocol_type: u16,
         ip_header_size: usize,
     ) -> usize {
+        if self.tier >= TUNNEL_TIER_LIMIT || Self::ipv4_packet(packet, l2_len).is_none() {
+            return 0;
+        }
         let Some((offset, id)) =
             decapsulate_erspan(packet, l2_len, flags, gre_protocol_type, ip_header_size)
         else {
             return 0;
         };
-
         if self.tier == 0 {
             self.decapsulate_addr(&packet[l2_len..]);
             self.decapsulate_mac(packet);
@@ -369,7 +459,6 @@ impl TunnelInfo {
             self.id = id;
         }
         self.tier += 1;
-
         offset
     }
 
@@ -385,20 +474,27 @@ impl TunnelInfo {
         gre_protocol_type: u16,
         ip_header_size: usize,
     ) -> usize {
+        if self.tier >= TUNNEL_TIER_LIMIT || Self::ipv4_packet(packet, l2_len).is_none() {
+            return 0;
+        }
+        // Synthesizing an inner Ethernet header can overwrite the outer IPv4
+        // addresses. Snapshot them before mutation, then commit only on success.
+        let mut outer = *self;
+        if self.tier == 0 {
+            outer.decapsulate_addr(&packet[l2_len..]);
+            outer.decapsulate_mac(packet);
+        }
         let Some((offset, id)) =
             decapsulate_tencent_gre(packet, l2_len, flags, gre_protocol_type, ip_header_size)
         else {
             return 0;
         };
-
         if self.tier == 0 {
-            self.decapsulate_addr(&packet[l2_len..]);
-            self.decapsulate_mac(packet);
-            self.tunnel_type = TunnelType::TencentGre;
-            self.id = id;
+            outer.tunnel_type = TunnelType::TencentGre;
+            outer.id = id;
         }
-        self.tier += 1;
-
+        outer.tier += 1;
+        *self = outer;
         offset
     }
 
@@ -409,10 +505,12 @@ impl TunnelInfo {
         flags: u16,
         ip_header_size: usize,
     ) -> usize {
+        if self.tier >= TUNNEL_TIER_LIMIT || Self::ipv4_packet(packet, l2_len).is_none() {
+            return 0;
+        }
         let Some((offset, id)) = decapsulate_teb(packet, l2_len, flags, ip_header_size) else {
             return 0;
         };
-        // 仅保存最外层的隧道信息
         if self.tier == 0 {
             self.decapsulate_addr(&packet[l2_len..]);
             self.decapsulate_mac(packet);
@@ -420,7 +518,6 @@ impl TunnelInfo {
             self.id = id;
         }
         self.tier += 1;
-
         offset
     }
 
@@ -430,61 +527,62 @@ impl TunnelInfo {
         l2_len: usize,
         tunnel_types: &TunnelTypeBitmap,
     ) -> usize {
-        let l3_packet = &packet[l2_len..];
-        let ip_header_size: usize = (l3_packet[IP_IHL_OFFSET] as usize & 0xf) << 2;
-        let flags = bytes::read_u16_be(&l3_packet[ip_header_size + GRE_FLAGS_OFFSET..]);
-        let gre_protocol_type =
-            bytes::read_u16_le(&l3_packet[ip_header_size + GRE_PROTOCOL_OFFSET..]);
-
-        match gre_protocol_type {
-            // ERSPAN
+        if self.tier >= TUNNEL_TIER_LIMIT {
+            return 0;
+        }
+        let Some((l3, header, _)) = Self::ipv4_packet(packet, l2_len) else {
+            return 0;
+        };
+        if l3[FIELD_OFFSET_PROTO - ETH_HEADER_SIZE] != u8::from(IpProtocol::GRE)
+            || l3.len() < header + GRE_HEADER_SIZE_DECAP
+        {
+            return 0;
+        }
+        let flags = bytes::read_u16_be(&l3[header..]);
+        let protocol = bytes::read_u16_le(&l3[header + 2..]);
+        match protocol {
             LE_ERSPAN_PROTO_TYPE_II | LE_ERSPAN_PROTO_TYPE_III
                 if tunnel_types.has(TunnelType::Erspan) =>
             {
-                self.decapsulate_erspan(packet, l2_len, flags, gre_protocol_type, ip_header_size)
+                self.decapsulate_erspan(packet, l2_len, flags, protocol, header)
             }
-
             LE_IPV4_PROTO_TYPE_I | LE_IPV6_PROTO_TYPE_I
                 if tunnel_types.has(TunnelType::TencentGre) =>
             {
-                self.decapsulate_tencent_gre(
-                    packet,
-                    l2_len,
-                    flags,
-                    gre_protocol_type,
-                    ip_header_size,
-                )
+                self.decapsulate_tencent_gre(packet, l2_len, flags, protocol, header)
             }
             LE_TRANSPARENT_ETHERNET_BRIDGEING if tunnel_types.has(TunnelType::Teb) => {
-                self.decapsulate_teb(packet, l2_len, flags, ip_header_size)
+                self.decapsulate_teb(packet, l2_len, flags, header)
             }
             _ => 0,
         }
     }
 
     pub fn decapsulate_geneve(&mut self, packet: &[u8], l2_len: usize) -> usize {
-        let l3_packet = &packet[l2_len..];
-        if l3_packet.len() < UDP_PACKET_SIZE + GENEVE_HEADER_SIZE {
+        if self.tier >= TUNNEL_TIER_LIMIT {
             return 0;
         }
-
-        let l4_payload = &l3_packet[IPV4_HEADER_SIZE + UDP_HEADER_SIZE..];
-        let (tunnel_id, geneve_header_size) = Self::decapsulate_geneve_header(l4_payload);
-        if geneve_header_size == 0 {
+        let Some((l3, header, total)) = Self::ipv4_packet(packet, l2_len) else {
+            return 0;
+        };
+        if l3[FIELD_OFFSET_PROTO - ETH_HEADER_SIZE] != u8::from(IpProtocol::UDP) {
             return 0;
         }
-
-        // 仅保存最外层的隧道信息
+        let Some((payload, start)) = Self::udp_payload(l3, header, total) else {
+            return 0;
+        };
+        let (id, size) = Self::decapsulate_geneve_header(payload);
+        if size == 0 || !Self::has_inner_ethernet(payload, size) {
+            return 0;
+        }
         if self.tier == 0 {
-            self.decapsulate_addr(l3_packet);
+            self.decapsulate_addr(l3);
             self.decapsulate_mac(packet);
             self.tunnel_type = TunnelType::Geneve;
-            self.id = tunnel_id;
+            self.id = id;
         }
         self.tier += 1;
-
-        // return offset start from L3
-        UDP_PACKET_SIZE - ETH_HEADER_SIZE + geneve_header_size
+        start + size
     }
 
     pub fn decapsulate(
@@ -493,22 +591,13 @@ impl TunnelInfo {
         l2_len: usize,
         tunnel_types: &TunnelTypeBitmap,
     ) -> usize {
-        if tunnel_types.is_empty() || self.tier == TUNNEL_TIER_LIMIT {
+        if tunnel_types.is_empty() || self.tier >= TUNNEL_TIER_LIMIT {
             return 0;
         }
-
-        // 通过ERSPAN_III_HEADER_SIZE(12 bytes)+ERSPAN_III_SUBHEADER_SIZE(8 bytes)判断，保证不会数组越界
-        let l3_packet = &packet[l2_len..];
-        if l3_packet.len()
-            < IPV4_HEADER_SIZE
-                + GRE_HEADER_SIZE_DECAP
-                + ERSPAN_III_HEADER_SIZE
-                + ERSPAN_III_SUBHEADER_SIZE
-        {
+        let Some((l3, _, _)) = Self::ipv4_packet(packet, l2_len) else {
             return 0;
-        }
-
-        let protocol: IpProtocol = l3_packet[FIELD_OFFSET_PROTO - ETH_HEADER_SIZE]
+        };
+        let protocol: IpProtocol = l3[FIELD_OFFSET_PROTO - ETH_HEADER_SIZE]
             .try_into()
             .unwrap_or_default();
         match protocol {
@@ -551,55 +640,58 @@ impl TunnelInfo {
     }
 
     pub fn decapsulate_v6_geneve(&mut self, packet: &[u8], l2_len: usize) -> usize {
-        let l3_packet = &packet[l2_len..];
-        if l3_packet.len() < UDP6_PACKET_SIZE + GENEVE_HEADER_SIZE {
+        if self.tier >= TUNNEL_TIER_LIMIT {
             return 0;
         }
-
-        let l4_payload = &l3_packet[IPV6_HEADER_SIZE + UDP_HEADER_SIZE..];
-        let (tunnel_id, geneve_header_size) = Self::decapsulate_geneve_header(l4_payload);
-        if geneve_header_size == 0 {
+        let Some((l3, total)) = Self::ipv6_packet(packet, l2_len) else {
+            return 0;
+        };
+        if l3[IP6_PROTO_OFFSET] != u8::from(IpProtocol::UDP) {
             return 0;
         }
-
-        // 仅保存最外层的隧道信息
+        let Some((payload, start)) = Self::udp_payload(l3, IPV6_HEADER_SIZE, total) else {
+            return 0;
+        };
+        let (id, size) = Self::decapsulate_geneve_header(payload);
+        if size == 0 || !Self::has_inner_ethernet(payload, size) {
+            return 0;
+        }
         if self.tier == 0 {
-            self.decapsulate_v6_addr(l3_packet);
+            self.decapsulate_v6_addr(l3);
             self.decapsulate_mac(packet);
             self.tunnel_type = TunnelType::Geneve;
-            self.id = tunnel_id;
+            self.id = id;
             self.is_ipv6 = true;
         }
         self.tier += 1;
-
-        // return offset start from L3
-        UDP_PACKET_SIZE - ETH_HEADER_SIZE + geneve_header_size
+        start + size
     }
 
     pub fn decapsulate_v6_vxlan(&mut self, packet: &[u8], l2_len: usize) -> usize {
-        let l3_packet = &packet[l2_len..];
-        if l3_packet.len() < FIELD_OFFSET_VXLAN_FLAGS + VXLAN_HEADER_SIZE {
+        if self.tier >= TUNNEL_TIER_LIMIT {
             return 0;
         }
-
-        if l3_packet[IPV6_HEADER_SIZE + UDP_HEADER_SIZE + VXLAN_FLAGS_OFFSET_DECAP] != VXLAN_FLAGS {
+        let Some((l3, total)) = Self::ipv6_packet(packet, l2_len) else {
+            return 0;
+        };
+        if l3[IP6_PROTO_OFFSET] != u8::from(IpProtocol::UDP) {
             return 0;
         }
-
-        // 仅保存最外层的隧道信息
+        let Some((payload, start)) = Self::udp_payload(l3, IPV6_HEADER_SIZE, total) else {
+            return 0;
+        };
+        if !Self::has_inner_ethernet(payload, VXLAN_HEADER_SIZE) || payload[0] != VXLAN_FLAGS {
+            return 0;
+        }
         if self.tier == 0 {
-            self.decapsulate_v6_addr(l3_packet);
+            self.decapsulate_v6_addr(l3);
             self.decapsulate_mac(packet);
             self.tunnel_type = TunnelType::Vxlan;
-            self.id = bytes::read_u32_be(
-                &l3_packet[IPV6_HEADER_SIZE + UDP_HEADER_SIZE + VXLAN_VNI_OFFSET_DECAP..],
-            ) >> 8;
+            self.id = bytes::read_u32_be(&payload[4..]) >> 8;
             self.is_ipv6 = true;
         }
         self.tier += 1;
-
-        // return offset start from L3
-        IPV6_HEADER_SIZE + UDP_HEADER_SIZE + VXLAN_HEADER_SIZE
+        start + VXLAN_HEADER_SIZE
     }
 
     pub fn decapsulate_v6_udp(
@@ -608,38 +700,37 @@ impl TunnelInfo {
         l2_len: usize,
         tunnel_types: &TunnelTypeBitmap,
     ) -> usize {
-        let mac_prefix_0 = packet[0];
-        let mac_prefix_1 = packet[1];
-        let l3_packet = &packet[l2_len..];
-        let dst_port_offset = IPV6_HEADER_SIZE + UDP_DPORT_OFFSET;
-        if dst_port_offset + PORT_LEN > l3_packet.len() {
+        if self.tier >= TUNNEL_TIER_LIMIT {
             return 0;
         }
-        let dst_port = bytes::read_u16_le(&l3_packet[dst_port_offset..]);
-        match dst_port {
+        let Some((l3, total)) = Self::ipv6_packet(packet, l2_len) else {
+            return 0;
+        };
+        if l3[IP6_PROTO_OFFSET] != u8::from(IpProtocol::UDP)
+            || Self::udp_payload(l3, IPV6_HEADER_SIZE, total).is_none()
+        {
+            return 0;
+        }
+        let udp = &l3[IPV6_HEADER_SIZE..];
+        let dst = bytes::read_u16_le(&udp[2..]);
+        match dst {
             LE_VXLAN_PROTO_UDP_DPORT | LE_VXLAN_PROTO_UDP_DPORT2 | LE_VXLAN_PROTO_UDP_DPORT3
                 if tunnel_types.has(TunnelType::Vxlan) =>
             {
-                return self.decapsulate_v6_vxlan(packet, l2_len)
+                self.decapsulate_v6_vxlan(packet, l2_len)
             }
             LE_GENEVE_PROTO_UDP_DPORT if tunnel_types.has(TunnelType::Geneve) => {
-                return self.decapsulate_v6_geneve(packet, l2_len)
+                self.decapsulate_v6_geneve(packet, l2_len)
             }
-            _ => {}
-        }
-
-        // NOTE:
-        //     In this scenario, other components of DeepFlow set the destination MAC address to FF:FF
-        // in advance, and in order to improve the balance of VXLAN traffic, the UDP port was changed
-        // to a port number that supports the hash according to the inner ip.
-        if mac_prefix_0 == 0xff && mac_prefix_1 == 0xff && tunnel_types.has(TunnelType::Vxlan) {
-            let src_port = bytes::read_u16_le(&l3_packet[dst_port_offset - 2..]);
-            if src_port == dst_port {
-                return self.decapsulate_v6_vxlan(packet, l2_len);
+            _ if packet[0] == 0xff
+                && packet[1] == 0xff
+                && bytes::read_u16_le(udp) == dst
+                && tunnel_types.has(TunnelType::Vxlan) =>
+            {
+                self.decapsulate_v6_vxlan(packet, l2_len)
             }
+            _ => 0,
         }
-
-        0
     }
 
     pub fn decapsulate_v6(
@@ -648,22 +739,13 @@ impl TunnelInfo {
         l2_len: usize,
         tunnel_types: &TunnelTypeBitmap,
     ) -> usize {
-        if tunnel_types.is_empty() || self.tier == TUNNEL_TIER_LIMIT {
+        if tunnel_types.is_empty() || self.tier >= TUNNEL_TIER_LIMIT {
             return 0;
         }
-
-        let l3_packet = &packet[l2_len..];
-        // 通过ERSPAN_III_HEADER_SIZE(12 bytes)+ERSPAN_III_SUBHEADER_SIZE(8 bytes)判断，保证不会数组越界
-        if l3_packet.len()
-            < IPV6_HEADER_SIZE
-                + GRE_HEADER_SIZE_DECAP
-                + ERSPAN_III_HEADER_SIZE
-                + ERSPAN_III_SUBHEADER_SIZE
-        {
+        let Some((l3, _)) = Self::ipv6_packet(packet, l2_len) else {
             return 0;
-        }
-
-        let protocol: IpProtocol = l3_packet[IP6_PROTO_OFFSET].try_into().unwrap_or_default();
+        };
+        let protocol: IpProtocol = l3[IP6_PROTO_OFFSET].try_into().unwrap_or_default();
         match protocol {
             IpProtocol::UDP => self.decapsulate_v6_udp(packet, l2_len, tunnel_types),
             IpProtocol::IPV4 if tunnel_types.has(TunnelType::Ipip) => {
@@ -687,49 +769,81 @@ impl TunnelInfo {
         underlay_ipv6: bool,
         overlay_ipv6: bool,
     ) -> usize {
-        if self.tier == 0 {
-            self.decapsulate_mac(packet);
+        if self.tier >= TUNNEL_TIER_LIMIT {
+            return 0;
         }
-
-        let l3_packet = &mut packet[l2_len..];
-        let underlay_ip_header_size = if underlay_ipv6 {
-            // underlay网络为IPv6时不支持Options字段
-            IPV6_HEADER_SIZE
+        let (l3, header, protocol, total) = if underlay_ipv6 {
+            let Some((l3, total)) = Self::ipv6_packet(packet, l2_len) else {
+                return 0;
+            };
+            (l3, IPV6_HEADER_SIZE, l3[IP6_PROTO_OFFSET], total)
         } else {
-            ((l3_packet[IP_IHL_OFFSET] & 0xf) << 2) as usize
+            let Some((l3, header, total)) = Self::ipv4_packet(packet, l2_len) else {
+                return 0;
+            };
+            (l3, header, l3[FIELD_OFFSET_PROTO - ETH_HEADER_SIZE], total)
         };
-
-        if self.tier == 0 {
-            if underlay_ipv6 {
-                self.decapsulate_v6_addr(l3_packet);
-                self.is_ipv6 = true;
+        if protocol
+            != if overlay_ipv6 {
+                u8::from(IpProtocol::IPV6)
             } else {
-                self.decapsulate_addr(l3_packet);
+                u8::from(IpProtocol::IPV4)
             }
-            self.tunnel_type = TunnelType::Ipip;
-            self.id = 0;
+        {
+            return 0;
         }
-        self.tier += 1;
-
-        // 去除underlay ip头，将l2层头放在overlay ip头前
-
-        // 偏移计算：overlay ip头开始位置(l2Len + underlayIpHeaderSize) - l2层长度(l2Len)
-        let start = l2_len + underlay_ip_header_size - l2_len;
-
-        packet.copy_within(0..l2_len, start);
-        if !overlay_ipv6 {
-            bytes::write_u16_be(
-                &mut packet[start + l2_len - 2..],
-                u16::from(EthernetType::IPV4),
-            );
+        let Some(inner) = l3.get(header..) else {
+            return 0;
+        };
+        if overlay_ipv6 {
+            if inner.len() < IPV6_HEADER_SIZE
+                || inner[0] >> 4 != 6
+                || IPV6_HEADER_SIZE + usize::from(u16::from_be_bytes([inner[4], inner[5]]))
+                    > total - header
+            {
+                return 0;
+            }
         } else {
-            bytes::write_u16_be(
-                &mut packet[start + l2_len - 2..],
-                u16::from(EthernetType::IPV6),
-            );
+            if inner.len() < IPV4_HEADER_SIZE || inner[0] >> 4 != 4 {
+                return 0;
+            }
+            let size = usize::from(inner[0] & 0xf) * 4;
+            if size < IPV4_HEADER_SIZE
+                || size > inner.len()
+                || usize::from(u16::from_be_bytes([inner[2], inner[3]])) < size
+                || usize::from(u16::from_be_bytes([inner[2], inner[3]])) > total - header
+                || !Self::valid_ipv4_options(&inner[IPV4_HEADER_SIZE..size])
+            {
+                return 0;
+            }
         }
-        // l2已经做过解析，这个去除掉已经解析的l2长度
-        start - l2_len
+        // The dispatcher adds the already-consumed outer L2 length. Reject
+        // layouts that cannot express a positive relative offset without wrapping.
+        let Some(offset) = header.checked_sub(l2_len).filter(|&value| value > 0) else {
+            return 0;
+        };
+        let mut outer = *self;
+        if self.tier == 0 {
+            outer.decapsulate_mac(packet);
+            if underlay_ipv6 {
+                outer.decapsulate_v6_addr(l3);
+                outer.is_ipv6 = true;
+            } else {
+                outer.decapsulate_addr(l3);
+            }
+            outer.tunnel_type = TunnelType::Ipip;
+            outer.id = 0;
+        }
+        packet.copy_within(0..l2_len, header);
+        let ether_type = if overlay_ipv6 {
+            EthernetType::IPV6
+        } else {
+            EthernetType::IPV4
+        };
+        bytes::write_u16_be(&mut packet[header + l2_len - 2..], u16::from(ether_type));
+        outer.tier += 1;
+        *self = outer;
+        offset
     }
 }
 
@@ -1070,3 +1184,7 @@ mod tests {
         assert_eq!(actual, expected);
     }
 }
+
+#[cfg(test)]
+#[path = "decapsulate_regression.rs"]
+mod regression;

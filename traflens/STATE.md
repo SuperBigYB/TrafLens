@@ -200,6 +200,38 @@ process are separate from successful collection and product parity.
   The controlled pass does not erase the unfaulted first-DNS-loss evidence or
   establish unrestricted load/performance parity. The bounded Agent is stopped.
 
+## Tunnel decoder checkpoint
+
+- The four public tunnel plugin stubs are replaced with independent ERSPAN
+  I/II/III, TEB, Tencent keyed GRE and IPv4 VXLAN-GPE/NSH decoders. Public Rust
+  signatures and tunnel enums are unchanged; no dependency/vendor update or
+  private implementation is imported. Standard wire formats and the existing
+  Go pseudo-MAC contract guide the implementation.
+- The Agent caller now validates header bounds and IPv4 options, respects IHL,
+  checks UDP and inner-IP logical lengths, returns IPv6 Geneve offset 56,
+  snapshots Tencent outer addresses before synthetic Ethernet mutation, rejects
+  excessive tiers/unrepresentable IPIP offsets transactionally, and accepts
+  minimal IPIP and consistent snaplen-truncated captures.
+- All 28 decoder tests and 26 Agent decapsulation tests pass. The complete
+  selected packet CI gate passes 127 cases (99 Agent plus 28 tunnel crate).
+  The full packet library finishes 307 cases: 295 pass and 12 fail. All six
+  previous tunnel failures now pass; the twelve remaining names match the
+  previous eighteen-case inventory. They remain unresolved, not ignored.
+- Thirteen new caller regressions cover independent wire vectors, every prefix,
+  invalid L2/tier values, declared-length padding, IPv4 options, snaplen, nested
+  identity and packet/metadata transactionality. An explicit hybrid negative
+  control using the old 52fa57a8b caller with the new decoders fails ten of these
+  thirteen, including two panics, the incorrect Geneve offset and address
+  corruption. This is not a pristine upstream suite comparison.
+- Independent review found three additional length-validation gaps; the final
+  candidate includes focused rejection and valid-snaplen controls for each.
+  See `README-tunnels.md` and `evidence/2026-10-26/tunnels/` for raw results.
+- Outer-IPv6 GRE/GPE, extension chains, outer fragment reassembly, ERSPAN raw-IP
+  frame types/custom C/K extensions and IPIP layouts with IP header no larger
+  than L2 remain unsupported. No new live tunnel traffic or throughput claim
+  follows from these parser tests. Exact-commit native Release validation is
+  recorded separately after the source checkpoint.
+
 ## Remaining validation and priorities
 
 1. Design persistence/server-side idempotency for ambiguous commits and longer
@@ -208,8 +240,8 @@ process are separate from successful collection and product parity.
    first-record loss independently of the passed warm restart experiment.
 2. Extend protocol acceptance to a real MySQL database, DNS error/truncation/TCP,
    reconnects, TLS, loss, agent/server restart and sustained workloads.
-3. Resolve the remaining 18 packet-library failures: six tunnel plugin stubs,
-   segmentation/reassembly stub, defaults/snapshot/PCAP/Hessian compatibility,
+3. Resolve the remaining 12 packet-library failures: segmentation/reassembly
+   stub, defaults/snapshot/PCAP/Hessian compatibility,
    handshake RTT and service score assertions, and five packet-mode WASM fixture
    cases (four also fail in native mode with different assertions). Keep expected behavior intact and validate the feature-mode matrix.
 4. Validate native eBPF/syscall/profiling at runtime, other protocols and storage
@@ -228,7 +260,7 @@ supervisors expire after 15 minutes or three exits, and stop only their own chil
 process group. Runtime secrets/logs stay ignored; sanitize evidence before commit.
 Keep the hourly task active: full feature/performance parity is not achieved.
 
-Latest completed CI before this writer checkpoint: both jobs passed for
-`befff1df2` in <https://github.com/SuperBigYB/TrafLens/actions/runs/40321662631>.
+Latest completed CI before this tunnel checkpoint: both jobs passed for
+`52fa57a8b` in <https://github.com/SuperBigYB/TrafLens/actions/runs/40334004947>.
 Verify the new head's actual CI result; selected gates do not replace the known
-full-suite failures. See `README-writer-recovery.md` and the writer evidence.
+full-suite failures. See the tunnel and writer READMEs and their evidence.

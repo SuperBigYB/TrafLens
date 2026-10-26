@@ -74,3 +74,15 @@ warm 179/180 baseline and the warm 180/180 candidate, including explicit
 preconditioning and strict no-duplicate checks. Server/table-scoped retry stats
 are persisted interval increments and cannot be interpreted as cumulative gauges.
 No general exactly-once, long-outage, high-rate or complete parity claim follows.
+
+
+`tunnels/` records 28 decoder and 26 Agent tunnel passes, the complete selected
+127-test gate, and the complete packet library at 295 pass/12 fail (307 total).
+All six prior tunnel failures now pass; the remaining twelve names match the
+previous inventory. Thirteen new caller regressions include three additional
+independent-review fixes, with logically consistent snaplen positive controls.
+The old-caller/new-plugin hybrid negative control fails ten of thirteen, not
+a pristine upstream suite. Source hashes, commands and raw results identify
+the tested code. See `README-tunnels.md` for wire layouts and explicit limits.
+Native build results, when present, are distinct from live eBPF or tunnel capture
+and from sustained performance acceptance.

@@ -1,0 +1,131 @@
+{
+  "parent_commit": "52fa57a8b48fb54cb290364fe7d7c7f60d6aa077",
+  "source_state": "working tree before the tunnel source commit; hashes below pin exact tested files",
+  "rust": "rustc 1.97.1 (8bab26f4f 2026-07-14)",
+  "selected": {
+    "passed": 127,
+    "agent_passed": 99,
+    "decoder_passed": 28
+  },
+  "full_packet_library": {
+    "passed": 295,
+    "failed": 12,
+    "total": 307,
+    "exit_code": 101
+  },
+  "prior_failures": [
+    "common::decapsulate::tests::test_decapsulate_all",
+    "common::decapsulate::tests::test_decapsulate_erspan",
+    "common::decapsulate::tests::test_decapsulate_erspan_ii",
+    "common::decapsulate::tests::test_decapsulate_erspan_iii",
+    "common::decapsulate::tests::test_decapsulate_teb",
+    "common::decapsulate::tests::test_decapsulate_vxlan_nsh",
+    "config::config::tests::check_defaults",
+    "flow_generator::flow_map::tests::test_handshake_retrans",
+    "flow_generator::flow_node::tests::test_packet_segmentation_reassembly",
+    "flow_generator::protocol_logs::mq::rocketmq::tests::check",
+    "flow_generator::protocol_logs::rpc::dubbo::hessian2::tests::decode_trace_id",
+    "flow_generator::protocol_logs::sql::memcached::tests::check",
+    "flow_generator::service_table::tests::port_map",
+    "plugin::wasm::test::test_check_payload",
+    "plugin::wasm::test::test_wasm_http_req",
+    "plugin::wasm::test::test_wasm_http_resp",
+    "plugin::wasm::test::test_wasm_parse_payload_req",
+    "plugin::wasm::test::test_wasm_parse_payload_resp"
+  ],
+  "fixed_prior_failures": [
+    "common::decapsulate::tests::test_decapsulate_all",
+    "common::decapsulate::tests::test_decapsulate_erspan",
+    "common::decapsulate::tests::test_decapsulate_erspan_ii",
+    "common::decapsulate::tests::test_decapsulate_erspan_iii",
+    "common::decapsulate::tests::test_decapsulate_teb",
+    "common::decapsulate::tests::test_decapsulate_vxlan_nsh"
+  ],
+  "remaining_failures": [
+    "config::config::tests::check_defaults",
+    "flow_generator::flow_map::tests::test_handshake_retrans",
+    "flow_generator::flow_node::tests::test_packet_segmentation_reassembly",
+    "flow_generator::protocol_logs::mq::rocketmq::tests::check",
+    "flow_generator::protocol_logs::rpc::dubbo::hessian2::tests::decode_trace_id",
+    "flow_generator::protocol_logs::sql::memcached::tests::check",
+    "flow_generator::service_table::tests::port_map",
+    "plugin::wasm::test::test_check_payload",
+    "plugin::wasm::test::test_wasm_http_req",
+    "plugin::wasm::test::test_wasm_http_resp",
+    "plugin::wasm::test::test_wasm_parse_payload_req",
+    "plugin::wasm::test::test_wasm_parse_payload_resp"
+  ],
+  "new_failure_names": [],
+  "negative_control": {
+    "scope": "old caller with new plugins and thirteen new regressions; hybrid, not pristine upstream",
+    "passed": 3,
+    "failed": 10,
+    "exit_code": 101
+  },
+  "native": "recorded separately after committing source",
+  "live_tunnel_capture": "not run",
+  "throughput": "not measured",
+  "source_sha256": {
+    "agent/plugins/tunnel/src/lib.rs": "e6fa39db93aaed9cfa6ba91a8e9834a6cebbae952afddc4fd7af40ecc4aa367b",
+    "agent/plugins/tunnel/src/gre.rs": "1da0cb7fcbe5ae64b39d71c8092d40b21fe2264165157c296a0675bd1c5af152",
+    "agent/plugins/tunnel/src/tencent_gre.rs": "de481d1c9ec5c3facb0094254a672b6ec171d38b10860f32db9014fffa2e9ac0",
+    "agent/plugins/tunnel/src/vxlan_gpe.rs": "36fac28cb2a6bfaa182b7275ff3c394113f6c8007048b4820f5d0517f2a7a02c",
+    "agent/src/common/decapsulate.rs": "ed311d521f040087ca812f46bc269243be9d1ae3822e157482b3e3dcd7c51b34",
+    "agent/src/common/decapsulate_regression.rs": "f5beeb64527a29471fc3f73f593ab3ca8b2ea76cf24fa7c27d76065ea63b173b",
+    "agent/Cargo.lock": "db952ada8d0434a918c1d3c9f0303f1cd01077ac58d3c657adba5b8b381610a8",
+    "agent/Cargo.toml": "d990eabd96e303d5b9358600d154793b72c2bfa4545b140c3ad306865dbe6b02",
+    "agent/plugins/tunnel/Cargo.toml": "d1759e527b0100532e7cfe440a4d1354c2f4bb3a3a9259e24fc61ced69a7e935",
+    "traflens/scripts/agent-packet.sh": "447b01890508b061064a5f223efe82a742e532b8c99b15c836c0757d9710fe70",
+    ".github/workflows/traflens-ci.yml": "2bafda4edd3a5f35e422959e574ae6588bb87886c842e2bf6a0f406218b3eb21"
+  },
+  "files": {
+    "selected-packet.log": {
+      "bytes": 15826,
+      "sha256": "e8fdd528b88a0f77f6a7191d2665db61c764551fc125e045cf95ae75d34885e1"
+    },
+    "full-packet-library.log": {
+      "bytes": 47925,
+      "sha256": "a3d02c346c640697721fa578ab5c422ac40e747bca05850b3442e1ce25c3df0c"
+    },
+    "old-caller-negative.log": {
+      "bytes": 5990,
+      "sha256": "e27706ea4653a773968dd38185f79cafe6fae535c6f4dcb0ee8533caf55a08ec"
+    },
+    "old-caller-negative.json": {
+      "bytes": 490,
+      "sha256": "dd217aaa4f652b80c4989ba9613590ae9499a6c4c1410b4835140914a54ac22b"
+    },
+    "old-caller-negative.py": {
+      "bytes": 1839,
+      "sha256": "b8c90b5a4012ed6bc05bfbe0f6afc8aa2cef7269d8b047a3f712d9ac7f2a0d90"
+    },
+    "review-before.log": {
+      "bytes": 1446,
+      "sha256": "ebfb62ba257097892b2042993f582d9578814557df3fae725a09da6b490b7b57"
+    },
+    "review-after.log": {
+      "bytes": 1855,
+      "sha256": "958fa2c4af2b63c6b4f717ed8ded83f0f50aef5d303904827a23f7c959827fed"
+    },
+    "review-results.json": {
+      "bytes": 1074,
+      "sha256": "cce563bb27c7f805be846eb4f764178f62f91295ade2959913927fe7d5c74cfb"
+    },
+    "review-probe.rs": {
+      "bytes": 2864,
+      "sha256": "17dee53537cc9795e0f18a812e4f79686bcbd97af693856dedba311e41f6f858"
+    },
+    "nsh-pcap.log": {
+      "bytes": 78,
+      "sha256": "2fd7b9666cdfa480bbd6c846965b1a13bf4c1135a9c9095a5f3ea661d42b6801"
+    },
+    "tencent-pcap.log": {
+      "bytes": 94,
+      "sha256": "ec72b162d238eec9cba3cc74c1d1b393c35079ea9d2e2432988ff5e82a63d5d2"
+    },
+    "standalone-wire-manifest.json": {
+      "bytes": 689,
+      "sha256": "19e19ad0da5f80faf63cbac5b1e8c1f3ad08785d0d15d7363cb767232474c061"
+    }
+  }
+}

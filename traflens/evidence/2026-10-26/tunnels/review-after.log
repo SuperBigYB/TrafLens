@@ -1,0 +1,16 @@
+Verbatim updated production prefix SHA256: 716d98f7408999c92dfdba131cd8406d62679181c22714d3f52f77ed32d6580b
+Command: ['/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc', '--edition', '2021', '-Awarnings', '/root/yb/git/TrafLens/.traflens/work/decapsulate-review/probe.rs', '-L', 'dependency=/root/yb/git/TrafLens/agent/target/debug/deps', '--extern', 'public=/root/yb/git/TrafLens/agent/target/debug/deps/libpublic-63d9efd753c76e22.rlib', '--extern', 'serde=/root/yb/git/TrafLens/agent/target/debug/deps/libserde-c953c97583b93d13.rlib', '--extern', 'num_enum=/root/yb/git/TrafLens/agent/target/debug/deps/libnum_enum-a2ca775ff8695f85.rlib', '--extern', 'log=/root/yb/git/TrafLens/agent/target/debug/deps/liblog-71f8d07c857d210d.rlib', '--extern', 'tunnel=/root/yb/git/TrafLens/agent/target/debug/deps/libtunnel-d8e069bca5d02fda.rlib', '-o', '/root/yb/git/TrafLens/.traflens/work/decapsulate-review/probe', '-C', 'panic=abort']
+Warning: `CARGO_MANIFEST_DIR` env variable not set.
+    => defaulting to `num_enum`
+Warning: `CARGO_MANIFEST_DIR` env variable not set.
+    => defaulting to `num_enum`
+control_valid_vxlan: offset=40, mutated=false, tier=1, type=Vxlan
+UDP65535_exceeds_outer_IP54: offset=0, mutated=false, tier=0, type=None
+IPv4_option_length1: offset=0, mutated=false, tier=0, type=None
+control_short_declared_IP: offset=0, mutated=false, tier=0, type=None
+control_short_declared_UDP: offset=0, mutated=false, tier=0, type=None
+IPIP_inner500_exceeds_outer_payload20_with_padding: offset=0, mutated=false, tier=0, type=None
+control_valid_snaplen_udp: offset=40, mutated=false, tier=1, type=Vxlan
+control_valid_snaplen_ipip_v4: offset=6, mutated=true, tier=1, type=Ipip
+IPIP_inner_v6_540_exceeds_outer_payload40: offset=0, mutated=false, tier=0, type=None
+control_valid_snaplen_ipip_v6: offset=6, mutated=true, tier=1, type=Ipip

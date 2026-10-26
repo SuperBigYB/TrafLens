@@ -14,35 +14,39 @@
  * limitations under the License.
  */
 
-pub fn decapsulate_gpe_vxlan(_packet: &mut [u8], _l2_len: usize) -> Option<(usize, u32)> {
-    None
+mod gre;
+mod tencent_gre;
+mod vxlan_gpe;
+
+pub fn decapsulate_gpe_vxlan(packet: &mut [u8], l2_len: usize) -> Option<(usize, u32)> {
+    vxlan_gpe::decapsulate_gpe_vxlan(packet, l2_len)
 }
 
 pub fn decapsulate_erspan(
-    _packet: &[u8],
-    _l2_len: usize,
-    _flags: u16,
-    _gre_protocol_type: u16,
-    _ip_header_size: usize,
+    packet: &[u8],
+    l2_len: usize,
+    flags: u16,
+    gre_protocol_type: u16,
+    ip_header_size: usize,
 ) -> Option<(usize, u32)> {
-    None
+    gre::decapsulate_erspan(packet, l2_len, flags, gre_protocol_type, ip_header_size)
 }
 
 pub fn decapsulate_teb(
-    _packet: &[u8],
-    _l2_len: usize,
-    _flags: u16,
-    _ip_header_size: usize,
+    packet: &[u8],
+    l2_len: usize,
+    flags: u16,
+    ip_header_size: usize,
 ) -> Option<(usize, u32)> {
-    None
+    gre::decapsulate_teb(packet, l2_len, flags, ip_header_size)
 }
 
 pub fn decapsulate_tencent_gre(
-    _packet: &mut [u8],
-    _l2_len: usize,
-    _flags: u16,
-    _gre_protocol_type: u16,
-    _ip_header_size: usize,
+    packet: &mut [u8],
+    l2_len: usize,
+    flags: u16,
+    gre_protocol_type: u16,
+    ip_header_size: usize,
 ) -> Option<(usize, u32)> {
-    None
+    tencent_gre::decapsulate_tencent_gre(packet, l2_len, flags, gre_protocol_type, ip_header_size)
 }

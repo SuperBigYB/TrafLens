@@ -113,7 +113,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-traflens-packet-rust-1.97.1-
 
-      - name: Test parsers, CIDR, time and C plugin contracts
+      - name: Test parsers, tunnels, CIDR, time and C plugin contracts
         run: bash traflens/scripts/agent-packet.sh parser-test
 
       - name: Build the packet Agent functional binary
