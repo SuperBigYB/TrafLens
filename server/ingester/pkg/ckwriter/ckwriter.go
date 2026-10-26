@@ -18,6 +18,7 @@ package ckwriter
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net"
 	"reflect"
@@ -120,9 +121,10 @@ type QueueContext struct {
 	orgCaches       []*Cache // write caches for all organizations
 	addrs           []string
 	user, password  string
-	conns           []*ch.Client
+	conns           []writeConnection
 	connCount       int
 	counter         Counter
+	dial            func(context.Context, ch.Options) (writeConnection, error)
 }
 
 func (qc *QueueContext) EndpointsChange(addrs []string) {
@@ -135,7 +137,7 @@ func (qc *QueueContext) EndpointsChange(addrs []string) {
 		}
 	}
 	qc.connCount = len(addrs)
-	qc.conns = make([]*ch.Client, qc.connCount)
+	qc.conns = make([]writeConnection, qc.connCount)
 	for i, addr := range addrs {
 		client, err := ch.Dial(
 			context.Background(),
@@ -164,7 +166,7 @@ func (qc *QueueContext) EndpointsChange(addrs []string) {
 func (qc *QueueContext) Init(addrs []string, user, password string, table *ckdb.Table) error {
 	qc.addrs = addrs
 	qc.connCount = len(addrs)
-	qc.conns = make([]*ch.Client, qc.connCount)
+	qc.conns = make([]writeConnection, qc.connCount)
 	for i := 0; i < qc.connCount; i++ {
 		client, err := ch.Dial(
 			context.Background(),
@@ -178,6 +180,7 @@ func (qc *QueueContext) Init(addrs []string, user, password string, table *ckdb.
 		)
 		if err != nil {
 			log.Warningf("dial to %s failed, %s", addrs[i], err)
+			continue
 		}
 		qc.conns[i] = client
 	}
@@ -195,27 +198,9 @@ func (qc *QueueContext) Init(addrs []string, user, password string, table *ckdb.
 }
 
 func (qc *QueueContext) initConn(connIndex int) error {
-	if len(qc.addrs) <= connIndex {
-		return fmt.Errorf("conn index (%d) is exceeded address range (%d)", connIndex, len(qc.addrs))
-	}
-	client, err := ch.Dial(
-		context.Background(),
-		ch.Options{
-			Address:          qc.addrs[connIndex],
-			User:             qc.user,
-			Password:         qc.password,
-			HandshakeTimeout: time.Minute,
-			DialTimeout:      5 * time.Second,
-		},
-	)
-	if err != nil {
-		if qc.counter.WriteFailedCount == 0 {
-			log.Warningf("dial to %s failed, %s", qc.addrs[connIndex], err)
-		}
-	} else {
-		qc.conns[connIndex] = client
-	}
-	return err
+	ctx, cancel := context.WithTimeout(context.Background(), FLUSH_TIMEOUT)
+	defer cancel()
+	return qc.initConnContext(ctx, connIndex)
 }
 
 type CKItem interface {
@@ -227,6 +212,10 @@ type CKItem interface {
 }
 
 func ExecSQL(conn *ch.Client, query string) error {
+	return execSQL(conn, query)
+}
+
+func execSQL(conn queryConnection, query string) error {
 	if len(query) > SQL_LOG_LENGTH {
 		log.Infof("Exec SQL: %s ...", query[:SQL_LOG_LENGTH])
 	} else {
@@ -248,6 +237,10 @@ func ExecSQL(conn *ch.Client, query string) error {
 }
 
 func QuerySingleStringColumn(conn *ch.Client, query, columnName string) (string, error) {
+	return querySingleStringColumn(conn, query, columnName)
+}
+
+func querySingleStringColumn(conn queryConnection, query, columnName string) (string, error) {
 	if len(query) > SQL_LOG_LENGTH {
 		log.Infof("Query SQL: %s ...", query[:SQL_LOG_LENGTH])
 	} else {
@@ -278,76 +271,76 @@ func QuerySingleStringColumn(conn *ch.Client, query, columnName string) (string,
 	return r, nil
 }
 
-func initTable(conn *ch.Client, timeZone string, t *ckdb.Table, orgID uint16) error {
-	if err := ExecSQL(conn, fmt.Sprintf("CREATE DATABASE IF NOT EXISTS %s", t.OrgDatabase(orgID))); err != nil {
+func initTable(conn queryConnection, timeZone string, t *ckdb.Table, orgID uint16) error {
+	if err := execSQL(conn, fmt.Sprintf("CREATE DATABASE IF NOT EXISTS %s", t.OrgDatabase(orgID))); err != nil {
 		return err
 	}
 
-	if err := ExecSQL(conn, t.MakeOrgLocalTableCreateSQL(orgID)); err != nil {
+	if err := execSQL(conn, t.MakeOrgLocalTableCreateSQL(orgID)); err != nil {
 		return err
 	}
-	if err := ExecSQL(conn, t.MakeOrgGlobalTableCreateSQL(orgID)); err != nil {
+	if err := execSQL(conn, t.MakeOrgGlobalTableCreateSQL(orgID)); err != nil {
 		return err
 	}
 
 	if t.Aggr1H1D {
-		aggrTableCreateSQL, err := QuerySingleStringColumn(conn, fmt.Sprintf("SHOW CREATE TABLE %s", t.AggrTable1H(orgID)), "statement")
+		aggrTableCreateSQL, err := querySingleStringColumn(conn, fmt.Sprintf("SHOW CREATE TABLE %s", t.AggrTable1H(orgID)), "statement")
 		if err != nil {
 			log.Warningf("query 1h agg table failed: %s", err)
 		}
 		if t.IsAggrTableWrong(aggrTableCreateSQL) {
-			if err := ExecSQL(conn, t.MakeAggrTableDropSQL1H(orgID)); err != nil {
+			if err := execSQL(conn, t.MakeAggrTableDropSQL1H(orgID)); err != nil {
 				log.Warningf("drop 1h agg table failed: %s", err)
 			}
 		}
 
-		if err := ExecSQL(conn, t.MakeAggrTableCreateSQL1H(orgID)); err != nil {
+		if err := execSQL(conn, t.MakeAggrTableCreateSQL1H(orgID)); err != nil {
 			log.Warningf("create 1h agg table failed: %s", err)
 		}
-		if err := ExecSQL(conn, t.MakeAggrMVTableCreateSQL1H(orgID)); err != nil {
+		if err := execSQL(conn, t.MakeAggrMVTableCreateSQL1H(orgID)); err != nil {
 			log.Warningf("create 1h mv table failed: %s", err)
 		}
-		if err := ExecSQL(conn, t.MakeAggrLocalTableCreateSQL1H(orgID)); err != nil {
+		if err := execSQL(conn, t.MakeAggrLocalTableCreateSQL1H(orgID)); err != nil {
 			log.Warningf("create 1h local table failed: %s", err)
 		}
-		if err := ExecSQL(conn, t.MakeAggrGlobalTableCreateSQL1H(orgID)); err != nil {
+		if err := execSQL(conn, t.MakeAggrGlobalTableCreateSQL1H(orgID)); err != nil {
 			log.Warningf("create 1h global table failed: %s", err)
 		}
 
-		aggrTableCreateSQL, err = QuerySingleStringColumn(conn, fmt.Sprintf("SHOW CREATE TABLE %s", t.AggrTable1D(orgID)), "statement")
+		aggrTableCreateSQL, err = querySingleStringColumn(conn, fmt.Sprintf("SHOW CREATE TABLE %s", t.AggrTable1D(orgID)), "statement")
 		if err != nil {
 			log.Warningf("query 1d agg table failed: %s", err)
 		}
 		if t.IsAggrTableWrong(aggrTableCreateSQL) {
-			if err := ExecSQL(conn, t.MakeAggrTableDropSQL1D(orgID)); err != nil {
+			if err := execSQL(conn, t.MakeAggrTableDropSQL1D(orgID)); err != nil {
 				log.Warningf("drop 1d agg table failed: %s", err)
 			}
 		}
-		if err := ExecSQL(conn, t.MakeAggrTableCreateSQL1D(orgID)); err != nil {
+		if err := execSQL(conn, t.MakeAggrTableCreateSQL1D(orgID)); err != nil {
 			log.Warningf("create 1d agg table failed: %s", err)
 		}
-		if err := ExecSQL(conn, t.MakeAggrMVTableCreateSQL1D(orgID)); err != nil {
+		if err := execSQL(conn, t.MakeAggrMVTableCreateSQL1D(orgID)); err != nil {
 			log.Warningf("create 1d mv table failed: %s", err)
 		}
-		if err := ExecSQL(conn, t.MakeAggrLocalTableCreateSQL1D(orgID)); err != nil {
+		if err := execSQL(conn, t.MakeAggrLocalTableCreateSQL1D(orgID)); err != nil {
 			log.Warningf("create 1d local table failed: %s", err)
 		}
-		if err := ExecSQL(conn, t.MakeAggrGlobalTableCreateSQL1D(orgID)); err != nil {
+		if err := execSQL(conn, t.MakeAggrGlobalTableCreateSQL1D(orgID)); err != nil {
 			log.Warningf("create 1d global table failed: %s", err)
 		}
 	}
 
 	if t.Aggr1S {
-		if err := ExecSQL(conn, t.MakeAggrTableCreateSQL1S(orgID)); err != nil {
+		if err := execSQL(conn, t.MakeAggrTableCreateSQL1S(orgID)); err != nil {
 			log.Warningf("create 1s agg table failed: %s", err)
 		}
-		if err := ExecSQL(conn, t.MakeAggrMVTableCreateSQL1S(orgID)); err != nil {
+		if err := execSQL(conn, t.MakeAggrMVTableCreateSQL1S(orgID)); err != nil {
 			log.Warningf("create 1s mv table failed: %s", err)
 		}
-		if err := ExecSQL(conn, t.MakeAggrLocalTableCreateSQL1S(orgID)); err != nil {
+		if err := execSQL(conn, t.MakeAggrLocalTableCreateSQL1S(orgID)); err != nil {
 			log.Warningf("create 1s local table failed: %s", err)
 		}
-		if err := ExecSQL(conn, t.MakeAggrGlobalTableCreateSQL1S(orgID)); err != nil {
+		if err := execSQL(conn, t.MakeAggrGlobalTableCreateSQL1S(orgID)); err != nil {
 			log.Warningf("create 1s global table failed: %s", err)
 		}
 
@@ -365,7 +358,7 @@ func initTable(conn *ch.Client, timeZone string, t *ckdb.Table, orgID uint16) er
 				break
 			}
 
-			if err := ExecSQL(conn, modTimeZoneSql); err != nil {
+			if err := execSQL(conn, modTimeZoneSql); err != nil {
 				log.Warningf("modify time zone failed, error: %s", err)
 			}
 		}
@@ -515,11 +508,12 @@ func (w *CKWriter) Run() {
 }
 
 type Counter struct {
-	WriteSuccessCount int64 `statsd:"write-success-count"`
-	WriteFailedCount  int64 `statsd:"write-failed-count"`
-	RetryCount        int64 `statsd:"retry-count"`
-	RetryFailedCount  int64 `statsd:"retry-failed-count"`
-	OrgInvalidCount   int64 `statsd:"org-invalid-count"`
+	WriteSuccessCount   int64 `statsd:"write-success-count"`
+	WriteFailedCount    int64 `statsd:"write-failed-count"`
+	WriteUncertainCount int64 `statsd:"write-uncertain-count"`
+	RetryCount          int64 `statsd:"retry-count"`
+	RetryFailedCount    int64 `statsd:"retry-failed-count"`
+	OrgInvalidCount     int64 `statsd:"org-invalid-count"`
 	utils.Closable
 }
 
@@ -550,6 +544,7 @@ type Cache struct {
 	columnBlock   ckdb.CKColumnBlock
 	ItemVersion   uint32
 	protoInput    proto.Input
+	retryInput    proto.Input
 	size          int
 	writeCounter  int
 	lastWriteTime time.Time
@@ -561,6 +556,7 @@ func (c *Cache) Release() {
 	c.size = 0
 	c.columnBlock = nil
 	c.protoInput = nil
+	c.retryInput = nil
 }
 
 func (c *Cache) OrgIdExists() bool {
@@ -631,58 +627,10 @@ func (c *Cache) Add(item CKItem) error {
 	return nil
 }
 
-func (c *Cache) Write() error {
-	if c.size == 0 {
-		return nil
-	}
-
-	connIndex := c.writeCounter % c.queueContext.connCount
-	conn := c.queueContext.conns[connIndex]
-	if conn == nil || conn.IsClosed() {
-		if err := c.queueContext.initConn(connIndex); err != nil {
-			c.writeCounter++
-			c.lastWriteTime = time.Now()
-			c.size = 0
-			c.columnBlock.Reset()
-			return err
-		}
-		conn = c.queueContext.conns[connIndex]
-	}
-	c.protoInput = c.protoInput[:0]
-	input := c.columnBlock.ToInput(c.protoInput)
-	c.protoInput = input
-
-	err := conn.Do(context.Background(), ch.Query{
-		Body:  c.prepare,
-		Input: input,
-	})
-	c.writeCounter++
-	c.lastWriteTime = time.Now()
-	c.size = 0
-	c.columnBlock.Reset()
-	if err != nil {
-		return fmt.Errorf("batch item write block failed: %s", err)
-	}
-	return nil
-}
-
 func (w *CKWriter) ResetConnection(queueID, connID int) error {
-	var err error
-	// FIXME: do reset actually
-	if !IsNil(w.queueContexts[queueID].conns[connID]) {
-		return nil
-	}
-	w.queueContexts[queueID].conns[connID], err = ch.Dial(
-		context.Background(),
-		ch.Options{
-			Address:          w.addrs[connID],
-			User:             w.user,
-			Password:         w.password,
-			HandshakeTimeout: time.Minute,
-			DialTimeout:      5 * time.Second,
-		},
-	)
-	return err
+	qc := w.queueContexts[queueID]
+	qc.closeConn(connID)
+	return qc.initConn(connID)
 }
 
 func (w *CKWriter) Write(queueID int, cache *Cache) {
@@ -712,8 +660,17 @@ func (w *CKWriter) Write(queueID int, cache *Cache) {
 		cache.tableCreated = true
 	}
 	if err := cache.Write(); err != nil {
+		var failure *batchWriteError
+		uncertain := errors.As(err, &failure) && failure.inputStarted
+		if uncertain {
+			qc.counter.WriteUncertainCount += int64(itemsLen)
+		}
 		if logEnabled {
-			log.Warningf("write table (%s.%s) failed, drop (%d) items: %s", w.table.OrgDatabase(cache.orgID), w.table.LocalName, itemsLen, err)
+			if uncertain {
+				log.Warningf("write table (%s.%s) outcome unknown for (%d) items, not replayed: %s", w.table.OrgDatabase(cache.orgID), w.table.LocalName, itemsLen, err)
+			} else {
+				log.Warningf("write table (%s.%s) failed, drop (%d) items: %s", w.table.OrgDatabase(cache.orgID), w.table.LocalName, itemsLen, err)
+			}
 		}
 		qc.counter.WriteFailedCount += int64(itemsLen)
 	} else {
