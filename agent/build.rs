@@ -66,6 +66,21 @@ fn get_branch() -> Result<String> {
 struct EnvCommand(&'static str, Vec<&'static str>);
 
 fn set_build_info() -> Result<()> {
+    // Git refs change on commits without changing protobuf/native inputs.
+    // Resolve metadata through Git so ordinary and linked worktrees both work.
+    for entry in ["HEAD", "refs/heads", "packed-refs"] {
+        let output = Command::new("git")
+            .args(["rev-parse", "--git-path", entry])
+            .output()?;
+        if output.status.success() {
+            let path = String::from_utf8(output.stdout)?;
+            let path = path.trim();
+            if std::path::Path::new(path).exists() {
+                println!("cargo:rerun-if-changed={path}");
+            }
+        }
+    }
+    println!("cargo:rerun-if-env-changed=GITHUB_REF_NAME");
     println!("cargo:rustc-env=AGENT_NAME=deepflow-agent-ce");
     println!("cargo:rustc-env=BRANCH={}", get_branch()?);
     println!(

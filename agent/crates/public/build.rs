@@ -42,10 +42,27 @@ fn generate_protobuf() -> Result<(), Box<dyn Error>> {
             &["../../../message/opentelemetry"],
         )?;
 
-    // FIXME: Wait for the rustfmt ignore attribute to be removed in stable rust support
-    Command::new("cargo")
-        .args(["fmt", "--", "src/proto/*.rs", "src/proto/integration/*.rs"])
-        .spawn()?;
+    // Format only generated outputs, and finish before rustc reads them.
+    // `cargo fmt` formats the workspace even when rustfmt file arguments follow
+    // `--`, which can modify unrelated checked-in source during a build.
+    let mut generated = Vec::new();
+    for directory in ["src/proto", "src/proto/integration"] {
+        for entry in std::fs::read_dir(directory)? {
+            let path = entry?.path();
+            if path.extension().is_some_and(|extension| extension == "rs") {
+                generated.push(path);
+            }
+        }
+    }
+    generated.sort();
+    let rustfmt = std::env::var_os("RUSTFMT").unwrap_or_else(|| "rustfmt".into());
+    let status = Command::new(rustfmt)
+        .args(["--edition", "2021"])
+        .args(generated)
+        .status()?;
+    if !status.success() {
+        return Err("formatting generated protobuf output failed".into());
+    }
 
     Ok(())
 }

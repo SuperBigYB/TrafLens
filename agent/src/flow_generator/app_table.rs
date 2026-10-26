@@ -19,6 +19,7 @@ use std::{
     num::NonZeroUsize,
 };
 
+#[cfg(feature = "libtrace")]
 use log::debug;
 use lru::LruCache;
 use public::l7_protocol::{L7Protocol, L7ProtocolEnum};
@@ -439,7 +440,7 @@ impl AppTable {
         local_epc: i32,
         remote_epc: i32,
     ) -> bool {
-        #[cfg(unix)]
+        #[cfg(all(unix, feature = "libtrace"))]
         if self.is_whitelist(packet) {
             return false;
         }
