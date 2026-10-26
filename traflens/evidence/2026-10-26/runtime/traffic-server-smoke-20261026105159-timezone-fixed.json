@@ -1,0 +1,126 @@
+{
+  "kind": "marked-http-server",
+  "marker": "smoke-20261026105159-timezone-fixed",
+  "records": [
+    {
+      "time": "2026-10-26T10:51:43.533067+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/0",
+      "sequence": 0,
+      "status": 200
+    },
+    {
+      "time": "2026-10-26T10:51:43.634960+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/1",
+      "sequence": 1,
+      "status": 200
+    },
+    {
+      "time": "2026-10-26T10:51:43.737313+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/2",
+      "sequence": 2,
+      "status": 200
+    },
+    {
+      "time": "2026-10-26T10:51:43.839616+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/3",
+      "sequence": 3,
+      "status": 200
+    },
+    {
+      "time": "2026-10-26T10:51:43.942072+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/4",
+      "sequence": 4,
+      "status": 200
+    },
+    {
+      "time": "2026-10-26T10:51:44.045062+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/5",
+      "sequence": 5,
+      "status": 200
+    },
+    {
+      "time": "2026-10-26T10:51:44.147847+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/6",
+      "sequence": 6,
+      "status": 200
+    },
+    {
+      "time": "2026-10-26T10:51:44.250485+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/7",
+      "sequence": 7,
+      "status": 200
+    },
+    {
+      "time": "2026-10-26T10:51:44.353250+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/8",
+      "sequence": 8,
+      "status": 200
+    },
+    {
+      "time": "2026-10-26T10:51:44.456364+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/9",
+      "sequence": 9,
+      "status": 200
+    },
+    {
+      "time": "2026-10-26T10:51:44.559027+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/10",
+      "sequence": 10,
+      "status": 200
+    },
+    {
+      "time": "2026-10-26T10:51:44.661978+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/11",
+      "sequence": 11,
+      "status": 200
+    },
+    {
+      "time": "2026-10-26T10:51:44.764833+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/12",
+      "sequence": 12,
+      "status": 200
+    },
+    {
+      "time": "2026-10-26T10:51:44.867250+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/13",
+      "sequence": 13,
+      "status": 200
+    },
+    {
+      "time": "2026-10-26T10:51:44.969573+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/14",
+      "sequence": 14,
+      "status": 200
+    },
+    {
+      "time": "2026-10-26T10:51:45.072414+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/15",
+      "sequence": 15,
+      "status": 200
+    },
+    {
+      "time": "2026-10-26T10:51:45.173908+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/16",
+      "sequence": 16,
+      "status": 200
+    },
+    {
+      "time": "2026-10-26T10:51:45.276056+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/17",
+      "sequence": 17,
+      "status": 200
+    },
+    {
+      "time": "2026-10-26T10:51:45.378616+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/18",
+      "sequence": 18,
+      "status": 200
+    },
+    {
+      "time": "2026-10-26T10:51:45.481258+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/19",
+      "sequence": 19,
+      "status": 200
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "source_head": "6aec171bf820e5ce516349ed3677395050b8a384",
+  "server_version": "Name: deepflow-server community edition\nBranch: main\nCommitID: 4922b11ff560b64412bee6b1092f605e4dbda0a0\nRevCount: 12739\nCompiler: go version go1.26.2 linux/amd64\nCompileTime: 2026-10-26 16:31:33\n",
+  "archive_sha256": "7667d65d61eda226a5c99782e8b4024266ada787e6dacd1fa3177ab588cdbe5a",
+  "archive_bytes": 88907689,
+  "timezone_archive_sha256": "8f55634d05f8bca1f7bc7c69c5933428c69357e0bdf565e5ba224e3f88ff12e8",
+  "note": "Source HEAD and binary build revision are recorded separately."
+}

@@ -1,0 +1,24 @@
+{
+  "OPT_STATUS": "SUCCESS",
+  "DESCRIPTION": "",
+  "result": {
+    "columns": [
+      "Count(row)"
+    ],
+    "schemas": [
+      {
+        "label_type": "",
+        "pre_as": "",
+        "type": 1,
+        "unit": "",
+        "value_type": "UInt64"
+      }
+    ],
+    "values": [
+      [
+        20
+      ]
+    ]
+  },
+  "debug": null
+}

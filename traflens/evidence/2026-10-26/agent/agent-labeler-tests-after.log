@@ -1,0 +1,27 @@
+   Compiling deepflow-agent v0.1.0 (/root/yb/git/TrafLens/agent)
+    Finished `test` profile [unoptimized] target(s) in 5.27s
+     Running unittests src/lib.rs (target/debug/deps/deepflow_agent-9aeed2f6c031f05e)
+
+running 19 tests
+test policy::labeler::tests::cidr_key_matches_all_ipv4_prefixes ... ok
+test policy::labeler::tests::cidr_key_matches_all_ipv6_prefixes ... ok
+test policy::labeler::tests::test_cidr_match ... ok
+test policy::labeler::tests::test_cidr_order ... ok
+test policy::labeler::tests::test_cidr_tunnel ... ok
+test policy::labeler::tests::test_cidr_vip ... ok
+test policy::labeler::tests::test_cidr_wan ... ok
+test policy::labeler::tests::test_epc_ip_normal ... ok
+test policy::labeler::tests::test_get_endpoint_date ... ok
+test policy::labeler::tests::test_get_vip ... ok
+test policy::labeler::tests::test_ip6_netmask ... ok
+test policy::labeler::tests::test_ip_lan_wan ... ok
+test policy::labeler::tests::test_ip_litte_netmask ... ok
+test policy::labeler::tests::test_ip_netmask ... ok
+test policy::labeler::tests::test_local_epc ... ok
+test policy::labeler::tests::test_mac_normal ... ok
+test policy::labeler::tests::test_modify_endpoint_date ... ok
+test policy::labeler::tests::test_modify_internet_epc ... ok
+test policy::labeler::tests::test_peer_normal ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 262 filtered out; finished in 0.00s
+

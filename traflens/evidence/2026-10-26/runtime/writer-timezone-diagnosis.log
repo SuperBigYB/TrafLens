@@ -1,0 +1,2 @@
+[33m2026-10-26 10:42:53.756 [WARN][0m [ckwriter] ckwriter.go:716 write table (deepflow_tenant.deepflow_collector_local) failed, drop (80) items: batch item write block failed: send input: infer "time" "DateTime('Asia/Shanghai')": load location: unknown time zone Asia/Shanghai
+[33m2026-10-26 10:42:55.768 [WARN][0m [ckwriter] ckwriter.go:716 write table (deepflow_admin.deepflow_server_local) failed, drop (702) items: batch item write block failed: send input: infer "time" "DateTime('Asia/Shanghai')": load location: unknown time zone Asia/Shanghai

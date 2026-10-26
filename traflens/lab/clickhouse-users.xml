@@ -1,0 +1,11 @@
+<clickhouse>
+  <profiles>
+    <default>
+      <max_memory_usage>1073741824</max_memory_usage>
+      <max_threads>2</max_threads>
+      <max_insert_threads>2</max_insert_threads>
+      <max_concurrent_queries_for_user>64</max_concurrent_queries_for_user>
+      <allow_experimental_live_view>1</allow_experimental_live_view>
+    </default>
+  </profiles>
+</clickhouse>

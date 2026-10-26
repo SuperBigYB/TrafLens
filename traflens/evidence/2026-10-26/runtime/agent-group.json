@@ -1,0 +1,13 @@
+{
+  "ID": 1,
+  "NAME": "default",
+  "UPDATED_AT": "2026-10-26 09:40:56",
+  "SHORT_UUID": "g-57f7e56cd1",
+  "LCUUID": "57f7e414-d121-11f1-9a73-222d2a425d16",
+  "TEAM_ID": 1,
+  "USER_ID": 1,
+  "VTAP_LCUUIDS": [],
+  "DISABLE_VTAP_LCUUIDS": [],
+  "PENDING_VTAP_LCUUIDS": [],
+  "LICENSE_FUNCTIONS": []
+}

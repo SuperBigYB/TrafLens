@@ -45,6 +45,9 @@ jobs:
       - name: Test host preflight tooling
         run: make -C traflens test
 
+      - name: Test lab ownership and runtime provenance
+        run: python3 -m unittest discover -s traflens/lab/tests -p 'test_*.py' -v
+
       - name: Build the complete community server
         run: make -C traflens server
 
@@ -70,3 +73,49 @@ jobs:
           path: artifacts/
           retention-days: 7
           if-no-files-found: error
+
+  # Packet-mode functional gate; full-library and eBPF suites have separate validation.
+  packet-parser:
+    name: Build packet Agent and test parser fixtures
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      TRAFLENS_AGENT_JOBS: '2'
+      CARGO_INCREMENTAL: '0'
+      CARGO_TARGET_DIR: ${{ github.workspace }}/agent/target
+    steps:
+      - name: Checkout candidate and reference history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Install packet-mode native prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y protobuf-compiler libpcap-dev pkg-config libssl-dev build-essential
+
+      - name: Install the exact official Rust toolchain
+        run: rustup toolchain install 1.97.1 --profile minimal --component rustfmt --no-self-update
+
+      - name: Cache Cargo dependencies and packet build outputs
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            agent/target
+          key: ${{ runner.os }}-traflens-packet-rust-1.97.1-${{ hashFiles('agent/Cargo.lock', 'agent/Cargo.toml', 'agent/**/Cargo.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-traflens-packet-rust-1.97.1-
+
+      - name: Test packet parser fixtures and CIDR classification
+        run: bash traflens/scripts/agent-packet.sh parser-test
+
+      - name: Build the packet Agent functional binary
+        run: bash traflens/scripts/agent-packet.sh build
+
+      - name: Record the candidate source, lockfile and packet binary checksum
+        run: |
+          git rev-parse HEAD
+          sha256sum agent/Cargo.lock agent/target/debug/deepflow-agent

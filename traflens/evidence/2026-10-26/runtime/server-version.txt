@@ -1,0 +1,6 @@
+Name: deepflow-server community edition
+Branch: main
+CommitID: 4922b11ff560b64412bee6b1092f605e4dbda0a0
+RevCount: 12739
+Compiler: go version go1.26.2 linux/amd64
+CompileTime: 2026-10-26 16:31:33

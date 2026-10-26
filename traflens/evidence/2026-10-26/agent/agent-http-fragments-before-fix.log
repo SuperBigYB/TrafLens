@@ -1,0 +1,38 @@
+   Compiling public v0.1.0 (/root/yb/git/TrafLens/agent/crates/public)
+   Compiling reorder v0.1.0 (/root/yb/git/TrafLens/agent/plugins/reorder)
+   Compiling packet_segmentation_reassembly v0.1.0 (/root/yb/git/TrafLens/agent/plugins/packet_segmentation_reassembly)
+   Compiling npb_handler v0.1.0 (/root/yb/git/TrafLens/agent/plugins/npb_handler)
+   Compiling packet_sequence_block v0.1.0 (/root/yb/git/TrafLens/agent/plugins/packet_sequence_block)
+   Compiling pcap_assembler v0.1.0 (/root/yb/git/TrafLens/agent/plugins/pcap_assembler)
+   Compiling grpc v0.1.0 (/root/yb/git/TrafLens/agent/plugins/grpc)
+   Compiling special_recv_engine v0.1.0 (/root/yb/git/TrafLens/agent/plugins/special_recv_engine)
+   Compiling deepflow-agent v0.1.0 (/root/yb/git/TrafLens/agent)
+    Finished `test` profile [unoptimized] target(s) in 6.44s
+     Running unittests src/lib.rs (target/debug/deps/deepflow_agent-9aeed2f6c031f05e)
+
+running 3 tests
+test flow_generator::protocol_logs::http::tests::cached_response_first_fragment_is_not_recounted_at_flow_end ... FAILED
+test flow_generator::protocol_logs::http::tests::cached_response_first_preserves_filter_errors_and_rrt ... ok
+test flow_generator::protocol_logs::http::tests::cached_response_fragments_wait_for_request_filter_and_preserve_error ... FAILED
+
+failures:
+
+---- flow_generator::protocol_logs::http::tests::cached_response_first_fragment_is_not_recounted_at_flow_end stdout ----
+
+thread 'flow_generator::protocol_logs::http::tests::cached_response_first_fragment_is_not_recounted_at_flow_end' (146072) panicked at src/flow_generator/protocol_logs/http.rs:3513:9:
+assertion failed: cache.rrt_cache.collect_flow_perf_stats(1).is_none()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- flow_generator::protocol_logs::http::tests::cached_response_fragments_wait_for_request_filter_and_preserve_error stdout ----
+
+thread 'flow_generator::protocol_logs::http::tests::cached_response_fragments_wait_for_request_filter_and_preserve_error' (146074) panicked at src/flow_generator/protocol_logs/http.rs:3544:13:
+assertion failed: cached_perf_event(&response_end, &packets[1], cache.clone(), 210).is_none()
+
+
+failures:
+    flow_generator::protocol_logs::http::tests::cached_response_first_fragment_is_not_recounted_at_flow_end
+    flow_generator::protocol_logs::http::tests::cached_response_fragments_wait_for_request_filter_and_preserve_error
+
+test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 275 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`

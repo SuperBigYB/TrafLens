@@ -1,0 +1,3 @@
+{"BlockIO":"81.9kB / 168MB","CPUPerc":"0.33%","Container":"traflens-lab-mysql","ID":"1e39ef9cbe54","MemPerc":"52.23%","MemUsage":"534.8MiB / 1GiB","Name":"traflens-lab-mysql","NetIO":"8.35MB / 97.6MB","PIDs":"68"}
+{"BlockIO":"3.17MB / 174MB","CPUPerc":"1.20%","Container":"traflens-lab-clickhouse","ID":"c0cb6c4f19f1","MemPerc":"8.34%","MemUsage":"341.7MiB / 4GiB","Name":"traflens-lab-clickhouse","NetIO":"5.48MB / 1.64MB","PIDs":"148"}
+{"BlockIO":"0B / 0B","CPUPerc":"1.83%","Container":"traflens-lab-server","ID":"026e7ba5bc0e","MemPerc":"11.73%","MemUsage":"480.6MiB / 4GiB","Name":"traflens-lab-server","NetIO":"51.4MB / 15.8MB","PIDs":"9"}

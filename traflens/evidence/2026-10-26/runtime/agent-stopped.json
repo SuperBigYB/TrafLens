@@ -1,0 +1,15 @@
+{
+  "checked_at_utc": "2026-10-26T11:20:54.941003+00:00",
+  "recorded_processes": {
+    "supervisor": {
+      "pid": 160198,
+      "process_exists": false
+    },
+    "deepflow-agent": {
+      "pid_file_exists": false,
+      "process_exists": false
+    }
+  },
+  "active_queue_observers": [],
+  "queue_off": "watch-queues.py sends Off in finally; its 90-second window completed and the owning Agent exited"
+}

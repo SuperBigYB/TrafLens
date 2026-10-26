@@ -1,0 +1,11 @@
+{
+  "marker": "smoke-20261026105159-timezone-fixed",
+  "client_requests": 20,
+  "server_responses": 20,
+  "queried_rows": 20,
+  "unique_paths_match": true,
+  "all_methods": "GET",
+  "all_response_codes": 200,
+  "agent_production_source": "6aec171bf820e5ce516349ed3677395050b8a384",
+  "scope": "IPv6 direct-link packet-mode HTTP functional acceptance; not performance or eBPF runtime parity"
+}

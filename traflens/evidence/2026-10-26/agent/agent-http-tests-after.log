@@ -1,0 +1,28 @@
+   Compiling deepflow-agent v0.1.0 (/root/yb/git/TrafLens/agent)
+    Finished `test` profile [unoptimized] target(s) in 5.50s
+     Running unittests src/lib.rs (target/debug/deps/deepflow_agent-9aeed2f6c031f05e)
+
+running 20 tests
+test flow_generator::protocol_logs::http::tests::blacklist ... ok
+test flow_generator::protocol_logs::http::tests::cached_multi_fragment_pair_counts_each_end_once_and_keeps_blacklist ... ok
+test flow_generator::protocol_logs::http::tests::cached_response_first_fragment_is_not_recounted_at_flow_end ... ok
+test flow_generator::protocol_logs::http::tests::cached_response_first_preserves_filter_errors_and_rrt ... ok
+test flow_generator::protocol_logs::http::tests::cached_response_fragments_wait_for_request_filter_and_preserve_error ... ok
+test flow_generator::protocol_logs::http::tests::check ... ok
+test flow_generator::protocol_logs::http::tests::check_grpc_unary ... ok
+test flow_generator::protocol_logs::http::tests::check_perf ... ok
+test flow_generator::protocol_logs::http::tests::get_http_v1_header_from_payload ... ok
+test flow_generator::protocol_logs::http::tests::header_priority ... ok
+test flow_generator::protocol_logs::http::tests::late_blacklist_retires_only_its_own_pending_request ... ok
+test flow_generator::protocol_logs::http::tests::panic_caused_by_invalid_header ... ok
+test flow_generator::protocol_logs::http::tests::segmented_tcp_false_positive ... ok
+test flow_generator::protocol_logs::http::tests::test_enterprise_set_endpoint_by_config_avoids_path_owned_clone ... ok
+test flow_generator::protocol_logs::http::tests::test_handle_endpoint ... ok
+test flow_generator::protocol_logs::http::tests::test_non_enterprise_set_endpoint_by_config_uses_borrowed_path_name ... ok
+test flow_generator::protocol_logs::http::tests::test_one_line_resp ... ok
+test flow_generator::protocol_logs::http::tests::test_preferred_endpoint_path_prefers_endpoint_then_path ... ok
+test flow_generator::protocol_logs::http::tests::unmatched_cached_request_timeout_excludes_blacklisted_requests ... ok
+test flow_generator::protocol_logs::http::tests::unmatched_cached_response_is_counted_once_at_flow_end ... ok
+
+test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 259 filtered out; finished in 0.06s
+

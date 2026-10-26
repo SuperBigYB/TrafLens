@@ -1,0 +1,20 @@
+{
+  "container_id": "cd087ac21d0c4a55ee377f61b04cd275917ffffc43793ab368c4312cd9201348",
+  "container_name": "traflens-native-release-6aec171b",
+  "source": "6aec171bf820e5ce516349ed3677395050b8a384",
+  "source_bundle_sha256": "cc9a762b3ce8e9340d5c01ccf135c340bd03e2569332a262c7a00f7d4041cc51",
+  "worktree_path": "/tmp/traflens-native-build-20261026/repo",
+  "status_before_build": "",
+  "native_image": "ghcr.io/deepflowio/rust-build@sha256:b018b2a5970d3c8f36a95f56dec56ad780020ec782419e42c571c7be5867d310",
+  "rustc": "1.97.1",
+  "cargo": "1.97.1",
+  "cpuset": "0,1,2,3",
+  "cpu_quota": 4,
+  "memory_limit_bytes": 8589934592,
+  "pids_limit": 4096,
+  "network": "none",
+  "capabilities": "ALL dropped",
+  "no_new_privileges": true,
+  "command": "cargo build --release --locked --offline --bin deepflow-agent",
+  "source_overlays": []
+}

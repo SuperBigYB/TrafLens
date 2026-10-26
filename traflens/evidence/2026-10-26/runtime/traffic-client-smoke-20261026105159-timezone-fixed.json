@@ -1,0 +1,128 @@
+{
+  "kind": "marked-http-client",
+  "marker": "smoke-20261026105159-timezone-fixed",
+  "destination": "fe80::5a47:caff:fe7c:7859",
+  "interface": "enp1s0f0",
+  "records": [
+    {
+      "time": "2026-10-26T10:51:43.091016+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/0",
+      "status": 200,
+      "duration_ms": 2.053
+    },
+    {
+      "time": "2026-10-26T10:51:43.193412+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/1",
+      "status": 200,
+      "duration_ms": 2.152
+    },
+    {
+      "time": "2026-10-26T10:51:43.295838+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/2",
+      "status": 200,
+      "duration_ms": 2.011
+    },
+    {
+      "time": "2026-10-26T10:51:43.397982+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/3",
+      "status": 200,
+      "duration_ms": 1.752
+    },
+    {
+      "time": "2026-10-26T10:51:43.500998+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/4",
+      "status": 200,
+      "duration_ms": 2.588
+    },
+    {
+      "time": "2026-10-26T10:51:43.603716+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/5",
+      "status": 200,
+      "duration_ms": 2.179
+    },
+    {
+      "time": "2026-10-26T10:51:43.706568+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/6",
+      "status": 200,
+      "duration_ms": 2.393
+    },
+    {
+      "time": "2026-10-26T10:51:43.809248+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/7",
+      "status": 200,
+      "duration_ms": 2.162
+    },
+    {
+      "time": "2026-10-26T10:51:43.912123+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/8",
+      "status": 200,
+      "duration_ms": 2.428
+    },
+    {
+      "time": "2026-10-26T10:51:44.015067+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/9",
+      "status": 200,
+      "duration_ms": 2.317
+    },
+    {
+      "time": "2026-10-26T10:51:44.118130+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/10",
+      "status": 200,
+      "duration_ms": 2.602
+    },
+    {
+      "time": "2026-10-26T10:51:44.220566+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/11",
+      "status": 200,
+      "duration_ms": 2.072
+    },
+    {
+      "time": "2026-10-26T10:51:44.323447+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/12",
+      "status": 200,
+      "duration_ms": 2.388
+    },
+    {
+      "time": "2026-10-26T10:51:44.425838+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/13",
+      "status": 200,
+      "duration_ms": 2.03
+    },
+    {
+      "time": "2026-10-26T10:51:44.528230+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/14",
+      "status": 200,
+      "duration_ms": 1.939
+    },
+    {
+      "time": "2026-10-26T10:51:44.630834+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/15",
+      "status": 200,
+      "duration_ms": 2.194
+    },
+    {
+      "time": "2026-10-26T10:51:44.732078+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/16",
+      "status": 200,
+      "duration_ms": 0.861
+    },
+    {
+      "time": "2026-10-26T10:51:44.834589+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/17",
+      "status": 200,
+      "duration_ms": 2.175
+    },
+    {
+      "time": "2026-10-26T10:51:44.937282+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/18",
+      "status": 200,
+      "duration_ms": 2.162
+    },
+    {
+      "time": "2026-10-26T10:51:45.039844+00:00",
+      "path": "/traflens-e2e/smoke-20261026105159-timezone-fixed/19",
+      "status": 200,
+      "duration_ms": 2.091
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "OPT_STATUS": "SUCCESS",
+  "DESCRIPTION": "",
+  "result": {
+    "columns": [
+      "request_resource",
+      "response_code",
+      "request_type"
+    ],
+    "schemas": [
+      {
+        "label_type": "",
+        "pre_as": "",
+        "type": 0,
+        "unit": "",
+        "value_type": "String"
+      },
+      {
+        "label_type": "",
+        "pre_as": "",
+        "type": 0,
+        "unit": "",
+        "value_type": "Nullable(Int32)"
+      },
+      {
+        "label_type": "",
+        "pre_as": "",
+        "type": 0,
+        "unit": "",
+        "value_type": "LowCardinality(String)"
+      }
+    ],
+    "values": [
+      [
+        "/traflens-e2e/smoke-20261026105159-timezone-fixed/0",
+        200,
+        "GET"
+      ],
+      [
+        "/traflens-e2e/smoke-20261026105159-timezone-fixed/1",
+        200,
+        "GET"
+      ],
+      [
+        "/traflens-e2e/smoke-20261026105159-timezone-fixed/2",
+        200,
+        "GET"
+      ],
+      [
+        "/traflens-e2e/smoke-20261026105159-timezone-fixed/3",
+        200,
+        "GET"
+      ],
+      [
+        "/traflens-e2e/smoke-20261026105159-timezone-fixed/4",
+        200,
+        "GET"
+      ],
+      [
+        "/traflens-e2e/smoke-20261026105159-timezone-fixed/5",
+        200,
+        "GET"
+      ],
+      [
+        "/traflens-e2e/smoke-20261026105159-timezone-fixed/6",
+        200,
+        "GET"
+      ],
+      [
+        "/traflens-e2e/smoke-20261026105159-timezone-fixed/7",
+        200,
+        "GET"
+      ],
+      [
+        "/traflens-e2e/smoke-20261026105159-timezone-fixed/8",
+        200,
+        "GET"
+      ],
+      [
+        "/traflens-e2e/smoke-20261026105159-timezone-fixed/9",
+        200,
+        "GET"
+      ],
+      [
+        "/traflens-e2e/smoke-20261026105159-timezone-fixed/10",
+        200,
+        "GET"
+      ],
+      [
+        "/traflens-e2e/smoke-20261026105159-timezone-fixed/11",
+        200,
+        "GET"
+      ],
+      [
+        "/traflens-e2e/smoke-20261026105159-timezone-fixed/12",
+        200,
+        "GET"
+      ],
+      [
+        "/traflens-e2e/smoke-20261026105159-timezone-fixed/13",
+        200,
+        "GET"
+      ],
+      [
+        "/traflens-e2e/smoke-20261026105159-timezone-fixed/14",
+        200,
+        "GET"
+      ],
+      [
+        "/traflens-e2e/smoke-20261026105159-timezone-fixed/15",
+        200,
+        "GET"
+      ],
+      [
+        "/traflens-e2e/smoke-20261026105159-timezone-fixed/16",
+        200,
+        "GET"
+      ],
+      [
+        "/traflens-e2e/smoke-20261026105159-timezone-fixed/17",
+        200,
+        "GET"
+      ],
+      [
+        "/traflens-e2e/smoke-20261026105159-timezone-fixed/18",
+        200,
+        "GET"
+      ],
+      [
+        "/traflens-e2e/smoke-20261026105159-timezone-fixed/19",
+        200,
+        "GET"
+      ]
+    ]
+  },
+  "debug": null
+}

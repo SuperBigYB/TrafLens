@@ -1,0 +1,8 @@
+{
+  "mysql": "registry.cn-hongkong.aliyuncs.com/deepflow-ce/mysql@sha256:cfddf275c8b1ae1583c0f6afb4899d4dbe14111a6462699559a1f4dc8f4d5f6e",
+  "clickhouse": "registry.cn-hongkong.aliyuncs.com/deepflow-ce/clickhouse-server@sha256:a5ba4e31579aea4b02ab4333ee2fe13b7ddeedff342a714cace9137274e552a7",
+  "runtime": "ubuntu@sha256:ba1eb591a82dde8bb512b8b21fc1c905b9a039280350ed948b0c78b9ed1477c3",
+  "reference": "manifests/deepflow-docker-compose/docker-compose.yaml",
+  "mysql_version": "8.0.31",
+  "clickhouse_version": "23.8.7.24"
+}

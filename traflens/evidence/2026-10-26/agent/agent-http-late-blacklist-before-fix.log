@@ -1,0 +1,24 @@
+   Compiling deepflow-agent v0.1.0 (/root/yb/git/TrafLens/agent)
+    Finished `test` profile [unoptimized] target(s) in 5.14s
+     Running unittests src/lib.rs (target/debug/deps/deepflow_agent-9aeed2f6c031f05e)
+
+running 1 test
+test flow_generator::protocol_logs::http::tests::late_blacklist_retires_only_its_own_pending_request ... FAILED
+
+failures:
+
+---- flow_generator::protocol_logs::http::tests::late_blacklist_retires_only_its_own_pending_request stdout ----
+
+thread 'flow_generator::protocol_logs::http::tests::late_blacklist_retires_only_its_own_pending_request' (149262) panicked at src/flow_generator/protocol_logs/http.rs:3618:17:
+assertion `left == right` failed: the other stream's pending request was changed
+  left: 2
+ right: 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    flow_generator::protocol_logs::http::tests::late_blacklist_retires_only_its_own_pending_request
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 278 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`

@@ -1,0 +1,11 @@
+23.8.7.24
+application_log	2
+deepflow_admin	2
+deepflow_tenant	2
+event	24
+ext_metrics	2
+flow_log	8
+flow_metrics	50
+flow_tag	98
+profile	6
+prometheus	2

@@ -1,0 +1,7 @@
+12743-6aec171bf820e5ce516349ed3677395050b8a384
+Name: deepflow-agent community edition
+Branch: main
+CommitId: 6aec171bf820e5ce516349ed3677395050b8a384
+RevCount: 12743
+Compiler: rustc 1.97.1 (8bab26f4f 2026-07-14)
+CompileTime: 2026-10-26 10:26:19

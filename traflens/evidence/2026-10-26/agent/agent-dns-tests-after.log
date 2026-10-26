@@ -1,0 +1,11 @@
+    Finished `test` profile [unoptimized] target(s) in 0.18s
+     Running unittests src/lib.rs (target/debug/deps/deepflow_agent-9aeed2f6c031f05e)
+
+running 4 tests
+test flow_generator::protocol_logs::dns::tests::check ... ok
+test flow_generator::protocol_logs::dns::tests::check_perf ... ok
+test flow_generator::protocol_logs::dns::tests::malformed_packet ... ok
+test flow_generator::protocol_logs::dns::tests::nxdomain_ignore ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 275 filtered out; finished in 0.01s
+

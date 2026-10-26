@@ -1,5 +1,12 @@
 # TrafLens distribution
 
+Current validation and next steps: [STATE.md](STATE.md).
+For the packet Agent see [its build/test entry point](README-agent-packet.md);
+the full libtrace release build is documented in
+[the native build procedure](README-agent-native.md). The reproducible isolated
+storage/controller/query environment and marked HTTP workload are in
+[the lab workflow](lab/README.md). [EVIDENCE.md](EVIDENCE.md) indexes actual runs.
+
 TrafLens starts from the upstream DeepFlow open-source core. Preserve upstream
 licenses, notices, module paths, and generated-code workflows. Imported code is
 an initial implementation baseline; it does not establish verified feature or

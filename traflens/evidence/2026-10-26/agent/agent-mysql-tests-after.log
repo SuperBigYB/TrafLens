@@ -1,0 +1,15 @@
+    Finished `test` profile [unoptimized] target(s) in 0.17s
+     Running unittests src/lib.rs (target/debug/deps/deepflow_agent-9aeed2f6c031f05e)
+
+running 8 tests
+test flow_generator::protocol_logs::sql::mysql::tests::check ... ok
+test flow_generator::protocol_logs::sql::mysql::tests::check_perf ... ok
+test flow_generator::protocol_logs::sql::mysql::tests::check_truncate ... ok
+test flow_generator::protocol_logs::sql::mysql::tests::comment_extractor ... ok
+test flow_generator::protocol_logs::sql::mysql::tests::test_generate_endpoint ... ok
+test flow_generator::protocol_logs::sql::mysql::tests::test_kv_extractor ... ok
+test flow_generator::protocol_logs::sql::mysql::tests::test_parse_parameter ... ok
+test flow_generator::protocol_logs::sql::mysql::tests::test_set_parameter_counter ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 271 filtered out; finished in 2.08s
+

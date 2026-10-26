@@ -1,0 +1,23 @@
+   Compiling deepflow-agent v0.1.0 (/root/yb/git/TrafLens/agent)
+    Finished `test` profile [unoptimized] target(s) in 5.57s
+     Running unittests src/lib.rs (target/debug/deps/deepflow_agent-9aeed2f6c031f05e)
+
+running 2 tests
+test policy::labeler::tests::cidr_key_matches_all_ipv4_prefixes ... ok
+test policy::labeler::tests::cidr_key_matches_all_ipv6_prefixes ... FAILED
+
+failures:
+
+---- policy::labeler::tests::cidr_key_matches_all_ipv6_prefixes stdout ----
+
+thread 'policy::labeler::tests::cidr_key_matches_all_ipv6_prefixes' (150605) panicked at src/policy/labeler.rs:73:27:
+attempt to shift left with overflow
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    policy::labeler::tests::cidr_key_matches_all_ipv6_prefixes
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 279 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`

@@ -1,0 +1,10 @@
+controller-ips: [192.168.1.240]
+controller-port: 20035
+vtap-group-id-request: "{{GROUP_ID}}"
+override-os-hostname: traflens-dev79-smoke
+async-worker-thread-number: 2
+log-file: /root/yb/git/TrafLens/.traflens/work/agent-run/deepflow-agent.log
+pid-file: /root/yb/git/TrafLens/.traflens/work/agent-run/deepflow-agent.pid
+liveness-probe-enabled: true
+liveness-probe-port: 39091
+cgroups-disabled: false

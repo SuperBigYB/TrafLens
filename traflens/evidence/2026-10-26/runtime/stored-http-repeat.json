@@ -1,0 +1,48 @@
+{
+  "marker": "smoke-20261026105159-timezone-fixed",
+  "sql": "SELECT request_resource,response_code,request_type FROM l7_flow_log WHERE request_resource LIKE '/traflens-e2e/smoke-20261026105159-timezone-fixed/%' LIMIT 100",
+  "iterations": [
+    {
+      "iteration": 1,
+      "started_at_utc": "2026-10-26T11:15:49.015876+00:00",
+      "elapsed_seconds": 0.004708,
+      "status": "SUCCESS",
+      "row_count": 20,
+      "exact_paths_methods_statuses_pass": true
+    },
+    {
+      "iteration": 2,
+      "started_at_utc": "2026-10-26T11:15:50.021323+00:00",
+      "elapsed_seconds": 0.017371,
+      "status": "SUCCESS",
+      "row_count": 20,
+      "exact_paths_methods_statuses_pass": true
+    },
+    {
+      "iteration": 3,
+      "started_at_utc": "2026-10-26T11:15:51.039970+00:00",
+      "elapsed_seconds": 0.012384,
+      "status": "SUCCESS",
+      "row_count": 20,
+      "exact_paths_methods_statuses_pass": true
+    },
+    {
+      "iteration": 4,
+      "started_at_utc": "2026-10-26T11:15:52.053505+00:00",
+      "elapsed_seconds": 0.013938,
+      "status": "SUCCESS",
+      "row_count": 20,
+      "exact_paths_methods_statuses_pass": true
+    },
+    {
+      "iteration": 5,
+      "started_at_utc": "2026-10-26T11:15:53.068603+00:00",
+      "elapsed_seconds": 0.013031,
+      "status": "SUCCESS",
+      "row_count": 20,
+      "exact_paths_methods_statuses_pass": true
+    }
+  ],
+  "all_passed": true,
+  "maximum_elapsed_seconds": 0.017371
+}

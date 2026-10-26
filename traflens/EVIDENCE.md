@@ -30,3 +30,17 @@ API usage and subsequent behavioral failures must be distinguished: before-fix
 and final test logs accompany any production fixes in this checkpoint. Only the
 explicitly recorded packages have been tested; the full upstream suite and
 end-to-end deployment are separate work.
+
+`agent/` adds the second checkpoint: HTTP 20, DNS 4, MySQL 8 and labeler 19
+selected tests pass. The broad-library failure inventory explicitly has no
+baseline comparison. Full default-feature native release evidence pins source
+`6aec171bf...`, the official dependency image, Rust 1.97.1, binary checksum,
+successful host probes and ten compiled BPF objects. These builds do not prove
+live eBPF tracing or profiling.
+
+`runtime/http-e2e-acceptance.json` and the matching client/server/query JSON
+prove twenty unique real HTTP requests over the direct IPv6 link became twenty
+queried records, all GET/status 200. The runtime index and lab notes distinguish
+the resolved IPv6 crash, the lab image's missing timezone archive, and the lab
+ClickHouse resource-profile corrections. Selected functional acceptance does
+not establish load capacity, all-protocol accuracy or complete product parity.

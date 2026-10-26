@@ -1,0 +1,76 @@
+log-file: /var/log/deepflow/server.log
+log-level: error
+max-cpus: 2
+controller:
+  log-level: error
+  listen-port: 20417
+  listen-node-port: 20417
+  grpc-port: "20035"
+  grpc-node-port: "20035"
+  ingester-port: "20033"
+  reporting-disabled: true
+  redis:
+    enabled: false
+  http:
+    resource_api_page_get_redis_enabled: false
+  mysql:
+    enabled: true
+    database: deepflow
+    host: mysql
+    port: 3306
+    user-name: root
+    user-password: "{{MYSQL_PASSWORD}}"
+    max_open_conns: 20
+    max_idle_conns: 10
+    drop-database-enabled: false
+  postgresql:
+    enabled: false
+  clickhouse:
+    database: flow_tag
+    host: clickhouse
+    port: 9000
+    user-name: default
+  trisolaris:
+    vtap-auto-register: true
+ingester:
+  log-level: error
+  controller-ips: [127.0.0.1]
+  controller-port: 20035
+  listen-port: 20033
+  ckdb:
+    host: clickhouse
+    port: 9000
+    external: false
+    cluster-name: df_cluster
+    storage-policy: df_storage
+  ckdb-auth:
+    username: default
+  metrics-ck-writer:
+    queue-count: 1
+    queue-size: 8192
+    batch-size: 1024
+    flush-timeout: 2
+  flowlog-ck-writer:
+    queue-count: 1
+    queue-size: 8192
+    batch-size: 1024
+    flush-timeout: 2
+  flow-log-ttl-hour:
+    l4-flow-log: 4
+    l7-flow-log: 4
+    l4-packet: 4
+  flow-metrics-ttl-hour:
+    vtap-flow-1m: 4
+    vtap-flow-1s: 4
+    vtap-app-1m: 4
+    vtap-app-1s: 4
+querier:
+  log-level: error
+  listen-port: 20416
+  clickhouse:
+    database: flow_tag
+    host: clickhouse
+    port: 9000
+    user-name: default
+    max-connection: 10
+    timeout: 30
