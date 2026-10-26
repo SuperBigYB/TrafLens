@@ -1,0 +1,148 @@
+=== RUN   TestMultiQueue
+--- PASS: TestMultiQueue (0.00s)
+=== RUN   TestQueue
+--- PASS: TestQueue (0.00s)
+=== RUN   TestQueueOverWrite
+2026/10/26 16:25:36 Possible memory leak! countable queue-map[host:anatraf module:whatever] is not correctly closed.
+--- PASS: TestQueueOverWrite (0.00s)
+=== RUN   TestQueueSize
+2026/10/26 16:25:36 Possible memory leak! countable queue-map[host:anatraf module:whatever] is not correctly closed.
+--- PASS: TestQueueSize (0.00s)
+=== RUN   TestQueueOverSize
+2026/10/26 16:25:36 Possible memory leak! countable queue-map[host:anatraf module:whatever] is not correctly closed.
+--- PASS: TestQueueOverSize (0.00s)
+=== RUN   TestQueueGets
+2026/10/26 16:25:36 Possible memory leak! countable queue-map[host:anatraf module:whatever] is not correctly closed.
+--- PASS: TestQueueGets (0.00s)
+=== RUN   TestQueueEmptyGets
+2026/10/26 16:25:36 Possible memory leak! countable queue-map[host:anatraf module:whatever] is not correctly closed.
+--- PASS: TestQueueEmptyGets (0.00s)
+=== RUN   TestQueueTwiceGets
+2026/10/26 16:25:36 Possible memory leak! countable queue-map[host:anatraf module:whatever] is not correctly closed.
+--- PASS: TestQueueTwiceGets (0.00s)
+=== RUN   TestReleased
+2026/10/26 16:25:36 Possible memory leak! countable queue-map[host:anatraf module:whatever] is not correctly closed.
+--- PASS: TestReleased (0.00s)
+=== RUN   TestPartialRelease
+2026/10/26 16:25:36 Possible memory leak! countable queue-map[host:anatraf module:whatever] is not correctly closed.
+--- PASS: TestPartialRelease (0.00s)
+=== RUN   TestFlushIndicator
+2026/10/26 16:25:36 Possible memory leak! countable queue-map[host:anatraf module:whatever] is not correctly closed.
+--- PASS: TestFlushIndicator (0.00s)
+PASS
+ok  	github.com/deepflowio/deepflow/server/libs/queue	(cached)
+=== RUN   TestU128LRU
+--- PASS: TestU128LRU (0.00s)
+=== RUN   TestU128LRUCollisionChain
+--- PASS: TestU128LRUCollisionChain (0.00s)
+=== RUN   TestU128U64LRUAddAndRemove
+--- PASS: TestU128U64LRUAddAndRemove (0.00s)
+=== RUN   TestU128U64LRUAddAndRemoveByShortKey
+2026/10/26 16:25:36 Possible memory leak! countable double_key_lru-map[host:anatraf module:test] is not correctly closed.
+--- PASS: TestU128U64LRUAddAndRemoveByShortKey (0.00s)
+=== RUN   TestU128U64LRUCollisionChain
+2026/10/26 16:25:36 Possible memory leak! countable double_key_lru-map[host:anatraf module:test] is not correctly closed.
+--- PASS: TestU128U64LRUCollisionChain (0.00s)
+=== RUN   TestU64LRUAddAndRemove
+--- PASS: TestU64LRUAddAndRemove (0.00s)
+=== RUN   TestU64LRUAddAndRemoveByShortKey
+2026/10/26 16:25:36 Possible memory leak! countable double_key_lru-map[host:anatraf module:test] is not correctly closed.
+--- PASS: TestU64LRUAddAndRemoveByShortKey (0.00s)
+=== RUN   TestU64LRUAddAndRemoveByOneShortKey
+2026/10/26 16:25:36 Possible memory leak! countable double_key_lru-map[host:anatraf module:test] is not correctly closed.
+--- PASS: TestU64LRUAddAndRemoveByOneShortKey (0.00s)
+=== RUN   TestU64DoubleKeyLRUCollisionChain
+2026/10/26 16:25:36 Possible memory leak! countable double_key_lru-map[host:anatraf module:test] is not correctly closed.
+--- PASS: TestU64DoubleKeyLRUCollisionChain (0.00s)
+=== RUN   TestU64LRU
+--- PASS: TestU64LRU (0.00s)
+=== RUN   TestU64LRUCollisionChain
+2026/10/26 16:25:36 Possible memory leak! countable lru-map[host:anatraf module:test] is not correctly closed.
+--- PASS: TestU64LRUCollisionChain (0.00s)
+=== RUN   TestU160KeySize
+--- PASS: TestU160KeySize (0.00s)
+=== RUN   TestU160LRU
+--- PASS: TestU160LRU (0.00s)
+=== RUN   TestU160LRUCollisionChain
+--- PASS: TestU160LRUCollisionChain (0.00s)
+=== RUN   TestU192KeySize
+--- PASS: TestU192KeySize (0.00s)
+=== RUN   TestU192LRU
+--- PASS: TestU192LRU (0.00s)
+=== RUN   TestU192LRUCollisionChain
+--- PASS: TestU192LRUCollisionChain (0.00s)
+=== RUN   TestU384KeySize
+--- PASS: TestU384KeySize (0.00s)
+=== RUN   TestU384LRU
+--- PASS: TestU384LRU (0.00s)
+=== RUN   TestU384LRUCollisionChain
+--- PASS: TestU384LRUCollisionChain (0.00s)
+PASS
+ok  	github.com/deepflowio/deepflow/server/libs/hmap/lru	(cached)
+=== RUN   TestMarshalTraffic
+--- PASS: TestMarshalTraffic (0.00s)
+=== RUN   TestReverse
+--- PASS: TestReverse (0.00s)
+=== RUN   TestMerge
+    basic_meter_test.go:116: &{1 1 1 1 1 1 1 1 1 1 1 1 1 1 0}
+--- PASS: TestMerge (0.00s)
+=== RUN   TestMarshalAnomaly
+--- PASS: TestMarshalAnomaly (0.00s)
+=== RUN   TestAnomalyMergeOutOfOrderCounters
+--- PASS: TestAnomalyMergeOutOfOrderCounters (0.00s)
+=== RUN   TestMarshalLatencyClientIdleTime
+--- PASS: TestMarshalLatencyClientIdleTime (0.00s)
+=== RUN   TestMarshalPerformanceSynackRegression
+--- PASS: TestMarshalPerformanceSynackRegression (0.00s)
+=== RUN   TestCustomTagMeterMetaEncodeDecode
+--- PASS: TestCustomTagMeterMetaEncodeDecode (0.00s)
+=== RUN   TestCustomTagEncodeDecode
+--- PASS: TestCustomTagEncodeDecode (0.00s)
+=== RUN   TestCustomMeterEncodeDecode
+--- PASS: TestCustomMeterEncodeDecode (0.00s)
+=== RUN   TestMarshalFlowMeter
+--- PASS: TestMarshalFlowMeter (0.00s)
+=== RUN   TestFlowMeterRelease
+--- PASS: TestFlowMeterRelease (0.00s)
+=== RUN   TestFlowMeterClone
+--- PASS: TestFlowMeterClone (0.00s)
+=== RUN   TestMeterReverse
+--- PASS: TestMeterReverse (0.00s)
+=== RUN   TestHasEdgeTagField
+--- PASS: TestHasEdgeTagField (0.00s)
+=== RUN   TestInt16Unmarshal
+--- PASS: TestInt16Unmarshal (0.00s)
+=== RUN   TestNegativeID
+--- PASS: TestNegativeID (0.00s)
+=== RUN   TestCloneTagWithIPv6Fields
+--- PASS: TestCloneTagWithIPv6Fields (0.00s)
+=== RUN   TestCloneTagWithNilAndEmptyIPv6Fields
+=== RUN   TestCloneTagWithNilAndEmptyIPv6Fields/nil
+=== RUN   TestCloneTagWithNilAndEmptyIPv6Fields/empty
+=== RUN   TestCloneTagWithNilAndEmptyIPv6Fields/mixed
+--- PASS: TestCloneTagWithNilAndEmptyIPv6Fields (0.00s)
+    --- PASS: TestCloneTagWithNilAndEmptyIPv6Fields/nil (0.00s)
+    --- PASS: TestCloneTagWithNilAndEmptyIPv6Fields/empty (0.00s)
+    --- PASS: TestCloneTagWithNilAndEmptyIPv6Fields/mixed (0.00s)
+=== RUN   TestMarshallToInfluxdb
+--- PASS: TestMarshallToInfluxdb (0.00s)
+=== RUN   TestMarshalTagIPv6Path
+--- PASS: TestMarshalTagIPv6Path (0.00s)
+=== RUN   TestMarshalTagMixedCodesAreSorted
+--- PASS: TestMarshalTagMixedCodesAreSorted (0.00s)
+=== RUN   TestMarshalTagResourceFields
+--- PASS: TestMarshalTagResourceFields (0.00s)
+=== RUN   TestEncodeMiniTag
+--- PASS: TestEncodeMiniTag (0.00s)
+=== RUN   TestDirectionEnum
+--- PASS: TestDirectionEnum (0.00s)
+=== RUN   TestDirectionToTAPSide
+--- PASS: TestDirectionToTAPSide (0.00s)
+=== RUN   TestPutTAPPort
+--- PASS: TestPutTAPPort (0.00s)
+=== RUN   TestVTAPMeterEnDecode
+--- PASS: TestVTAPMeterEnDecode (0.00s)
+=== RUN   TestVTAPMeterMerge
+--- PASS: TestVTAPMeterMerge (0.00s)
+PASS
+ok  	github.com/deepflowio/deepflow/server/libs/flow-metrics	0.011s

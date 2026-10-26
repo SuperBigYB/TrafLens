@@ -1,3 +1,16 @@
+# TrafLens
+
+TrafLens develops and validates the DeepFlow open-source observability core.
+Start with the [TrafLens workflow](traflens/README.md),
+[current checkpoint and next steps](traflens/STATE.md), and
+[source provenance](traflens/upstream.json).
+
+The upstream implementation, history and notices are preserved below. Current
+validated capabilities and remaining integration work are documented separately;
+importing the core does not establish complete feature or performance parity.
+
+---
+
 <p align="center">
   <img src="./docs/deepflow-logo.png" alt="DeepFlow" width="300" />
 

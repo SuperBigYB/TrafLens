@@ -1,0 +1,26 @@
+make: Entering directory '/root/yb/git/TrafLens/traflens'
+python3 -m unittest discover -s tests -p 'test_*.py' -v
+test_command_preserves_git_status_columns (test_preflight.CommandTests) ... ok
+test_missing_command_is_reported (test_preflight.CommandTests) ... ok
+test_missing_tool_keeps_version_null (test_preflight.CommandTests) ... ok
+test_nonzero_exit_without_stderr_is_explicit (test_preflight.CommandTests) ... ok
+test_timeout_does_not_abort_snapshot (test_preflight.CommandTests) ... ok
+test_tool_version_keeps_only_first_line (test_preflight.CommandTests) ... ok
+test_memory_units_are_bytes (test_preflight.HostTests) ... ok
+test_missing_linux_metadata_and_disk_are_not_zero (test_preflight.HostTests) ... ok
+test_down_interface_and_missing_ip_are_not_reported_as_ready (test_preflight.InterfaceTests) ... ok
+test_interface_path_traversal_is_rejected (test_preflight.InterfaceTests) ... ok
+test_live_interface_includes_units_and_addresses (test_preflight.InterfaceTests) ... ok
+test_malformed_ip_json_does_not_abort_snapshot (test_preflight.InterfaceTests) ... ok
+test_nonexistent_interface_is_explicit (test_preflight.InterfaceTests) ... ok
+test_explicit_repo_works_when_script_is_copied_to_shallow_path (test_preflight.SchemaTests) ... ok
+test_top_level_schema_utc_and_interface_deduplication (test_preflight.SchemaTests) ... ok
+test_git_failure_and_missing_pin_are_explicit (test_preflight.SourceTests) ... ok
+test_malformed_and_short_pins_are_rejected (test_preflight.SourceTests) ... ok
+test_source_pin_and_dirty_worktree (test_preflight.SourceTests) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.007s
+
+OK
+make: Leaving directory '/root/yb/git/TrafLens/traflens'

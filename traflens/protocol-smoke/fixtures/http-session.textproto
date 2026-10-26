@@ -1,0 +1,46 @@
+base {
+  start_time: 1720000000000000
+  end_time: 1720000000002500
+  flow_id: 18446744073709551600
+  vtap_id: 7
+  head { proto: 20 msg_type: 2 rrt: 2500 }
+  ip_src: 167772161
+  ip_dst: 167772162
+  port_src: 49152
+  port_dst: 8080
+  protocol: 6
+  req_tcp_seq: 4294967200
+  resp_tcp_seq: 2147483650
+  process_id_0: 101
+  process_id_1: 202
+  syscall_trace_id_request: 4294967297
+  syscall_trace_id_response: 4294967298
+}
+req_len: 42
+resp_len: 128
+req {
+  req_type: "GET"
+  domain: "api.example.test"
+  resource: "/v1/items"
+  endpoint: "items.list"
+}
+resp { status: 0 code: 200 result: "OK" }
+version: "1.1"
+trace_info {
+  trace_id: "0123456789abcdef0123456789abcdef"
+  span_id: "0123456789abcdef"
+  parent_span_id: "fedcba9876543210"
+  trace_ids: "0123456789abcdef0123456789abcdef"
+}
+ext_info {
+  service_name: "catalog"
+  client_ip: "10.0.0.1"
+  request_id: 77
+  x_request_id_0: "request-77"
+  attribute_names: "region"
+  attribute_values: "lab"
+  metrics_names: "items"
+  metrics_values: 2.5
+}
+captured_request_byte: 42
+captured_response_byte: 128

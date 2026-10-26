@@ -1,0 +1,158 @@
+{
+  "generated_at": "2026-10-26T08:32:18.080320Z",
+  "host": {
+    "architecture": "x86_64",
+    "cpu": {
+      "logical_count": 14,
+      "model": "12th Gen Intel(R) Core(TM) i9-12900H"
+    },
+    "disk": {
+      "error": null,
+      "free_bytes": 25594732544,
+      "total_bytes": 134145380352,
+      "used_bytes": 101661925376
+    },
+    "hostname": "anatraf",
+    "kernel": "5.15.0-198-generic",
+    "memory": {
+      "available_bytes": 29766795264,
+      "swap_total_bytes": 8589930496,
+      "total_bytes": 33368834048
+    },
+    "system": "Linux"
+  },
+  "network_interfaces": [
+    {
+      "addresses": [
+        {
+          "address": "fe80::5a47:caff:fe77:66e2",
+          "family": "inet6",
+          "prefix_length": 64
+        }
+      ],
+      "carrier": 1,
+      "errors": [],
+      "exists": true,
+      "name": "enp1s0f0",
+      "operstate": "up",
+      "speed_mbps": 10000
+    },
+    {
+      "addresses": [
+        {
+          "address": "fe80::5a47:caff:fe77:66e3",
+          "family": "inet6",
+          "prefix_length": 64
+        }
+      ],
+      "carrier": 1,
+      "errors": [],
+      "exists": true,
+      "name": "enp1s0f1",
+      "operstate": "up",
+      "speed_mbps": 10000
+    }
+  ],
+  "schema_version": 1,
+  "source": {
+    "git_error": null,
+    "git_sha": "4922b11ff560b64412bee6b1092f605e4dbda0a0",
+    "git_status": [
+      " M .gitignore",
+      " M README.md",
+      "?? TRAFLENS.md",
+      "?? traflens/"
+    ],
+    "root": "/root/yb/git/TrafLens",
+    "upstream": {
+      "error": null,
+      "sha": "8741e924ff0ae3964a135985c51e5a6ce6bde397"
+    }
+  },
+  "tools": {
+    "cargo": {
+      "available": true,
+      "error": null,
+      "path": "/usr/bin/cargo",
+      "version": "cargo 1.75.0"
+    },
+    "clang": {
+      "available": true,
+      "error": null,
+      "path": "/usr/bin/clang",
+      "version": "Ubuntu clang version 14.0.0-1ubuntu1.1"
+    },
+    "cmake": {
+      "available": true,
+      "error": null,
+      "path": "/usr/bin/cmake",
+      "version": "cmake version 3.22.1"
+    },
+    "docker": {
+      "available": true,
+      "error": null,
+      "path": "/usr/bin/docker",
+      "version": "Docker version 29.9.2, build a82e528"
+    },
+    "git": {
+      "available": true,
+      "error": null,
+      "path": "/usr/bin/git",
+      "version": "git version 2.34.1"
+    },
+    "go": {
+      "available": true,
+      "error": null,
+      "path": "/root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/bin/go",
+      "version": "go version go1.26.2 linux/amd64"
+    },
+    "ip": {
+      "available": true,
+      "error": null,
+      "path": "/usr/sbin/ip",
+      "version": "ip utility, iproute2-5.15.0, libbpf 0.5.0"
+    },
+    "iperf3": {
+      "available": false,
+      "error": "command not found",
+      "path": null,
+      "version": null
+    },
+    "make": {
+      "available": true,
+      "error": null,
+      "path": "/usr/bin/make",
+      "version": "GNU Make 4.3"
+    },
+    "node": {
+      "available": true,
+      "error": null,
+      "path": "/usr/bin/node",
+      "version": "v24.22.1"
+    },
+    "npm": {
+      "available": true,
+      "error": null,
+      "path": "/usr/bin/npm",
+      "version": "11.19.1"
+    },
+    "protoc": {
+      "available": true,
+      "error": null,
+      "path": "/usr/bin/protoc",
+      "version": "libprotoc 3.12.4"
+    },
+    "python3": {
+      "available": true,
+      "error": null,
+      "path": "/usr/bin/python3",
+      "version": "Python 3.10.12"
+    },
+    "rustc": {
+      "available": true,
+      "error": null,
+      "path": "/usr/bin/rustc",
+      "version": "rustc 1.75.0 (82e1608df 2023-12-21) (built from a source tarball)"
+    }
+  }
+}

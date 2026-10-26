@@ -1,0 +1,273 @@
+2026-10-26T08:10:15Z
+Linux anatraf 5.15.0-198-generic #208-Ubuntu SMP Fri Sep 4 10:22:38 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+Architecture:                            x86_64
+CPU op-mode(s):                          32-bit, 64-bit
+Address sizes:                           46 bits physical, 48 bits virtual
+Byte Order:                              Little Endian
+CPU(s):                                  14
+On-line CPU(s) list:                     0-13
+Vendor ID:                               GenuineIntel
+Model name:                              12th Gen Intel(R) Core(TM) i9-12900H
+CPU family:                              6
+Model:                                   154
+Thread(s) per core:                      1
+Core(s) per socket:                      14
+Socket(s):                               1
+Stepping:                                3
+CPU max MHz:                             5000.0000
+CPU min MHz:                             400.0000
+BogoMIPS:                                5836.80
+Flags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb intel_pt sha_ni xsaveopt xsavec xgetbv1 xsaves split_lock_detect avx_vnni dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp hwp_pkg_req umip pku ospke waitpkg gfni vaes vpclmulqdq tme rdpid movdiri movdir64b fsrm md_clear serialize pconfig arch_lbr flush_l1d arch_capabilities ibpb_exit_to_user
+Virtualization:                          VT-x
+L1d cache:                               544 KiB (14 instances)
+L1i cache:                               704 KiB (14 instances)
+L2 cache:                                11.5 MiB (8 instances)
+L3 cache:                                24 MiB (1 instance)
+NUMA node(s):                            1
+NUMA node0 CPU(s):                       0-13
+Vulnerability Gather data sampling:      Not affected
+Vulnerability Indirect target selection: Not affected
+Vulnerability Itlb multihit:             Not affected
+Vulnerability L1tf:                      Not affected
+Vulnerability Mds:                       Not affected
+Vulnerability Meltdown:                  Not affected
+Vulnerability Mmio stale data:           Not affected
+Vulnerability Reg file data sampling:    Mitigation; Clear Register File
+Vulnerability Retbleed:                  Not affected
+Vulnerability Spec rstack overflow:      Not affected
+Vulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl and seccomp
+Vulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization
+Vulnerability Spectre v2:                Mitigation; Enhanced / Automatic IBRS; IBPB conditional; PBRSB-eIBRS SW sequence; BHI BHI_DIS_S
+Vulnerability Srbds:                     Not affected
+Vulnerability Tsa:                       Not affected
+Vulnerability Tsx async abort:           Not affected
+Vulnerability Vmscape:                   Mitigation; IBPB before exit to userspace
+iperf 3.9 (cJSON 1.7.13)
+Linux anatraf 5.15.0-198-generic #208-Ubuntu SMP Fri Sep 4 10:22:38 UTC 2026 x86_64
+Optional features available: CPU affinity setting, IPv6 flow label, SCTP, TCP congestion algorithm setting, sendfile / zerocopy, socket pacing, authentication
+enp1s0f0
+24: enp1s0f0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP mode DEFAULT group default qlen 1000
+    link/ether 58:47:ca:77:66:e2 brd ff:ff:ff:ff:ff:ff promiscuity 0 minmtu 68 maxmtu 9702 addrgenmode eui64 numtxqueues 16 numrxqueues 16 gso_max_size 65536 gso_max_segs 65535 portid 5847ca7766e2 parentbus pci parentdev 0000:01:00.0 
+Settings for enp1s0f0:
+	Supported ports: [ FIBRE ]
+	Supported link modes:   1000baseX/Full
+	                        10000baseSR/Full
+	Supported pause frame use: Symmetric Receive-only
+	Supports auto-negotiation: Yes
+	Supported FEC modes: Not reported
+	Advertised link modes:  1000baseX/Full
+	                        10000baseSR/Full
+	Advertised pause frame use: No
+	Advertised auto-negotiation: Yes
+	Advertised FEC modes: Not reported
+	Speed: 10000Mb/s
+	Duplex: Full
+	Auto-negotiation: off
+	Port: FIBRE
+	PHYAD: 0
+	Transceiver: internal
+	Supports Wake-on: g
+	Wake-on: g
+        Current message level: 0x00000007 (7)
+                               drv probe link
+	Link detected: yes
+Features for enp1s0f0:
+rx-checksumming: on
+tx-checksumming: on
+	tx-checksum-ipv4: on
+	tx-checksum-ip-generic: off [fixed]
+	tx-checksum-ipv6: on
+	tx-checksum-fcoe-crc: off [fixed]
+	tx-checksum-sctp: on
+scatter-gather: on
+	tx-scatter-gather: on
+	tx-scatter-gather-fraglist: off [fixed]
+tcp-segmentation-offload: on
+	tx-tcp-segmentation: on
+	tx-tcp-ecn-segmentation: on
+	tx-tcp-mangleid-segmentation: off
+	tx-tcp6-segmentation: on
+generic-segmentation-offload: on
+generic-receive-offload: on
+large-receive-offload: off [fixed]
+rx-vlan-offload: on
+tx-vlan-offload: on
+ntuple-filters: on
+receive-hashing: on
+highdma: on
+rx-vlan-filter: on [fixed]
+vlan-challenged: off [fixed]
+tx-lockless: off [fixed]
+netns-local: off [fixed]
+tx-gso-robust: off [fixed]
+tx-fcoe-segmentation: off [fixed]
+tx-gre-segmentation: on
+tx-gre-csum-segmentation: on
+tx-ipxip4-segmentation: on
+tx-ipxip6-segmentation: on
+tx-udp_tnl-segmentation: on
+tx-udp_tnl-csum-segmentation: on
+tx-gso-partial: on
+tx-tunnel-remcsum-segmentation: off [fixed]
+tx-sctp-segmentation: off [fixed]
+tx-esp-segmentation: off [fixed]
+tx-udp-segmentation: on
+tx-gso-list: off [fixed]
+fcoe-mtu: off [fixed]
+tx-nocache-copy: off
+loopback: off [fixed]
+rx-fcs: off [fixed]
+rx-all: off [fixed]
+tx-vlan-stag-hw-insert: off [fixed]
+rx-vlan-stag-hw-parse: off [fixed]
+rx-vlan-stag-filter: off [fixed]
+l2-fwd-offload: off
+hw-tc-offload: on
+esp-hw-offload: off [fixed]
+esp-tx-csum-hw-offload: off [fixed]
+rx-udp_tunnel-port-offload: on
+tls-hw-tx-offload: off [fixed]
+tls-hw-rx-offload: off [fixed]
+rx-gro-hw: off [fixed]
+tls-hw-record: off [fixed]
+rx-gro-list: off
+macsec-hw-offload: off [fixed]
+rx-udp-gro-forwarding: off
+hsr-tag-ins-offload: off [fixed]
+hsr-tag-rm-offload: off [fixed]
+hsr-fwd-offload: off [fixed]
+hsr-dup-offload: off [fixed]
+driver: i40e
+version: 5.15.0-198-generic
+firmware-version: 9.20 0x8000d8c5 0.0.0
+expansion-rom-version: 
+bus-info: 0000:01:00.0
+supports-statistics: yes
+supports-test: yes
+supports-eeprom-access: yes
+supports-register-dump: yes
+supports-priv-flags: yes
+rx_bytes 12323039231
+tx_bytes 12314939021
+rx_packets 8288128
+tx_packets 8305311
+rx_dropped 0
+tx_dropped 0
+rx_errors 0
+tx_errors 0
+enp1s0f1
+25: enp1s0f1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP mode DEFAULT group default qlen 1000
+    link/ether 58:47:ca:77:66:e3 brd ff:ff:ff:ff:ff:ff promiscuity 0 minmtu 68 maxmtu 9702 addrgenmode eui64 numtxqueues 16 numrxqueues 16 gso_max_size 65536 gso_max_segs 65535 portid 5847ca7766e3 parentbus pci parentdev 0000:01:00.1 
+Settings for enp1s0f1:
+	Supported ports: [ FIBRE ]
+	Supported link modes:   1000baseX/Full
+	                        10000baseSR/Full
+	Supported pause frame use: Symmetric Receive-only
+	Supports auto-negotiation: Yes
+	Supported FEC modes: Not reported
+	Advertised link modes:  1000baseX/Full
+	                        10000baseSR/Full
+	Advertised pause frame use: No
+	Advertised auto-negotiation: Yes
+	Advertised FEC modes: Not reported
+	Speed: 10000Mb/s
+	Duplex: Full
+	Auto-negotiation: off
+	Port: FIBRE
+	PHYAD: 0
+	Transceiver: internal
+	Supports Wake-on: g
+	Wake-on: g
+        Current message level: 0x00000007 (7)
+                               drv probe link
+	Link detected: yes
+Features for enp1s0f1:
+rx-checksumming: on
+tx-checksumming: on
+	tx-checksum-ipv4: on
+	tx-checksum-ip-generic: off [fixed]
+	tx-checksum-ipv6: on
+	tx-checksum-fcoe-crc: off [fixed]
+	tx-checksum-sctp: on
+scatter-gather: on
+	tx-scatter-gather: on
+	tx-scatter-gather-fraglist: off [fixed]
+tcp-segmentation-offload: on
+	tx-tcp-segmentation: on
+	tx-tcp-ecn-segmentation: on
+	tx-tcp-mangleid-segmentation: off
+	tx-tcp6-segmentation: on
+generic-segmentation-offload: on
+generic-receive-offload: on
+large-receive-offload: off [fixed]
+rx-vlan-offload: on
+tx-vlan-offload: on
+ntuple-filters: on
+receive-hashing: on
+highdma: on
+rx-vlan-filter: on [fixed]
+vlan-challenged: off [fixed]
+tx-lockless: off [fixed]
+netns-local: off [fixed]
+tx-gso-robust: off [fixed]
+tx-fcoe-segmentation: off [fixed]
+tx-gre-segmentation: on
+tx-gre-csum-segmentation: on
+tx-ipxip4-segmentation: on
+tx-ipxip6-segmentation: on
+tx-udp_tnl-segmentation: on
+tx-udp_tnl-csum-segmentation: on
+tx-gso-partial: on
+tx-tunnel-remcsum-segmentation: off [fixed]
+tx-sctp-segmentation: off [fixed]
+tx-esp-segmentation: off [fixed]
+tx-udp-segmentation: on
+tx-gso-list: off [fixed]
+fcoe-mtu: off [fixed]
+tx-nocache-copy: off
+loopback: off [fixed]
+rx-fcs: off [fixed]
+rx-all: off [fixed]
+tx-vlan-stag-hw-insert: off [fixed]
+rx-vlan-stag-hw-parse: off [fixed]
+rx-vlan-stag-filter: off [fixed]
+l2-fwd-offload: off
+hw-tc-offload: on
+esp-hw-offload: off [fixed]
+esp-tx-csum-hw-offload: off [fixed]
+rx-udp_tunnel-port-offload: on
+tls-hw-tx-offload: off [fixed]
+tls-hw-rx-offload: off [fixed]
+rx-gro-hw: off [fixed]
+tls-hw-record: off [fixed]
+rx-gro-list: off
+macsec-hw-offload: off [fixed]
+rx-udp-gro-forwarding: off
+hsr-tag-ins-offload: off [fixed]
+hsr-tag-rm-offload: off [fixed]
+hsr-fwd-offload: off [fixed]
+hsr-dup-offload: off [fixed]
+driver: i40e
+version: 5.15.0-198-generic
+firmware-version: 9.20 0x8000d8c5 0.0.0
+expansion-rom-version: 
+bus-info: 0000:01:00.1
+supports-statistics: yes
+supports-test: yes
+supports-eeprom-access: yes
+supports-register-dump: yes
+supports-priv-flags: yes
+rx_bytes 12178531623
+tx_bytes 12320125448
+rx_packets 8192640
+tx_packets 8340780
+rx_dropped 0
+tx_dropped 0
+rx_errors 0
+tx_errors 0
+  95824 sh              /bin/sh -c go build -mod vendor -ldflags "-X main.Branch=main -X main.RevCount=12738 -X main.Revision=8741e924ff0ae3964a135985c51e5a6ce6bde397 -X main.CommitDate=2026-10-16 -X 'main.goVersion=go version go1.26.2 linux/amd64' -X 'main.CompileTime=2026-10-26 16:09:27'" -tags=go_json -o bin/deepflow-server cmd/server/main.go cmd/server/config.go cmd/server/free_os_memory_handler.go
+  95825 go              go build -mod vendor -ldflags -X main.Branch=main -X main.RevCount=12738 -X main.Revision=8741e924ff0ae3964a135985c51e5a6ce6bde397 -X main.CommitDate=2026-10-16 -X 'main.goVersion=go version go1.26.2 linux/amd64' -X 'main.CompileTime=2026-10-26 16:09:27' -tags=go_json -o bin/deepflow-server cmd/server/main.go cmd/server/config.go cmd/server/free_os_memory_handler.go
+ 101886 compile         /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/pkg/tool/linux_amd64/compile @/tmp/args2182017692
+ 102583 compile         /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/pkg/tool/linux_amd64/compile -o /tmp/go-build3926574321/b1316/_pkg_.a -trimpath /tmp/go-build3926574321/b1316=> -p github.com/deepflowio/deepflow/server/controller/tagrecorder -lang=go1.26 -complete -buildid pqV0HNVtIG6TrcomufYe/pqV0HNVtIG6TrcomufYe -goversion go1.26.2 -c=4 -nolocalimports -importcfg /tmp/go-build3926574321/b1316/importcfg -pack /root/yb/git/TrafLens/server/controller/tagrecorder/ch_alarm_policy.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_app_label.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_az.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_biz_service.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_chost.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_chost_cloud_tag.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_chost_cloud_tags.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_custom_biz_service.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_custom_biz_service_filter.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_device.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_gprocess.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_int_enum.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_ip_relation.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_l3_epc.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_label_name.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_lb_listener.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_metric_name.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_node_type.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_npb_tunnel.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_os_app_tag.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_os_app_tags.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_pod.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_pod_cluster.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_pod_group.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_pod_ingress.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_pod_k8s_annotation.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_pod_k8s_annotations.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_pod_k8s_env.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_pod_k8s_envs.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_pod_k8s_label.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_pod_k8s_labels.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_pod_node.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_pod_ns.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_pod_ns_cloud_tag.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_pod_ns_cloud_tags.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_pod_service.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_pod_service_k8s_annotation.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_pod_service_k8s_annotations.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_pod_service_k8s_label.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_pod_service_k8s_labels.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_policy.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_prometheus_metric_app_label_layout.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_prometheus_target_label_layout.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_region.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_string_enum.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_subnet.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_tap_type.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_target_label.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_user.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_vtap.go /root/yb/git/TrafLens/server/controller/tagrecorder/ch_vtap_port.go /root/yb/git/TrafLens/server/controller/tagrecorder/const.go /root/yb/git/TrafLens/server/controller/tagrecorder/const_sql.go /root/yb/git/TrafLens/server/controller/tagrecorder/constraint.go /root/yb/git/TrafLens/server/controller/tagrecorder/db_operator.go /root/yb/git/TrafLens/server/controller/tagrecorder/dictionary.go /root/yb/git/TrafLens/server/controller/tagrecorder/icon.go /root/yb/git/TrafLens/server/controller/tagrecorder/key.go /root/yb/git/TrafLens/server/controller/tagrecorder/logger.go /root/yb/git/TrafLens/server/controller/tagrecorder/subscriber.go /root/yb/git/TrafLens/server/controller/tagrecorder/tagrecorder.go /root/yb/git/TrafLens/server/controller/tagrecorder/team.go /root/yb/git/TrafLens/server/controller/tagrecorder/tool.go /root/yb/git/TrafLens/server/controller/tagrecorder/updater.go
+ 102588 compile         /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/pkg/tool/linux_amd64/compile -o /tmp/go-build3926574321/b1356/_pkg_.a -trimpath /tmp/go-build3926574321/b1356=> -p github.com/deepflowio/deepflow/server/controller/trisolaris/dbcache -lang=go1.26 -complete -buildid 6wKxuL4j71Jxx8ezMmWb/6wKxuL4j71Jxx8ezMmWb -goversion go1.26.2 -c=4 -nolocalimports -importcfg /tmp/go-build3926574321/b1356/importcfg -pack /root/yb/git/TrafLens/server/controller/trisolaris/dbcache/db_data.go
+ 102746 compile         /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/pkg/tool/linux_amd64/compile -o /tmp/go-build3926574321/b1390/_pkg_.a -trimpath /tmp/go-build3926574321/b1390=> -p go/types -lang=go1.26 -std -complete -buildid qjqOs9ej2G03Bs0ddzWj/qjqOs9ej2G03Bs0ddzWj -goversion go1.26.2 -c=4 -nolocalimports -importcfg /tmp/go-build3926574321/b1390/importcfg -pack /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/alias.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/api.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/api_predicates.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/array.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/assignments.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/badlinkname.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/basic.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/builtins.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/call.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/chan.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/check.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/const.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/context.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/conversions.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/cycles.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/decl.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/errors.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/errsupport.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/eval.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/expr.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/exprstring.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/format.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/gccgosizes.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/gcsizes.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/generate.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/index.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/infer.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/initorder.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/instantiate.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/interface.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/iter.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/labels.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/literals.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/lookup.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/map.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/methodset.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/mono.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/named.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/object.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/objset.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/operand.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/package.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/pointer.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/predicates.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/range.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/recording.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/resolver.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/return.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/scope.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/scope2.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/selection.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/signature.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/sizes.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/slice.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/stmt.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/struct.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/subst.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/termlist.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/tuple.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/type.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/typelists.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/typeparam.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/typeset.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/typestring.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/typeterm.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/typexpr.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/under.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/unify.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/union.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/universe.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/util.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/validtype.go /root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/src/go/types/version.go

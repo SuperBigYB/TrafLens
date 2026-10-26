@@ -1,0 +1,153 @@
+{
+  "generated_at": "2026-10-26T08:17:38.517672Z",
+  "host": {
+    "architecture": "x86_64",
+    "cpu": {
+      "logical_count": 20,
+      "model": "12th Gen Intel(R) Core(TM) i9-12900H"
+    },
+    "disk": {
+      "error": null,
+      "free_bytes": 428245913600,
+      "total_bytes": 982240026624,
+      "used_bytes": 504023597056
+    },
+    "hostname": "anatraf",
+    "kernel": "5.15.0-198-generic",
+    "memory": {
+      "available_bytes": 31966351360,
+      "swap_total_bytes": 8589930496,
+      "total_bytes": 33361965056
+    },
+    "system": "Linux"
+  },
+  "network_interfaces": [
+    {
+      "addresses": [
+        {
+          "address": "fe80::5a47:caff:fe7c:7859",
+          "family": "inet6",
+          "prefix_length": 64
+        }
+      ],
+      "carrier": 1,
+      "errors": [],
+      "exists": true,
+      "name": "enp2s0f0",
+      "operstate": "up",
+      "speed_mbps": 10000
+    },
+    {
+      "addresses": [
+        {
+          "address": "fe80::5a47:caff:fe7c:785a",
+          "family": "inet6",
+          "prefix_length": 64
+        }
+      ],
+      "carrier": 1,
+      "errors": [],
+      "exists": true,
+      "name": "enp2s0f1",
+      "operstate": "up",
+      "speed_mbps": 10000
+    }
+  ],
+  "schema_version": 1,
+  "source": {
+    "git_error": "fatal: not a git repository (or any of the parent directories): .git",
+    "git_sha": null,
+    "git_status": null,
+    "root": "/tmp/traflens-iperf-20261026",
+    "upstream": {
+      "error": "[Errno 2] No such file or directory: '/tmp/traflens-iperf-20261026/traflens/upstream.json'",
+      "sha": null
+    }
+  },
+  "tools": {
+    "cargo": {
+      "available": false,
+      "error": "command not found",
+      "path": null,
+      "version": null
+    },
+    "clang": {
+      "available": true,
+      "error": null,
+      "path": "/usr/bin/clang",
+      "version": "Ubuntu clang version 14.0.0-1ubuntu1.1"
+    },
+    "cmake": {
+      "available": true,
+      "error": null,
+      "path": "/usr/bin/cmake",
+      "version": "cmake version 3.22.1"
+    },
+    "docker": {
+      "available": true,
+      "error": null,
+      "path": "/usr/bin/docker",
+      "version": "Docker version 29.1.3, build 29.1.3-0ubuntu3~22.04.2"
+    },
+    "git": {
+      "available": true,
+      "error": null,
+      "path": "/usr/bin/git",
+      "version": "git version 2.34.1"
+    },
+    "go": {
+      "available": false,
+      "error": "command not found",
+      "path": null,
+      "version": null
+    },
+    "ip": {
+      "available": true,
+      "error": null,
+      "path": "/usr/sbin/ip",
+      "version": "ip utility, iproute2-5.15.0, libbpf 0.5.0"
+    },
+    "iperf3": {
+      "available": false,
+      "error": "command not found",
+      "path": null,
+      "version": null
+    },
+    "make": {
+      "available": true,
+      "error": null,
+      "path": "/usr/bin/make",
+      "version": "GNU Make 4.3"
+    },
+    "node": {
+      "available": true,
+      "error": null,
+      "path": "/usr/bin/node",
+      "version": "v20.19.6"
+    },
+    "npm": {
+      "available": true,
+      "error": null,
+      "path": "/usr/bin/npm",
+      "version": "10.8.2"
+    },
+    "protoc": {
+      "available": false,
+      "error": "command not found",
+      "path": null,
+      "version": null
+    },
+    "python3": {
+      "available": true,
+      "error": null,
+      "path": "/usr/bin/python3",
+      "version": "Python 3.10.12"
+    },
+    "rustc": {
+      "available": false,
+      "error": "command not found",
+      "path": null,
+      "version": null
+    }
+  }
+}

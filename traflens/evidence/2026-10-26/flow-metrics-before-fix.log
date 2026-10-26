@@ -1,0 +1,163 @@
+=== RUN   TestMarshalTraffic
+--- PASS: TestMarshalTraffic (0.00s)
+=== RUN   TestReverse
+--- PASS: TestReverse (0.00s)
+=== RUN   TestMerge
+    basic_meter_test.go:116: &{1 1 1 1 1 1 1 1 1 1 1 1 1 1 0}
+    basic_meter_test.go:149: Anomaly ConcurrentMerge failed, expected:&{2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2}, actual:&{2 2 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 2 2 2 1 1}
+--- FAIL: TestMerge (0.00s)
+=== RUN   TestMarshalAnomaly
+    basic_meter_test.go:167: Anomaly MarshalTo failed, 
+        	expected:client_rst_flow=1i,server_rst_flow=1i,server_syn_miss=1i,client_ack_miss=1i,client_half_close_flow=1i,server_half_close_flow=1i,client_source_port_reuse=1i,server_reset=1i,server_queue_lack=1i,client_establish_other_rst=1i,server_establish_other_rst=1i,tcp_timeout=1i,client_establish_fail=3i,server_establish_fail=4i,tcp_establish_fail=7i,l7_client_error=1i,l7_server_error=1i,l7_timeout=1i,l7_error=2i
+        	actual:  client_rst_flow=1i,server_rst_flow=1i,server_syn_miss=1i,client_ack_miss=1i,client_half_close_flow=1i,server_half_close_flow=1i,client_source_port_reuse=1i,server_reset=1i,server_queue_lack=1i,client_establish_other_rst=1i,server_establish_other_rst=1i,tcp_timeout=1i,client_establish_fail=3i,server_establish_fail=4i,tcp_establish_fail=7i,l7_client_error=1i,l7_server_error=1i,l7_timeout=1i,l7_error=2i,ooo_tx1i,ooo_rx1i
+--- FAIL: TestMarshalAnomaly (0.00s)
+=== RUN   TestCustomTagMeterMetaEncodeDecode
+--- PASS: TestCustomTagMeterMetaEncodeDecode (0.00s)
+=== RUN   TestCustomTagEncodeDecode
+--- PASS: TestCustomTagEncodeDecode (0.00s)
+=== RUN   TestCustomMeterEncodeDecode
+--- PASS: TestCustomMeterEncodeDecode (0.00s)
+=== RUN   TestMarshalFlowMeter
+    flow_meter_test.go:70: MarshalTo()实现不正确 
+        actual is: packet=3i,packet_tx=1i,packet_rx=2i,byte_tx=3i,byte_rx=4i,byte=7i,new_flow=6i,closed_flow=7i,client_rst_flow=1i,client_ack_miss=1i,client_establish_fail=1i,tcp_establish_fail=1i 
+        expected is: packet=3i,packet_tx=1i,packet_rx=2i,byte_tx=3i,byte_rx=4i,byte=7i,new_flow=6i,closed_flow=7i,client_rst_flow=1i,client_ack_miss=1i,server_establish_fail=1i,tcp_establish_fail=1i
+--- FAIL: TestMarshalFlowMeter (0.00s)
+=== RUN   TestFlowMeterRelease
+--- PASS: TestFlowMeterRelease (0.00s)
+=== RUN   TestFlowMeterClone
+--- PASS: TestFlowMeterClone (0.00s)
+=== RUN   TestMeterReverse
+--- PASS: TestMeterReverse (0.00s)
+=== RUN   TestHasEdgeTagField
+--- PASS: TestHasEdgeTagField (0.00s)
+=== RUN   TestInt16Unmarshal
+--- PASS: TestInt16Unmarshal (0.00s)
+=== RUN   TestNegativeID
+--- PASS: TestNegativeID (0.00s)
+=== RUN   TestCloneTagWithIPv6Fields
+    tag_test.go:93: CloneTag产生的tag和原tag共享了字段
+    tag_test.go:97: CloneTag shares the destination IPv6 backing array
+    tag_test.go:102: mutating the original IPv6 fields changed the clone
+--- FAIL: TestCloneTagWithIPv6Fields (0.00s)
+=== RUN   TestCloneTagWithNilAndEmptyIPv6Fields
+=== RUN   TestCloneTagWithNilAndEmptyIPv6Fields/nil
+=== RUN   TestCloneTagWithNilAndEmptyIPv6Fields/empty
+=== RUN   TestCloneTagWithNilAndEmptyIPv6Fields/mixed
+--- PASS: TestCloneTagWithNilAndEmptyIPv6Fields (0.00s)
+    --- PASS: TestCloneTagWithNilAndEmptyIPv6Fields/nil (0.00s)
+    --- PASS: TestCloneTagWithNilAndEmptyIPv6Fields/empty (0.00s)
+    --- PASS: TestCloneTagWithNilAndEmptyIPv6Fields/mixed (0.00s)
+=== RUN   TestMarshallToInfluxdb
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: az_id
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: role
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: gprocess_id
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: gprocess_id_0
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: gprocess_id_1
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: host_id
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: ip
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: ip_version
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: is_key_service
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: l3_device_id
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: l3_device_type
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: l3_epc_id
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: l7_protocol
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: app_service
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: app_instance
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: endpoint
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: biz_type
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: pod_cluster_id
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: pod_group_id
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: pod_id
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: pod_node_id
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: pod_ns_id
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: protocol
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: region_id
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: auto_instance_id
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: auto_instance_type
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: auto_service_id
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: auto_service_type
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: signal_source
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: server_port
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: service_id
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: service_id_0
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: service_id_1
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: subnet_id
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: tunnel_ip_id
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: capture_nic
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: observation_point
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: capture_network_type_id
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: agent_id
+    tag_test.go:167: tag的keys在打包时, 没有按字典顺序排序在: team_id
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: az_id_0
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: az_id_1
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: role
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: gprocess_id
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: gprocess_id_0
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: gprocess_id_1
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: host_id_0
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: host_id_1
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: ip_0
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: ip_1
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: ip_version
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: is_key_service
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: l3_device_id_0
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: l3_device_id_1
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: l3_device_type_0
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: l3_device_type_1
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: l3_epc_id_0
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: l3_epc_id_1
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: l7_protocol
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: app_service
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: app_instance
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: endpoint
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: biz_type
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: pod_cluster_id_0
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: pod_cluster_id_1
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: pod_group_id_0
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: pod_group_id_1
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: pod_id_0
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: pod_id_1
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: pod_node_id_0
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: pod_node_id_1
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: pod_ns_id_0
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: pod_ns_id_1
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: protocol
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: region_id_0
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: region_id_1
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: auto_instance_id_0
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: auto_instance_type_0
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: auto_service_id_0
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: auto_service_type_0
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: auto_instance_id_1
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: auto_instance_type_1
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: auto_service_id_1
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: auto_service_type_1
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: signal_source
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: server_port
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: service_id
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: service_id_0
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: service_id_1
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: subnet_id_0
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: subnet_id_1
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: tunnel_ip_id
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: capture_nic
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: observation_point
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: capture_network_type_id
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: agent_id
+    tag_test.go:183: tag的keys在打包时, 没有按字典顺序排序在: team_id
+--- FAIL: TestMarshallToInfluxdb (0.00s)
+=== RUN   TestEncodeMiniTag
+--- PASS: TestEncodeMiniTag (0.00s)
+=== RUN   TestDirectionEnum
+--- PASS: TestDirectionEnum (0.00s)
+=== RUN   TestDirectionToTAPSide
+--- PASS: TestDirectionToTAPSide (0.00s)
+=== RUN   TestPutTAPPort
+--- PASS: TestPutTAPPort (0.00s)
+=== RUN   TestVTAPMeterEnDecode
+--- PASS: TestVTAPMeterEnDecode (0.00s)
+=== RUN   TestVTAPMeterMerge
+--- PASS: TestVTAPMeterMerge (0.00s)
+FAIL
+FAIL	github.com/deepflowio/deepflow/server/libs/flow-metrics	0.009s
+FAIL

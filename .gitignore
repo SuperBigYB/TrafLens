@@ -60,3 +60,6 @@ target/
 
 
 
+
+# TrafLens local tools, build caches, transient logs
+/.traflens/

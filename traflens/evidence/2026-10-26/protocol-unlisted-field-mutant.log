@@ -1,0 +1,31 @@
+Negative control: L7Request.domain renumbered 2 -> 102 only in disposable copied schema.
+Compatibility reference: 8741e924ff0ae3964a135985c51e5a6ce6bde397
+Go: go version go1.26.2 linux/amd64
+Protoc: libprotoc 3.12.4
+=== RUN   TestHTTPGoldenRequestResponse
+    protocol_test.go:61: domain: got "", want "api.example.test"
+--- FAIL: TestHTTPGoldenRequestResponse (0.00s)
+=== RUN   TestL4GoldenCounters
+--- PASS: TestL4GoldenCounters (0.00s)
+=== RUN   TestStatsGoldenLabelsAndMetrics
+--- PASS: TestStatsGoldenLabelsAndMetrics (0.00s)
+=== RUN   TestUnknownFieldsForwardCompatibility
+=== RUN   TestUnknownFieldsForwardCompatibility/http-session
+    protocol_test.go:203: future fields changed known values
+=== RUN   TestUnknownFieldsForwardCompatibility/l4-flow
+=== RUN   TestUnknownFieldsForwardCompatibility/stats
+--- FAIL: TestUnknownFieldsForwardCompatibility (0.00s)
+    --- FAIL: TestUnknownFieldsForwardCompatibility/http-session (0.00s)
+    --- PASS: TestUnknownFieldsForwardCompatibility/l4-flow (0.00s)
+    --- PASS: TestUnknownFieldsForwardCompatibility/stats (0.00s)
+=== RUN   TestWireFieldContracts
+=== RUN   TestWireFieldContracts/flow_log.proto
+=== RUN   TestWireFieldContracts/stats.proto
+--- PASS: TestWireFieldContracts (0.00s)
+    --- PASS: TestWireFieldContracts/flow_log.proto (0.00s)
+    --- PASS: TestWireFieldContracts/stats.proto (0.00s)
+FAIL
+FAIL	traflens.local/protocol-smoke	0.003s
+?   	traflens.local/protocol-smoke/flowpb	[no test files]
+?   	traflens.local/protocol-smoke/statspb	[no test files]
+FAIL

@@ -1,0 +1,58 @@
+flow {
+  flow_key {
+    vtap_id: 7
+    tap_type: 3
+    tap_port: 4294967297
+    ip_src: 167772161
+    ip_dst: 167772162
+    port_src: 49152
+    port_dst: 8080
+    proto: 6
+  }
+  metrics_peer_src {
+    byte_count: 4294967419
+    l3_byte_count: 4294967355
+    l4_byte_count: 4294967297
+    packet_count: 4294967300
+    total_byte_count: 8589934715
+    total_packet_count: 4294967310
+    first: 1720000000000000
+    last: 1720000000002500
+    tcp_flags: 24
+    l3_epc_id: -2
+    gpid: 101
+  }
+  metrics_peer_dst {
+    byte_count: 9001
+    l3_byte_count: 8001
+    l4_byte_count: 7001
+    packet_count: 30
+    total_byte_count: 19001
+    total_packet_count: 60
+    l3_epc_id: -1
+    gpid: 202
+  }
+  flow_id: 18446744073709551600
+  start_time: 1720000000000000
+  end_time: 1720000000002500
+  duration: 2500
+  has_perf_stats: 1
+  perf_stats {
+    tcp {
+      rtt: 300
+      counts_peer_tx { retrans_count: 3 zero_win_count: 2 ooo_count: 1 }
+      counts_peer_rx { retrans_count: 1 }
+      total_retrans_count: 4
+      syn_count: 1
+      synack_count: 1
+    }
+    l7 { request_count: 2 response_count: 2 rrt_count: 2 rrt_sum: 5000 rrt_max: 3000 }
+    l4_protocol: 6
+    l7_protocol: 20
+  }
+  acl_gids: 17
+  acl_gids: 65535
+  request_domain: "api.example.test"
+  aggregated_flow_ids: 4294967297
+  aggregated_flow_ids: 18446744073709551600
+}

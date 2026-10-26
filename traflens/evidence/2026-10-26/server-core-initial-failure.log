@@ -1,0 +1,16 @@
+# github.com/deepflowio/deepflow/server/libs/flow-metrics [github.com/deepflowio/deepflow/server/libs/flow-metrics.test]
+libs/flow-metrics/basic_meter_test.go:122:85: too few values in struct literal of type Latency
+libs/flow-metrics/tag_test.go:51:35: undefined: marshalInt32WithSpecialID
+libs/flow-metrics/tag_test.go:75:20: cannot use AcquireField() (value of type *Field) as Field value in assignment
+libs/flow-metrics/tag_test.go:76:12: tagOrigin.IsIPv6 undefined (type *Tag has no field or method IsIPv6)
+libs/flow-metrics/tag_test.go:109:14: cannot use &f (value of type *Field) as Field value in struct literal
+libs/flow-metrics/tag_test.go:169:10: tag.IsIPv6 undefined (type *Tag has no field or method IsIPv6)
+libs/flow-metrics/tag_test.go:173:17: tag.IsIPv6 undefined (type *Tag has no field or method IsIPv6)
+libs/flow-metrics/tag_test.go:182:21: invalid operation: tag.L3EpcID != srcEpc (mismatched types int32 and int16)
+libs/flow-metrics/tag_test.go:188:10: tag.IsIPv6 undefined (type *Tag has no field or method IsIPv6)
+libs/flow-metrics/tag_test.go:195:17: tag.IsIPv6 undefined (type *Tag has no field or method IsIPv6)
+libs/flow-metrics/tag_test.go:195:17: too many errors
+ok  	github.com/deepflowio/deepflow/server/libs/queue	0.006s
+ok  	github.com/deepflowio/deepflow/server/libs/hmap/lru	0.009s
+FAIL	github.com/deepflowio/deepflow/server/libs/flow-metrics [build failed]
+FAIL

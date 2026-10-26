@@ -1,0 +1,12 @@
+timestamp: 1720000000
+name: "traflens.protocol-smoke"
+tag_names: "host"
+tag_names: "interface"
+tag_values: "dev-lab"
+tag_values: "test0"
+metrics_float_names: "rx_packets"
+metrics_float_names: "drop_ratio"
+metrics_float_values: 4294967297
+metrics_float_values: 0.125
+org_id: 1
+team_id: 2

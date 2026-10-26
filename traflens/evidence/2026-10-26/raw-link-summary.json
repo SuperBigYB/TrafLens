@@ -1,0 +1,62 @@
+{
+  "kind": "raw-link-tcp-baseline",
+  "date_utc": "2026-10-26",
+  "collector_active": false,
+  "comparability": "No DeepFlow/TrafLens collection performance comparison; preliminary shared-host measurement.",
+  "iperf_version": "3.9",
+  "duration_seconds": 10,
+  "parallel_streams": 4,
+  "ip_version": 6,
+  "mtu_bytes": 1500,
+  "negotiated_link_mbps": 10000,
+  "offloads": "TSO, GSO, GRO enabled; no settings changed",
+  "port": 15201,
+  "link0": "dev-79/enp1s0f0 <-> dev-240/enp2s0f0",
+  "link1": "dev-79/enp1s0f1 <-> dev-240/enp2s0f1",
+  "forward": "dev-79 -> dev-240",
+  "reverse": "dev-240 -> dev-79 (-R)",
+  "caveats": [
+    "One 10-second run per direction per link; no repeatability statistics.",
+    "Hosts shared; root was preparing/building upstream server on dev-79 with GOMAXPROCS=4.",
+    "NIC rx_dropped and tx_dropped were 0 before and after all tests on both links.",
+    "Scoped link-local IPv6; no addresses/routes/persistent network settings changed."
+  ],
+  "tests": [
+    {
+      "name": "link0-forward",
+      "receiver_bps": 9237133445.603466,
+      "receiver_gbps": 9.237,
+      "receiver_seconds": 10.037101,
+      "received_bytes": 11589255168,
+      "sender_retransmits": 23,
+      "timestamp": "Mon, 26 Oct 2026 08:08:03 GMT"
+    },
+    {
+      "name": "link0-reverse",
+      "receiver_bps": 9276894936.992514,
+      "receiver_gbps": 9.277,
+      "receiver_seconds": 10.000637,
+      "received_bytes": 11596857344,
+      "sender_retransmits": 67,
+      "timestamp": "Mon, 26 Oct 2026 08:08:35 GMT"
+    },
+    {
+      "name": "link1-forward",
+      "receiver_bps": 9243088747.64907,
+      "receiver_gbps": 9.243,
+      "receiver_seconds": 10.036987,
+      "received_bytes": 11596595200,
+      "sender_retransmits": 73,
+      "timestamp": "Mon, 26 Oct 2026 08:08:59 GMT"
+    },
+    {
+      "name": "link1-reverse",
+      "receiver_bps": 9166184470.11343,
+      "receiver_gbps": 9.166,
+      "receiver_seconds": 10.000395,
+      "received_bytes": 11458183168,
+      "sender_retransmits": 324,
+      "timestamp": "Mon, 26 Oct 2026 08:09:22 GMT"
+    }
+  ]
+}

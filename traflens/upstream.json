@@ -1,0 +1,11 @@
+{
+  "project": "DeepFlow",
+  "url": "https://github.com/deepflowio/deepflow",
+  "ref": "main",
+  "sha": "8741e924ff0ae3964a135985c51e5a6ce6bde397",
+  "commit_date": "2026-10-16",
+  "imported_at": "2026-10-26",
+  "license": "Apache-2.0",
+  "strategy": "Preserve upstream history, notices, package paths, and core implementation. Add TrafLens distribution tooling and validated improvements.",
+  "edition_scope": "Open-source community core. Separate AGPL GUI/application repositories and enterprise capabilities are not included by this import."
+}
