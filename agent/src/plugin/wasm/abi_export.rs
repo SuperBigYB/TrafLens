@@ -352,11 +352,7 @@ impl InstanceWrap {
         .ok();
 
         // run _start as main to set the parser
-        instance
-            .get_typed_func::<(), ()>(&mut *store, "_start")
-            .map_err(|e| WasmVmError(format!("get export function _start fail: {:?}", e)))?
-            .call(&mut *store, ())
-            .map_err(|e| WasmVmError(format!("vm call _start fail: {:?}", e)))?;
+        run_start(&instance, store)?;
 
         let mut ins = InstanceWrap {
             ins: instance,
@@ -441,4 +437,83 @@ where
 {
     ins.get_typed_func::<Params, Results>(store, fn_name)
         .map_err(|e| WasmVmError(format!("get export function {} fail: {:?}", fn_name, e)))
+}
+
+fn run_start(instance: &Instance, store: &mut Store<StoreDataType>) -> Result<()> {
+    let start = instance
+        .get_typed_func::<(), ()>(&mut *store, "_start")
+        .map_err(|e| WasmVmError(format!("get export function _start fail: {:?}", e)))?;
+    match start.call(&mut *store, ()) {
+        Ok(()) => Ok(()),
+        // A WASI command can finish initialization via proc_exit(0). Accept
+        // only that typed clean exit, preserving rejection of every other trap.
+        Err(err) if matches!(err.downcast_ref::<wasmtime_wasi::I32Exit>(), Some(exit) if exit.0 == 0) => {
+            Ok(())
+        }
+        Err(err) => Err(WasmVmError(format!("vm call _start fail: {:?}", err))),
+    }
+}
+
+#[cfg(test)]
+mod start_regression_tests {
+    use super::*;
+    use crate::plugin::wasm::abi_import::get_linker;
+    use wasmtime::{Engine, StoreLimitsBuilder};
+    use wasmtime_wasi::WasiCtxBuilder;
+
+    fn guest(body: &str) -> (Store<StoreDataType>, Instance) {
+        let engine = Engine::default();
+        let wat = format!(
+            r#"(module
+                (import "wasi_snapshot_preview1" "proc_exit" (func $exit (param i32)))
+                (memory (export "memory") 1)
+                (func (export "_start") {body})
+                (func (export "callback") (result i32) i32.const 42))"#
+        );
+        let module = Module::new(&engine, wat).unwrap();
+        let mut store = Store::new(
+            &engine,
+            StoreDataType {
+                parse_ctx: None,
+                limiter: StoreLimitsBuilder::new().build(),
+                wasi_ctx: WasiCtxBuilder::new().build(),
+            },
+        );
+        let linker = get_linker(engine, &mut store);
+        let instance = linker.instantiate(&mut store, &module).unwrap();
+        (store, instance)
+    }
+
+    fn assert_callback(store: &mut Store<StoreDataType>, instance: &Instance) {
+        let callback = instance
+            .get_typed_func::<(), i32>(&mut *store, "callback")
+            .unwrap();
+        assert_eq!(callback.call(store, ()).unwrap(), 42);
+    }
+
+    #[test]
+    fn run_start_normal_return_preserves_callback() {
+        let (mut store, instance) = guest("");
+        run_start(&instance, &mut store).unwrap();
+        assert_callback(&mut store, &instance);
+    }
+
+    #[test]
+    fn run_start_clean_wasi_exit_preserves_callback() {
+        let (mut store, instance) = guest("i32.const 0 call $exit");
+        run_start(&instance, &mut store).unwrap();
+        assert_callback(&mut store, &instance);
+    }
+
+    #[test]
+    fn run_start_nonzero_wasi_exit_is_rejected() {
+        let (mut store, instance) = guest("i32.const 1 call $exit");
+        assert!(run_start(&instance, &mut store).is_err());
+    }
+
+    #[test]
+    fn run_start_unreachable_trap_is_rejected() {
+        let (mut store, instance) = guest("unreachable");
+        assert!(run_start(&instance, &mut store).is_err());
+    }
 }

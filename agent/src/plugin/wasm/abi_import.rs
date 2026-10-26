@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+use std::ops::Range;
+
 use crate::{
     plugin::{wasm::IMPORT_FUNC_WASM_LOG, CustomInfo},
     wasm_error,
@@ -29,7 +31,7 @@ use super::{
 
 use log::{error, info, warn};
 use public::bytes::read_u16_be;
-use wasmtime::{AsContext, AsContextMut, Caller, Engine, Linker, Store};
+use wasmtime::{AsContext, AsContextMut, Caller, Engine, Linker, Memory, Store};
 use wasmtime_wasi::snapshots::preview_1::add_wasi_snapshot_preview1_to_linker;
 
 /*
@@ -42,18 +44,12 @@ use wasmtime_wasi::snapshots::preview_1::add_wasi_snapshot_preview1_to_linker;
     note that the caller storeData.parse_ctx is Always None
 */
 pub(super) fn wasm_log(mut caller: Caller<'_, StoreDataType>, b: u32, len: u32, level: u32) {
-    let mem = caller.get_export("memory").unwrap().into_memory().unwrap();
-    let mut buf = vec![0u8; len as usize];
-
-    if let Err(err) = mem.read(caller.as_context(), b as usize, buf.as_mut_slice()) {
-        error!(
-            "in_fn: {}, read data from vm fail: {}",
-            IMPORT_FUNC_WASM_LOG, err
-        );
+    let Some((mem, range)) = check_memory(&mut caller, b, len, IMPORT_FUNC_WASM_LOG) else {
         return;
-    }
-
-    match std::str::from_utf8(buf.as_slice()) {
+    };
+    // Borrow validated guest bytes; never allocate from an unchecked guest length.
+    let data = &mem.data(caller.as_context())[range];
+    match std::str::from_utf8(data) {
         Ok(log_data) => {
             #[cfg(test)]
             {
@@ -72,22 +68,50 @@ pub(super) fn wasm_log(mut caller: Caller<'_, StoreDataType>, b: u32, len: u32, 
     }
 }
 
-// check_memory must invoke first in almost import function
-fn check_memory(caller: &mut Caller<'_, StoreDataType>, b: u32, len: u32, func_name: &str) -> bool {
-    let mem = caller.get_export("memory").unwrap().into_memory().unwrap();
-    let mem_size = mem.data_size(caller.as_context());
-    if (b + len) as usize > mem_size {
-        let ctx = caller.data_mut().parse_ctx.as_ref().unwrap();
-        wasm_error!(
-            ctx.get_ins_name(),
-            func_name,
-            "memory overflow, mem size is {} but bias to {}",
-            mem_size,
-            b + len
-        );
-        return false;
+// The end address is computed in the host's checked usize domain, never u32.
+// A zero-length buffer at exactly memory_size is valid.
+fn checked_memory_range(memory_size: usize, b: u32, len: u32) -> Option<Range<usize>> {
+    let start = b as usize;
+    let end = start.checked_add(len as usize)?;
+    if end > memory_size {
+        return None;
     }
-    true
+    Some(start..end)
+}
+
+// Validate the exported memory and range before any read, write or allocation.
+// Logging imports may run during initialization, with no ParseCtx installed.
+fn check_memory(
+    caller: &mut Caller<'_, StoreDataType>,
+    b: u32,
+    len: u32,
+    func_name: &str,
+) -> Option<(Memory, Range<usize>)> {
+    let mem = caller
+        .get_export("memory")
+        .and_then(|export| export.into_memory());
+    let ins_name = caller
+        .data()
+        .parse_ctx
+        .as_ref()
+        .map_or("", VmParseCtx::get_ins_name);
+    let Some(mem) = mem else {
+        wasm_error!(ins_name, func_name, "guest does not export memory");
+        return None;
+    };
+    let mem_size = mem.data_size(caller.as_context());
+    let Some(range) = checked_memory_range(mem_size, b, len) else {
+        wasm_error!(
+            ins_name,
+            func_name,
+            "invalid memory range: size {}, offset {}, length {}",
+            mem_size,
+            b,
+            len
+        );
+        return None;
+    };
+    Some((mem, range))
 }
 
 /*
@@ -103,15 +127,16 @@ pub(super) fn vm_read_ctx_base(mut caller: Caller<'_, StoreDataType>, b: u32, le
         b is the wasm ptr indicate the addr bias from instance memory.
     */
 
-    if !check_memory(&mut caller, b, len, IMPORT_FUNC_VM_READ_CTX_BASE) {
+    let Some((mem, range)) = check_memory(&mut caller, b, len, IMPORT_FUNC_VM_READ_CTX_BASE) else {
         return 0;
-    }
+    };
 
-    let ctx = caller.data_mut().parse_ctx.take().unwrap();
-    let mem = caller.get_export("memory").unwrap().into_memory().unwrap();
+    let Some(ctx) = caller.data_mut().parse_ctx.take() else {
+        return 0;
+    };
     let mem_mut = mem.data_mut(caller.as_context_mut());
 
-    let size = ctx.serialize_ctx_base(&mut mem_mut[b as usize..(b + len) as usize]);
+    let size = ctx.serialize_ctx_base(&mut mem_mut[range]);
     if let Err(err) = size {
         wasm_error!(
             ctx.get_ins_name(),
@@ -135,11 +160,13 @@ pub(super) fn vm_read_ctx_base(mut caller: Caller<'_, StoreDataType>, b: u32, le
     func vmReadPayload(b *byte, length int) int
 */
 pub(super) fn vm_read_payload(mut caller: Caller<'_, StoreDataType>, b: u32, len: u32) -> i32 {
-    if !check_memory(&mut caller, b, len, IMPORT_FUNC_VM_READ_PAYLOAD) {
+    let Some((mem, _)) = check_memory(&mut caller, b, len, IMPORT_FUNC_VM_READ_PAYLOAD) else {
         return 0;
-    }
+    };
 
-    let ctx = caller.data_mut().parse_ctx.take().unwrap();
+    let Some(ctx) = caller.data_mut().parse_ctx.take() else {
+        return 0;
+    };
     let payload = ctx.get_ctx_base().payload.as_slice();
     let payload_size = payload.len();
 
@@ -155,7 +182,6 @@ pub(super) fn vm_read_payload(mut caller: Caller<'_, StoreDataType>, b: u32, len
         return -1;
     }
 
-    let mem = caller.get_export("memory").unwrap().into_memory().unwrap();
     if let Err(err) = mem.write(caller.as_context_mut(), b as usize, payload) {
         wasm_error!(
             ctx.get_ins_name(),
@@ -183,12 +209,13 @@ pub(super) fn vm_read_http_req_info(
     b: u32,
     len: u32,
 ) -> i32 {
-    if !check_memory(&mut caller, b, len, IMPORT_FUNC_VM_READ_HTTP_REQ) {
+    let Some((mem, range)) = check_memory(&mut caller, b, len, IMPORT_FUNC_VM_READ_HTTP_REQ) else {
         return 0;
-    }
+    };
 
-    let ctx = caller.data_mut().parse_ctx.take().unwrap();
-    let mem = caller.get_export("memory").unwrap().into_memory().unwrap();
+    let Some(ctx) = caller.data_mut().parse_ctx.take() else {
+        return 0;
+    };
     let mem_mut = mem.data_mut(caller.as_context_mut());
 
     let VmParseCtx::HttpReqCtx(ref req_ctx) = ctx else {
@@ -201,7 +228,7 @@ pub(super) fn vm_read_http_req_info(
         return 0;
     };
 
-    let size = req_ctx.serialize_to_bytes(&mut mem_mut[b as usize..(b + len) as usize]);
+    let size = req_ctx.serialize_to_bytes(&mut mem_mut[range]);
     if let Err(err) = size {
         wasm_error!(
             ctx.get_ins_name(),
@@ -209,6 +236,7 @@ pub(super) fn vm_read_http_req_info(
             "serialize http req ctx fail: {}",
             err
         );
+        let _ = caller.data_mut().parse_ctx.insert(ctx);
         return 0;
     }
 
@@ -228,12 +256,14 @@ pub(super) fn vm_read_http_resp_info(
     b: u32,
     len: u32,
 ) -> i32 {
-    if !check_memory(&mut caller, b, len, IMPORT_FUNC_VM_READ_HTTP_RESP) {
+    let Some((mem, range)) = check_memory(&mut caller, b, len, IMPORT_FUNC_VM_READ_HTTP_RESP)
+    else {
         return 0;
-    }
+    };
 
-    let ctx = caller.data_mut().parse_ctx.take().unwrap();
-    let mem = caller.get_export("memory").unwrap().into_memory().unwrap();
+    let Some(ctx) = caller.data_mut().parse_ctx.take() else {
+        return 0;
+    };
     let mem_mut = mem.data_mut(caller.as_context_mut());
 
     let VmParseCtx::HttpRespCtx(ref resp_ctx) = ctx else {
@@ -246,7 +276,7 @@ pub(super) fn vm_read_http_resp_info(
         return 0;
     };
 
-    let size = resp_ctx.serialize_to_bytes(&mut mem_mut[b as usize..(b + len) as usize]);
+    let size = resp_ctx.serialize_to_bytes(&mut mem_mut[range]);
     if let Err(err) = size {
         wasm_error!(
             ctx.get_ins_name(),
@@ -254,6 +284,7 @@ pub(super) fn vm_read_http_resp_info(
             "serialize http resp ctx fail: {}",
             err
         );
+        let _ = caller.data_mut().parse_ctx.insert(ctx);
         return 0;
     }
 
@@ -273,12 +304,14 @@ pub(super) fn vm_read_custom_message_info(
     b: u32,
     len: u32,
 ) -> i32 {
-    if !check_memory(&mut caller, b, len, IMPORT_FUNC_VM_READ_CUSTOM_MESSAGE) {
+    let Some((mem, range)) = check_memory(&mut caller, b, len, IMPORT_FUNC_VM_READ_CUSTOM_MESSAGE)
+    else {
         return 0;
-    }
+    };
 
-    let ctx = caller.data_mut().parse_ctx.take().unwrap();
-    let mem = caller.get_export("memory").unwrap().into_memory().unwrap();
+    let Some(ctx) = caller.data_mut().parse_ctx.take() else {
+        return 0;
+    };
     let mem_mut = mem.data_mut(caller.as_context_mut());
 
     let VmParseCtx::OnCustomMessageCtx(ref msg_ctx) = ctx else {
@@ -291,7 +324,7 @@ pub(super) fn vm_read_custom_message_info(
         return 0;
     };
 
-    let size = msg_ctx.serialize_to_bytes(&mut mem_mut[b as usize..(b + len) as usize]);
+    let size = msg_ctx.serialize_to_bytes(&mut mem_mut[range]);
     if let Err(err) = size {
         wasm_error!(
             ctx.get_ins_name(),
@@ -299,6 +332,7 @@ pub(super) fn vm_read_custom_message_info(
             "serialize custom message ctx fail: {}",
             err
         );
+        let _ = caller.data_mut().parse_ctx.insert(ctx);
         return 0;
     }
 
@@ -320,20 +354,18 @@ pub(super) fn host_read_l7_protocol_info(
     b: u32,
     len: u32,
 ) -> i32 {
-    if !check_memory(&mut caller, b, len, IMPORT_FUNC_HOST_READ_L7_PROTOCOL_INFO) {
+    let Some((mem, range)) =
+        check_memory(&mut caller, b, len, IMPORT_FUNC_HOST_READ_L7_PROTOCOL_INFO)
+    else {
         return 0;
-    }
-    let dir = caller
-        .data()
-        .parse_ctx
-        .as_ref()
-        .unwrap()
-        .get_ctx_base()
-        .direction;
+    };
+    let Some(ctx) = caller.data().parse_ctx.as_ref() else {
+        return 0;
+    };
+    let dir = ctx.get_ctx_base().direction;
 
-    let mem = caller.get_export("memory").unwrap().into_memory().unwrap();
     let mem = mem.data(caller.as_context());
-    let data = &mem[b as usize..(b + len) as usize];
+    let data = &mem[range];
 
     let mut infos = vec![];
 
@@ -401,13 +433,17 @@ pub(super) fn host_read_l7_protocol_info(
     func hostReadStrResult(b *byte, length int) bool
 */
 pub(super) fn host_read_str_result(mut caller: Caller<'_, StoreDataType>, b: u32, len: u32) -> i32 {
-    if !check_memory(&mut caller, b, len, IMPORT_FUNC_HOST_READ_STR_RESULT) {
+    if caller.data().parse_ctx.is_none() {
         return 0;
     }
 
-    let mem = caller.get_export("memory").unwrap().into_memory().unwrap();
+    let Some((mem, range)) = check_memory(&mut caller, b, len, IMPORT_FUNC_HOST_READ_STR_RESULT)
+    else {
+        return 0;
+    };
+
     let mem = mem.data(caller.as_context());
-    let data = &mem[b as usize..(b + len) as usize];
+    let data = &mem[range];
     let Some(str) = read_wasm_str(data, &mut 0) else {
         let ins_name = caller.data().parse_ctx.as_ref().unwrap().get_ins_name();
         wasm_error!(
@@ -514,7 +550,12 @@ fn link_wasi(
         "path_open",
         "path_readlink",
         "proc_exit",
+        // Modern TinyGo runtime imports these even for pure parser modules.
+        // The existing empty WasiCtx grants no sockets, directories or env.
+        "poll_oneoff",
+        "random_get",
         "sched_yield",
+        "sock_recv",
     ];
 
     for f in link_func {
@@ -530,4 +571,20 @@ fn get_wasi_linker(engine: Engine) -> Linker<StoreDataType> {
     let mut wasi_linker = Linker::<StoreDataType>::new(&engine);
     add_wasi_snapshot_preview1_to_linker(&mut wasi_linker, |b| &mut b.wasi_ctx).unwrap();
     wasi_linker
+}
+
+#[cfg(test)]
+mod memory_range_tests {
+    use super::checked_memory_range;
+
+    #[test]
+    fn checked_guest_pointer_boundaries() {
+        assert_eq!(checked_memory_range(65536, 0, 65536), Some(0..65536));
+        assert_eq!(checked_memory_range(65536, 65536, 0), Some(65536..65536));
+        assert_eq!(checked_memory_range(65536, 65536, 1), None);
+        assert_eq!(checked_memory_range(65536, 65537, 0), None);
+        assert_eq!(checked_memory_range(65536, u32::MAX, 2), None);
+        assert_eq!(checked_memory_range(65536, 0, u32::MAX), None);
+        assert_eq!(checked_memory_range(0, 0, 0), Some(0..0));
+    }
 }

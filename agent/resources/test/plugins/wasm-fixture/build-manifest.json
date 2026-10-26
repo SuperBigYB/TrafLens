@@ -1,0 +1,36 @@
+{
+  "image": "ghcr.io/tinygo-org/tinygo@sha256:52907162ca3ba807c3c0914e07daffc1fe0c50ce91445ec43a0428337dc1b901",
+  "sdk_commit": "3ac5fba17db6cc03ae6ed82254e2a0a9f39a5e9d",
+  "sdk_patched": true,
+  "repeat_builds": 2,
+  "gzip_mtime": 0,
+  "outputs": {
+    "wasm_test_packet.wasm.gz": {
+      "wasm_sha256": "620672fb2e0e519c31504e5039d8b577bc1f580a54d4c09d34045f9d02d98f38",
+      "wasm_bytes": 976540,
+      "gzip_sha256": "ef7050f65139cb7bdbf199f3aa3b48c81a72b6851eeb53196a80f251fc124bd3",
+      "gzip_bytes": 293039
+    },
+    "wasm_test_native.wasm.gz": {
+      "wasm_sha256": "8c7269b969d757f8d5b03e3e1d2febdb3d80531409f6dcdcf74de0061e812c1d",
+      "wasm_bytes": 976546,
+      "gzip_sha256": "8ba36f4b47a21c69b88dc107763d18c1b4fe427e664a468179fc4a6434a138e1",
+      "gzip_bytes": 293036
+    }
+  },
+  "inputs": {
+    "README.md": "3596162c4dd111bf155fbd6df3b8830165d9bf50b3e728ad3cc9c52d212ffd41",
+    "build.py": "ea18cbf8a5678eaa3d96cf33ee726633f7685d441c2376a5f5b6a8cb15e0c721",
+    "decode.go": "2abd1c47d7d16d7ca57473dffba1a125edbcfb7f52249a68b10d489ba6e11919",
+    "decode_test.go": "dfecbb4daf72758063fc58e4b4edde7b4a8d11a9b38114a8960a58279b60c5d1",
+    "go.mod": "766dcee2a44c03f3ce704524cb6c17d9817141d45dd6f18f9e7e910856f0d3ec",
+    "go.sum": "74dc57a1021deeb4d2b6e1c68172f28d9759137659042416200cfeb7d1aaa4c2",
+    "main.go": "6e50c1ded7fa37f48a4fffe7ac6e9eca0dfa6c0297031dbaa8535e07babd0f92",
+    "native.go": "da2058f93f4cc86dd8c729d4effb99591872ce2758b1c99a4e2a303a1c79a8a3",
+    "packet.go": "2ddc129f5640b3e6f6bf44fb6d9c01be96fd39d4c323ad69640601a9d1ed5ef3",
+    "sdk-is-end.patch": "45b1c196f347d95c060574423f49123005dea914285f38e9b5b20a5c7f7d43c2",
+    "sdk-provenance.json": "1fcd8d1ecb8e09eead9bc40aada57523339b959383e74844dea743dc55619848",
+    "verify.py": "a0c4ea68f17747650a7ea811d68b21a1e27034c6def4aaf2047a899ccadc469b",
+    "NOTICE": "703543cb9516cda961f1755778a2e75c61af86ce6391f535caa56380352d371a"
+  }
+}

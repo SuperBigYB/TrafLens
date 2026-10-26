@@ -32,9 +32,12 @@ use crate::common::flow::PacketDirection;
 use crate::common::l7_protocol_info::L7ProtocolInfo;
 use crate::common::l7_protocol_log::L7PerfCache;
 
-use crate::config::handler::LogParserConfig;
+use crate::config::handler::{L7LogDynamicConfigBuilder, LogParserConfig};
 use crate::config::{
-    config::{Iso8583ParseConfig, NetSignParseConfig, WebSphereMqParseConfig},
+    config::{
+        ExtraLogFields, ExtraLogFieldsInfo, Iso8583ParseConfig, NetSignParseConfig,
+        WebSphereMqParseConfig,
+    },
     OracleConfig,
 };
 use crate::flow_generator::protocol_logs::pb_adapter::L7ProtocolSendLog;
@@ -137,7 +140,15 @@ fn get_resq_param<'a>(
 }
 
 fn load_module() -> WasmVm {
-    let mut f = File::open("resources/test/plugins/wasm_test.wasm.gz").unwrap();
+    #[cfg(feature = "libtrace")]
+    let path = "resources/test/plugins/wasm-fixture/wasm_test_native.wasm.gz";
+    #[cfg(not(feature = "libtrace"))]
+    let path = "resources/test/plugins/wasm-fixture/wasm_test_packet.wasm.gz";
+    load_fixture(path)
+}
+
+fn load_fixture(path: &str) -> WasmVm {
+    let mut f = File::open(path).unwrap();
     let mut gz_prog = vec![];
     f.read_to_end(&mut gz_prog).unwrap();
 
@@ -145,13 +156,30 @@ fn load_module() -> WasmVm {
     let mut prog = vec![];
     d.read_to_end(&mut prog).unwrap();
 
-    WasmVm::new(&[("vm0", prog)])
+    let mut vm = WasmVm::new::<&str, &[u8]>(&[]);
+    vm.append_prog("vm0", &prog)
+        .expect("the checked-in WASM fixture must instantiate");
+    vm
 }
 
 #[test]
 fn test_wasm_http_req() {
     let vm = Rc::new(RefCell::new(Some(load_module())));
-    let config = LogParserConfig::default();
+    let mut config = LogParserConfig::default();
+    // Header logging stays opt-in. The SDK adapter must see the captured values.
+    config.l7_log_dynamic = L7LogDynamicConfigBuilder {
+        extra_log_fields: ExtraLogFields {
+            http: ["user-agent", "referer"]
+                .into_iter()
+                .map(|field_name| ExtraLogFieldsInfo {
+                    field_name: field_name.into(),
+                })
+                .collect(),
+            ..Default::default()
+        },
+        ..Default::default()
+    }
+    .into();
     let rrt_cache = Rc::new(RefCell::new(L7PerfCache::new(100)));
 
     let mut param = get_req_param(vm.clone(), rrt_cache.clone());
@@ -161,8 +189,17 @@ fn test_wasm_http_req() {
     let payload = "POST /test?a=1&b=2&c=test HTTP/1.1\r\nUser-Agent: deepflow\r\nreferer: aaa.com\r\nHost: abc.com\r\nContent-Type: application/json\r\n\r\n";
     let info = http.parse_payload(payload.as_bytes(), &param).unwrap();
 
-    let kv: HashMap<&str, &str> =
-        HashMap::from_iter([("a", "1"), ("b", "2"), ("c", "test"), ("empty", "")]);
+    let kv: HashMap<&str, &str> = HashMap::from_iter([
+        ("a", "1"),
+        ("b", "2"),
+        ("c", "test"),
+        ("empty", ""),
+        ("user_agent", "deepflow"),
+        ("referer", "aaa.com"),
+        // Zero configured error-snapshot limits preserve empty snapshot values.
+        ("request_header", ""),
+        ("request_payload", ""),
+    ]);
 
     if let L7ProtocolInfo::HttpInfo(http) = info.unwrap_single() {
         let i: L7ProtocolSendLog = http.into();
@@ -193,15 +230,12 @@ fn test_wasm_http_req() {
 
         let attr = i.ext_info.unwrap().attributes.unwrap();
 
-        assert_eq!(attr.len(), kv.len());
-        for i in attr {
-            if kv.contains_key(i.key.as_str()) {
-                let val = kv.get(i.key.as_str()).unwrap();
-                if !(*val).eq(i.val.as_str()) {
-                    panic!("key:{} val not eq, {}:{}", i.key, i.val, val);
-                }
-            }
-        }
+        assert_eq!(attr.len(), kv.len(), "request attribute set: {attr:?}");
+        let actual: HashMap<_, _> = attr
+            .iter()
+            .map(|entry| (entry.key.as_str(), entry.val.as_str()))
+            .collect();
+        assert_eq!(actual, kv);
     } else {
         unreachable!()
     };
@@ -224,16 +258,7 @@ fn test_wasm_http_resp() {
 
     if let L7ProtocolInfo::HttpInfo(http) = info.unwrap_single() {
         let i: L7ProtocolSendLog = http.into();
-        assert_eq!(
-            i.trace_info
-                .as_ref()
-                .unwrap()
-                .trace_ids
-                .first()
-                .unwrap()
-                .as_str(),
-            ""
-        );
+        assert!(i.trace_info.as_ref().unwrap().trace_ids.is_empty());
         assert_eq!(
             i.trace_info
                 .as_ref()
@@ -252,14 +277,11 @@ fn test_wasm_http_resp() {
 
         let attr = i.ext_info.unwrap().attributes.unwrap();
         assert_eq!(attr.len(), kv.len());
-        for i in attr {
-            if kv.contains_key(i.key.as_str()) {
-                let val = kv.get(i.key.as_str()).unwrap();
-                if !(*val).eq(i.val.as_str()) {
-                    panic!("key:{} val not eq, {}:{}", i.key, i.val, val);
-                }
-            }
-        }
+        let actual: HashMap<_, _> = attr
+            .iter()
+            .map(|entry| (entry.key.as_str(), entry.val.as_str()))
+            .collect();
+        assert_eq!(actual, kv);
     } else {
         unreachable!()
     };
@@ -458,395 +480,66 @@ message Resp {
 }
 */
 
-// go wasm code, build cocmmand:
-// tinygo  build -o wasm.wasm  -target wasi -wasm-abi=generic -panic trap -scheduler=none -no-debug ./main.go
+// The current Go fixture source, pinned SDK patch and reproducible build recipe
+// live in resources/test/plugins/wasm-fixture/. The original 2023 binary remains
+// unchanged for the independent legacy result compatibility test below.
 
-/*
-package main
-
-import (
-    "bufio"
-    "bytes"
-    "encoding/base64"
-    "github.com/deepflowio/deepflow-wasm-go-sdk/pb"
-    "github.com/deepflowio/deepflow-wasm-go-sdk/sdk"
-    "github.com/valyala/fastjson"
-    "io"
-    "net/http"
-    "net/url"
-    "strconv"
-)
-
-func checkReqCtx(baseCtx *sdk.ParseCtx) {
-    payload, _ := baseCtx.GetPayload()
-    sdk.Error("saddr %v: %v", baseCtx.SrcIP.IP, baseCtx.SrcPort)
-    sdk.Error("daddr %v: %v", baseCtx.DstIP.IP, baseCtx.DstPort)
-    sdk.Error("l4: %v", baseCtx.L4)
-    sdk.Error("l7: %v", baseCtx.L7)
-    sdk.Error("dir: %v", baseCtx.Direction)
-    sdk.Error("ebpf type: %v", baseCtx.EbpfType)
-    sdk.Error("proc name: %v", baseCtx.ProcName)
-    sdk.Error("time: %v", baseCtx.Time)
-    sdk.Error("flowid: %v", baseCtx.FlowID)
-    sdk.Error("buf_size: %v", baseCtx.BufSize)
-    sdk.Error("payload: %v ", payload)
-
-    checkEq("1.2.3.4", baseCtx.SrcIP.IP.String())
-    checkEq(12345, int(baseCtx.SrcPort))
-    checkEq("5.6.7.8", baseCtx.DstIP.IP.String())
-    checkEq(8080, int(baseCtx.DstPort))
-    checkEq(sdk.TCP, baseCtx.L4)
-    checkEq(sdk.DirectionRequest, baseCtx.Direction)
-    checkEq(sdk.EbpfTypeTracePoint, baseCtx.EbpfType)
-    checkEq("test_wasm", baseCtx.ProcName)
-    checkEq(uint64(12345678), baseCtx.Time)
-    checkEq(uint64(1234567), baseCtx.FlowID)
-    checkEq(uint16(999), baseCtx.BufSize)
-}
-
-func checkRespCtx(baseCtx *sdk.ParseCtx) {
-    payload, _ := baseCtx.GetPayload()
-
-    sdk.Error("saddr %v: %v", baseCtx.SrcIP.IP, baseCtx.SrcPort)
-    sdk.Error("daddr %v: %v", baseCtx.DstIP.IP, baseCtx.DstPort)
-    sdk.Error("l4: %v", baseCtx.L4)
-    sdk.Error("l7: %v", baseCtx.L7)
-    sdk.Error("dir: %v", baseCtx.Direction)
-    sdk.Error("ebpf type: %v", baseCtx.EbpfType)
-    sdk.Error("time: %v", baseCtx.Time)
-    sdk.Error("flowid: %v", baseCtx.FlowID)
-    sdk.Error("buf_size: %v", baseCtx.BufSize)
-    sdk.Error("p: %v ", payload)
-
-    checkEq("5.6.7.8", baseCtx.SrcIP.IP.String())
-    checkEq(uint16(8080), baseCtx.SrcPort)
-    checkEq("1.2.3.4", baseCtx.DstIP.IP.String())
-    checkEq(uint16(12345), baseCtx.DstPort)
-    checkEq(sdk.TCP, baseCtx.L4)
-    checkEq(sdk.DirectionResponse, baseCtx.Direction)
-    checkEq(sdk.EbpfTypeTracePoint, baseCtx.EbpfType)
-    checkEq("test_wasm", baseCtx.ProcName)
-    checkEq(uint64(12345678), baseCtx.Time)
-    checkEq(uint64(1234567), baseCtx.FlowID)
-    checkEq(uint16(999), baseCtx.BufSize)
-}
-
-type parser struct {
-}
-
-func (p parser) HookIn() []sdk.HookBitmap {
-    return []sdk.HookBitmap{
-        sdk.HOOK_POINT_HTTP_REQ,
-        sdk.HOOK_POINT_HTTP_RESP,
-        sdk.HOOK_POINT_PAYLOAD_PARSE,
-    }
-}
-
-func checkEq(a, b interface{}) {
-    if a != b {
-        sdk.Error("%v and %v not equal", a, b)
-        panic("")
-    }
-}
-
-func (p parser) OnHttpReq(ctx *sdk.HttpReqCtx) sdk.Action {
-    sdk.Warn("================ enter http req ==================")
-    baseCtx := &ctx.BaseCtx
-    payload, err := baseCtx.GetPayload()
-    if err != nil {
-        sdk.Error("%v", err)
-        panic(err)
-    }
-
-    checkReqCtx(baseCtx)
-
-    sdk.Error("path: %v ", ctx.Path)
-    sdk.Error("host: %v ", ctx.Host)
-    sdk.Error("ua: %v ", ctx.UserAgent)
-    sdk.Error("ref: %v ", ctx.Referer)
-
-    checkEq(0, int(baseCtx.L7))
-    checkEq("/test?a=1&b=2&c=test", ctx.Path)
-    checkEq("abc.com", ctx.Host)
-    checkEq("deepflow", ctx.UserAgent)
-    checkEq("aaa.com", ctx.Referer)
-    checkEq(
-        "POST /test?a=1&b=2&c=test HTTP/1.1\r\nUser-Agent: deepflow\r\nreferer: aaa.com\r\nHost: abc.com\r\nContent-Type: application/json\r\n\r\n",
-        string(payload),
-    )
-
-    u, err := url.Parse(ctx.Path)
-    if err != nil {
-        panic(err)
-    }
-    q := u.Query()
-
-    attr := []sdk.KeyVal{
-        {
-            Key: "q",
-            Val: q.Get("a"),
-        },
-
-        {
-            Key: "b",
-            Val: q.Get("b"),
-        },
-        {
-            Key: "c",
-            Val: q.Get("c"),
-        },
-        {
-            Key: "empty",
-            Val: "",
-        },
-    }
-
-    trace := &sdk.Trace{
-        TraceID:      "aaa",
-        SpanID:       "bbb",
-        ParentSpanID: "ccc",
-    }
-    return sdk.HttpReqActionAbortWithResult(&sdk.Request{
-        ReqType:  "rewrite req type",
-        Domain:   "rewrite domain",
-        Resource: "rewrite resource",
-        Endpoint: "rewrite endpoint",
-    }, trace, attr)
-}
-
-func (p parser) OnHttpResp(ctx *sdk.HttpRespCtx) sdk.Action {
-    sdk.Warn("================ enter http resp ==================")
-    baseCtx := &ctx.BaseCtx
-    payload, err := baseCtx.GetPayload()
-    if err != nil {
-        sdk.Error("%v", err)
-        panic(err)
-    }
-
-    checkRespCtx(baseCtx)
-
-    sdk.Error("p: %v ", string(payload))
-
-    checkEq(0, int(baseCtx.L7))
-    checkEq(uint16(200), ctx.Code)
-    checkEq(sdk.RespStatusOk, ctx.Status)
-
-    r := bufio.NewReader(bytes.NewReader(payload))
-    req, err := http.ReadResponse(r, nil)
-    if err != nil {
-        sdk.Error("fail to parse http resp: %v", err)
-        panic(err)
-    }
-    body, err := io.ReadAll(req.Body)
-    if err != nil {
-        sdk.Error("fail to read http body: %v", err)
-        panic(err)
-    }
-
-    checkEq(`{"data":{"user_id":123, "name":"kkk"}}`, string(body))
-
-    userID := fastjson.GetInt(body, "data", "user_id")
-    userName := fastjson.GetString(body, "data", "name")
-    var code int32 = 599
-    status := sdk.RespStatusServerErr
-    return sdk.HttpRespActionAbortWithResult(&sdk.Response{
-        Status:    &status,
-        Code:      &code,
-        Result:    "rewrite result",
-        Exception: "rewrite exception",
-    }, nil, []sdk.KeyVal{
-        {
-            Key: "user_id",
-            Val: strconv.Itoa(userID),
-        },
-
-        {
-            Key: "username",
-            Val: userName,
-        },
-    })
-}
-
-func (p parser) OnCheckPayload(baseCtx *sdk.ParseCtx) (uint8, string) {
-    sdk.Warn("================ check payload ==================")
-    checkReqCtx(baseCtx)
-    payload, err := baseCtx.GetPayload()
-    if err != nil {
-        sdk.Error("%v", err)
-        panic(err)
-    }
-    checkEq("CgZkb21haW4SCHJlc291cmNlGgR0eXBlIghlbmRwb2ludA==", base64.StdEncoding.EncodeToString(payload))
-
-    a := &pb.Req{}
-    if err := a.UnmarshalVT(payload); err != nil {
-        sdk.Error("unmarshal pb fail: $v", err)
-        panic(err)
-    }
-
-    checkEq(0, int(baseCtx.L7))
-    checkEq(a.Domain, "domain")
-    checkEq(a.Resource, "resource")
-    checkEq(a.Type, "type")
-    checkEq(a.Endpoint, "endpoint")
-
-    return 1, "test"
-}
-
-func (p parser) OnParsePayload(baseCtx *sdk.ParseCtx) sdk.Action {
-    sdk.Warn("================ parse payload ==================")
-    payload, err := baseCtx.GetPayload()
-    if err != nil {
-        sdk.Error("%v", err)
-        panic(err)
-    }
-    trace := &sdk.Trace{
-        TraceID:      "11111",
-        SpanID:       "22222",
-        ParentSpanID: "33333",
-    }
-    switch baseCtx.Direction {
-    case sdk.DirectionRequest:
-        checkReqCtx(baseCtx)
-        checkEq("CgZkb21haW4SCHJlc291cmNlGgR0eXBlIghlbmRwb2ludA==", base64.StdEncoding.EncodeToString(payload))
-        a := &pb.Req{}
-        if err := a.UnmarshalVT(payload); err != nil {
-            sdk.Error("unmarshal pb fail: $v", err)
-            panic(err)
+#[cfg(feature = "libtrace")]
+#[test]
+fn original_sdk_custom_output_without_business_trailer_still_parses() {
+    let vm = Rc::new(RefCell::new(Some(load_fixture(
+        "resources/test/plugins/wasm_test.wasm.gz",
+    ))));
+    let cache = Rc::new(RefCell::new(L7PerfCache::new(100)));
+    let request: &[u8] = &[
+        10, 6, 100, 111, 109, 97, 105, 110, 18, 8, 114, 101, 115, 111, 117, 114, 99, 101, 26, 4,
+        116, 121, 112, 101, 34, 8, 101, 110, 100, 112, 111, 105, 110, 116,
+    ];
+    let response: &[u8] = &[8, 231, 7, 18, 6, 114, 101, 115, 117, 108, 116];
+    for (param, payload, direction) in [
+        (
+            get_req_param(vm.clone(), cache.clone()),
+            request,
+            PacketDirection::ClientToServer,
+        ),
+        (
+            get_resq_param(vm.clone(), cache.clone()),
+            response,
+            PacketDirection::ServerToClient,
+        ),
+    ] {
+        let mut parser = get_wasm_parser(1, "test".to_owned());
+        let infos = parser
+            .parse_payload(payload, &param)
+            .unwrap()
+            .unwrap_multi();
+        assert_eq!(infos.len(), 2);
+        for info in infos {
+            let L7ProtocolInfo::CustomInfo(info) = info else {
+                panic!("custom result expected")
+            };
+            assert_eq!(info.req_len, Some(999));
+            assert_eq!(info.resp_len, Some(9999));
+            assert_eq!(info.request_id, Some(666));
+            assert_eq!(info.trace.trace_ids, ["11111"]);
+            assert_eq!(info.biz_type, 0);
+            assert!(info.need_protocol_merge);
+            assert_eq!(
+                info.is_req_end,
+                direction == PacketDirection::ClientToServer
+            );
+            assert_eq!(
+                info.is_resp_end,
+                direction == PacketDirection::ServerToClient
+            );
+            if direction == PacketDirection::ClientToServer {
+                assert_eq!(info.req.domain, "domain");
+                assert_eq!(info.req.resource, "resource");
+            } else {
+                assert_eq!(info.resp.status, L7ResponseStatus::Ok);
+                assert_eq!(info.resp.code, Some(999));
+                assert_eq!(info.resp.result, "result");
+            }
         }
-
-        checkEq(1, int(baseCtx.L7))
-        checkEq(a.Domain, "domain")
-        checkEq(a.Resource, "resource")
-        checkEq(a.Type, "type")
-        checkEq(a.Endpoint, "endpoint")
-        reqLen := 999
-        respLen := 9999
-        requestID := uint32(666)
-
-        return sdk.ParseActionAbortWithL7Info([]*sdk.L7ProtocolInfo{
-            {
-                ReqLen:    &reqLen,
-                RespLen:   &respLen,
-                RequestID: &requestID,
-                Req: &sdk.Request{
-                    ReqType:  a.Type,
-                    Domain:   a.Domain,
-                    Resource: a.Resource,
-                    Endpoint: a.Endpoint,
-                },
-                Resp:  nil,
-                Trace: trace,
-                Kv: []sdk.KeyVal{
-                    {
-                        Key: "k1",
-                        Val: "",
-                    }, {
-                        Key: "k2",
-                        Val: "v2",
-                    },
-                },
-                ProtocolMerge: true,
-                IsEnd:         true,
-            },
-            {
-                ReqLen:    &reqLen,
-                RespLen:   &respLen,
-                RequestID: &requestID,
-                Req: &sdk.Request{
-                    ReqType:  a.Type,
-                    Domain:   a.Domain,
-                    Resource: a.Resource,
-                    Endpoint: a.Endpoint,
-                },
-                Resp:  nil,
-                Trace: trace,
-                Kv: []sdk.KeyVal{
-                    {
-                        Key: "k3",
-                        Val: "v3",
-                    }, {
-                        Key: "k4",
-                        Val: "v4",
-                    },
-                },
-                ProtocolMerge: true,
-                IsEnd:         true,
-            },
-        })
-
-    case sdk.DirectionResponse:
-        checkRespCtx(baseCtx)
-        checkEq("COcHEgZyZXN1bHQ=", base64.StdEncoding.EncodeToString(payload))
-        a := &pb.Resp{}
-        if err := a.UnmarshalVT(payload); err != nil {
-            sdk.Error("unmarshal pb fail: $v", err)
-            panic(err)
-        }
-        checkEq(a.Result, "result")
-        checkEq(a.Status, uint32(999))
-
-        reqLen := 999
-        respLen := 9999
-        requestID := uint32(666)
-        code := int32(999)
-        status := sdk.RespStatusOk
-        return sdk.ParseActionAbortWithL7Info([]*sdk.L7ProtocolInfo{
-            {
-                ReqLen:    &reqLen,
-                RespLen:   &respLen,
-                RequestID: &requestID,
-                Req:       nil,
-                Resp: &sdk.Response{
-                    Status:    &status,
-                    Code:      &code,
-                    Result:    "result",
-                    Exception: "exception",
-                },
-                Trace: trace,
-                Kv: []sdk.KeyVal{
-                    {
-                        Key: "k1",
-                        Val: "v1",
-                    }, {
-                        Key: "k2",
-                        Val: "v2",
-                    },
-                },
-                ProtocolMerge: true,
-                IsEnd:         true,
-            },
-            {
-                ReqLen:    &reqLen,
-                RespLen:   &respLen,
-                RequestID: &requestID,
-                Req:       nil,
-                Resp: &sdk.Response{
-                    Status:    &status,
-                    Code:      &code,
-                    Result:    "result",
-                    Exception: "exception",
-                },
-                Trace: trace,
-                Kv: []sdk.KeyVal{
-                    {
-                        Key: "k3",
-                        Val: "",
-                    }, {
-                        Key: "k4",
-                        Val: "v4",
-                    },
-                },
-                ProtocolMerge: true,
-                IsEnd:         true,
-            },
-        })
-    default:
-        panic("unreachable")
     }
 }
-
-func main() {
-    sdk.Warn("wasm register parser")
-    sdk.SetParser(parser{})
-}
-*/

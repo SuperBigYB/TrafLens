@@ -117,7 +117,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-traflens-packet-rust-1.97.1-
 
-      - name: Test parsers, tunnels, windows, direction and plugin contracts
+      - name: Test complete packet library and plugin crates
         run: bash traflens/scripts/agent-packet.sh parser-test
 
       - name: Build the packet Agent functional binary

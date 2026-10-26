@@ -1,0 +1,8 @@
+{
+  "repository": "https://github.com/deepflowio/deepflow-wasm-go-sdk",
+  "commit": "3ac5fba17db6cc03ae6ed82254e2a0a9f39a5e9d",
+  "archive_sha256": "6ca3d1b3f7d3dd94fc5b79e6d4cc5e2ac298538c701f2b2120efbadd08357156",
+  "serde_before_sha256": "ef398ec6c6cd6cf9d7d0af230cf7db7c1685b65fea4f561c2eb25305196196f3",
+  "serde_after_sha256": "a9daefc2cfd32e33b5b74fcb1013c452686cfd6ac60c2600de2fa88ee032f0a5",
+  "patch_sha256": "45b1c196f347d95c060574423f49123005dea914285f38e9b5b20a5c7f7d43c2"
+}

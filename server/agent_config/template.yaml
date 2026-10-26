@@ -1602,7 +1602,7 @@ inputs:
       - match_regex: \b(?:lua|luajit)(\S)*( +-\S+)* +(\S*/)*([^ /]+)
         match_type: cmdline_with_args
         only_in_container: false
-        rewrite_name: $5
+        rewrite_name: $4
         enabled_features: [ebpf.profile.on_cpu, proc.gprocess_info]
       - match_regex: \bphp(\d+)?(-fpm|-cli|-cgi)?( +-\S+)* +(\S*/)*([^ /]+\.php)
         match_type: cmdline_with_args
@@ -4605,9 +4605,11 @@ processors:
         bRPC: 1-65535
         Tars: 1-65535
         SomeIP: 1-65535
+        Triple: 1-65535
         MySQL: 1-65535
         PostgreSQL: 1-65535
         Oracle: 1521
+        Dameng: 5236
         Redis: 1-65535
         MongoDB: 1-65535
         Memcached: 11211
@@ -4769,9 +4771,11 @@ processors:
         bRPC: []
         Tars: []
         SomeIP: []
+        Triple: []
         MySQL: []
         PostgreSQL: []
         Oracle: []
+        Dameng: []
         Redis: []
         MongoDB: []
         Memcached: []

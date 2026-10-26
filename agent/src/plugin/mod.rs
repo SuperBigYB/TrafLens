@@ -32,7 +32,7 @@ use crate::{
     common::{
         flow::PacketDirection,
         l7_protocol_info::{L7ProtocolInfo, L7ProtocolInfoInterface},
-        l7_protocol_log::LogCache,
+        l7_protocol_log::{LogCache, MultiMergeInfo},
     },
     config::handler::LogParserConfig,
     flow_generator::{
@@ -174,16 +174,13 @@ impl CustomInfo {
 
         if has trace:
 
-            trace_ids, span_id, parent_span_id
+            trace_id, span_id, parent_span_id
             (
-
-                key len: 2 bytes
-                key:     $(key len) bytes
-
-                val len: 2 bytes
-                val:     $(val len) bytes
-
+                len: 2 bytes
+                val: $(len) bytes
             ) x 3
+            // The legacy layout carries one trace ID; protobuf also supports
+            // repeated trace_ids.
 
         has kv:  1 byte
         if has kv
@@ -196,9 +193,13 @@ impl CustomInfo {
 
             ) x len(kv)
 
-        biz type: 1 byte
-        // is async: 1 byte
-        // is reversed: 1 byte
+        optional biz type: 1 byte (introduced in 2024; absent means 0)
+
+        The KV section has no pair count. After complete pairs, a single
+        remaining byte is the business type. It cannot be distinguished from
+        a truncated next string-length prefix; do not guess other extensions.
+        Two or more remaining bytes must form another complete key/value pair
+        when has kv is 1. Incomplete pairs are errors, not business-type data.
     */
     fn from_legacy_protocol(buf: &[u8], dir: PacketDirection) -> Result<Self, Error> {
         let mut off = 0;
@@ -268,7 +269,11 @@ impl CustomInfo {
             }
             PacketDirection::ServerToClient => {
                 // parse resp
-                let status = buf[off];
+                let status = *buf.get(off).ok_or_else(|| {
+                    Error::WasmSerializeFail(
+                        "buf len too short when parse response status".to_string(),
+                    )
+                })?;
                 match status {
                     0 => info.resp.status = L7ResponseStatus::Ok,
                     2 => info.resp.status = L7ResponseStatus::Timeout,
@@ -282,7 +287,11 @@ impl CustomInfo {
                     }
                 }
                 off += 1;
-                let has_code = buf[off];
+                let has_code = *buf.get(off).ok_or_else(|| {
+                    Error::WasmSerializeFail(
+                        "buf len too short when parse has response code".to_string(),
+                    )
+                })?;
 
                 match has_code {
                     0 => off += 1,
@@ -395,15 +404,21 @@ impl CustomInfo {
 
         match has_kv {
             0 => {}
-            1 => loop {
-                if let (Some(key), Some(val)) =
-                    (read_wasm_str(buf, &mut off), read_wasm_str(buf, &mut off))
-                {
-                    info.attributes.push(KeyVal { key: key, val: val });
-                } else {
-                    break;
+            1 => {
+                while buf.len() - off > 1 {
+                    let key = read_wasm_str(buf, &mut off).ok_or_else(|| {
+                        Error::WasmSerializeFail(
+                            "buf len too short when parse attribute key".to_string(),
+                        )
+                    })?;
+                    let val = read_wasm_str(buf, &mut off).ok_or_else(|| {
+                        Error::WasmSerializeFail(
+                            "buf len too short when parse attribute value".to_string(),
+                        )
+                    })?;
+                    info.attributes.push(KeyVal { key, val });
                 }
-            },
+            }
             _ => {
                 return Err(Error::WasmSerializeFail(
                     "has kv return unexpected value".to_string(),
@@ -411,13 +426,17 @@ impl CustomInfo {
             }
         }
 
-        // biz type
-        if off + 1 > buf.len() {
-            return Err(Error::WasmSerializeFail(
-                "buf len too short when parse biz_type".to_string(),
-            ));
+        // SDKs predating the business-type extension end immediately after
+        // trace/KV data. Preserve their default rather than rejecting the log.
+        match &buf[off..] {
+            [] => {}
+            [biz_type] => info.biz_type = *biz_type,
+            _ => {
+                return Err(Error::WasmSerializeFail(
+                    "unexpected trailing bytes after legacy attributes".to_string(),
+                ))
+            }
         }
-        info.biz_type = buf[off];
 
         Ok(info)
     }
@@ -733,6 +752,15 @@ impl From<&CustomInfo> for LogCache {
             msg_type: info.msg_type,
             resp_status: info.resp.status,
             on_blacklist: info.is_on_blacklist,
+            multi_merge_info: if info.need_merge() {
+                Some(MultiMergeInfo {
+                    req_end: info.is_req_end,
+                    resp_end: info.is_resp_end,
+                    merged: false,
+                })
+            } else {
+                None
+            },
             endpoint: info.get_endpoint(),
             ..Default::default()
         }
@@ -745,3 +773,7 @@ pub struct PluginCounterInfo<'a> {
     pub function_name: &'static str,
     pub counter: Countable,
 }
+
+#[cfg(test)]
+#[path = "legacy_protocol_regression.rs"]
+mod legacy_protocol_regression;

@@ -1848,7 +1848,7 @@ inputs:
       match_regex: \b(?:lua|luajit)(\S)*( +-\S+)* +(\S*/)*([^ /]+)
       match_type: cmdline_with_args
       only_in_container: false
-      rewrite_name: $5
+      rewrite_name: $4
     - enabled_features:
       - ebpf.profile.on_cpu
       - proc.gprocess_info
@@ -6369,6 +6369,7 @@ processors:
         AMQP: 1-65535
         Custom: 1-65535
         DNS: 53,5353
+        Dameng: 5236
         Dubbo: 1-65535
         FastCGI: 1-65535
         HTTP: 1-65535
@@ -6392,6 +6393,7 @@ processors:
         SomeIP: 1-65535
         TLS: 443,6443
         Tars: 1-65535
+        Triple: 1-65535
         WebSphereMQ: 1-65535
         ZMTP: 1-65535
         bRPC: 1-65535
@@ -6443,6 +6445,7 @@ processors:
         AMQP: []
         Custom: []
         DNS: []
+        Dameng: []
         Dubbo: []
         FastCGI: []
         HTTP: []
@@ -6466,6 +6469,7 @@ processors:
         SomeIP: []
         TLS: []
         Tars: []
+        Triple: []
         WebSphereMQ: []
         ZMTP: []
         bRPC: []

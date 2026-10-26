@@ -458,6 +458,15 @@ impl HttpInfo {
             || self.msg_type == LogMessageType::Other
     }
 
+    // Read an already captured attribute; this does not opt headers into capture.
+    pub(crate) fn captured_attribute(&self, key: &str) -> Option<&str> {
+        self.attributes
+            .iter()
+            .rev()
+            .find(|entry| entry.key == key)
+            .map(|entry| entry.val.as_str())
+    }
+
     pub fn merge_custom_to_http(&mut self, custom: CustomInfo, dir: PacketDirection) {
         if dir == PacketDirection::ClientToServer {
             if let Ok(v) = Version::try_from(custom.req.version.as_str()) {

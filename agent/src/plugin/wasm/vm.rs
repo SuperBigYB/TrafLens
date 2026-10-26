@@ -377,9 +377,16 @@ impl From<(&ParseParam<'_>, &HttpInfo, &[u8])> for VmHttpReqCtx {
             host: info.host.clone(),
             user_agent: info
                 .user_agent
-                .as_ref()
-                .map_or("".to_string(), |s| s.clone()),
-            referer: info.referer.as_ref().map_or("".to_string(), |s| s.clone()),
+                .as_deref()
+                .or_else(|| info.captured_attribute("user_agent"))
+                .unwrap_or_default()
+                .to_owned(),
+            referer: info
+                .referer
+                .as_deref()
+                .or_else(|| info.captured_attribute("referer"))
+                .unwrap_or_default()
+                .to_owned(),
         }
     }
 }
@@ -490,5 +497,349 @@ impl From<(&ParseParam<'_>, &[u8], WasmData)> for VmOnCustomMessageCtx {
             base_ctx: VmCtxBase::from((param, 0, l7_payload)),
             wasm_data,
         }
+    }
+}
+
+#[cfg(test)]
+mod abi_regression_tests {
+    use super::*;
+    use crate::plugin::wasm::abi_import::get_linker;
+    use crate::plugin::wasm::host::{HookPoint, StoreDataType};
+    use wasmtime::{Engine, Instance, Module, Store, StoreLimitsBuilder};
+    use wasmtime_wasi::WasiCtxBuilder;
+
+    const READS: [&str; 7] = [
+        "vm_read_ctx_base",
+        "vm_read_payload",
+        "vm_read_http_req_info",
+        "vm_read_http_resp_info",
+        "vm_read_custom_message_info",
+        "host_read_l7_protocol_info",
+        "host_read_str_result",
+    ];
+
+    fn base() -> VmCtxBase {
+        VmCtxBase {
+            ip_src: "192.0.2.1".parse().unwrap(),
+            ip_dst: "192.0.2.2".parse().unwrap(),
+            port_src: 12345,
+            port_dst: 8080,
+            l4_protocol: IpProtocol::TCP,
+            proto: 20,
+            ebpf_type: EbpfType::None,
+            time: 123,
+            direction: PacketDirection::ClientToServer,
+            process_kname: None,
+            flow_id: 456,
+            buf_size: 1024,
+            payload: ManuallyDrop::new(Vec::new()),
+            instance_name: "abi-regression".to_string(),
+            result: None,
+        }
+    }
+
+    fn guest(ctx: Option<VmParseCtx>, export_memory: bool) -> (Store<StoreDataType>, Instance) {
+        let engine = Engine::default();
+        let mut wat = "(module".to_string();
+        for name in READS {
+            wat.push_str(&format!(
+                "(import \"deepflow\" \"{name}\" (func ${name} (param i32 i32) (result i32)))"
+            ));
+        }
+        wat.push_str("(import \"deepflow\" \"wasm_log\" (func $log (param i32 i32 i32)))");
+        wat.push_str(if export_memory {
+            "(memory (export \"memory\") 1)"
+        } else {
+            "(memory 1)"
+        });
+        for name in READS {
+            wat.push_str(&format!(
+                "(func (export \"{name}\") (param i32 i32) (result i32) local.get 0 local.get 1 call ${name})"
+            ));
+        }
+        wat.push_str("(func (export \"log\") (param i32 i32) (result i32) local.get 0 local.get 1 i32.const 0 call $log i32.const 1))");
+        let module = Module::new(&engine, wat).unwrap();
+        let mut store = Store::new(
+            &engine,
+            StoreDataType {
+                parse_ctx: ctx,
+                limiter: StoreLimitsBuilder::new().build(),
+                wasi_ctx: WasiCtxBuilder::new().build(),
+            },
+        );
+        let linker = get_linker(engine, &mut store);
+        let instance = linker.instantiate(&mut store, &module).unwrap();
+        (store, instance)
+    }
+
+    fn call(
+        store: &mut Store<StoreDataType>,
+        instance: &Instance,
+        name: &str,
+        b: u32,
+        len: u32,
+    ) -> i32 {
+        instance
+            .get_typed_func::<(i32, i32), i32>(&mut *store, name)
+            .unwrap()
+            .call(store, (b as i32, len as i32))
+            .unwrap()
+    }
+
+    #[test]
+    fn abi_guest_rejects_overflow_and_oob_then_keeps_context() {
+        let (mut store, instance) = guest(Some(VmParseCtx::ParseCtx(base())), true);
+        for name in READS {
+            for (b, len) in [(u32::MAX, 2), (65535, 2), (65537, 0)] {
+                assert_eq!(call(&mut store, &instance, name, b, len), 0, "{name}");
+                assert!(store.data().parse_ctx.is_some(), "{name}");
+            }
+        }
+        assert_eq!(call(&mut store, &instance, READS[0], 0, 128), 36);
+    }
+
+    #[test]
+    fn abi_guest_calls_without_parse_context() {
+        let (mut store, instance) = guest(None, true);
+        for name in READS {
+            assert_eq!(call(&mut store, &instance, name, 0, 64), 0, "{name}");
+            assert_eq!(call(&mut store, &instance, name, u32::MAX, 2), 0, "{name}");
+            assert!(store.data().parse_ctx.is_none());
+        }
+    }
+
+    #[test]
+    fn abi_guest_missing_memory_is_rejected() {
+        let (mut store, instance) = guest(Some(VmParseCtx::ParseCtx(base())), false);
+        for name in READS {
+            assert_eq!(call(&mut store, &instance, name, 0, 64), 0, "{name}");
+            assert!(store.data().parse_ctx.is_some());
+        }
+        assert_eq!(call(&mut store, &instance, "log", 0, 2), 1);
+    }
+
+    #[test]
+    fn abi_guest_http_request_error_preserves_context_and_bytes() {
+        let ctx = VmParseCtx::HttpReqCtx(VmHttpReqCtx {
+            base_ctx: base(),
+            path: "/x".to_string(),
+            host: "example".to_string(),
+            user_agent: String::new(),
+            referer: String::new(),
+        });
+        let (mut store, instance) = guest(Some(ctx), true);
+        assert_eq!(call(&mut store, &instance, READS[2], 0, 1), 0);
+        assert!(store.data().parse_ctx.is_some());
+        assert_eq!(call(&mut store, &instance, READS[2], 0, 64), 17);
+        let memory = instance.get_memory(&mut store, "memory").unwrap();
+        assert_eq!(
+            &memory.data(&store)[..17],
+            b"\x00\x02/x\x00\x07example\x00\x00\x00\x00"
+        );
+    }
+
+    #[test]
+    fn abi_guest_http_response_error_preserves_context_and_bytes() {
+        let ctx = VmParseCtx::HttpRespCtx(VmHttpRespCtx {
+            base_ctx: base(),
+            code: 200,
+            status: L7ResponseStatus::Ok,
+            endpoint: "/x".to_string(),
+        });
+        let (mut store, instance) = guest(Some(ctx), true);
+        assert_eq!(call(&mut store, &instance, READS[3], 0, 2), 0);
+        assert!(store.data().parse_ctx.is_some());
+        assert_eq!(call(&mut store, &instance, READS[3], 0, 64), 7);
+        let memory = instance.get_memory(&mut store, "memory").unwrap();
+        assert_eq!(&memory.data(&store)[..7], b"\x00\xc8\x00\x00\x02/x");
+    }
+
+    #[test]
+    fn abi_guest_custom_error_preserves_context_and_bytes() {
+        let ctx = VmParseCtx::OnCustomMessageCtx(VmOnCustomMessageCtx {
+            base_ctx: base(),
+            wasm_data: WasmData {
+                hook_point: HookPoint::ProtocolParse,
+                type_code: 7,
+                protobuf: vec![1, 2, 3],
+            },
+        });
+        let (mut store, instance) = guest(Some(ctx), true);
+        assert_eq!(call(&mut store, &instance, READS[4], 0, 1), 0);
+        assert!(store.data().parse_ctx.is_some());
+        assert_eq!(call(&mut store, &instance, READS[4], 0, 64), 13);
+        let memory = instance.get_memory(&mut store, "memory").unwrap();
+        assert_eq!(
+            &memory.data(&store)[..13],
+            b"\x00\x00\x00\x00\x00\x07\x00\x00\x00\x03\x01\x02\x03"
+        );
+    }
+
+    #[test]
+    fn abi_guest_wrong_http_context_does_not_consume_base() {
+        let (mut store, instance) = guest(Some(VmParseCtx::ParseCtx(base())), true);
+        for name in &READS[2..5] {
+            assert_eq!(call(&mut store, &instance, name, 0, 64), 0);
+            assert!(store.data().parse_ctx.is_some());
+        }
+        assert_eq!(call(&mut store, &instance, READS[0], 0, 1), 0);
+        assert!(store.data().parse_ctx.is_some());
+        assert_eq!(call(&mut store, &instance, READS[0], 0, 128), 36);
+    }
+
+    #[test]
+    fn abi_guest_log_rejects_huge_ranges_without_allocation() {
+        let (mut store, instance) = guest(Some(VmParseCtx::ParseCtx(base())), true);
+        for (b, len) in [
+            (u32::MAX, 2),
+            (0, u32::MAX),
+            (u32::MAX, u32::MAX),
+            (65536, 0),
+            (0, 2),
+        ] {
+            assert_eq!(call(&mut store, &instance, "log", b, len), 1);
+            assert!(store.data().parse_ctx.is_some());
+        }
+        assert_eq!(call(&mut store, &instance, READS[0], 0, 128), 36);
+    }
+
+    #[test]
+    fn abi_guest_start_import_without_context() {
+        let engine = Engine::default();
+        let module = Module::new(
+            &engine,
+            r#"(module
+                (import "deepflow" "vm_read_ctx_base" (func $read (param i32 i32) (result i32)))
+                (memory (export "memory") 1)
+                (func $init i32.const 0 i32.const 64 call $read drop)
+                (start $init))"#,
+        )
+        .unwrap();
+        let mut store = Store::new(
+            &engine,
+            StoreDataType {
+                parse_ctx: None,
+                limiter: StoreLimitsBuilder::new().build(),
+                wasi_ctx: WasiCtxBuilder::new().build(),
+            },
+        );
+        let linker = get_linker(engine, &mut store);
+        linker.instantiate(&mut store, &module).unwrap();
+        assert!(store.data().parse_ctx.is_none());
+    }
+
+    #[test]
+    fn abi_modern_tinygo_standard_wasi_imports_are_sandboxed() {
+        // Modern TinyGo links these standard WASI runtime imports even for
+        // pure parsers. The Store has no inherited descriptors or preopens.
+        let engine = Engine::default();
+        let module = Module::new(
+            &engine,
+            r#"(module
+                (import "wasi_snapshot_preview1" "random_get" (func $random (param i32 i32) (result i32)))
+                (import "wasi_snapshot_preview1" "sock_recv" (func $recv (param i32 i32 i32 i32 i32 i32) (result i32)))
+                (import "wasi_snapshot_preview1" "poll_oneoff" (func $poll (param i32 i32 i32 i32) (result i32)))
+                (memory (export "memory") 1)
+                (func (export "random") (result i32) i32.const 0 i32.const 16 call $random)
+                (func (export "recv") (result i32)
+                    i32.const 42 i32.const 0 i32.const 0 i32.const 0 i32.const 16 i32.const 24 call $recv)
+                (func (export "poll") (result i32)
+                    i32.const 0 i32.const 0 i32.const 0 i32.const 16 call $poll))"#,
+        )
+        .unwrap();
+        let mut store = Store::new(
+            &engine,
+            StoreDataType {
+                parse_ctx: None,
+                limiter: StoreLimitsBuilder::new().build(),
+                wasi_ctx: WasiCtxBuilder::new().build(),
+            },
+        );
+        let linker = get_linker(engine, &mut store);
+        let instance = linker.instantiate(&mut store, &module).unwrap();
+        for (name, errno) in [("random", 0), ("recv", 8), ("poll", 28)] {
+            let call = instance
+                .get_typed_func::<(), i32>(&mut store, name)
+                .unwrap();
+            assert_eq!(call.call(&mut store, ()).unwrap(), errno, "{name}");
+        }
+        assert!(store.data().parse_ctx.is_none());
+    }
+}
+
+#[cfg(test)]
+mod http_metadata_adapter_tests {
+    use super::*;
+    use crate::common::meta_packet::MetaPacket;
+    use public::l7_protocol::L7LogAttribute;
+
+    fn adapt(info: &HttpInfo) -> VmHttpReqCtx {
+        let mut packet = MetaPacket::default();
+        packet.lookup_key.proto = IpProtocol::TCP;
+        let param = ParseParam::new(
+            &packet,
+            None,
+            Default::default(),
+            #[cfg(any(target_os = "linux", target_os = "android"))]
+            Default::default(),
+            false,
+            true,
+        );
+        // Raw headers alone do not opt these fields into capture.
+        let payload = b"GET / HTTP/1.1\r\nUser-Agent: raw-only\r\nReferer: raw.example\r\n\r\n";
+        VmHttpReqCtx::from((&param, info, payload.as_slice()))
+    }
+
+    fn capture(info: &mut HttpInfo, key: &'static str, value: &'static str) {
+        info.add_attribute(key.into(), value.into());
+    }
+
+    #[test]
+    fn uncaptured_headers_stay_empty_despite_raw_payload() {
+        let info = HttpInfo::default();
+        let before = serde_json::to_value(&info).unwrap();
+        let ctx = adapt(&info);
+        assert_eq!(ctx.user_agent, "");
+        assert_eq!(ctx.referer, "");
+        assert!(info.user_agent.is_none() && info.referer.is_none());
+        assert_eq!(serde_json::to_value(&info).unwrap(), before);
+    }
+
+    #[test]
+    fn captured_attributes_supply_sdk_metadata_without_mutation() {
+        let mut info = HttpInfo::default();
+        capture(&mut info, "user_agent", "captured-agent");
+        capture(&mut info, "referer", "captured.example");
+        let before = serde_json::to_value(&info).unwrap();
+        let ctx = adapt(&info);
+        assert_eq!(ctx.user_agent, "captured-agent");
+        assert_eq!(ctx.referer, "captured.example");
+        assert!(info.user_agent.is_none() && info.referer.is_none());
+        assert_eq!(serde_json::to_value(&info).unwrap(), before);
+    }
+
+    #[test]
+    fn explicit_legacy_values_including_empty_take_priority() {
+        let mut info = HttpInfo::default();
+        info.user_agent = Some("legacy-agent".into());
+        info.referer = Some(String::new());
+        capture(&mut info, "user_agent", "captured-agent");
+        capture(&mut info, "referer", "captured.example");
+        let ctx = adapt(&info);
+        assert_eq!(ctx.user_agent, "legacy-agent");
+        assert_eq!(ctx.referer, "");
+    }
+
+    #[test]
+    fn latest_normalized_captured_header_wins() {
+        let mut info = HttpInfo::default();
+        capture(&mut info, "user_agent", "first");
+        capture(&mut info, "referer", "first.example");
+        capture(&mut info, "user_agent", "last");
+        capture(&mut info, "referer", "last.example");
+        capture(&mut info, "user-agent", "not-normalized");
+        let ctx = adapt(&info);
+        assert_eq!(ctx.user_agent, "last");
+        assert_eq!(ctx.referer, "last.example");
     }
 }

@@ -696,6 +696,18 @@ impl Default for Proc {
                     ..Default::default()
                 },
                 ProcessMatcher {
+                    match_regex: Regex::new(r"\b(?:lua|luajit)(\S)*( +-\S+)* +(\S*/)*([^ /]+)")
+                        .unwrap(),
+                    only_in_container: false,
+                    match_type: ProcessMatchType::CmdWithArgs,
+                    rewrite_name: "$4".to_string(),
+                    enabled_features: vec![
+                        "ebpf.profile.on_cpu".to_string(),
+                        "proc.gprocess_info".to_string(),
+                    ],
+                    ..Default::default()
+                },
+                ProcessMatcher {
                     match_regex: Regex::new(
                         r"\bphp(\d+)?(-fpm|-cli|-cgi)?( +-\S+)* +(\S*/)*([^ /]+\.php)",
                     )
@@ -4221,6 +4233,131 @@ enabled: true
                 .unwrap();
             assert_eq!(rewritten.name, "com.example.Main");
         }
+    }
+
+    #[test]
+    fn lua_process_matcher_names_scripts_across_default_config_paths() {
+        let template = fs::read_to_string("../server/agent_config/template.yaml").unwrap();
+        let template: UserConfig = serde_yaml::from_str(&template).unwrap();
+        let omitted: UserConfig =
+            serde_yaml::from_str("inputs:\n  proc:\n    enabled: true\n").unwrap();
+        for (source, proc) in [
+            ("default", Proc::default()),
+            ("omitted matchers", omitted.inputs.proc),
+            ("standalone", UserConfig::standalone_default().inputs.proc),
+            ("public template", template.inputs.proc),
+        ] {
+            let matcher = proc
+                .process_matcher
+                .iter()
+                .find(|matcher| matcher.match_regex.as_str().contains("lua|luajit"))
+                .expect("Lua process matcher must be present");
+            assert_eq!(matcher.match_type, ProcessMatchType::CmdWithArgs);
+            assert!(!matcher.only_in_container);
+            assert_eq!(
+                matcher.enabled_features,
+                ["ebpf.profile.on_cpu", "proc.gprocess_info"]
+            );
+            for (command, expected) in [
+                ("/usr/bin/lua /opt/jobs/worker.lua arg", "worker.lua"),
+                ("/usr/bin/lua5.4 -E /opt/jobs/worker.lua", "worker.lua"),
+                ("/usr/bin/luajit -joff /opt/tasks/task.lua", "task.lua"),
+                ("lua relative.lua --arg", "relative.lua"),
+                ("/usr/bin/luajit2.1 app.lua", "app.lua"),
+            ] {
+                let process = ProcessData {
+                    name: "original-interpreter-name".to_string(),
+                    process_name: "lua".to_string(),
+                    cmd: command.split_whitespace().next().unwrap().to_string(),
+                    ..process_data_for_cmdline(command)
+                };
+                let actual = matcher.get_process_data(&process, &HashMap::new()).unwrap();
+                assert_eq!(actual.name, expected, "source={source}, command={command}");
+            }
+        }
+    }
+
+    #[test]
+    fn lua_process_matcher_rejects_missing_script_and_other_interpreters() {
+        let proc = Proc::default();
+        let matcher = proc
+            .process_matcher
+            .iter()
+            .find(|matcher| matcher.match_regex.as_str().contains("lua|luajit"))
+            .expect("Lua process matcher must be present");
+        for command in [
+            "lua",
+            "/usr/bin/node /opt/app.js",
+            "/usr/bin/python /opt/app.py",
+        ] {
+            assert!(
+                matcher
+                    .get_process_data(&process_data_for_cmdline(command), &HashMap::new())
+                    .is_none(),
+                "unexpected Lua match: {command}"
+            );
+        }
+    }
+
+    #[test]
+    fn protocol_filter_defaults_match_template_without_enabling_protocols() {
+        let template = fs::read_to_string("../server/agent_config/template.yaml").unwrap();
+        let template: UserConfig = serde_yaml::from_str(&template).unwrap();
+        let omitted: UserConfig = serde_yaml::from_str(
+            "processors:\n  request_log:\n    filters:\n      cbpf_disabled: false\n",
+        )
+        .unwrap();
+        for (source, config) in [
+            ("default", UserConfig::default()),
+            ("omitted filters", omitted),
+            ("standalone", UserConfig::standalone_default()),
+            ("public template", template),
+        ] {
+            let request_log = &config.processors.request_log;
+            for (protocol, ports) in [("Triple", "1-65535"), ("Dameng", "5236")] {
+                assert_eq!(
+                    request_log
+                        .filters
+                        .port_number_prefilters
+                        .get(protocol)
+                        .map(String::as_str),
+                    Some(ports),
+                    "source={source}, protocol={protocol}"
+                );
+                assert_eq!(
+                    request_log.filters.tag_filters.get(protocol).map(Vec::len),
+                    Some(0),
+                    "source={source}, protocol={protocol}"
+                );
+                assert!(
+                    !request_log
+                        .application_protocol_inference
+                        .enabled_protocols
+                        .iter()
+                        .any(|enabled| enabled == protocol),
+                    "default map entries must not enable {protocol}, source={source}"
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn explicit_protocol_filter_maps_keep_their_configured_scope() {
+        let config: UserConfig = serde_yaml::from_str(
+            "processors:\n  request_log:\n    filters:\n      port_number_prefilters: {HTTP: '18080'}\n      tag_filters: {HTTP: []}\n",
+        )
+        .unwrap();
+        let filters = &config.processors.request_log.filters;
+        assert_eq!(filters.port_number_prefilters.len(), 1);
+        assert_eq!(
+            filters
+                .port_number_prefilters
+                .get("HTTP")
+                .map(String::as_str),
+            Some("18080")
+        );
+        assert_eq!(filters.tag_filters.len(), 1);
+        assert_eq!(filters.tag_filters.get("HTTP").map(Vec::len), Some(0));
     }
 
     #[test]

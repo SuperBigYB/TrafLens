@@ -783,4 +783,74 @@ mod tests {
             }
         }
     }
+
+    #[test]
+    fn storage_byte_length_does_not_parse_commands_embedded_in_the_value() {
+        // protocol.txt: <bytes> excludes the following CRLF and the data block
+        // is unstructured bytes, even when it looks like another command.
+        let body = b"a\r\nget hidden\r\nb";
+        let header = format!("set key 0 0 {}\r\n", body.len());
+        let mut wire = header.as_bytes().to_vec();
+        wire.extend_from_slice(body);
+        wire.extend_from_slice(b"\r\nget next\r\n");
+        let requests = MemcachedLog::parse_commands(&wire).unwrap();
+        assert_eq!(requests.len(), 2);
+        assert_eq!(requests[0].command, Some(Command::Set));
+        assert_eq!(
+            requests[0].captured_request_byte,
+            header.len() + body.len() + 2
+        );
+        assert_eq!(requests[1].request, "get next");
+        assert_eq!(requests[1].captured_request_byte, b"get next\r\n".len());
+    }
+
+    #[test]
+    fn value_data_is_binary_and_truncated_capture_remains_bounded() {
+        let body = b"\xff\r\nEND\r\n\0z";
+        let header = format!("VALUE key 0 {}\r\n", body.len());
+        let mut wire = header.as_bytes().to_vec();
+        wire.extend_from_slice(body);
+        wire.extend_from_slice(b"\r\nEND\r\n");
+        let response = MemcachedLog::parse_response(&wire).unwrap();
+        assert_eq!(response.msg_type, LogMessageType::Response);
+        assert_eq!(response.captured_response_byte, wire.len());
+        assert_eq!(response.result, header.trim_end_matches("\r\n"));
+        let truncated = MemcachedLog::parse_response(b"VALUE key 0 5\r\nab").unwrap();
+        assert_eq!(
+            truncated.captured_response_byte,
+            b"VALUE key 0 5\r\nab".len()
+        );
+        assert!(MemcachedLog::parse_response(b"VALUE key 0 nope\r\n").is_err());
+        assert!(MemcachedLog::parse_commands(b"get key").is_err());
+    }
+
+    #[test]
+    fn public_fixture_pcap_headers_and_record_lengths_are_consistent() {
+        // libpcap's magic selects the byte order for *all* header fields.
+        // The historical userdata fixture mixed a little-endian magic/records
+        // with big-endian version 2.4 and could not be opened by libpcap.
+        for name in ["memcached.pcap", "memcached-userdata.pcap"] {
+            let data = fs::read(Path::new(FILE_DIR).join(name)).unwrap();
+            assert_eq!(&data[..8], &[0xd4, 0xc3, 0xb2, 0xa1, 2, 0, 4, 0]);
+            let snaplen = u32::from_le_bytes(data[16..20].try_into().unwrap()) as usize;
+            assert_eq!(u32::from_le_bytes(data[20..24].try_into().unwrap()), 1);
+            let (mut offset, mut records) = (24usize, 0usize);
+            while offset < data.len() {
+                assert!(offset + 16 <= data.len());
+                let captured =
+                    u32::from_le_bytes(data[offset + 8..offset + 12].try_into().unwrap()) as usize;
+                let original =
+                    u32::from_le_bytes(data[offset + 12..offset + 16].try_into().unwrap()) as usize;
+                assert!(captured >= 14 && captured <= snaplen && captured <= original);
+                offset += 16 + captured;
+                assert!(offset <= data.len());
+                records += 1;
+            }
+            assert_eq!(offset, data.len());
+            assert!(records > 0);
+            if name == "memcached-userdata.pcap" {
+                assert_eq!(records, 20_421);
+            }
+        }
+    }
 }

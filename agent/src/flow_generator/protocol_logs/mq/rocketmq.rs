@@ -1988,4 +1988,104 @@ mod tests {
             }
         }
     }
+
+    fn remoting_frame(serialization: u8, header: &[u8]) -> Vec<u8> {
+        let mut frame = ((header.len() + 4) as u32).to_be_bytes().to_vec();
+        frame.extend_from_slice(
+            &((u32::from(serialization) << 24) | header.len() as u32).to_be_bytes(),
+        );
+        frame.extend_from_slice(header);
+        frame
+    }
+
+    fn wire_header(serialization: u8, code: i16, flag: i32) -> Vec<u8> {
+        if serialization == 0 {
+            return serde_json::to_vec(&serde_json::json!({
+                "code": code, "flag": flag, "language": "JAVA", "opaque": -1,
+                "serializeTypeCurrentRPC": "JSON", "version": 0,
+            }))
+            .unwrap();
+        }
+        // Apache RocketMQSerializable field order: code, language, version,
+        // opaque, flag, remark length, extFields length; all integers big-endian.
+        let mut header = code.to_be_bytes().to_vec();
+        header.push(0); // JAVA
+        header.extend_from_slice(&0i16.to_be_bytes());
+        header.extend_from_slice(&(-1i32).to_be_bytes());
+        header.extend_from_slice(&flag.to_be_bytes());
+        header.extend_from_slice(&0i32.to_be_bytes());
+        header.extend_from_slice(&0i32.to_be_bytes());
+        header
+    }
+
+    #[test]
+    fn remoting_wire_flags_and_unsigned_opaque_match_both_header_encodings() {
+        // RemotingCommand RPC_TYPE is bit 0; RPC_ONEWAY is bit 1. Capture
+        // direction is deliberately opposite: the wire flag determines type.
+        for serialization in [0, 1] {
+            for flag in 0..=3 {
+                let code = if flag & 1 == 0 { 34 } else { 0 };
+                let frame = remoting_frame(serialization, &wire_header(serialization, code, flag));
+                let mut parser = RocketmqLog::default();
+                assert!(parser.check(&frame, IpProtocol::TCP));
+                let mut info = RocketmqInfo::default();
+                parser
+                    .parse(
+                        &frame,
+                        IpProtocol::TCP,
+                        PacketDirection::ServerToClient,
+                        &mut info,
+                    )
+                    .unwrap();
+                let expected = match flag {
+                    0 => LogMessageType::Request,
+                    2 => LogMessageType::Session,
+                    _ => LogMessageType::Response,
+                };
+                assert_eq!(
+                    info.msg_type, expected,
+                    "serialization={serialization} flag={flag}"
+                );
+                assert_eq!(info.opaque, u32::MAX);
+                assert_eq!(info.session_id(), Some(u32::MAX));
+                if flag == 2 {
+                    assert_eq!(info.resp_code_name, "ONEWAY_REQUEST");
+                    assert_eq!(info.status, L7ResponseStatus::Ok);
+                }
+                // Without a Wasm hook, the newly added extension fields retain
+                // their defaults; the public PCAP golden migration checks these.
+                assert!(!info.is_async && !info.is_reversed && info.attributes.is_empty());
+                assert_eq!(info.biz_type, 0);
+                assert!(
+                    info.biz_code.is_empty()
+                        && info.biz_scenario.is_empty()
+                        && info.biz_response_code.is_empty()
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn remoting_truncated_headers_and_unknown_serialization_are_rejected() {
+        for serialization in [0, 1] {
+            let frame = remoting_frame(serialization, &wire_header(serialization, 34, 0));
+            for end in 0..frame.len() {
+                let mut parser = RocketmqLog::default();
+                assert!(
+                    parser
+                        .parse(
+                            &frame[..end],
+                            IpProtocol::TCP,
+                            PacketDirection::ClientToServer,
+                            &mut RocketmqInfo::default()
+                        )
+                        .is_err(),
+                    "serialization={serialization} truncated_at={end}"
+                );
+            }
+            let mut unknown = frame;
+            unknown[4] = 0x7f;
+            assert!(!RocketmqLog::default().check(&unknown, IpProtocol::TCP));
+        }
+    }
 }

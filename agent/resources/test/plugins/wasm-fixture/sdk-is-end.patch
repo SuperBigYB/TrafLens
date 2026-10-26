@@ -1,0 +1,8 @@
+--- a/sdk/serde.go
++++ b/sdk/serde.go
+@@ -359,0 +360,5 @@
++		}
++
++		// Preserve the current AppInfo field 21 merge/end contract.
++		if info.ProtocolMerge {
++			msg.IsEnd = proto.Bool(info.IsEnd)
