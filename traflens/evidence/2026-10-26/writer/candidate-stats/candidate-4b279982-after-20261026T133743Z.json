@@ -1,0 +1,2267 @@
+{
+  "snapshot_kind": "candidate_after_fault_observation",
+  "snapshot_utc": "2026-10-26T13:37:43.428196+00:00",
+  "candidate_expected_source": "4b2799823516bc49ff2f3c840a782cd57361f28f",
+  "server_container_id": "f2e9872ccdfd7e01566bf79b7bb0ed6e29251209b0b0798ea1b847fd43d74e63",
+  "server_hostname": "f2e9872ccdfd",
+  "server_image_id": "sha256:1d1f251be93463301e423fa5e8834975180bf959092200c6e68d95e2c85d3578",
+  "server_started_at": "2026-10-26T13:29:22.483287222Z",
+  "query_window_start_unix": 1793021362,
+  "query_window_end_unix": 1793021863,
+  "query": "SELECT toUnixTimestamp(time) AS sample_unix,virtual_table_name,tag_names,tag_values,metrics_float_names,metrics_float_values FROM deepflow_admin.deepflow_server_local WHERE virtual_table_name='deepflow_server_ingester_ckwriter' AND tag_values[indexOf(tag_names,'host')]='f2e9872ccdfd' AND position(tag_values[indexOf(tag_names,'table')],'l7_flow_log')>0 AND time>=toDateTime(1793021362) AND time<=toDateTime(1793021863) ORDER BY time,tag_values FORMAT JSONEachRow",
+  "command": [
+    "docker",
+    "exec",
+    "traflens-lab-clickhouse",
+    "clickhouse-client",
+    "--readonly",
+    "2",
+    "--max_execution_time",
+    "10",
+    "--max_threads",
+    "1",
+    "--max_result_rows",
+    "10000",
+    "--result_overflow_mode",
+    "throw",
+    "--query",
+    "SELECT toUnixTimestamp(time) AS sample_unix,virtual_table_name,tag_names,tag_values,metrics_float_names,metrics_float_values FROM deepflow_admin.deepflow_server_local WHERE virtual_table_name='deepflow_server_ingester_ckwriter' AND tag_values[indexOf(tag_names,'host')]='f2e9872ccdfd' AND position(tag_values[indexOf(tag_names,'table')],'l7_flow_log')>0 AND time>=toDateTime(1793021362) AND time<=toDateTime(1793021863) ORDER BY time,tag_values FORMAT JSONEachRow"
+  ],
+  "exit_code": 0,
+  "stats_database": "deepflow_admin",
+  "stats_table": "deepflow_server_local",
+  "virtual_table_name": "deepflow_server_ingester_ckwriter",
+  "row_count": 44,
+  "totals": {
+    "retry_count": 6,
+    "retry_failed_count": 5,
+    "write_success_count": 187,
+    "write_failed_count": 0,
+    "write_uncertain_count": 0
+  },
+  "groups": [
+    {
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "point_count": 44,
+      "sample_unix_values": [
+        1793021423,
+        1793021433,
+        1793021443,
+        1793021453,
+        1793021463,
+        1793021473,
+        1793021483,
+        1793021493,
+        1793021503,
+        1793021513,
+        1793021523,
+        1793021533,
+        1793021543,
+        1793021553,
+        1793021563,
+        1793021573,
+        1793021583,
+        1793021593,
+        1793021603,
+        1793021613,
+        1793021623,
+        1793021633,
+        1793021643,
+        1793021653,
+        1793021663,
+        1793021673,
+        1793021683,
+        1793021693,
+        1793021703,
+        1793021713,
+        1793021723,
+        1793021733,
+        1793021743,
+        1793021753,
+        1793021763,
+        1793021773,
+        1793021783,
+        1793021793,
+        1793021803,
+        1793021813,
+        1793021823,
+        1793021833,
+        1793021843,
+        1793021853
+      ],
+      "sums": {
+        "retry_count": 6,
+        "retry_failed_count": 5,
+        "write_success_count": 187,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "missing_metric_points": 0,
+      "first_sample_unix": 1793021423,
+      "last_sample_unix": 1793021853,
+      "gaps_over_10s": []
+    }
+  ],
+  "nonzero_points": [
+    {
+      "sample_unix": 1793021523,
+      "sample_utc": "2026-10-26T13:32:03+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 6,
+        "retry_failed_count": 5,
+        "write_success_count": 32,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    }
+  ],
+  "all_points": [
+    {
+      "sample_unix": 1793021423,
+      "sample_utc": "2026-10-26T13:30:23+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021433,
+      "sample_utc": "2026-10-26T13:30:33+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021443,
+      "sample_utc": "2026-10-26T13:30:43+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021453,
+      "sample_utc": "2026-10-26T13:30:53+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021463,
+      "sample_utc": "2026-10-26T13:31:03+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021473,
+      "sample_utc": "2026-10-26T13:31:13+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021483,
+      "sample_utc": "2026-10-26T13:31:23+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021493,
+      "sample_utc": "2026-10-26T13:31:33+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 1,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021503,
+      "sample_utc": "2026-10-26T13:31:43+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 62,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021513,
+      "sample_utc": "2026-10-26T13:31:53+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021523,
+      "sample_utc": "2026-10-26T13:32:03+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 6,
+        "retry_failed_count": 5,
+        "write_success_count": 32,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021533,
+      "sample_utc": "2026-10-26T13:32:13+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021543,
+      "sample_utc": "2026-10-26T13:32:23+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 30,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021553,
+      "sample_utc": "2026-10-26T13:32:33+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 62,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021563,
+      "sample_utc": "2026-10-26T13:32:43+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021573,
+      "sample_utc": "2026-10-26T13:32:53+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021583,
+      "sample_utc": "2026-10-26T13:33:03+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021593,
+      "sample_utc": "2026-10-26T13:33:13+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021603,
+      "sample_utc": "2026-10-26T13:33:23+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021613,
+      "sample_utc": "2026-10-26T13:33:33+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021623,
+      "sample_utc": "2026-10-26T13:33:43+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021633,
+      "sample_utc": "2026-10-26T13:33:53+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021643,
+      "sample_utc": "2026-10-26T13:34:03+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021653,
+      "sample_utc": "2026-10-26T13:34:13+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021663,
+      "sample_utc": "2026-10-26T13:34:23+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021673,
+      "sample_utc": "2026-10-26T13:34:33+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021683,
+      "sample_utc": "2026-10-26T13:34:43+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021693,
+      "sample_utc": "2026-10-26T13:34:53+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021703,
+      "sample_utc": "2026-10-26T13:35:03+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021713,
+      "sample_utc": "2026-10-26T13:35:13+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021723,
+      "sample_utc": "2026-10-26T13:35:23+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021733,
+      "sample_utc": "2026-10-26T13:35:33+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021743,
+      "sample_utc": "2026-10-26T13:35:43+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021753,
+      "sample_utc": "2026-10-26T13:35:53+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021763,
+      "sample_utc": "2026-10-26T13:36:03+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021773,
+      "sample_utc": "2026-10-26T13:36:13+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021783,
+      "sample_utc": "2026-10-26T13:36:23+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021793,
+      "sample_utc": "2026-10-26T13:36:33+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021803,
+      "sample_utc": "2026-10-26T13:36:43+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021813,
+      "sample_utc": "2026-10-26T13:36:53+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021823,
+      "sample_utc": "2026-10-26T13:37:03+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021833,
+      "sample_utc": "2026-10-26T13:37:13+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021843,
+      "sample_utc": "2026-10-26T13:37:23+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    },
+    {
+      "sample_unix": 1793021853,
+      "sample_utc": "2026-10-26T13:37:33+00:00",
+      "host": "f2e9872ccdfd",
+      "writer_table": "flow_log-l7_flow_log_local-l7_flow_log",
+      "writer_name": "l7_flow_log",
+      "thread": "0",
+      "metrics": {
+        "retry_count": 0,
+        "retry_failed_count": 0,
+        "write_success_count": 0,
+        "write_failed_count": 0,
+        "write_uncertain_count": 0
+      },
+      "all_expected_metrics_present": true
+    }
+  ],
+  "raw_points": [
+    {
+      "sample_unix": 1793021423,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021433,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021443,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021453,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021463,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021473,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021483,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021493,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021503,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        62,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021513,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021523,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        6,
+        5,
+        0,
+        32,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021533,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021543,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        30,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021553,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        62,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021563,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021573,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021583,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021593,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021603,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021613,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021623,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021633,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021643,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021653,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021663,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021673,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021683,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021693,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021703,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021713,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021723,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021733,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021743,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021753,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021763,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021773,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021783,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021793,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021803,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021813,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021823,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021833,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021843,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sample_unix": 1793021853,
+      "virtual_table_name": "deepflow_server_ingester_ckwriter",
+      "tag_names": [
+        "host",
+        "name",
+        "table",
+        "thread"
+      ],
+      "tag_values": [
+        "f2e9872ccdfd",
+        "l7_flow_log",
+        "flow_log-l7_flow_log_local-l7_flow_log",
+        "0"
+      ],
+      "metrics_float_names": [
+        "org_invalid_count",
+        "retry_count",
+        "retry_failed_count",
+        "write_failed_count",
+        "write_success_count",
+        "write_uncertain_count"
+      ],
+      "metrics_float_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "duplicate_identities": [],
+  "fault_context_from_coordinator": {
+    "run_id": "f20261026c1",
+    "restart_begin_utc": "2026-10-26T13:31:49.192Z",
+    "restart_returned_utc": "2026-10-26T13:31:55.000Z",
+    "acceptance": "before/during/after60/60 each;180unique rows; no missing/duplicate (reported by coordinator)"
+  },
+  "interpretation": [
+    "GetCounter clears values on each periodic collection; sum point increments, never last minus first.",
+    "retry and retry_failed are additional attempts; write_success/failed/uncertain are rows. Uncertain is a subset of failed.",
+    "Only current candidate host and L7 writer queues, from container startup through observation, are included. No debug counter reset was triggered.",
+    "Stats delivery shares the failed ClickHouse sink and can arrive late/be missing. Stored zero or no row cannot prove absence of events.",
+    "Default sample cycle is10s. Boundary buckets include warmup/after traffic; this is not an exact during-only partition.",
+    "Local table avoids Distributed fanout; query readonly2/max_threads1/max_execution_time10 are session-only limits, with no persistent settings or service/table/logging changes."
+  ],
+  "coverage": {
+    "first_stored_l7_sample_utc": "2026-10-26T13:30:23+00:00",
+    "last_stored_l7_sample_utc": "2026-10-26T13:37:33+00:00",
+    "initial_seconds_from_container_start_floor_to_first_sample": 61,
+    "last_sample_lag_at_snapshot_seconds": 10,
+    "observed_sample_step_seconds": [
+      10
+    ],
+    "note": "No internal gaps in these44stored points. Initial61seconds after container startup have no stored L7 counter point; module registration/first flush timing was not independently established. Counts cover all stored startup-window points, including warmup/after, not only c1."
+  }
+}

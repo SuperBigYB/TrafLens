@@ -152,11 +152,60 @@ process are separate from successful collection and product parity.
   erase or establish a fix for the first loss. Both bounded Agent runs stopped;
   queue observers are off, and only the three owned lab containers remain.
 
+## ClickHouse write recovery checkpoint
+
+- `f89e5647c58e1ff02b1fbd7f53b4aada07789350` adds a real ch-go native-protocol
+  input gate. It retains serialized rows across only provably pre-supply network
+  failures, replaces broken clients, and resets/counts a logical batch once.
+  No vendor, table engine, deduplication or external API signature was changed.
+- `4b2799823516bc49ff2f3c840a782cd57361f28f` extends recovery to at most 13
+  attempts under a shared ten-second context, with 100ms exponential backoff
+  capped at one second. A 550ms refusal regression fails the initial 200ms policy
+  and passes the new one. Driver cancellation may add about one second cleanup.
+- Thirteen top-level Go tests plus real-protocol subcases pass, including race
+  checks. They cover stale idle sockets, failure before metadata, lost reply
+  after data, exception preservation, empty metadata, DateTime inference, one
+  EOF block, bounded dialing and single final accounting. CI now includes the
+  owning package with `-race`. All 65 lab helper tests also pass.
+- Actual candidate Server on dev-240 embeds exact source `4b2799823`, binary
+  SHA256 `b820516ca626e213f71a4955e68e6fccda09b57603b0bd6234d2a4855a8447aa`;
+  runtime archive SHA256
+  `5c1690d76be3c12699a43a23e80a19488f321884438b1965627008d6e89484e0`.
+  Only the owned Server container was replaced before the candidate experiment;
+  databases/data volumes were retained and unrelated containers were preserved.
+- Baseline Server `4922b11ff` and candidate use the same `6aec171bf` packet Agent
+  and exact protocol config. After an offline inventory
+  entry was found absent, the same owned dev-79 identity was safely re-registered as Agent ID2.
+  Re-run `register-agent.py` before capture rather than assuming ID1 persists.
+- Baseline `f20261026b2` failed BEFORE fault injection at HTTP20/MySQL20/DNS19;
+  its guard correctly prevented a restart. This loss is preserved separately.
+  The initial `b1` preparation was abandoned without traffic or mutation when
+  the helper's after-failure recovery checks were corrected.
+- Controlled warm baseline `f20261026b3` and candidate `f20261026c1` each record
+  one explicit DNS preconditioning exchange outside measured requests. Each
+  then sends twenty HTTP/DNS/MySQL requests in each of before/during/after,
+  with one owned ClickHouse restart overlapping all three protocols. Baseline
+  gives 60/60, 59/60, 60/60 and final FAIL; candidate gives 60/60 in every phase,
+  all nine exact multisets match twice again at finalization, and final PASS.
+  Thus this controlled case improves 179/180 to 180/180 with no duplicate rows.
+  All phase overlap uses dev-240 server timestamps, not cross-host clocks.
+- Persisted candidate L7-writer intervals show six retries, five failed retry
+  attempts, zero failed/uncertain rows, and successful writes. These are sampled
+  interval increments, not a cumulative gauge; the initial 61 seconds before
+  the first stored point are unobserved. The total includes warmup and
+  fixture connection messages beyond the 180 marked requests.
+- A failed INSERT after input supply remains an uncertain outcome and is never
+  blindly replayed. This does not provide durable buffering, general exactly-once
+  delivery, unbounded outage coverage or retries of independent DDL paths.
+  The controlled pass does not erase the unfaulted first-DNS-loss evidence or
+  establish unrestricted load/performance parity. The bounded Agent is stopped.
+
 ## Remaining validation and priorities
 
-1. Fix and fault-test CKwriter connection recovery and failed-batch delivery
-   semantics. Reproduce a database restart with marked traffic, and verify both
-   loss and duplicate behavior; do not add blind retries with unknown delivery.
+1. Design persistence/server-side idempotency for ambiguous commits and longer
+   outages before replaying supplied blocks. Extend recovery coverage to DDL,
+   queue pressure and process restart, and investigate unfaulted cold/idle DNS
+   first-record loss independently of the passed warm restart experiment.
 2. Extend protocol acceptance to a real MySQL database, DNS error/truncation/TCP,
    reconnects, TLS, loss, agent/server restart and sustained workloads.
 3. Resolve the remaining 18 packet-library failures: six tunnel plugin stubs,
@@ -178,3 +227,8 @@ Use `lab.py stop` for only owned containers; preserve their data volumes. Agent
 supervisors expire after 15 minutes or three exits, and stop only their own child
 process group. Runtime secrets/logs stay ignored; sanitize evidence before commit.
 Keep the hourly task active: full feature/performance parity is not achieved.
+
+Latest completed CI before this writer checkpoint: both jobs passed for
+`befff1df2` in <https://github.com/SuperBigYB/TrafLens/actions/runs/40321662631>.
+Verify the new head's actual CI result; selected gates do not replace the known
+full-suite failures. See `README-writer-recovery.md` and the writer evidence.

@@ -1,0 +1,10 @@
+{
+  "captured_at_utc": "2026-10-26T13:26:04.807459+00:00",
+  "id": "026e7ba5bc0e8c984ac7a9d82db50bbff556beca6ef9d07277123fd3fff30973",
+  "image_id": "sha256:eadfa388585464f90787b1495d52e6417e49dd560bf0caf82d7d78d4c6e05bda",
+  "started_at": "2026-10-26T10:49:01.390153033Z",
+  "version_output": "Name: deepflow-server community edition\nBranch: main\nCommitID: 4922b11ff560b64412bee6b1092f605e4dbda0a0\nRevCount: 12739\nCompiler: go version go1.26.2 linux/amd64\nCompileTime: 2026-10-26 16:31:33\n",
+  "binary_sha256": "4bd665d7a098ad3a4784ca5203e0c7aa6de7f890b419bb6843e927243ae81c97",
+  "ownership_label": "io.traflens.lab=/tmp/traflens-lab-20261026",
+  "captured_before_server_replacement": true
+}

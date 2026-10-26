@@ -195,3 +195,44 @@ MySQL passed20/20; DNS warm and fresh-process cold batches passed20/20 including
 q0. The initial DNS batch failed19/20, with a same-window CKwriter broken-pipe
 drop of one L7 record after the previous database restart. That loss remains
 unfixed and recorded separately; the later passes are not a reliability fix.
+
+
+## Owned ClickHouse restart acceptance
+
+`fault-test.py` is the lab-host guard and verifier. `coordinate-fault.py` runs on
+a control machine with existing `dev-79`/`dev-240` SSH aliases and stdlib Python;
+it does not assume either server can SSH to its peer. Copy the coordinator and
+the prepared `fault-runs/<run-id>/plan.json` into the same control directory.
+The coordinator verifies exact fixed fixture arguments, requires `--execute`,
+uses hidden Windows child processes, refuses a second stage execution, and
+retains each command's return code and output. Run `--phase all` or control the
+before/during/after phases separately.
+
+Prepare a fresh alphanumeric run ID on dev-240 with `fault-test.py prepare
+--run-id <id> --deadline-seconds 900` after deploying the intended Server and
+confirming health. Re-register only the exact owned Agent if the controller has
+removed its offline inventory entry, start its bounded supervisor, and wait for
+the dispatcher plus fresh three-listener policy sync. Do not start a recovery
+test from an unverified capture state.
+
+The prepared plan uses three protocols and three phases, twenty unique marked
+requests per case. During traffic runs at one request per second and must have
+server-side records before, during and after the single restart call. Identity
+checks lock container IDs/images and data volumes, preserve other services, and
+bound Docker/HTTP operations by the run deadline. A restart token is persisted
+before mutation; recovery can only start the same ClickHouse, never restart it
+again or recreate resources. Each workload has a 75-second process timeout.
+
+Before failure prohibits a fault. A completed but failing during phase still
+allows after-phase recovery to be measured; final success requires all three
+phases and rechecks all nine exact query multisets twice. A failed restart whose
+daemon start completed is reconciled only for the consumed restart's same
+container/image/volumes; this does not turn the failed experiment into a pass.
+
+The recorded comparison uses one explicitly saved DNS preconditioning request
+for both baseline and candidate, excluded from measured rows. Baseline492 gives
+179/180 marked records; candidate4b2799823 gives180/180 with no duplicates across
+the same before/during/after workload and one restart per run. An earlier
+unfaulted DNS19/20 failure is retained and never counted as a restart failure.
+This is one functional recovery case, not durable exactly-once or throughput
+validation. Preserve failed runs; do not rerun markers or relax expectations.

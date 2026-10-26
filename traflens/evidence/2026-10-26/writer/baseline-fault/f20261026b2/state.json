@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "owner": "traflens-lab",
+  "root": "/tmp/traflens-lab-20261026",
+  "run_id": "f20261026b2",
+  "prepared_at_utc": "2026-10-26T13:07:54.782362+00:00",
+  "deadline_epoch": 1793020974.5729003,
+  "deadline_seconds": 900,
+  "baseline": {
+    "at_utc": "2026-10-26T13:07:54.737501+00:00",
+    "owned": {
+      "traflens-lab-mysql": {
+        "id": "1e39ef9cbe5435d82a358532530a5d408baa8722e818ee285773a68c53a3fd46",
+        "name": "/traflens-lab-mysql",
+        "image_id": "sha256:cfddf275c8b1ae1583c0f6afb4899d4dbe14111a6462699559a1f4dc8f4d5f6e",
+        "started_at": "2026-10-26T09:40:44.366365732Z",
+        "running": true,
+        "volume_mounts": {
+          "/var/lib/mysql": "traflens-lab-mysql-data"
+        }
+      },
+      "traflens-lab-clickhouse": {
+        "id": "c0cb6c4f19f1f0f652f77680a4a4f176f37a1a0e0ebbe4e25102e5528bc10e22",
+        "name": "/traflens-lab-clickhouse",
+        "image_id": "sha256:a5ba4e31579aea4b02ab4333ee2fe13b7ddeedff342a714cace9137274e552a7",
+        "started_at": "2026-10-26T11:08:43.275323491Z",
+        "running": true,
+        "volume_mounts": {
+          "/var/lib/clickhouse_storage": "traflens-lab-clickhouse-storage",
+          "/var/lib/clickhouse": "traflens-lab-clickhouse-data"
+        }
+      },
+      "traflens-lab-server": {
+        "id": "026e7ba5bc0e8c984ac7a9d82db50bbff556beca6ef9d07277123fd3fff30973",
+        "name": "/traflens-lab-server",
+        "image_id": "sha256:eadfa388585464f90787b1495d52e6417e49dd560bf0caf82d7d78d4c6e05bda",
+        "started_at": "2026-10-26T10:49:01.390153033Z",
+        "running": true,
+        "volume_mounts": {}
+      }
+    },
+    "unrelated": {
+      "/traflens-native-release-6aec171b": {
+        "id": "cd087ac21d0c4a55ee377f61b04cd275917ffffc43793ab368c4312cd9201348",
+        "started_at": "2026-10-26T10:26:18.850732158Z",
+        "running": false
+      },
+      "/traflens-native-prebuild-rust1971": {
+        "id": "ed690c07b8a9a7cbff4eecca8852cd2dd7385916bd7a18201dc570e1a5a5a29c",
+        "started_at": "2026-10-26T09:52:26.889132643Z",
+        "running": false
+      },
+      "/traflens-native-prebuild-20261026": {
+        "id": "cf80cfce24a911f47188397ba939b6b9020aaa7293d3d1ddbea6b618e9c7cc05",
+        "started_at": "2026-10-26T09:48:58.61706462Z",
+        "running": false
+      },
+      "/multimeter_automated_test_3387_random": {
+        "id": "b3d57f783d71ad50578749e3ceaf3223c4ef966ca348bfd4ae6b290da3824bdc",
+        "started_at": "2026-10-26T08:06:49.560429232Z",
+        "running": false
+      },
+      "/multimeter_automated_test_3387_now": {
+        "id": "62bdd531dfba39d7ca4f059ce69e025834f830a8c6dbf18a9203573a1393bb0f",
+        "started_at": "2026-10-26T07:26:09.449756343Z",
+        "running": false
+      },
+      "/multimeter_ubuntu_22_04_dev": {
+        "id": "b6ba6f6846aa7af2c0da70fd4159a019cc2f8b1a6c3ad34002096d8b2f4fd8fc",
+        "started_at": "2026-10-23T02:14:35.814200236Z",
+        "running": true
+      },
+      "/gitlab-runner": {
+        "id": "0fd2bdaa1bb72645acde9bf7627e7b5292fd87d1938ee76e55198932716ecf88",
+        "started_at": "2026-10-21T08:00:03.792175091Z",
+        "running": true
+      }
+    }
+  },
+  "helper_sha256": {
+    "traffic.py": "3fe17fac1e298801623385c29de24b3f3a509c9d143bf0eb2d43759419067907",
+    "dns-traffic.py": "edcbc08c6c1086cb81b7482e28754024fa75272d1bf93e3c21349546bbad2f63",
+    "mysql-traffic.py": "6629a1fb0fc3a82e4d284ee6c861c7844bcb5811d9cad27c95b068c97f73e597",
+    "lab.py": "c4e5a4ad27aeb43f4697ea56791ee47a7d024f27fb02f48bf50228d62f29bdbd",
+    "verify-requests.py": "66ef9097939ec5b8019ed564e2425a11c7938cd8aa2c7d973e1b3d2c0fabdbc2",
+    "fault-test.py": "a2ca15024c719242cdd6c9413e9dda9cea774c024f65eb5b3409bf5866af11e0"
+  },
+  "restart_consumed": false,
+  "phases": {
+    "before": {
+      "passed": false,
+      "verified_at_utc": "2026-10-26T13:10:09.038470+00:00",
+      "acceptance_sha256": "f3303a5001d1ec6e1e019001545be2ea7aea9a8a6b0f6076906a61ba029d31e2"
+    }
+  }
+}

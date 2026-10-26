@@ -1,0 +1,19 @@
+{
+  "baseline_server_stamped_commit": "4922b11ff560b64412bee6b1092f605e4dbda0a0",
+  "hash_source": "git show <baseline>:<path>; immutable source objects, not current worktree",
+  "sha256": {
+    "server/ingester/pkg/ckwriter/ckwriter.go": "2ebb716054152c0afc0e9e4e19914eafb2c1488bdb70b8f1bd95cce78421fd99",
+    "server/go.mod": "0e1969922cb5541f482b214f920e92f7a43bf4578fa90cd3eefe1ec923687376",
+    "server/go.sum": "1b31c095d0a5590212656e280d1f707168212ec287169a19cdb8191d8af398c9"
+  },
+  "baseline_driver_dependency": "github.com/ClickHouse/ch-go v0.69.0",
+  "observed_materialized_dependency_sha256": {
+    "server/vendor/github.com/ClickHouse/ch-go/query.go": "824dabacb011642ec8a8ba7d084d6c24cc99d81b7072bc0801cbaeeb8ad86722",
+    "server/vendor/github.com/ClickHouse/ch-go/client.go": "239371c7912050102a2676b02aefffe4a905655713b5f39b71af08c5ffbdc0a4",
+    "server/vendor/github.com/ClickHouse/ch-go/proto/writer.go": "419acc64568b36c341b653d91d0f9cd76e5cd0a390549c83df6a4f637311cd11"
+  },
+  "limitations": [
+    "Vendored dependency files are generated/ignored rather than present in this Git revision; their hashes describe the inspected dev-79 dependency copy.",
+    "The running binary version stamp and SHA256 are captured separately. Historical build-time dirty state is not reconstructed by these source hashes."
+  ]
+}

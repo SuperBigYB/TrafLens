@@ -1,0 +1,1105 @@
+{
+  "phase": "during",
+  "passed": true,
+  "protocols": {
+    "http": {
+      "marker": "f20261026c1dhttp",
+      "protocol": 20,
+      "expected": [
+        {
+          "request_resource": "/traflens-e2e/f20261026c1dhttp/0",
+          "request_type": "GET",
+          "response_code": 200,
+          "response_status": 0
+        },
+        {
+          "request_resource": "/traflens-e2e/f20261026c1dhttp/1",
+          "request_type": "GET",
+          "response_code": 200,
+          "response_status": 0
+        },
+        {
+          "request_resource": "/traflens-e2e/f20261026c1dhttp/2",
+          "request_type": "GET",
+          "response_code": 200,
+          "response_status": 0
+        },
+        {
+          "request_resource": "/traflens-e2e/f20261026c1dhttp/3",
+          "request_type": "GET",
+          "response_code": 200,
+          "response_status": 0
+        },
+        {
+          "request_resource": "/traflens-e2e/f20261026c1dhttp/4",
+          "request_type": "GET",
+          "response_code": 200,
+          "response_status": 0
+        },
+        {
+          "request_resource": "/traflens-e2e/f20261026c1dhttp/5",
+          "request_type": "GET",
+          "response_code": 200,
+          "response_status": 0
+        },
+        {
+          "request_resource": "/traflens-e2e/f20261026c1dhttp/6",
+          "request_type": "GET",
+          "response_code": 200,
+          "response_status": 0
+        },
+        {
+          "request_resource": "/traflens-e2e/f20261026c1dhttp/7",
+          "request_type": "GET",
+          "response_code": 200,
+          "response_status": 0
+        },
+        {
+          "request_resource": "/traflens-e2e/f20261026c1dhttp/8",
+          "request_type": "GET",
+          "response_code": 200,
+          "response_status": 0
+        },
+        {
+          "request_resource": "/traflens-e2e/f20261026c1dhttp/9",
+          "request_type": "GET",
+          "response_code": 200,
+          "response_status": 0
+        },
+        {
+          "request_resource": "/traflens-e2e/f20261026c1dhttp/10",
+          "request_type": "GET",
+          "response_code": 200,
+          "response_status": 0
+        },
+        {
+          "request_resource": "/traflens-e2e/f20261026c1dhttp/11",
+          "request_type": "GET",
+          "response_code": 200,
+          "response_status": 0
+        },
+        {
+          "request_resource": "/traflens-e2e/f20261026c1dhttp/12",
+          "request_type": "GET",
+          "response_code": 200,
+          "response_status": 0
+        },
+        {
+          "request_resource": "/traflens-e2e/f20261026c1dhttp/13",
+          "request_type": "GET",
+          "response_code": 200,
+          "response_status": 0
+        },
+        {
+          "request_resource": "/traflens-e2e/f20261026c1dhttp/14",
+          "request_type": "GET",
+          "response_code": 200,
+          "response_status": 0
+        },
+        {
+          "request_resource": "/traflens-e2e/f20261026c1dhttp/15",
+          "request_type": "GET",
+          "response_code": 200,
+          "response_status": 0
+        },
+        {
+          "request_resource": "/traflens-e2e/f20261026c1dhttp/16",
+          "request_type": "GET",
+          "response_code": 200,
+          "response_status": 0
+        },
+        {
+          "request_resource": "/traflens-e2e/f20261026c1dhttp/17",
+          "request_type": "GET",
+          "response_code": 200,
+          "response_status": 0
+        },
+        {
+          "request_resource": "/traflens-e2e/f20261026c1dhttp/18",
+          "request_type": "GET",
+          "response_code": 200,
+          "response_status": 0
+        },
+        {
+          "request_resource": "/traflens-e2e/f20261026c1dhttp/19",
+          "request_type": "GET",
+          "response_code": 200,
+          "response_status": 0
+        }
+      ],
+      "fields": [
+        "request_resource",
+        "request_type",
+        "response_code",
+        "response_status"
+      ],
+      "sql": "SELECT request_resource,request_type,response_code,response_status FROM l7_flow_log WHERE request_resource LIKE '%f20261026c1dhttp%' AND l7_protocol=20 LIMIT 1001",
+      "attempts": [
+        {
+          "at_utc": "2026-10-26T13:32:09.568343+00:00",
+          "exact_match": false,
+          "queried_rows": 10,
+          "missing_rows": 10,
+          "unexpected_or_duplicate_rows": 0,
+          "elapsed_seconds": 0.007201
+        },
+        {
+          "at_utc": "2026-10-26T13:32:11.585123+00:00",
+          "exact_match": false,
+          "queried_rows": 10,
+          "missing_rows": 10,
+          "unexpected_or_duplicate_rows": 0,
+          "elapsed_seconds": 0.015463
+        },
+        {
+          "at_utc": "2026-10-26T13:32:13.618656+00:00",
+          "exact_match": false,
+          "queried_rows": 10,
+          "missing_rows": 10,
+          "unexpected_or_duplicate_rows": 0,
+          "elapsed_seconds": 0.017205
+        },
+        {
+          "at_utc": "2026-10-26T13:32:15.657380+00:00",
+          "exact_match": true,
+          "queried_rows": 20,
+          "missing_rows": 0,
+          "unexpected_or_duplicate_rows": 0,
+          "elapsed_seconds": 0.015469
+        },
+        {
+          "at_utc": "2026-10-26T13:32:17.692648+00:00",
+          "exact_match": true,
+          "queried_rows": 20,
+          "missing_rows": 0,
+          "unexpected_or_duplicate_rows": 0,
+          "elapsed_seconds": 0.015302
+        }
+      ],
+      "consecutive": 2,
+      "input_sha256": {
+        "traffic-http-client-f20261026c1dhttp.json": "bee4e300ea51dea0fc7fbb466436f2f85f41800279835f089f24cc2135b5b647",
+        "traffic-http-server-f20261026c1dhttp.json": "2696d4f37f5eb0d2c9d5df0f7165dcaa99da7f3f7fdd2fe623119e3c18442625"
+      },
+      "overlap": {
+        "before_restart": 3,
+        "during_restart_call": 5,
+        "after_restart_return": 12
+      },
+      "final_query": {
+        "OPT_STATUS": "SUCCESS",
+        "DESCRIPTION": "",
+        "result": {
+          "columns": [
+            "request_resource",
+            "request_type",
+            "response_code",
+            "response_status"
+          ],
+          "schemas": [
+            {
+              "label_type": "",
+              "pre_as": "",
+              "type": 0,
+              "unit": "",
+              "value_type": "String"
+            },
+            {
+              "label_type": "",
+              "pre_as": "",
+              "type": 0,
+              "unit": "",
+              "value_type": "LowCardinality(String)"
+            },
+            {
+              "label_type": "",
+              "pre_as": "",
+              "type": 0,
+              "unit": "",
+              "value_type": "Nullable(Int32)"
+            },
+            {
+              "label_type": "",
+              "pre_as": "",
+              "type": 0,
+              "unit": "",
+              "value_type": "UInt8"
+            }
+          ],
+          "values": [
+            [
+              "/traflens-e2e/f20261026c1dhttp/0",
+              "GET",
+              200,
+              0
+            ],
+            [
+              "/traflens-e2e/f20261026c1dhttp/1",
+              "GET",
+              200,
+              0
+            ],
+            [
+              "/traflens-e2e/f20261026c1dhttp/2",
+              "GET",
+              200,
+              0
+            ],
+            [
+              "/traflens-e2e/f20261026c1dhttp/3",
+              "GET",
+              200,
+              0
+            ],
+            [
+              "/traflens-e2e/f20261026c1dhttp/4",
+              "GET",
+              200,
+              0
+            ],
+            [
+              "/traflens-e2e/f20261026c1dhttp/5",
+              "GET",
+              200,
+              0
+            ],
+            [
+              "/traflens-e2e/f20261026c1dhttp/6",
+              "GET",
+              200,
+              0
+            ],
+            [
+              "/traflens-e2e/f20261026c1dhttp/7",
+              "GET",
+              200,
+              0
+            ],
+            [
+              "/traflens-e2e/f20261026c1dhttp/8",
+              "GET",
+              200,
+              0
+            ],
+            [
+              "/traflens-e2e/f20261026c1dhttp/9",
+              "GET",
+              200,
+              0
+            ],
+            [
+              "/traflens-e2e/f20261026c1dhttp/10",
+              "GET",
+              200,
+              0
+            ],
+            [
+              "/traflens-e2e/f20261026c1dhttp/11",
+              "GET",
+              200,
+              0
+            ],
+            [
+              "/traflens-e2e/f20261026c1dhttp/12",
+              "GET",
+              200,
+              0
+            ],
+            [
+              "/traflens-e2e/f20261026c1dhttp/13",
+              "GET",
+              200,
+              0
+            ],
+            [
+              "/traflens-e2e/f20261026c1dhttp/14",
+              "GET",
+              200,
+              0
+            ],
+            [
+              "/traflens-e2e/f20261026c1dhttp/15",
+              "GET",
+              200,
+              0
+            ],
+            [
+              "/traflens-e2e/f20261026c1dhttp/16",
+              "GET",
+              200,
+              0
+            ],
+            [
+              "/traflens-e2e/f20261026c1dhttp/17",
+              "GET",
+              200,
+              0
+            ],
+            [
+              "/traflens-e2e/f20261026c1dhttp/18",
+              "GET",
+              200,
+              0
+            ],
+            [
+              "/traflens-e2e/f20261026c1dhttp/19",
+              "GET",
+              200,
+              0
+            ]
+          ]
+        },
+        "debug": null
+      }
+    },
+    "dns": {
+      "marker": "f20261026c1ddns",
+      "protocol": 120,
+      "expected": [
+        {
+          "request_resource": "q0.f20261026c1ddns.traflens.invalid",
+          "request_type": "A",
+          "response_code": 0,
+          "response_status": 0,
+          "response_result": "A=198.18.0.1 TTL=60"
+        },
+        {
+          "request_resource": "q1.f20261026c1ddns.traflens.invalid",
+          "request_type": "A",
+          "response_code": 0,
+          "response_status": 0,
+          "response_result": "A=198.18.0.2 TTL=60"
+        },
+        {
+          "request_resource": "q2.f20261026c1ddns.traflens.invalid",
+          "request_type": "A",
+          "response_code": 0,
+          "response_status": 0,
+          "response_result": "A=198.18.0.3 TTL=60"
+        },
+        {
+          "request_resource": "q3.f20261026c1ddns.traflens.invalid",
+          "request_type": "A",
+          "response_code": 0,
+          "response_status": 0,
+          "response_result": "A=198.18.0.4 TTL=60"
+        },
+        {
+          "request_resource": "q4.f20261026c1ddns.traflens.invalid",
+          "request_type": "A",
+          "response_code": 0,
+          "response_status": 0,
+          "response_result": "A=198.18.0.5 TTL=60"
+        },
+        {
+          "request_resource": "q5.f20261026c1ddns.traflens.invalid",
+          "request_type": "A",
+          "response_code": 0,
+          "response_status": 0,
+          "response_result": "A=198.18.0.6 TTL=60"
+        },
+        {
+          "request_resource": "q6.f20261026c1ddns.traflens.invalid",
+          "request_type": "A",
+          "response_code": 0,
+          "response_status": 0,
+          "response_result": "A=198.18.0.7 TTL=60"
+        },
+        {
+          "request_resource": "q7.f20261026c1ddns.traflens.invalid",
+          "request_type": "A",
+          "response_code": 0,
+          "response_status": 0,
+          "response_result": "A=198.18.0.8 TTL=60"
+        },
+        {
+          "request_resource": "q8.f20261026c1ddns.traflens.invalid",
+          "request_type": "A",
+          "response_code": 0,
+          "response_status": 0,
+          "response_result": "A=198.18.0.9 TTL=60"
+        },
+        {
+          "request_resource": "q9.f20261026c1ddns.traflens.invalid",
+          "request_type": "A",
+          "response_code": 0,
+          "response_status": 0,
+          "response_result": "A=198.18.0.10 TTL=60"
+        },
+        {
+          "request_resource": "q10.f20261026c1ddns.traflens.invalid",
+          "request_type": "A",
+          "response_code": 0,
+          "response_status": 0,
+          "response_result": "A=198.18.0.11 TTL=60"
+        },
+        {
+          "request_resource": "q11.f20261026c1ddns.traflens.invalid",
+          "request_type": "A",
+          "response_code": 0,
+          "response_status": 0,
+          "response_result": "A=198.18.0.12 TTL=60"
+        },
+        {
+          "request_resource": "q12.f20261026c1ddns.traflens.invalid",
+          "request_type": "A",
+          "response_code": 0,
+          "response_status": 0,
+          "response_result": "A=198.18.0.13 TTL=60"
+        },
+        {
+          "request_resource": "q13.f20261026c1ddns.traflens.invalid",
+          "request_type": "A",
+          "response_code": 0,
+          "response_status": 0,
+          "response_result": "A=198.18.0.14 TTL=60"
+        },
+        {
+          "request_resource": "q14.f20261026c1ddns.traflens.invalid",
+          "request_type": "A",
+          "response_code": 0,
+          "response_status": 0,
+          "response_result": "A=198.18.0.15 TTL=60"
+        },
+        {
+          "request_resource": "q15.f20261026c1ddns.traflens.invalid",
+          "request_type": "A",
+          "response_code": 0,
+          "response_status": 0,
+          "response_result": "A=198.18.0.16 TTL=60"
+        },
+        {
+          "request_resource": "q16.f20261026c1ddns.traflens.invalid",
+          "request_type": "A",
+          "response_code": 0,
+          "response_status": 0,
+          "response_result": "A=198.18.0.17 TTL=60"
+        },
+        {
+          "request_resource": "q17.f20261026c1ddns.traflens.invalid",
+          "request_type": "A",
+          "response_code": 0,
+          "response_status": 0,
+          "response_result": "A=198.18.0.18 TTL=60"
+        },
+        {
+          "request_resource": "q18.f20261026c1ddns.traflens.invalid",
+          "request_type": "A",
+          "response_code": 0,
+          "response_status": 0,
+          "response_result": "A=198.18.0.19 TTL=60"
+        },
+        {
+          "request_resource": "q19.f20261026c1ddns.traflens.invalid",
+          "request_type": "A",
+          "response_code": 0,
+          "response_status": 0,
+          "response_result": "A=198.18.0.20 TTL=60"
+        }
+      ],
+      "fields": [
+        "request_resource",
+        "request_type",
+        "response_code",
+        "response_status",
+        "response_result"
+      ],
+      "sql": "SELECT request_resource,request_type,response_code,response_status,response_result FROM l7_flow_log WHERE request_resource LIKE '%f20261026c1ddns%' AND l7_protocol=120 LIMIT 1001",
+      "attempts": [
+        {
+          "at_utc": "2026-10-26T13:32:09.575551+00:00",
+          "exact_match": false,
+          "queried_rows": 11,
+          "missing_rows": 9,
+          "unexpected_or_duplicate_rows": 0,
+          "elapsed_seconds": 0.004321
+        },
+        {
+          "at_utc": "2026-10-26T13:32:11.600578+00:00",
+          "exact_match": false,
+          "queried_rows": 11,
+          "missing_rows": 9,
+          "unexpected_or_duplicate_rows": 0,
+          "elapsed_seconds": 0.009493
+        },
+        {
+          "at_utc": "2026-10-26T13:32:13.635862+00:00",
+          "exact_match": false,
+          "queried_rows": 11,
+          "missing_rows": 9,
+          "unexpected_or_duplicate_rows": 0,
+          "elapsed_seconds": 0.013605
+        },
+        {
+          "at_utc": "2026-10-26T13:32:15.672840+00:00",
+          "exact_match": true,
+          "queried_rows": 20,
+          "missing_rows": 0,
+          "unexpected_or_duplicate_rows": 0,
+          "elapsed_seconds": 0.011492
+        },
+        {
+          "at_utc": "2026-10-26T13:32:17.707943+00:00",
+          "exact_match": true,
+          "queried_rows": 20,
+          "missing_rows": 0,
+          "unexpected_or_duplicate_rows": 0,
+          "elapsed_seconds": 0.01309
+        }
+      ],
+      "consecutive": 2,
+      "input_sha256": {
+        "traffic-dns-client-f20261026c1ddns.json": "4224efa2b782bd782da8349583c28cb3a03e505270745f86138f8efd40a8b03b",
+        "traffic-dns-server-f20261026c1ddns.json": "a1b3b73cf22d6766ae25889e69e53188efdecba3b8e55065f5bb7431daf89f11"
+      },
+      "overlap": {
+        "before_restart": 3,
+        "during_restart_call": 5,
+        "after_restart_return": 12
+      },
+      "final_query": {
+        "OPT_STATUS": "SUCCESS",
+        "DESCRIPTION": "",
+        "result": {
+          "columns": [
+            "request_resource",
+            "request_type",
+            "response_code",
+            "response_status",
+            "response_result"
+          ],
+          "schemas": [
+            {
+              "label_type": "",
+              "pre_as": "",
+              "type": 0,
+              "unit": "",
+              "value_type": "String"
+            },
+            {
+              "label_type": "",
+              "pre_as": "",
+              "type": 0,
+              "unit": "",
+              "value_type": "LowCardinality(String)"
+            },
+            {
+              "label_type": "",
+              "pre_as": "",
+              "type": 0,
+              "unit": "",
+              "value_type": "Nullable(Int32)"
+            },
+            {
+              "label_type": "",
+              "pre_as": "",
+              "type": 0,
+              "unit": "",
+              "value_type": "UInt8"
+            },
+            {
+              "label_type": "",
+              "pre_as": "",
+              "type": 0,
+              "unit": "",
+              "value_type": "String"
+            }
+          ],
+          "values": [
+            [
+              "q0.f20261026c1ddns.traflens.invalid",
+              "A",
+              0,
+              0,
+              "A=198.18.0.1 TTL=60"
+            ],
+            [
+              "q1.f20261026c1ddns.traflens.invalid",
+              "A",
+              0,
+              0,
+              "A=198.18.0.2 TTL=60"
+            ],
+            [
+              "q2.f20261026c1ddns.traflens.invalid",
+              "A",
+              0,
+              0,
+              "A=198.18.0.3 TTL=60"
+            ],
+            [
+              "q3.f20261026c1ddns.traflens.invalid",
+              "A",
+              0,
+              0,
+              "A=198.18.0.4 TTL=60"
+            ],
+            [
+              "q4.f20261026c1ddns.traflens.invalid",
+              "A",
+              0,
+              0,
+              "A=198.18.0.5 TTL=60"
+            ],
+            [
+              "q5.f20261026c1ddns.traflens.invalid",
+              "A",
+              0,
+              0,
+              "A=198.18.0.6 TTL=60"
+            ],
+            [
+              "q6.f20261026c1ddns.traflens.invalid",
+              "A",
+              0,
+              0,
+              "A=198.18.0.7 TTL=60"
+            ],
+            [
+              "q7.f20261026c1ddns.traflens.invalid",
+              "A",
+              0,
+              0,
+              "A=198.18.0.8 TTL=60"
+            ],
+            [
+              "q8.f20261026c1ddns.traflens.invalid",
+              "A",
+              0,
+              0,
+              "A=198.18.0.9 TTL=60"
+            ],
+            [
+              "q9.f20261026c1ddns.traflens.invalid",
+              "A",
+              0,
+              0,
+              "A=198.18.0.10 TTL=60"
+            ],
+            [
+              "q10.f20261026c1ddns.traflens.invalid",
+              "A",
+              0,
+              0,
+              "A=198.18.0.11 TTL=60"
+            ],
+            [
+              "q11.f20261026c1ddns.traflens.invalid",
+              "A",
+              0,
+              0,
+              "A=198.18.0.12 TTL=60"
+            ],
+            [
+              "q12.f20261026c1ddns.traflens.invalid",
+              "A",
+              0,
+              0,
+              "A=198.18.0.13 TTL=60"
+            ],
+            [
+              "q13.f20261026c1ddns.traflens.invalid",
+              "A",
+              0,
+              0,
+              "A=198.18.0.14 TTL=60"
+            ],
+            [
+              "q14.f20261026c1ddns.traflens.invalid",
+              "A",
+              0,
+              0,
+              "A=198.18.0.15 TTL=60"
+            ],
+            [
+              "q15.f20261026c1ddns.traflens.invalid",
+              "A",
+              0,
+              0,
+              "A=198.18.0.16 TTL=60"
+            ],
+            [
+              "q16.f20261026c1ddns.traflens.invalid",
+              "A",
+              0,
+              0,
+              "A=198.18.0.17 TTL=60"
+            ],
+            [
+              "q17.f20261026c1ddns.traflens.invalid",
+              "A",
+              0,
+              0,
+              "A=198.18.0.18 TTL=60"
+            ],
+            [
+              "q18.f20261026c1ddns.traflens.invalid",
+              "A",
+              0,
+              0,
+              "A=198.18.0.19 TTL=60"
+            ],
+            [
+              "q19.f20261026c1ddns.traflens.invalid",
+              "A",
+              0,
+              0,
+              "A=198.18.0.20 TTL=60"
+            ]
+          ]
+        },
+        "debug": null
+      }
+    },
+    "mysql": {
+      "marker": "f20261026c1dmysql",
+      "protocol": 60,
+      "expected": [
+        {
+          "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0000' traflens_mysql_f20261026c1dmysql_0000",
+          "request_type": "COM_QUERY",
+          "response_code": null,
+          "response_status": 0
+        },
+        {
+          "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0001' traflens_mysql_f20261026c1dmysql_0001",
+          "request_type": "COM_QUERY",
+          "response_code": null,
+          "response_status": 0
+        },
+        {
+          "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0002' traflens_mysql_f20261026c1dmysql_0002",
+          "request_type": "COM_QUERY",
+          "response_code": null,
+          "response_status": 0
+        },
+        {
+          "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0003' traflens_mysql_f20261026c1dmysql_0003",
+          "request_type": "COM_QUERY",
+          "response_code": null,
+          "response_status": 0
+        },
+        {
+          "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0004' traflens_mysql_f20261026c1dmysql_0004",
+          "request_type": "COM_QUERY",
+          "response_code": null,
+          "response_status": 0
+        },
+        {
+          "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0005' traflens_mysql_f20261026c1dmysql_0005",
+          "request_type": "COM_QUERY",
+          "response_code": null,
+          "response_status": 0
+        },
+        {
+          "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0006' traflens_mysql_f20261026c1dmysql_0006",
+          "request_type": "COM_QUERY",
+          "response_code": null,
+          "response_status": 0
+        },
+        {
+          "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0007' traflens_mysql_f20261026c1dmysql_0007",
+          "request_type": "COM_QUERY",
+          "response_code": null,
+          "response_status": 0
+        },
+        {
+          "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0008' traflens_mysql_f20261026c1dmysql_0008",
+          "request_type": "COM_QUERY",
+          "response_code": null,
+          "response_status": 0
+        },
+        {
+          "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0009' traflens_mysql_f20261026c1dmysql_0009",
+          "request_type": "COM_QUERY",
+          "response_code": null,
+          "response_status": 0
+        },
+        {
+          "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0010' traflens_mysql_f20261026c1dmysql_0010",
+          "request_type": "COM_QUERY",
+          "response_code": null,
+          "response_status": 0
+        },
+        {
+          "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0011' traflens_mysql_f20261026c1dmysql_0011",
+          "request_type": "COM_QUERY",
+          "response_code": null,
+          "response_status": 0
+        },
+        {
+          "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0012' traflens_mysql_f20261026c1dmysql_0012",
+          "request_type": "COM_QUERY",
+          "response_code": null,
+          "response_status": 0
+        },
+        {
+          "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0013' traflens_mysql_f20261026c1dmysql_0013",
+          "request_type": "COM_QUERY",
+          "response_code": null,
+          "response_status": 0
+        },
+        {
+          "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0014' traflens_mysql_f20261026c1dmysql_0014",
+          "request_type": "COM_QUERY",
+          "response_code": null,
+          "response_status": 0
+        },
+        {
+          "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0015' traflens_mysql_f20261026c1dmysql_0015",
+          "request_type": "COM_QUERY",
+          "response_code": null,
+          "response_status": 0
+        },
+        {
+          "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0016' traflens_mysql_f20261026c1dmysql_0016",
+          "request_type": "COM_QUERY",
+          "response_code": null,
+          "response_status": 0
+        },
+        {
+          "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0017' traflens_mysql_f20261026c1dmysql_0017",
+          "request_type": "COM_QUERY",
+          "response_code": null,
+          "response_status": 0
+        },
+        {
+          "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0018' traflens_mysql_f20261026c1dmysql_0018",
+          "request_type": "COM_QUERY",
+          "response_code": null,
+          "response_status": 0
+        },
+        {
+          "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0019' traflens_mysql_f20261026c1dmysql_0019",
+          "request_type": "COM_QUERY",
+          "response_code": null,
+          "response_status": 0
+        }
+      ],
+      "fields": [
+        "request_resource",
+        "request_type",
+        "response_code",
+        "response_status"
+      ],
+      "sql": "SELECT request_resource,request_type,response_code,response_status FROM l7_flow_log WHERE request_resource LIKE '%f20261026c1dmysql%' AND l7_protocol=60 LIMIT 1001",
+      "attempts": [
+        {
+          "at_utc": "2026-10-26T13:32:09.579875+00:00",
+          "exact_match": false,
+          "queried_rows": 10,
+          "missing_rows": 10,
+          "unexpected_or_duplicate_rows": 0,
+          "elapsed_seconds": 0.004287
+        },
+        {
+          "at_utc": "2026-10-26T13:32:11.610080+00:00",
+          "exact_match": false,
+          "queried_rows": 10,
+          "missing_rows": 10,
+          "unexpected_or_duplicate_rows": 0,
+          "elapsed_seconds": 0.006428
+        },
+        {
+          "at_utc": "2026-10-26T13:32:13.649472+00:00",
+          "exact_match": false,
+          "queried_rows": 10,
+          "missing_rows": 10,
+          "unexpected_or_duplicate_rows": 0,
+          "elapsed_seconds": 0.006182
+        },
+        {
+          "at_utc": "2026-10-26T13:32:15.684338+00:00",
+          "exact_match": true,
+          "queried_rows": 20,
+          "missing_rows": 0,
+          "unexpected_or_duplicate_rows": 0,
+          "elapsed_seconds": 0.006202
+        },
+        {
+          "at_utc": "2026-10-26T13:32:17.721040+00:00",
+          "exact_match": true,
+          "queried_rows": 20,
+          "missing_rows": 0,
+          "unexpected_or_duplicate_rows": 0,
+          "elapsed_seconds": 0.009774
+        }
+      ],
+      "consecutive": 2,
+      "input_sha256": {
+        "traffic-mysql-client-f20261026c1dmysql.json": "c321742fbde07c9677d4b34ba9afe81482523c7d80d1b859afaffbff4dc29fc3",
+        "traffic-mysql-server-f20261026c1dmysql.json": "ff6519cd248fbb3180f680a85de8f8342bb3319121026326737adc81ae076c05"
+      },
+      "overlap": {
+        "before_restart": 3,
+        "during_restart_call": 5,
+        "after_restart_return": 12
+      },
+      "final_query": {
+        "OPT_STATUS": "SUCCESS",
+        "DESCRIPTION": "",
+        "result": {
+          "columns": [
+            "request_resource",
+            "request_type",
+            "response_code",
+            "response_status"
+          ],
+          "schemas": [
+            {
+              "label_type": "",
+              "pre_as": "",
+              "type": 0,
+              "unit": "",
+              "value_type": "String"
+            },
+            {
+              "label_type": "",
+              "pre_as": "",
+              "type": 0,
+              "unit": "",
+              "value_type": "LowCardinality(String)"
+            },
+            {
+              "label_type": "",
+              "pre_as": "",
+              "type": 0,
+              "unit": "",
+              "value_type": "Nullable(Int32)"
+            },
+            {
+              "label_type": "",
+              "pre_as": "",
+              "type": 0,
+              "unit": "",
+              "value_type": "UInt8"
+            }
+          ],
+          "values": [
+            [
+              "SELECT 'traflens-mysql-f20261026c1dmysql-0000' traflens_mysql_f20261026c1dmysql_0000",
+              "COM_QUERY",
+              null,
+              0
+            ],
+            [
+              "SELECT 'traflens-mysql-f20261026c1dmysql-0001' traflens_mysql_f20261026c1dmysql_0001",
+              "COM_QUERY",
+              null,
+              0
+            ],
+            [
+              "SELECT 'traflens-mysql-f20261026c1dmysql-0002' traflens_mysql_f20261026c1dmysql_0002",
+              "COM_QUERY",
+              null,
+              0
+            ],
+            [
+              "SELECT 'traflens-mysql-f20261026c1dmysql-0003' traflens_mysql_f20261026c1dmysql_0003",
+              "COM_QUERY",
+              null,
+              0
+            ],
+            [
+              "SELECT 'traflens-mysql-f20261026c1dmysql-0004' traflens_mysql_f20261026c1dmysql_0004",
+              "COM_QUERY",
+              null,
+              0
+            ],
+            [
+              "SELECT 'traflens-mysql-f20261026c1dmysql-0005' traflens_mysql_f20261026c1dmysql_0005",
+              "COM_QUERY",
+              null,
+              0
+            ],
+            [
+              "SELECT 'traflens-mysql-f20261026c1dmysql-0006' traflens_mysql_f20261026c1dmysql_0006",
+              "COM_QUERY",
+              null,
+              0
+            ],
+            [
+              "SELECT 'traflens-mysql-f20261026c1dmysql-0007' traflens_mysql_f20261026c1dmysql_0007",
+              "COM_QUERY",
+              null,
+              0
+            ],
+            [
+              "SELECT 'traflens-mysql-f20261026c1dmysql-0008' traflens_mysql_f20261026c1dmysql_0008",
+              "COM_QUERY",
+              null,
+              0
+            ],
+            [
+              "SELECT 'traflens-mysql-f20261026c1dmysql-0009' traflens_mysql_f20261026c1dmysql_0009",
+              "COM_QUERY",
+              null,
+              0
+            ],
+            [
+              "SELECT 'traflens-mysql-f20261026c1dmysql-0010' traflens_mysql_f20261026c1dmysql_0010",
+              "COM_QUERY",
+              null,
+              0
+            ],
+            [
+              "SELECT 'traflens-mysql-f20261026c1dmysql-0011' traflens_mysql_f20261026c1dmysql_0011",
+              "COM_QUERY",
+              null,
+              0
+            ],
+            [
+              "SELECT 'traflens-mysql-f20261026c1dmysql-0012' traflens_mysql_f20261026c1dmysql_0012",
+              "COM_QUERY",
+              null,
+              0
+            ],
+            [
+              "SELECT 'traflens-mysql-f20261026c1dmysql-0013' traflens_mysql_f20261026c1dmysql_0013",
+              "COM_QUERY",
+              null,
+              0
+            ],
+            [
+              "SELECT 'traflens-mysql-f20261026c1dmysql-0014' traflens_mysql_f20261026c1dmysql_0014",
+              "COM_QUERY",
+              null,
+              0
+            ],
+            [
+              "SELECT 'traflens-mysql-f20261026c1dmysql-0015' traflens_mysql_f20261026c1dmysql_0015",
+              "COM_QUERY",
+              null,
+              0
+            ],
+            [
+              "SELECT 'traflens-mysql-f20261026c1dmysql-0016' traflens_mysql_f20261026c1dmysql_0016",
+              "COM_QUERY",
+              null,
+              0
+            ],
+            [
+              "SELECT 'traflens-mysql-f20261026c1dmysql-0017' traflens_mysql_f20261026c1dmysql_0017",
+              "COM_QUERY",
+              null,
+              0
+            ],
+            [
+              "SELECT 'traflens-mysql-f20261026c1dmysql-0018' traflens_mysql_f20261026c1dmysql_0018",
+              "COM_QUERY",
+              null,
+              0
+            ],
+            [
+              "SELECT 'traflens-mysql-f20261026c1dmysql-0019' traflens_mysql_f20261026c1dmysql_0019",
+              "COM_QUERY",
+              null,
+              0
+            ]
+          ]
+        },
+        "debug": null
+      }
+    }
+  }
+}

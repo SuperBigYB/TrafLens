@@ -1,0 +1,49 @@
+=== RUN   TestWriteRetriesOnlyBeforeInputWithRealDriver
+=== RUN   TestWriteRetriesOnlyBeforeInputWithRealDriver/stale-idle
+2026/10/26 21:23:17 orgId 0 (INSERT INTO test.samples VALUES) update item version from 0 to 1
+=== RUN   TestWriteRetriesOnlyBeforeInputWithRealDriver/before-input
+2026/10/26 21:23:17 orgId 0 (INSERT INTO test.samples VALUES) update item version from 0 to 1
+--- PASS: TestWriteRetriesOnlyBeforeInputWithRealDriver (0.21s)
+    --- PASS: TestWriteRetriesOnlyBeforeInputWithRealDriver/stale-idle (0.10s)
+    --- PASS: TestWriteRetriesOnlyBeforeInputWithRealDriver/before-input (0.10s)
+=== RUN   TestWriteDoesNotReplayLostAcknowledgement
+2026/10/26 21:23:17 orgId 0 (INSERT INTO test.samples VALUES) update item version from 0 to 1
+2026/10/26 21:23:17 write table (test.samples) outcome unknown for (2) items, not replayed: batch item write block failed: packet: uvarint: read: read: EOF
+--- PASS: TestWriteDoesNotReplayLostAcknowledgement (0.00s)
+=== RUN   TestWriteSuccessfulInputHasNoDuplicateEOFTail
+2026/10/26 21:23:17 orgId 0 (INSERT INTO test.samples VALUES) update item version from 0 to 1
+--- PASS: TestWriteSuccessfulInputHasNoDuplicateEOFTail (0.00s)
+=== RUN   TestWriteBoundsDialRetriesAndFinalizesOnce
+2026/10/26 21:23:17 orgId 0 (INSERT INTO test.samples VALUES) update item version from 0 to 1
+2026/10/26 21:23:26 write table (test.samples) failed, drop (2) items: batch item write block failed: dial: connection refused
+--- PASS: TestWriteBoundsDialRetriesAndFinalizesOnce (9.51s)
+=== RUN   TestWriteDoesNotRetryServerException
+2026/10/26 21:23:26 orgId 0 (INSERT INTO test.samples VALUES) update item version from 0 to 1
+2026/10/26 21:23:26 write table (test.samples) failed, drop (2) items: batch item write block failed: UNKNOWN_TABLE (60): : unknown table
+--- PASS: TestWriteDoesNotRetryServerException (0.00s)
+=== RUN   TestWriteDeadlineBoundsBackoff
+2026/10/26 21:23:26 orgId 0 (INSERT INTO test.samples VALUES) update item version from 0 to 1
+--- PASS: TestWriteDeadlineBoundsBackoff (0.01s)
+=== RUN   TestWriteUncertainRetryIsCountedOnce
+2026/10/26 21:23:26 orgId 0 (INSERT INTO test.samples VALUES) update item version from 0 to 1
+2026/10/26 21:23:26 write table (test.samples) outcome unknown for (2) items, not replayed: batch item write block failed: unexpected EOF
+--- PASS: TestWriteUncertainRetryIsCountedOnce (0.10s)
+=== RUN   TestInputGateRestoresOptionalColumnInterfaces
+--- PASS: TestInputGateRestoresOptionalColumnInterfaces (0.00s)
+=== RUN   TestResetConnectionReplacesLiveClient
+2026/10/26 21:23:26 orgId 0 (INSERT INTO test.samples VALUES) update item version from 0 to 1
+--- PASS: TestResetConnectionReplacesLiveClient (0.00s)
+=== RUN   TestEmptyCacheDoesNotDialOrReset
+--- PASS: TestEmptyCacheDoesNotDialOrReset (0.00s)
+=== RUN   TestWriteServerExceptionBeforeSampleKeepsOriginalError
+2026/10/26 21:23:26 orgId 0 (INSERT INTO test.samples VALUES) update item version from 0 to 1
+2026/10/26 21:23:27 write table (test.samples) failed, drop (2) items: batch item write block failed: handle packet: UNKNOWN_TABLE (60): UNKNOWN_TABLE: table does not exist
+--- PASS: TestWriteServerExceptionBeforeSampleKeepsOriginalError (0.00s)
+=== RUN   TestWriteEmptySampleEOSIsBoundedWithoutSupply
+2026/10/26 21:23:27 orgId 0 (INSERT INTO test.samples VALUES) update item version from 0 to 1
+--- PASS: TestWriteEmptySampleEOSIsBoundedWithoutSupply (0.02s)
+=== RUN   TestWriteRecoversAfterTransientDialRefusal
+2026/10/26 21:23:27 orgId 0 (INSERT INTO test.samples VALUES) update item version from 0 to 1
+--- PASS: TestWriteRecoversAfterTransientDialRefusal (0.70s)
+PASS
+ok  	github.com/deepflowio/deepflow/server/ingester/pkg/ckwriter	11.622s

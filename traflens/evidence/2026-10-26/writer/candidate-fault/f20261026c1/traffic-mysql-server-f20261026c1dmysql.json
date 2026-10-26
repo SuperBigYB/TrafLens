@@ -1,0 +1,241 @@
+{
+  "kind": "mysql-wire-fixture-serve",
+  "marker": "f20261026c1dmysql",
+  "address": "fe80::5a47:caff:fe7c:7859",
+  "interface": "enp2s0f0",
+  "port": 18060,
+  "expected_count": 20,
+  "database_execution": false,
+  "records": [
+    {
+      "sequence": 0,
+      "request_type": "COM_QUERY",
+      "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0000' traflens_mysql_f20261026c1dmysql_0000",
+      "column_name": "traflens_mysql_f20261026c1dmysql_0000",
+      "row_value": "traflens-mysql-f20261026c1dmysql-0000",
+      "expected_response_status": 0,
+      "expected_response_code": null,
+      "time": "2026-10-26T13:31:47.014499+00:00",
+      "verified": true
+    },
+    {
+      "sequence": 1,
+      "request_type": "COM_QUERY",
+      "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0001' traflens_mysql_f20261026c1dmysql_0001",
+      "column_name": "traflens_mysql_f20261026c1dmysql_0001",
+      "row_value": "traflens-mysql-f20261026c1dmysql-0001",
+      "expected_response_status": 0,
+      "expected_response_code": null,
+      "time": "2026-10-26T13:31:48.016423+00:00",
+      "verified": true
+    },
+    {
+      "sequence": 2,
+      "request_type": "COM_QUERY",
+      "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0002' traflens_mysql_f20261026c1dmysql_0002",
+      "column_name": "traflens_mysql_f20261026c1dmysql_0002",
+      "row_value": "traflens-mysql-f20261026c1dmysql-0002",
+      "expected_response_status": 0,
+      "expected_response_code": null,
+      "time": "2026-10-26T13:31:49.017958+00:00",
+      "verified": true
+    },
+    {
+      "sequence": 3,
+      "request_type": "COM_QUERY",
+      "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0003' traflens_mysql_f20261026c1dmysql_0003",
+      "column_name": "traflens_mysql_f20261026c1dmysql_0003",
+      "row_value": "traflens-mysql-f20261026c1dmysql-0003",
+      "expected_response_status": 0,
+      "expected_response_code": null,
+      "time": "2026-10-26T13:31:50.020372+00:00",
+      "verified": true
+    },
+    {
+      "sequence": 4,
+      "request_type": "COM_QUERY",
+      "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0004' traflens_mysql_f20261026c1dmysql_0004",
+      "column_name": "traflens_mysql_f20261026c1dmysql_0004",
+      "row_value": "traflens-mysql-f20261026c1dmysql-0004",
+      "expected_response_status": 0,
+      "expected_response_code": null,
+      "time": "2026-10-26T13:31:51.022633+00:00",
+      "verified": true
+    },
+    {
+      "sequence": 5,
+      "request_type": "COM_QUERY",
+      "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0005' traflens_mysql_f20261026c1dmysql_0005",
+      "column_name": "traflens_mysql_f20261026c1dmysql_0005",
+      "row_value": "traflens-mysql-f20261026c1dmysql-0005",
+      "expected_response_status": 0,
+      "expected_response_code": null,
+      "time": "2026-10-26T13:31:52.025206+00:00",
+      "verified": true
+    },
+    {
+      "sequence": 6,
+      "request_type": "COM_QUERY",
+      "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0006' traflens_mysql_f20261026c1dmysql_0006",
+      "column_name": "traflens_mysql_f20261026c1dmysql_0006",
+      "row_value": "traflens-mysql-f20261026c1dmysql-0006",
+      "expected_response_status": 0,
+      "expected_response_code": null,
+      "time": "2026-10-26T13:31:53.027886+00:00",
+      "verified": true
+    },
+    {
+      "sequence": 7,
+      "request_type": "COM_QUERY",
+      "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0007' traflens_mysql_f20261026c1dmysql_0007",
+      "column_name": "traflens_mysql_f20261026c1dmysql_0007",
+      "row_value": "traflens-mysql-f20261026c1dmysql-0007",
+      "expected_response_status": 0,
+      "expected_response_code": null,
+      "time": "2026-10-26T13:31:54.030129+00:00",
+      "verified": true
+    },
+    {
+      "sequence": 8,
+      "request_type": "COM_QUERY",
+      "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0008' traflens_mysql_f20261026c1dmysql_0008",
+      "column_name": "traflens_mysql_f20261026c1dmysql_0008",
+      "row_value": "traflens-mysql-f20261026c1dmysql-0008",
+      "expected_response_status": 0,
+      "expected_response_code": null,
+      "time": "2026-10-26T13:31:55.031977+00:00",
+      "verified": true
+    },
+    {
+      "sequence": 9,
+      "request_type": "COM_QUERY",
+      "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0009' traflens_mysql_f20261026c1dmysql_0009",
+      "column_name": "traflens_mysql_f20261026c1dmysql_0009",
+      "row_value": "traflens-mysql-f20261026c1dmysql-0009",
+      "expected_response_status": 0,
+      "expected_response_code": null,
+      "time": "2026-10-26T13:31:56.034367+00:00",
+      "verified": true
+    },
+    {
+      "sequence": 10,
+      "request_type": "COM_QUERY",
+      "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0010' traflens_mysql_f20261026c1dmysql_0010",
+      "column_name": "traflens_mysql_f20261026c1dmysql_0010",
+      "row_value": "traflens-mysql-f20261026c1dmysql-0010",
+      "expected_response_status": 0,
+      "expected_response_code": null,
+      "time": "2026-10-26T13:31:57.037253+00:00",
+      "verified": true
+    },
+    {
+      "sequence": 11,
+      "request_type": "COM_QUERY",
+      "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0011' traflens_mysql_f20261026c1dmysql_0011",
+      "column_name": "traflens_mysql_f20261026c1dmysql_0011",
+      "row_value": "traflens-mysql-f20261026c1dmysql-0011",
+      "expected_response_status": 0,
+      "expected_response_code": null,
+      "time": "2026-10-26T13:31:58.039473+00:00",
+      "verified": true
+    },
+    {
+      "sequence": 12,
+      "request_type": "COM_QUERY",
+      "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0012' traflens_mysql_f20261026c1dmysql_0012",
+      "column_name": "traflens_mysql_f20261026c1dmysql_0012",
+      "row_value": "traflens-mysql-f20261026c1dmysql-0012",
+      "expected_response_status": 0,
+      "expected_response_code": null,
+      "time": "2026-10-26T13:31:59.041724+00:00",
+      "verified": true
+    },
+    {
+      "sequence": 13,
+      "request_type": "COM_QUERY",
+      "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0013' traflens_mysql_f20261026c1dmysql_0013",
+      "column_name": "traflens_mysql_f20261026c1dmysql_0013",
+      "row_value": "traflens-mysql-f20261026c1dmysql-0013",
+      "expected_response_status": 0,
+      "expected_response_code": null,
+      "time": "2026-10-26T13:32:00.044409+00:00",
+      "verified": true
+    },
+    {
+      "sequence": 14,
+      "request_type": "COM_QUERY",
+      "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0014' traflens_mysql_f20261026c1dmysql_0014",
+      "column_name": "traflens_mysql_f20261026c1dmysql_0014",
+      "row_value": "traflens-mysql-f20261026c1dmysql-0014",
+      "expected_response_status": 0,
+      "expected_response_code": null,
+      "time": "2026-10-26T13:32:01.047329+00:00",
+      "verified": true
+    },
+    {
+      "sequence": 15,
+      "request_type": "COM_QUERY",
+      "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0015' traflens_mysql_f20261026c1dmysql_0015",
+      "column_name": "traflens_mysql_f20261026c1dmysql_0015",
+      "row_value": "traflens-mysql-f20261026c1dmysql-0015",
+      "expected_response_status": 0,
+      "expected_response_code": null,
+      "time": "2026-10-26T13:32:02.049867+00:00",
+      "verified": true
+    },
+    {
+      "sequence": 16,
+      "request_type": "COM_QUERY",
+      "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0016' traflens_mysql_f20261026c1dmysql_0016",
+      "column_name": "traflens_mysql_f20261026c1dmysql_0016",
+      "row_value": "traflens-mysql-f20261026c1dmysql-0016",
+      "expected_response_status": 0,
+      "expected_response_code": null,
+      "time": "2026-10-26T13:32:03.052344+00:00",
+      "verified": true
+    },
+    {
+      "sequence": 17,
+      "request_type": "COM_QUERY",
+      "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0017' traflens_mysql_f20261026c1dmysql_0017",
+      "column_name": "traflens_mysql_f20261026c1dmysql_0017",
+      "row_value": "traflens-mysql-f20261026c1dmysql-0017",
+      "expected_response_status": 0,
+      "expected_response_code": null,
+      "time": "2026-10-26T13:32:04.054850+00:00",
+      "verified": true
+    },
+    {
+      "sequence": 18,
+      "request_type": "COM_QUERY",
+      "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0018' traflens_mysql_f20261026c1dmysql_0018",
+      "column_name": "traflens_mysql_f20261026c1dmysql_0018",
+      "row_value": "traflens-mysql-f20261026c1dmysql-0018",
+      "expected_response_status": 0,
+      "expected_response_code": null,
+      "time": "2026-10-26T13:32:05.057363+00:00",
+      "verified": true
+    },
+    {
+      "sequence": 19,
+      "request_type": "COM_QUERY",
+      "request_resource": "SELECT 'traflens-mysql-f20261026c1dmysql-0019' traflens_mysql_f20261026c1dmysql_0019",
+      "column_name": "traflens_mysql_f20261026c1dmysql_0019",
+      "row_value": "traflens-mysql-f20261026c1dmysql-0019",
+      "expected_response_status": 0,
+      "expected_response_code": null,
+      "time": "2026-10-26T13:32:06.059816+00:00",
+      "verified": true
+    }
+  ],
+  "success": true,
+  "handshake": {
+    "protocol_version": 10,
+    "server_version": "5.7.44",
+    "connection_id": 1,
+    "tls": false,
+    "empty_password": true
+  },
+  "quit_verified": true,
+  "duration_ms": 19914.028
+}

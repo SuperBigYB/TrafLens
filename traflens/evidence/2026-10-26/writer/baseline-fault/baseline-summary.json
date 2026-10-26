@@ -1,0 +1,205 @@
+{
+  "created_at_utc": "2026-10-26T13:29:22.023647+00:00",
+  "time_basis": "All overlap and ordering use dev-240 server fixture/Docker timestamps. Host clock offsets exist; no cross-host timestamp ordering was inferred.",
+  "runs": {
+    "f20261026b2": {
+      "restart_consumed": false,
+      "stamped_server_commit": "4922b11ff560b64412bee6b1092f605e4dbda0a0",
+      "phases": {
+        "before": {
+          "passed": false,
+          "protocols": {
+            "http": {
+              "wire_client_records": 20,
+              "wire_server_records": 20,
+              "queried_rows": 20,
+              "missing_rows": 0,
+              "unexpected_or_duplicate_rows": 0,
+              "exact_match": true,
+              "missing_request_resources": []
+            },
+            "dns": {
+              "wire_client_records": 20,
+              "wire_server_records": 20,
+              "queried_rows": 19,
+              "missing_rows": 1,
+              "unexpected_or_duplicate_rows": 0,
+              "exact_match": false,
+              "missing_request_resources": [
+                "q0.f20261026b2bdns.traflens.invalid"
+              ]
+            },
+            "mysql": {
+              "wire_client_records": 20,
+              "wire_server_records": 20,
+              "queried_rows": 20,
+              "missing_rows": 0,
+              "unexpected_or_duplicate_rows": 0,
+              "exact_match": true,
+              "missing_request_resources": []
+            }
+          }
+        }
+      }
+    },
+    "f20261026b3": {
+      "restart_consumed": true,
+      "stamped_server_commit": "4922b11ff560b64412bee6b1092f605e4dbda0a0",
+      "phases": {
+        "before": {
+          "passed": true,
+          "protocols": {
+            "http": {
+              "wire_client_records": 20,
+              "wire_server_records": 20,
+              "queried_rows": 20,
+              "missing_rows": 0,
+              "unexpected_or_duplicate_rows": 0,
+              "exact_match": true,
+              "missing_request_resources": []
+            },
+            "dns": {
+              "wire_client_records": 20,
+              "wire_server_records": 20,
+              "queried_rows": 20,
+              "missing_rows": 0,
+              "unexpected_or_duplicate_rows": 0,
+              "exact_match": true,
+              "missing_request_resources": []
+            },
+            "mysql": {
+              "wire_client_records": 20,
+              "wire_server_records": 20,
+              "queried_rows": 20,
+              "missing_rows": 0,
+              "unexpected_or_duplicate_rows": 0,
+              "exact_match": true,
+              "missing_request_resources": []
+            }
+          }
+        },
+        "during": {
+          "passed": false,
+          "protocols": {
+            "http": {
+              "wire_client_records": 20,
+              "wire_server_records": 20,
+              "queried_rows": 20,
+              "missing_rows": 0,
+              "unexpected_or_duplicate_rows": 0,
+              "exact_match": true,
+              "missing_request_resources": [],
+              "server_time_overlap": {
+                "before_restart": 3,
+                "during_restart_call": 5,
+                "after_restart_return": 12
+              }
+            },
+            "dns": {
+              "wire_client_records": 20,
+              "wire_server_records": 20,
+              "queried_rows": 19,
+              "missing_rows": 1,
+              "unexpected_or_duplicate_rows": 0,
+              "exact_match": false,
+              "missing_request_resources": [
+                "q0.f20261026b3ddns.traflens.invalid"
+              ],
+              "server_time_overlap": {
+                "before_restart": 3,
+                "during_restart_call": 5,
+                "after_restart_return": 12
+              },
+              "missing_resource_server_times": [
+                {
+                  "request_resource": "q0.f20261026b3ddns.traflens.invalid",
+                  "received_at_utc": "2026-10-26T13:15:45.642707+00:00",
+                  "position_relative_to_restart": "before"
+                }
+              ]
+            },
+            "mysql": {
+              "wire_client_records": 20,
+              "wire_server_records": 20,
+              "queried_rows": 20,
+              "missing_rows": 0,
+              "unexpected_or_duplicate_rows": 0,
+              "exact_match": true,
+              "missing_request_resources": [],
+              "server_time_overlap": {
+                "before_restart": 3,
+                "during_restart_call": 5,
+                "after_restart_return": 12
+              }
+            }
+          }
+        },
+        "after": {
+          "passed": true,
+          "protocols": {
+            "http": {
+              "wire_client_records": 20,
+              "wire_server_records": 20,
+              "queried_rows": 20,
+              "missing_rows": 0,
+              "unexpected_or_duplicate_rows": 0,
+              "exact_match": true,
+              "missing_request_resources": []
+            },
+            "dns": {
+              "wire_client_records": 20,
+              "wire_server_records": 20,
+              "queried_rows": 20,
+              "missing_rows": 0,
+              "unexpected_or_duplicate_rows": 0,
+              "exact_match": true,
+              "missing_request_resources": []
+            },
+            "mysql": {
+              "wire_client_records": 20,
+              "wire_server_records": 20,
+              "queried_rows": 20,
+              "missing_rows": 0,
+              "unexpected_or_duplicate_rows": 0,
+              "exact_match": true,
+              "missing_request_resources": []
+            }
+          }
+        }
+      },
+      "restart": {
+        "begin_at_utc": "2026-10-26T13:15:47.767218+00:00",
+        "success": true,
+        "command": [
+          "docker",
+          "restart",
+          "--time",
+          "10",
+          "traflens-lab-clickhouse"
+        ],
+        "returned_at_utc": "2026-10-26T13:15:53.576084+00:00",
+        "new_started_at": "2026-10-26T13:15:53.471516674Z"
+      },
+      "final_passed": false,
+      "restart_count": 1,
+      "resource_proof": {
+        "owned_container_ids_images_and_volume_names_unchanged": true,
+        "unrelated_containers_unchanged": true,
+        "only_clickhouse_started_at_changed": true
+      }
+    }
+  },
+  "interpretation": [
+    "b2 failed before acceptance with HTTP20/MySQL20/DNS19 and no ClickHouse fault was injected; it is a failed no-fault baseline, not a restart-loss result.",
+    "b3 used one explicit DNS warmup (outside accepted markers); before passed60/60, during HTTP20+MySQL20+DNS19, after passed60/60, one owned ClickHouse restart, final false.",
+    "Both missing DNS resources are sequence q0. The b3 missing request was received before the restart call, but serialized batches may flush later; neither timestamp nor these two runs proves its cause.",
+    "Do not claim that the injected ClickHouse restart caused the first-DNS omission. b2 demonstrates the symptom without any injected fault. Writer or other data-path causes remain open; no per-record causal trace was established.",
+    "No candidate reliability improvement or no-loss/no-duplicate fault pass is claimed by these old492 results."
+  ],
+  "archive_policy": "Explicit JSON allowlist only; no private config/env, raw full logs, lock files, credentials or source code copied.",
+  "diagnostic_context": {
+    "b2_logged_l7_dropped_rows": 1,
+    "b3_logged_l7_dropped_rows": 1,
+    "interpretation": "Both server time windows contain an L7 writer drop1 diagnostic. Logs do not carry the unique DNS marker, so matching that diagnostic to the missing DNS row remains correlation rather than proven causation."
+  }
+}

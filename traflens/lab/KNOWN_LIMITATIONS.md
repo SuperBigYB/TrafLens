@@ -28,3 +28,11 @@ and source checkout `742d143a242bbb053705f4241241c58dcdc3abea`, 2026-10-26.
   have no flow ID, so identifying that one dropped item as q0 remains an inference.
   Warm and subsequent fresh-process cold batches passed20/20. No recovery/delivery
   fix is included; future retry changes must test partial delivery and duplicates.
+
+
+Writer follow-up: safe pre-input recovery and a bounded restart case now pass
+with candidate4b2799823. The original failed cases remain historical evidence.
+An additional baseline BEFORE case lost DNS q0 without any injected restart,
+so a complete first-record causal explanation remains open. Post-supply errors
+are deliberately reported as uncertain without replay until server-side
+idempotency is designed. See `README-writer-recovery.md` for the tested boundary.

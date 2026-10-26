@@ -1,0 +1,15 @@
+{
+  "kind": "explicit warmup, outside all accepted20-record workloads",
+  "run_id": "f20261026b3",
+  "marker": "warmf20261026b3",
+  "wire_client_records": 1,
+  "wire_server_records": 1,
+  "both_complete_and_verified": true,
+  "wire_fields_match": true,
+  "server_received_at_utc": "2026-10-26T13:15:24.629961+00:00",
+  "before_dns_first_server_received_at_utc": "2026-10-26T13:15:29.567137+00:00",
+  "precedes_before_on_dev240_clock": true,
+  "client_server_timestamp_difference_not_used_for_phase_overlap": true,
+  "client_json": "warmup-baseline-client.json",
+  "server_json": "f20261026b3/warmup-dns-server.json"
+}

@@ -65,3 +65,12 @@ and six default-feature CFFI regression passes. The native follow-up records
 15 response-time passes and a WASM result of one pass/four failures. The latter
 still needs diagnosis even with an eBPF process name present; it must not be
 reported as a passed native WASM gate.
+
+
+`writer/` adds real ch-go protocol and race regressions, the short-window
+before/after recovery regression, exact Server build/runtime hashes, and guarded
+fault-run evidence. It keeps the unfaulted failed baseline separately from the
+warm 179/180 baseline and the warm 180/180 candidate, including explicit
+preconditioning and strict no-duplicate checks. Server/table-scoped retry stats
+are persisted interval increments and cannot be interpreted as cumulative gauges.
+No general exactly-once, long-outage, high-rate or complete parity claim follows.

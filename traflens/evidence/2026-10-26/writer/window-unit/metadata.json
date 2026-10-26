@@ -1,0 +1,95 @@
+{
+  "recorded_utc": "2026-10-26T13:27:33.640011+00:00",
+  "base_source": "f89e5647c58e1ff02b1fbd7f53b4aada07789350",
+  "observed_git_head": "4b2799823516bc49ff2f3c840a782cd57361f28f",
+  "base_write_go_sha256": "74de870812790b2e4e605ced0546f35442175fd72e14ea86f7362505a2f75f30",
+  "scope_files": {
+    "server/ingester/pkg/ckwriter/write.go": "c00b3b10d7db6c4425afc096348e280311ac780390b7e792b2a21442ea28fc28",
+    "server/ingester/pkg/ckwriter/write_test.go": "43992949b69317a8f51f694147520574aa124a9a511c472598244dae06149e7f"
+  },
+  "strategy": {
+    "max_total_attempts": 13,
+    "shared_context_budget_seconds": 10,
+    "existing_driver_cancellation_cleanup_extra_seconds_up_to": 1,
+    "backoff_sequence_ms": [
+      100,
+      200,
+      400,
+      800,
+      1000,
+      1000,
+      1000,
+      1000,
+      1000,
+      1000,
+      1000,
+      1000
+    ],
+    "immediate_refusal_attempt_offsets_ms": [
+      0,
+      100,
+      300,
+      700,
+      1500,
+      2500,
+      3500,
+      4500,
+      5500,
+      6500,
+      7500,
+      8500,
+      9500
+    ],
+    "max_backoff_ms": 1000,
+    "unknown_supply_gate_unchanged": true,
+    "retryable_error_classifier_unchanged": true,
+    "same_endpoint_and_final_batch_reset_unchanged": true
+  },
+  "tests": [
+    {
+      "command": "go test -mod=vendor ./ingester/pkg/ckwriter -run TestWriteRecoversAfterTransientDialRefusal -count=1 -v -timeout 30s",
+      "log": "before-recovery.log",
+      "production_source": "f89e5647c58e1ff02b1fbd7f53b4aada07789350",
+      "exit_code": 1,
+      "outcome": "Expected failure: backend refuses until550ms; old policy gives up at201.617495ms after3dials, WriteFailedCount2."
+    },
+    {
+      "command": "go test -mod=vendor ./ingester/pkg/ckwriter -run TestWriteRecoversAfterTransientDialRefusal -count=1 -v -timeout 30s",
+      "log": "after-recovery.log",
+      "exit_code": 0,
+      "outcome": "PASS around0.70s, original two row values delivered once in a single block, no failed/uncertain row counts."
+    },
+    {
+      "command": "go test -mod=vendor -race ./ingester/pkg/ckwriter -count=1 -v -timeout 60s",
+      "log": "race-full.log",
+      "exit_code": 0,
+      "top_level_tests": 13,
+      "retry_subcases": 2,
+      "elapsed": "11.622s",
+      "attempt_exhaustion_case_elapsed": "9.51s",
+      "note": "Long attempt-limit case deliberately ran only once."
+    },
+    {
+      "command": "go test -mod=vendor -race ./ingester/pkg/ckwriter -run \"TestWrite(RetriesOnlyBeforeInputWithRealDriver|DoesNotReplayLostAcknowledgement|ServerExceptionBeforeSampleKeepsOriginalError)$\" -count=20 -timeout 30s",
+      "log": "race-critical-repeat.log",
+      "exit_code": 0,
+      "elapsed": "5.320s",
+      "note": "Only fast critical pre-input/lost-ACK/Exception cases repeated; long limit/recovery cases excluded."
+    }
+  ],
+  "toolchain": "Go1.26.2",
+  "build_environment": {
+    "PATH_prefix": "/root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/bin",
+    "GOMODCACHE": "/root/go/pkg/mod",
+    "GOPATH": "/root/yb/git/TrafLens/.traflens/tools/gopath",
+    "GOMAXPROCS": "4"
+  },
+  "peer_review": "Independent read-only review found no new boundary defect; actual dial/Do duration may end the10s budget before13attempts.",
+  "limits": [
+    "Oldf89 candidate is initial policy, built but not claimed to have passed live deployment/fault acceptance.",
+    "550ms recovery regression is deterministic fault simulation plus real ch-go/native protocol after recovery, not a real8.797s ClickHouse restart acceptance.",
+    "Parent owns official Server rebuild/deploy and live fault acceptance; this subtask started/restarted no services and generated no external traffic.",
+    "Unknown commit outcomes still never replay; a long outage can still exceed budget and fail/drop the retained batch.",
+    "Only write.go and its original write_test.go changed; DDL RETRY_COUNT remains2 and no vendor/other production module changed."
+  ]
+}

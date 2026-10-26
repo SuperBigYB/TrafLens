@@ -55,6 +55,10 @@ jobs:
         working-directory: server
         run: go test -mod=vendor -short ./libs/queue ./libs/hmap/lru ./libs/flow-metrics -timeout 120s -count=1
 
+      - name: Test CKwriter recovery with the native protocol peer
+        working-directory: server
+        run: go test -mod=vendor -race ./ingester/pkg/ckwriter -timeout 120s -count=1
+
       - name: Check candidate against upstream wire fixtures
         run: make -C traflens protocol-test
 

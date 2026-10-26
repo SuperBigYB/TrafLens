@@ -1,0 +1,69 @@
+[
+  {
+    "name": "/traflens-lab-mysql",
+    "image": "registry.cn-hongkong.aliyuncs.com/deepflow-ce/mysql@sha256:cfddf275c8b1ae1583c0f6afb4899d4dbe14111a6462699559a1f4dc8f4d5f6e",
+    "image_id": "sha256:cfddf275c8b1ae1583c0f6afb4899d4dbe14111a6462699559a1f4dc8f4d5f6e",
+    "running": true,
+    "oom_killed": false,
+    "memory_bytes": 1073741824,
+    "memory_swap_bytes": 1073741824,
+    "nano_cpus": 1000000000,
+    "pids_limit": 256,
+    "port_bindings": {}
+  },
+  {
+    "name": "/traflens-lab-clickhouse",
+    "image": "registry.cn-hongkong.aliyuncs.com/deepflow-ce/clickhouse-server@sha256:a5ba4e31579aea4b02ab4333ee2fe13b7ddeedff342a714cace9137274e552a7",
+    "image_id": "sha256:a5ba4e31579aea4b02ab4333ee2fe13b7ddeedff342a714cace9137274e552a7",
+    "running": true,
+    "oom_killed": false,
+    "memory_bytes": 4294967296,
+    "memory_swap_bytes": 4294967296,
+    "nano_cpus": 2000000000,
+    "pids_limit": 1024,
+    "port_bindings": {}
+  },
+  {
+    "name": "/traflens-lab-server",
+    "image": "traflens-lab-server:057bc9e5b16c76f3",
+    "image_id": "sha256:eadfa388585464f90787b1495d52e6417e49dd560bf0caf82d7d78d4c6e05bda",
+    "running": true,
+    "oom_killed": false,
+    "memory_bytes": 4294967296,
+    "memory_swap_bytes": 4294967296,
+    "nano_cpus": 2000000000,
+    "pids_limit": 512,
+    "port_bindings": {
+      "20033/tcp": [
+        {
+          "HostIp": "192.168.1.240",
+          "HostPort": "20033"
+        }
+      ],
+      "20033/udp": [
+        {
+          "HostIp": "192.168.1.240",
+          "HostPort": "20033"
+        }
+      ],
+      "20035/tcp": [
+        {
+          "HostIp": "192.168.1.240",
+          "HostPort": "20035"
+        }
+      ],
+      "20416/tcp": [
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "20416"
+        }
+      ],
+      "20417/tcp": [
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "20417"
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,72 @@
+{
+  "recorded_utc": "2026-10-26T13:00:00.979227+00:00",
+  "base_source": "befff1df27323f8215c4f34b5cb022202c1f0d59",
+  "observed_git_head": "f89e5647c58e1ff02b1fbd7f53b4aada07789350",
+  "scope_files": {
+    "server/ingester/pkg/ckwriter/ckwriter.go": "b8b0bdc6b1c8661cbae7c419474b61a1ef6db73e12b2409cfff56969ae7c7cb8",
+    "server/ingester/pkg/ckwriter/write.go": "74de870812790b2e4e605ced0546f35442175fd72e14ea86f7362505a2f75f30",
+    "server/ingester/pkg/ckwriter/write_test.go": "2c36e678d8c42997d9ccf3e31f4f7f922490a97b07a17bddb5a6b41354e43a00"
+  },
+  "driver": "vendored github.com/ClickHouse/ch-go v0.69.0; not modified",
+  "toolchain": "Go1.26.2",
+  "build_env": {
+    "PATH_prefix": "/root/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.2.linux-amd64/bin",
+    "GOMODCACHE": "/root/go/pkg/mod",
+    "GOPATH": "/root/yb/git/TrafLens/.traflens/tools/gopath",
+    "GOMAXPROCS": "4"
+  },
+  "tests": [
+    {
+      "command": "go test -mod=vendor ./ingester/pkg/ckwriter -count=1 -v -timeout 120s",
+      "cwd": "server",
+      "log": "unit-final.log",
+      "exit_code": 0,
+      "test_count_top_level": 12,
+      "subcases_under_retry_test": 2,
+      "reported_elapsed": "0.561s"
+    },
+    {
+      "command": "go test -mod=vendor -race ./ingester/pkg/ckwriter -count=10 -timeout 120s",
+      "cwd": "server",
+      "log": "race-repeat.log",
+      "exit_code": 0,
+      "reported_elapsed": "5.545s",
+      "note": "Full12-test module before the additional stale-idle subcase; production source identical to final."
+    },
+    {
+      "command": "go test -mod=vendor -race ./ingester/pkg/ckwriter -run TestWriteRetriesOnlyBeforeInputWithRealDriver -count=25 -timeout 120s",
+      "cwd": "server",
+      "log": "stale-idle-race-repeat.log",
+      "exit_code": 0,
+      "subcases_per_round": [
+        "stale-idle",
+        "before-input"
+      ],
+      "reported_elapsed": "6.319s"
+    }
+  ],
+  "retained_prototype_failure": {
+    "log": "unit-initial-gate-race.log",
+    "meaning": "Initial uncommitted gate prototype falsely marked input supplied on closed column-info channel; not an unmodified upstream baseline test."
+  },
+  "behavior": {
+    "batch_context_budget_seconds": 10,
+    "driver_cancel_cleanup_extra_seconds_up_to": 1,
+    "max_attempts": 3,
+    "backoff_milliseconds": 100,
+    "retry_count_unit": "additional attempts, not rows",
+    "retry_failed_count_unit": "failed additional attempts",
+    "write_success_failed_unit": "rows counted once per logical final outcome",
+    "write_uncertain_count": "subset of WriteFailedCount; rows may already be committed and are never blindly replayed",
+    "retry_endpoint": "same chosen endpoint; round-robin advances once only after the logical batch",
+    "original_CKItems": "already released in Cache.Add; retries retain only serialized columnBlock and order"
+  },
+  "boundaries": [
+    "No vendor or other production module changes. No commit/push, service start/restart, Agent startup or traffic generation performed by this subtask.",
+    "Unit fault peer uses real native protocol/ch-go via net.Pipe; it models accepted input and missing ACK but is not a real ClickHouse durability test. Root owns full official Server build and lab fault injection.",
+    "A cold connection-refused outage can exhaust three attempts in roughly200ms; this is not a19s outage recovery guarantee. Root requested actual fault measurement before changing wait policy.",
+    "Post-supply network/timeout errors are deliberately uncertain and not retried; no exactly-once or zero-loss claim is made.",
+    "Table initialization/DDL paths retain their existing separate error/drop behavior. The10s budget covers Cache.Write attempts, not every startup/DDL operation.",
+    "Malformed empty-metadata+EOS waits for bounded batch deadline before failing without input. Callback waits on driver child context to preserve original EOF/Exception."
+  ]
+}

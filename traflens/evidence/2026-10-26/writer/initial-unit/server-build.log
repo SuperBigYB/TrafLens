@@ -1,0 +1,7 @@
+make: Entering directory '/root/yb/git/TrafLens/traflens'
+bash scripts/server-build.sh
+Building upstream server with go version go1.26.2 linux/amd64
+make[1]: Entering directory '/root/yb/git/TrafLens/server'
+go build -mod vendor -ldflags "-X main.Branch=main -X main.RevCount=12747 -X main.Revision=f89e5647c58e1ff02b1fbd7f53b4aada07789350 -X main.CommitDate=2026-10-26 -X 'main.goVersion=go version go1.26.2 linux/amd64' -X 'main.CompileTime=2026-10-26 20:59:20'" -tags=go_json -o bin/deepflow-server cmd/server/main.go cmd/server/config.go cmd/server/free_os_memory_handler.go
+make[1]: Leaving directory '/root/yb/git/TrafLens/server'
+make: Leaving directory '/root/yb/git/TrafLens/traflens'

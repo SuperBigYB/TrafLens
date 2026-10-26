@@ -1,0 +1,44 @@
+[
+  {
+    "name": "/traflens-lab-mysql",
+    "id": "1e39ef9cbe5435d82a358532530a5d408baa8722e818ee285773a68c53a3fd46",
+    "started_at": "2026-10-26T09:40:44.366365732Z",
+    "image_id": "sha256:cfddf275c8b1ae1583c0f6afb4899d4dbe14111a6462699559a1f4dc8f4d5f6e",
+    "restart_policy": {
+      "Name": "no",
+      "MaximumRetryCount": 0
+    },
+    "memory": 1073741824,
+    "cpus": 1000000000,
+    "pids_limit": 256,
+    "oom_killed": false
+  },
+  {
+    "name": "/traflens-lab-clickhouse",
+    "id": "c0cb6c4f19f1f0f652f77680a4a4f176f37a1a0e0ebbe4e25102e5528bc10e22",
+    "started_at": "2026-10-26T11:08:43.275323491Z",
+    "image_id": "sha256:a5ba4e31579aea4b02ab4333ee2fe13b7ddeedff342a714cace9137274e552a7",
+    "restart_policy": {
+      "Name": "no",
+      "MaximumRetryCount": 0
+    },
+    "memory": 4294967296,
+    "cpus": 2000000000,
+    "pids_limit": 1024,
+    "oom_killed": false
+  },
+  {
+    "name": "/traflens-lab-server",
+    "id": "026e7ba5bc0e8c984ac7a9d82db50bbff556beca6ef9d07277123fd3fff30973",
+    "started_at": "2026-10-26T10:49:01.390153033Z",
+    "image_id": "sha256:eadfa388585464f90787b1495d52e6417e49dd560bf0caf82d7d78d4c6e05bda",
+    "restart_policy": {
+      "Name": "no",
+      "MaximumRetryCount": 0
+    },
+    "memory": 4294967296,
+    "cpus": 2000000000,
+    "pids_limit": 512,
+    "oom_killed": false
+  }
+]

@@ -1,0 +1,128 @@
+{
+  "kind": "marked-http-client",
+  "marker": "f20261026b2bhttp",
+  "destination": "fe80::5a47:caff:fe7c:7859",
+  "interface": "enp1s0f0",
+  "records": [
+    {
+      "time": "2026-10-26T13:09:04.163241+00:00",
+      "path": "/traflens-e2e/f20261026b2bhttp/0",
+      "status": 200,
+      "duration_ms": 1.671
+    },
+    {
+      "time": "2026-10-26T13:09:04.265580+00:00",
+      "path": "/traflens-e2e/f20261026b2bhttp/1",
+      "status": 200,
+      "duration_ms": 2.069
+    },
+    {
+      "time": "2026-10-26T13:09:04.367664+00:00",
+      "path": "/traflens-e2e/f20261026b2bhttp/2",
+      "status": 200,
+      "duration_ms": 1.846
+    },
+    {
+      "time": "2026-10-26T13:09:04.469801+00:00",
+      "path": "/traflens-e2e/f20261026b2bhttp/3",
+      "status": 200,
+      "duration_ms": 1.755
+    },
+    {
+      "time": "2026-10-26T13:09:04.571904+00:00",
+      "path": "/traflens-e2e/f20261026b2bhttp/4",
+      "status": 200,
+      "duration_ms": 1.874
+    },
+    {
+      "time": "2026-10-26T13:09:04.673982+00:00",
+      "path": "/traflens-e2e/f20261026b2bhttp/5",
+      "status": 200,
+      "duration_ms": 1.698
+    },
+    {
+      "time": "2026-10-26T13:09:04.776720+00:00",
+      "path": "/traflens-e2e/f20261026b2bhttp/6",
+      "status": 200,
+      "duration_ms": 2.367
+    },
+    {
+      "time": "2026-10-26T13:09:04.878976+00:00",
+      "path": "/traflens-e2e/f20261026b2bhttp/7",
+      "status": 200,
+      "duration_ms": 1.83
+    },
+    {
+      "time": "2026-10-26T13:09:04.981400+00:00",
+      "path": "/traflens-e2e/f20261026b2bhttp/8",
+      "status": 200,
+      "duration_ms": 1.986
+    },
+    {
+      "time": "2026-10-26T13:09:05.083487+00:00",
+      "path": "/traflens-e2e/f20261026b2bhttp/9",
+      "status": 200,
+      "duration_ms": 1.823
+    },
+    {
+      "time": "2026-10-26T13:09:05.185807+00:00",
+      "path": "/traflens-e2e/f20261026b2bhttp/10",
+      "status": 200,
+      "duration_ms": 2.015
+    },
+    {
+      "time": "2026-10-26T13:09:05.288193+00:00",
+      "path": "/traflens-e2e/f20261026b2bhttp/11",
+      "status": 200,
+      "duration_ms": 1.88
+    },
+    {
+      "time": "2026-10-26T13:09:05.390234+00:00",
+      "path": "/traflens-e2e/f20261026b2bhttp/12",
+      "status": 200,
+      "duration_ms": 1.707
+    },
+    {
+      "time": "2026-10-26T13:09:05.492277+00:00",
+      "path": "/traflens-e2e/f20261026b2bhttp/13",
+      "status": 200,
+      "duration_ms": 1.646
+    },
+    {
+      "time": "2026-10-26T13:09:05.594609+00:00",
+      "path": "/traflens-e2e/f20261026b2bhttp/14",
+      "status": 200,
+      "duration_ms": 1.901
+    },
+    {
+      "time": "2026-10-26T13:09:05.696964+00:00",
+      "path": "/traflens-e2e/f20261026b2bhttp/15",
+      "status": 200,
+      "duration_ms": 1.905
+    },
+    {
+      "time": "2026-10-26T13:09:05.799267+00:00",
+      "path": "/traflens-e2e/f20261026b2bhttp/16",
+      "status": 200,
+      "duration_ms": 1.851
+    },
+    {
+      "time": "2026-10-26T13:09:05.901539+00:00",
+      "path": "/traflens-e2e/f20261026b2bhttp/17",
+      "status": 200,
+      "duration_ms": 1.855
+    },
+    {
+      "time": "2026-10-26T13:09:06.004002+00:00",
+      "path": "/traflens-e2e/f20261026b2bhttp/18",
+      "status": 200,
+      "duration_ms": 2.044
+    },
+    {
+      "time": "2026-10-26T13:09:06.105430+00:00",
+      "path": "/traflens-e2e/f20261026b2bhttp/19",
+      "status": 200,
+      "duration_ms": 1.18
+    }
+  ]
+}

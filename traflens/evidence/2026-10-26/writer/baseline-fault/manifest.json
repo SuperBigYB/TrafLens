@@ -1,0 +1,226 @@
+{
+  "created_at_utc": "2026-10-26T13:29:22.025486+00:00",
+  "allowed_extensions": [
+    ".json"
+  ],
+  "files": [
+    {
+      "path": "baseline-source-hashes.json",
+      "bytes": 1333,
+      "sha256": "7b2e3249fb2583681d431f73280d9edf853bc132ab03e1d33a370727677f1db8"
+    },
+    {
+      "path": "baseline-summary.json",
+      "bytes": 7740,
+      "sha256": "5e902d1a6c0d739cbd16df9bce3fa18ba15d7d616fb6e5bf1c168d5c3e94097f"
+    },
+    {
+      "path": "f20261026b2/before-acceptance.json",
+      "bytes": 51443,
+      "sha256": "f3303a5001d1ec6e1e019001545be2ea7aea9a8a6b0f6076906a61ba029d31e2"
+    },
+    {
+      "path": "f20261026b2/plan.json",
+      "bytes": 14831,
+      "sha256": "738d1d6803f2ca508f59815383d7783b4817e1a88ce263a5e60223f9498efaff"
+    },
+    {
+      "path": "f20261026b2/state.json",
+      "bytes": 3975,
+      "sha256": "42965bb077adc4601d2154a361d2e649a7df0bd5c599a816300392e2505ef6da"
+    },
+    {
+      "path": "f20261026b2/traffic-dns-client-f20261026b2bdns.json",
+      "bytes": 14303,
+      "sha256": "320b93eaa59291f8ea2f3786a2459ddb029d3be0f30094986e13d9ca22fc8951"
+    },
+    {
+      "path": "f20261026b2/traffic-dns-server-f20261026b2bdns.json",
+      "bytes": 14133,
+      "sha256": "2caf5f216a9e70db5719217c26ae6e41a08ed3eeabffa8d5a1fdb7c5e6ede9cd"
+    },
+    {
+      "path": "f20261026b2/traffic-http-client-f20261026b2bhttp.json",
+      "bytes": 3386,
+      "sha256": "cd5f3eccdf8a1f77b418b4a43cd8cd6b91f41c34237bb4ecb484fea3d8ddcaaa"
+    },
+    {
+      "path": "f20261026b2/traffic-http-server-f20261026b2bhttp.json",
+      "bytes": 3186,
+      "sha256": "1e65513c67c146d5dc861e01b5591419f851dbb6576d79d6483776f6b12189d1"
+    },
+    {
+      "path": "f20261026b2/traffic-mysql-client-f20261026b2bmysql.json",
+      "bytes": 10086,
+      "sha256": "205c1b2fc5161142022268c58c83e57ba7a176fdb8b00ff2638b42e99c8f4dac"
+    },
+    {
+      "path": "f20261026b2/traffic-mysql-server-f20261026b2bmysql.json",
+      "bytes": 9526,
+      "sha256": "4c1f7c6545b51375f7425e70a25c6fb6df494446e742d2a9118f57488f2b2ce0"
+    },
+    {
+      "path": "f20261026b3/after-acceptance.json",
+      "bytes": 32836,
+      "sha256": "cae741934dc9d007f6fde408f16f3b39e586cd871c380f4880be8d931bebde83"
+    },
+    {
+      "path": "f20261026b3/before-acceptance.json",
+      "bytes": 33591,
+      "sha256": "be94828a3c726651adf6810171af0f1955b00d4da8f590a2891ecb99f980ceb0"
+    },
+    {
+      "path": "f20261026b3/during-acceptance.json",
+      "bytes": 74338,
+      "sha256": "5950e2eaa939d6e86a6bba124b39c4fdf3aba9d645a055a5b534995d5a1c3bcf"
+    },
+    {
+      "path": "f20261026b3/final.json",
+      "bytes": 3832,
+      "sha256": "cba66f8f60be486e283930fd012004f94197ed6e5ec52244bb227234fd2ca612"
+    },
+    {
+      "path": "f20261026b3/plan.json",
+      "bytes": 14831,
+      "sha256": "734c1a61d0bb0167a7dc89cf8f91eb7ff9ed51f1694b9cbdc340fdb1327da2cf"
+    },
+    {
+      "path": "f20261026b3/state.json",
+      "bytes": 4953,
+      "sha256": "a60ed97285dba58cfd4a7d0be0ec005262badf7beb4a7221cc798397d8e4e579"
+    },
+    {
+      "path": "f20261026b3/traffic-dns-client-f20261026b3adns.json",
+      "bytes": 14303,
+      "sha256": "275f2b4a765fe10f7dbf44af9a2e71b65024e19a8bc8524f667bd52856467090"
+    },
+    {
+      "path": "f20261026b3/traffic-dns-client-f20261026b3bdns.json",
+      "bytes": 14304,
+      "sha256": "92fde7c33f0c8e0564ee12f25dca62dae7ea968baf331644794255837ba7c16e"
+    },
+    {
+      "path": "f20261026b3/traffic-dns-client-f20261026b3ddns.json",
+      "bytes": 14299,
+      "sha256": "bb037aa597f2db3925895f09432f8080c02952d0a82a36192db4787d648a2844"
+    },
+    {
+      "path": "f20261026b3/traffic-dns-server-f20261026b3adns.json",
+      "bytes": 14133,
+      "sha256": "6e229a7aa5a09a88e82fd29e80e4454c5f603ffc26f768983f91cfaff15938fd"
+    },
+    {
+      "path": "f20261026b3/traffic-dns-server-f20261026b3bdns.json",
+      "bytes": 14133,
+      "sha256": "357bf35da44258cb367a37141ed3e6191cf663d839a3b982a9d05ae5a9787124"
+    },
+    {
+      "path": "f20261026b3/traffic-dns-server-f20261026b3ddns.json",
+      "bytes": 14133,
+      "sha256": "3e79208ac9de6d9368a265e3243ad30b7d4a4496a7869cac21de0d5cf9536578"
+    },
+    {
+      "path": "f20261026b3/traffic-http-client-f20261026b3ahttp.json",
+      "bytes": 3387,
+      "sha256": "d7c5e6eb0bfd7f4b5baefe445b4c32d60cf25cf8a44a97fbb78ee745929f27f4"
+    },
+    {
+      "path": "f20261026b3/traffic-http-client-f20261026b3bhttp.json",
+      "bytes": 3386,
+      "sha256": "aa46f0642f8ff7f786c3fe7513b0c7c010fb79c83931afa8ce5483728403eeed"
+    },
+    {
+      "path": "f20261026b3/traffic-http-client-f20261026b3dhttp.json",
+      "bytes": 3385,
+      "sha256": "b6dcdd012764669d647b37ca97476351296ee2a236c0f547a87c214be3e32ec4"
+    },
+    {
+      "path": "f20261026b3/traffic-http-server-f20261026b3ahttp.json",
+      "bytes": 3186,
+      "sha256": "04a80c279d42f00a3d6fdb35600caf70148d2622b9a9fb1a0b1b441e64ea7f5b"
+    },
+    {
+      "path": "f20261026b3/traffic-http-server-f20261026b3bhttp.json",
+      "bytes": 3186,
+      "sha256": "2064d84dd1aaeaacc6560aa085f007fe76fd2b766579acf35515304c16de29cc"
+    },
+    {
+      "path": "f20261026b3/traffic-http-server-f20261026b3dhttp.json",
+      "bytes": 3186,
+      "sha256": "943d87a84d2896ba4eee7030bd99013e7b32085d82c68476160f9b1cb4ad21a1"
+    },
+    {
+      "path": "f20261026b3/traffic-mysql-client-f20261026b3amysql.json",
+      "bytes": 10087,
+      "sha256": "1f4356169ee631005efdf83779203e030330f9c5874eae5bab5917042243c7db"
+    },
+    {
+      "path": "f20261026b3/traffic-mysql-client-f20261026b3bmysql.json",
+      "bytes": 10085,
+      "sha256": "81c56ef72543401e6f2a3e432988687da942a0b802b18dfc5b4c8e893467db92"
+    },
+    {
+      "path": "f20261026b3/traffic-mysql-client-f20261026b3dmysql.json",
+      "bytes": 10086,
+      "sha256": "86cfcf5aced7a34e73bb60fac006958a5aa34019cc0a392319b79c0ca0dfdff5"
+    },
+    {
+      "path": "f20261026b3/traffic-mysql-server-f20261026b3amysql.json",
+      "bytes": 9526,
+      "sha256": "49a809fa1617f5b29f429b8ea3a2cb57b0ed70648d8c045ea114078496acb3cf"
+    },
+    {
+      "path": "f20261026b3/traffic-mysql-server-f20261026b3bmysql.json",
+      "bytes": 9526,
+      "sha256": "252af56a8363412eddd6eb3ae465a887d942d86af634baa6a182b80bd40753a4"
+    },
+    {
+      "path": "f20261026b3/traffic-mysql-server-f20261026b3dmysql.json",
+      "bytes": 9527,
+      "sha256": "a0ff88f74f9f0fb6edc8b333b72bad6e3a472ccefd3d268f6bb51490f151ae7b"
+    },
+    {
+      "path": "f20261026b3/warmup-dns-server.json",
+      "bytes": 1027,
+      "sha256": "7392596fb08137e5758858a8900d00dd6b1ec6ac072a7b7bef3c86bc6de99b04"
+    },
+    {
+      "path": "helper-source-hashes.json",
+      "bytes": 2627,
+      "sha256": "94b834cef36894ee1b92a12d8d5d645aa1089bd80ecda31d0cb07e2874f0b776"
+    },
+    {
+      "path": "security-scan.json",
+      "bytes": 656,
+      "sha256": "61591cb31b43e5d2be6a2c3a2e3c1f2530dc55606fa1087b8822fd38bfec2ba4"
+    },
+    {
+      "path": "server-log-window-summary.json",
+      "bytes": 17619,
+      "sha256": "03130fd8c46cc71f933b2b81ec175a99412744bf36c37406e058e8eddf145824"
+    },
+    {
+      "path": "server-provenance.json",
+      "bytes": 700,
+      "sha256": "af90c615df14bbad93503de24323ee5b3a917e2c94294c19cc383c8fd5fbf1b9"
+    },
+    {
+      "path": "warmup-baseline-client.json",
+      "bytes": 1036,
+      "sha256": "bb4a93fc18bb114ce208e7eb3ac9afde4b975b4d36582fcf6e51d15b05e32d7f"
+    },
+    {
+      "path": "warmup-proof.json",
+      "bytes": 618,
+      "sha256": "459f254b07e7a50aa363bbb12df2e85fa2a9c38db40ba5fa431bd5ce4a5785ab"
+    }
+  ],
+  "excluded": [
+    "config",
+    "env",
+    "full/raw logs",
+    "lock files",
+    "private credentials"
+  ],
+  "total_payload_bytes": 486464
+}

@@ -1,0 +1,14 @@
+{
+  "started_at_utc": "2026-10-26T13:14:36.701907+00:00",
+  "maximum_runtime_seconds": 900,
+  "source_head": "f89e5647c58e1ff02b1fbd7f53b4aada07789350",
+  "source_status": [
+    " M .github/workflows/traflens-ci.yml",
+    "?? traflens/lab/fault-test.py",
+    "?? traflens/lab/tests/test_fault_test.py"
+  ],
+  "binary_sha256": "45a62f7cdfc6efdf16fd82cb017d4da334c41d7b4cb7d2324964504f32025a33",
+  "config_sha256": "25a8716a77c1dc895c85ac2d389fd02295288cba859bb7c30d00fbb734f34366",
+  "binary_version": "12743-6aec171bf820e5ce516349ed3677395050b8a384\nName: deepflow-agent community edition\nBranch: main\nCommitId: 6aec171bf820e5ce516349ed3677395050b8a384\nRevCount: 12743\nCompiler: rustc 1.97.1 (8bab26f4f 2026-07-14)\nCompileTime: 2026-10-26 18:49:01\n",
+  "console_start_offset": 552318
+}

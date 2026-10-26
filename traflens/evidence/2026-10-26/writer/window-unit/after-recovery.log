@@ -1,0 +1,5 @@
+=== RUN   TestWriteRecoversAfterTransientDialRefusal
+2026/10/26 21:22:50 orgId 0 (INSERT INTO test.samples VALUES) update item version from 0 to 1
+--- PASS: TestWriteRecoversAfterTransientDialRefusal (0.70s)
+PASS
+ok  	github.com/deepflowio/deepflow/server/ingester/pkg/ckwriter	0.722s

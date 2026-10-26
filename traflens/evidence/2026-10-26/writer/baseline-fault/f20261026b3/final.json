@@ -1,0 +1,95 @@
+{
+  "at_utc": "2026-10-26T13:18:22.152025+00:00",
+  "passed": false,
+  "restart_count": 1,
+  "phases": {
+    "before": {
+      "passed": true,
+      "verified_at_utc": "2026-10-26T13:15:44.111032+00:00",
+      "acceptance_sha256": "be94828a3c726651adf6810171af0f1955b00d4da8f590a2891ecb99f980ceb0"
+    },
+    "during": {
+      "passed": false,
+      "verified_at_utc": "2026-10-26T13:18:08.005530+00:00",
+      "acceptance_sha256": "5950e2eaa939d6e86a6bba124b39c4fdf3aba9d645a055a5b534995d5a1c3bcf"
+    },
+    "after": {
+      "passed": true,
+      "verified_at_utc": "2026-10-26T13:18:21.614692+00:00",
+      "acceptance_sha256": "cae741934dc9d007f6fde408f16f3b39e586cd871c380f4880be8d931bebde83"
+    }
+  },
+  "final_snapshot": {
+    "at_utc": "2026-10-26T13:18:22.151984+00:00",
+    "owned": {
+      "traflens-lab-mysql": {
+        "id": "1e39ef9cbe5435d82a358532530a5d408baa8722e818ee285773a68c53a3fd46",
+        "name": "/traflens-lab-mysql",
+        "image_id": "sha256:cfddf275c8b1ae1583c0f6afb4899d4dbe14111a6462699559a1f4dc8f4d5f6e",
+        "started_at": "2026-10-26T09:40:44.366365732Z",
+        "running": true,
+        "volume_mounts": {
+          "/var/lib/mysql": "traflens-lab-mysql-data"
+        }
+      },
+      "traflens-lab-clickhouse": {
+        "id": "c0cb6c4f19f1f0f652f77680a4a4f176f37a1a0e0ebbe4e25102e5528bc10e22",
+        "name": "/traflens-lab-clickhouse",
+        "image_id": "sha256:a5ba4e31579aea4b02ab4333ee2fe13b7ddeedff342a714cace9137274e552a7",
+        "started_at": "2026-10-26T13:15:53.471516674Z",
+        "running": true,
+        "volume_mounts": {
+          "/var/lib/clickhouse": "traflens-lab-clickhouse-data",
+          "/var/lib/clickhouse_storage": "traflens-lab-clickhouse-storage"
+        }
+      },
+      "traflens-lab-server": {
+        "id": "026e7ba5bc0e8c984ac7a9d82db50bbff556beca6ef9d07277123fd3fff30973",
+        "name": "/traflens-lab-server",
+        "image_id": "sha256:eadfa388585464f90787b1495d52e6417e49dd560bf0caf82d7d78d4c6e05bda",
+        "started_at": "2026-10-26T10:49:01.390153033Z",
+        "running": true,
+        "volume_mounts": {}
+      }
+    },
+    "unrelated": {
+      "/traflens-native-release-6aec171b": {
+        "id": "cd087ac21d0c4a55ee377f61b04cd275917ffffc43793ab368c4312cd9201348",
+        "started_at": "2026-10-26T10:26:18.850732158Z",
+        "running": false
+      },
+      "/traflens-native-prebuild-rust1971": {
+        "id": "ed690c07b8a9a7cbff4eecca8852cd2dd7385916bd7a18201dc570e1a5a5a29c",
+        "started_at": "2026-10-26T09:52:26.889132643Z",
+        "running": false
+      },
+      "/traflens-native-prebuild-20261026": {
+        "id": "cf80cfce24a911f47188397ba939b6b9020aaa7293d3d1ddbea6b618e9c7cc05",
+        "started_at": "2026-10-26T09:48:58.61706462Z",
+        "running": false
+      },
+      "/multimeter_automated_test_3387_random": {
+        "id": "b3d57f783d71ad50578749e3ceaf3223c4ef966ca348bfd4ae6b290da3824bdc",
+        "started_at": "2026-10-26T08:06:49.560429232Z",
+        "running": false
+      },
+      "/multimeter_automated_test_3387_now": {
+        "id": "62bdd531dfba39d7ca4f059ce69e025834f830a8c6dbf18a9203573a1393bb0f",
+        "started_at": "2026-10-26T07:26:09.449756343Z",
+        "running": false
+      },
+      "/multimeter_ubuntu_22_04_dev": {
+        "id": "b6ba6f6846aa7af2c0da70fd4159a019cc2f8b1a6c3ad34002096d8b2f4fd8fc",
+        "started_at": "2026-10-23T02:14:35.814200236Z",
+        "running": true
+      },
+      "/gitlab-runner": {
+        "id": "0fd2bdaa1bb72645acde9bf7627e7b5292fd87d1938ee76e55198932716ecf88",
+        "started_at": "2026-10-21T08:00:03.792175091Z",
+        "running": true
+      }
+    }
+  },
+  "final_query_reads": [],
+  "scope": "60 records per protocol across before/during/after one owned ClickHouse restart; functional loss/duplicate acceptance, not performance parity"
+}

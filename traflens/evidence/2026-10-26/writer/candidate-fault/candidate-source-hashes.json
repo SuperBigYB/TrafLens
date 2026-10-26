@@ -1,0 +1,11 @@
+{
+  "candidate_server_commit": "4b2799823516bc49ff2f3c840a782cd57361f28f",
+  "hash_source": "git show <committed source>:<path>; not a live worktree hash",
+  "sha256": {
+    "server/ingester/pkg/ckwriter/ckwriter.go": "b8b0bdc6b1c8661cbae7c419474b61a1ef6db73e12b2409cfff56969ae7c7cb8",
+    "server/ingester/pkg/ckwriter/write.go": "c00b3b10d7db6c4425afc096348e280311ac780390b7e792b2a21442ea28fc28",
+    "server/ingester/pkg/ckwriter/write_test.go": "43992949b69317a8f51f694147520574aa124a9a511c472598244dae06149e7f",
+    "server/go.mod": "0e1969922cb5541f482b214f920e92f7a43bf4578fa90cd3eefe1ec923687376",
+    "server/go.sum": "1b31c095d0a5590212656e280d1f707168212ec287169a19cdb8191d8af398c9"
+  }
+}

@@ -1,0 +1,209 @@
+{
+  "captured_at_utc": "2026-10-26T13:26:04.807459+00:00",
+  "server_container_id": "026e7ba5bc0e8c984ac7a9d82db50bbff556beca6ef9d07277123fd3fff30973",
+  "server_image_id": "sha256:eadfa388585464f90787b1495d52e6417e49dd560bf0caf82d7d78d4c6e05bda",
+  "server_started_at": "2026-10-26T10:49:01.390153033Z",
+  "server_version_output": "Name: deepflow-server community edition\nBranch: main\nCommitID: 4922b11ff560b64412bee6b1092f605e4dbda0a0\nRevCount: 12739\nCompiler: go version go1.26.2 linux/amd64\nCompileTime: 2026-10-26 16:31:33\n",
+  "server_binary_sha256": "4bd665d7a098ad3a4784ca5203e0c7aa6de7f890b419bb6843e927243ae81c97",
+  "only_json_summary_retained": true,
+  "windows": [
+    {
+      "run_id": "f20261026b2",
+      "time_basis": "dev-240 Docker UTC timestamp prefix; no dev-79 timestamp comparisons",
+      "begin_utc": "2026-10-26T13:07:54.782362+00:00",
+      "end_utc": "2026-10-26T13:10:10.038470+00:00",
+      "raw_window_sha256": "23af482011eccc2ec0a145739cc192086c62c977b486c35178e5ae5b9896634f",
+      "raw_window_bytes": 24609,
+      "raw_window_retained": false,
+      "all_ckwriter_line_count": 9,
+      "diagnostic_line_count": 9,
+      "full_window_contains_private_mysql_password": false,
+      "diagnostics": [
+        {
+          "docker_timestamp_utc": "2026-10-26T13:09:05.719087996Z",
+          "line_sha256": "2df27663040ff32252471da7d2a77f829580e1403cc589a286c12062f5c1ae77",
+          "redacted_excerpt": "2026-10-26T13:09:05.719087996Z \u001b[33m2026-10-26 13:09:05.718 [WARN]\u001b[0m [ckwriter] ckwriter.go:716 write table (flow_tag.flow_log_custom_field_value_local) failed, drop (4) items: batch item write block failed: packet: uvarint: read: read: EOF"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:09:08.688511595Z",
+          "line_sha256": "1949237c7b7c68176b0643fcf0a28852e0e58f5a965d44c2faf1f8d715c80436",
+          "redacted_excerpt": "2026-10-26T13:09:08.688511595Z \u001b[33m2026-10-26 13:09:08.688 [WARN]\u001b[0m [ckwriter] ckwriter.go:716 write table (flow_log.l7_flow_log_local) failed, drop (1) items: batch item write block failed: packet: uvarint: read: read: EOF"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:09:17.261737611Z",
+          "line_sha256": "21f3bcf4a35372f732c81f59b1cb3beeed4264ce0d884801f37a2509c2f7662b",
+          "redacted_excerpt": "2026-10-26T13:09:17.261737611Z \u001b[33m2026-10-26 13:09:17.261 [WARN]\u001b[0m [ckwriter] ckwriter.go:716 write table (flow_metrics.application_map.1m_local) failed, drop (1) items: batch item write block failed: flush: writev tcp 172.18.0.4:34438->172.18.0.3:9000: writev: broken pipe"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:09:17.681966158Z",
+          "line_sha256": "7446c06dcb5d3aae20d6ab1a4d4286bc838c7b2fc5d27bb6c470eefeb8918458",
+          "redacted_excerpt": "2026-10-26T13:09:17.681966158Z \u001b[33m2026-10-26 13:09:17.681 [WARN]\u001b[0m [ckwriter] ckwriter.go:716 write table (flow_log.l4_flow_log_local) failed, drop (1) items: batch item write block failed: packet: uvarint: read: read: EOF"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:09:27.244081087Z",
+          "line_sha256": "c748a65c0566b08f3e0623b041724470c89b45f307bf74de1b80c5bdd9e20762",
+          "redacted_excerpt": "2026-10-26T13:09:27.244081087Z \u001b[33m2026-10-26 13:09:27.243 [WARN]\u001b[0m [ckwriter] ckwriter.go:716 write table (flow_metrics.application.1m_local) failed, drop (23) items: batch item write block failed: flush: writev tcp 172.18.0.4:48134->172.18.0.3:9000: writev: broken pipe"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:09:27.269560618Z",
+          "line_sha256": "54fef1631450608ccd7995f66b1674afd442f0aff8fc0df8fab15643706b4d8e",
+          "redacted_excerpt": "2026-10-26T13:09:27.269560618Z \u001b[33m2026-10-26 13:09:27.269 [WARN]\u001b[0m [ckwriter] ckwriter.go:716 write table (flow_metrics.network.1s_local) failed, drop (11) items: batch item write block failed: flush: writev tcp 172.18.0.4:59544->172.18.0.3:9000: writev: broken pipe"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:09:27.275675871Z",
+          "line_sha256": "0f7702b7529b78d9e72703795aeb2a4c88407005081ddf646eff0c4377427fd2",
+          "redacted_excerpt": "2026-10-26T13:09:27.275675871Z \u001b[33m2026-10-26 13:09:27.275 [WARN]\u001b[0m [ckwriter] ckwriter.go:716 write table (flow_metrics.network_map.1s_local) failed, drop (14) items: batch item write block failed: packet: uvarint: read: read: EOF"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:09:27.278780596Z",
+          "line_sha256": "d3727dde0a710996a4f48a8338dc6ee28ff82486101db2ec7c73310fe56ef80b",
+          "redacted_excerpt": "2026-10-26T13:09:27.278780596Z \u001b[33m2026-10-26 13:09:27.278 [WARN]\u001b[0m [ckwriter] ckwriter.go:716 write table (flow_metrics.application.1s_local) failed, drop (27) items: batch item write block failed: flush: writev tcp 172.18.0.4:59538->172.18.0.3:9000: writev: broken pipe"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:09:27.284895433Z",
+          "line_sha256": "a9112f11d2e08d25ffc775af640d4ca28c3f8f2d271d1f3b3f196eba3d28a812",
+          "redacted_excerpt": "2026-10-26T13:09:27.284895433Z \u001b[33m2026-10-26 13:09:27.284 [WARN]\u001b[0m [ckwriter] ckwriter.go:716 write table (flow_metrics.application_map.1s_local) failed, drop (27) items: batch item write block failed: flush: writev tcp 172.18.0.4:58878->172.18.0.3:9000: writev: broken pipe"
+        }
+      ]
+    },
+    {
+      "run_id": "f20261026b3",
+      "time_basis": "dev-240 Docker UTC timestamp prefix; no dev-79 timestamp comparisons",
+      "begin_utc": "2026-10-26T13:13:10.877538+00:00",
+      "end_utc": "2026-10-26T13:18:23.152025+00:00",
+      "raw_window_sha256": "bb9a22ddf8e04a40f5aedcec26d3fbdcb2db61d6eb67e2f4e134a87b30f7b267",
+      "raw_window_bytes": 53593,
+      "raw_window_retained": false,
+      "all_ckwriter_line_count": 25,
+      "diagnostic_line_count": 25,
+      "full_window_contains_private_mysql_password": false,
+      "diagnostics": [
+        {
+          "docker_timestamp_utc": "2026-10-26T13:15:50.688139882Z",
+          "line_sha256": "931d2d657240a57e6fd1b50b06693a6d4c05ab8890a7e2ead3e3d07d427f3d94",
+          "redacted_excerpt": "2026-10-26T13:15:50.688139882Z \u001b[33m2026-10-26 13:15:50.687 [WARN]\u001b[0m [ckwriter] ckwriter.go:716 write table (flow_log.l7_flow_log_local) failed, drop (1) items: batch item write block failed: packet: uvarint: read: read: read tcp 172.18.0.4:59138->172.18.0.3:9000: read: connection reset by peer"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:15:52.270110537Z",
+          "line_sha256": "2fc1095afd1a0965a467a76f4c4fd51dad26d52a96159017dbc29b3bd9e2322f",
+          "redacted_excerpt": "2026-10-26T13:15:52.270110537Z \u001b[33m2026-10-26 13:15:52.269 [WARN]\u001b[0m [ckwriter] ckwriter.go:213 dial to clickhouse:9000 failed, dial: dial tcp 172.18.0.3:9000: connect: connection refused"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:15:52.270194857Z",
+          "line_sha256": "84a1567c51541d4f9936dffc029ac5a2eafba8305617d11adc74ed3bacb24fe8",
+          "redacted_excerpt": "2026-10-26T13:15:52.270194857Z \u001b[33m2026-10-26 13:15:52.269 [WARN]\u001b[0m [ckwriter] ckwriter.go:716 write table (flow_metrics.network.1s_local) failed, drop (11) items: dial: dial tcp 172.18.0.3:9000: connect: connection refused"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:15:52.276282069Z",
+          "line_sha256": "897ef12274f7cd509d04110e25244b7fb6dbde741812a332e172f497d18e611f",
+          "redacted_excerpt": "2026-10-26T13:15:52.276282069Z \u001b[33m2026-10-26 13:15:52.276 [WARN]\u001b[0m [ckwriter] ckwriter.go:716 write table (flow_metrics.network_map.1s_local) failed, drop (16) items: batch item write block failed: packet: uvarint: read: read: read tcp 172.18.0.4:45158->172.18.0.3:9000: read: connection reset by peer"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:15:52.280442629Z",
+          "line_sha256": "ab60f862f04ae3dd8a2dcbc173469df2257d15061d37a61870206e99b74c40f0",
+          "redacted_excerpt": "2026-10-26T13:15:52.280442629Z \u001b[33m2026-10-26 13:15:52.280 [WARN]\u001b[0m [ckwriter] ckwriter.go:213 dial to clickhouse:9000 failed, dial: dial tcp 172.18.0.3:9000: connect: connection refused"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:15:52.280617480Z",
+          "line_sha256": "1946bf4ceefb16640bb3e78e6dbf194a5a0505f6607ffbe863152d1b3cb2a446",
+          "redacted_excerpt": "2026-10-26T13:15:52.280617480Z \u001b[33m2026-10-26 13:15:52.280 [WARN]\u001b[0m [ckwriter] ckwriter.go:716 write table (flow_metrics.application.1s_local) failed, drop (28) items: dial: dial tcp 172.18.0.3:9000: connect: connection refused"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:15:52.285622714Z",
+          "line_sha256": "9a8d435ac76fce347961628e401cdd27b1e092980de1e5cd0fc310b005be76fe",
+          "redacted_excerpt": "2026-10-26T13:15:52.285622714Z \u001b[33m2026-10-26 13:15:52.285 [WARN]\u001b[0m [ckwriter] ckwriter.go:716 write table (flow_metrics.application_map.1s_local) failed, drop (27) items: batch item write block failed: packet: uvarint: read: read: read tcp 172.18.0.4:54490->172.18.0.3:9000: read: connection reset by peer"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:15:56.681879779Z",
+          "line_sha256": "17f773aee27bfd985e1c32559370e8926a115ceba646124a239a59ed7928bc95",
+          "redacted_excerpt": "2026-10-26T13:15:56.681879779Z \u001b[33m2026-10-26 13:15:56.681 [WARN]\u001b[0m [ckwriter] ckwriter.go:716 write table (flow_log.l4_flow_log_local) failed, drop (1) items: batch item write block failed: packet: uvarint: read: read: EOF"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:15:57.161178138Z",
+          "line_sha256": "ba412b1b295fa73af3ec0218f7e945b4630ea216c358ca358e888f6a678fd90d",
+          "redacted_excerpt": "2026-10-26T13:15:57.161178138Z \u001b[33m2026-10-26 13:15:57.160 [WARN]\u001b[0m [ckwriter] ckwriter.go:716 write table (deepflow_admin.deepflow_server_local) failed, drop (718) items: batch item write block failed: packet: uvarint: read: read: EOF"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:15:58.156111865Z",
+          "line_sha256": "38c031e81d0014e7f1ac2b5615e9c36472b60fc0b5cc40f72c25f23462e8785a",
+          "redacted_excerpt": "2026-10-26T13:15:58.156111865Z \u001b[33m2026-10-26 13:15:58.155 [WARN]\u001b[0m [ckwriter] ckwriter.go:716 write table (deepflow_tenant.deepflow_collector_local) failed, drop (80) items: batch item write block failed: packet: uvarint: read: read: EOF"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:15:59.760486117Z",
+          "line_sha256": "d4c7cc66062ca957155318586ab712eddd61b15884226838c8384098b72cc203",
+          "redacted_excerpt": "2026-10-26T13:15:59.760486117Z \u001b[33m2026-10-26 13:15:59.760 [WARN]\u001b[0m [ckwriter] ckwriter.go:716 write table (flow_tag.flow_log_custom_field_value_local) failed, drop (13) items: batch item write block failed: packet: uvarint: read: read: EOF"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:16:02.144969252Z",
+          "line_sha256": "a1a7bb4239107c4abf75b79d4bd20d08cc12bae67b15d62affac68d4821f9892",
+          "redacted_excerpt": "2026-10-26T13:16:02.144969252Z \u001b[33m2026-10-26 13:16:02.144 [WARN]\u001b[0m [ckwriter] ckwriter.go:716 write table (deepflow_tenant.deepflow_collector_local) failed, drop (1) items: batch item write block failed: packet: uvarint: read: read: EOF"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:16:23.167156227Z",
+          "line_sha256": "bc0e12468c7dc0ab6ed7f411fdf5311fe297a4878dc0e3f9b10a693fbde48293",
+          "redacted_excerpt": "2026-10-26T13:16:23.167156227Z \u001b[33m2026-10-26 13:16:23.166 [WARN]\u001b[0m [ckwriter] ckwriter.go:238 Exec SQL (CREATE DATABASE IF NOT EXISTS flow_tag) failed: flush: writev tcp 172.18.0.4:53518->172.18.0.3:9000: writev: broken pipe, will retry"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:16:23.169091287Z",
+          "line_sha256": "0c10b4caa8770e4068b9704b5183cfa004f2466480db273f05486532f48873bd",
+          "redacted_excerpt": "2026-10-26T13:16:23.169091287Z \u001b[33m2026-10-26 13:16:23.168 [WARN]\u001b[0m [ckwriter] ckwriter.go:238 Exec SQL (CREATE DATABASE IF NOT EXISTS flow_tag) failed: packet: uvarint: read: read: EOF, will retry"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:16:23.170158533Z",
+          "line_sha256": "435c8d9e62548896bee378d8e7ac3777a3e17e101a4bd9942c52cca7f3976abf",
+          "redacted_excerpt": "2026-10-26T13:16:23.170158533Z \u001b[33m2026-10-26 13:16:23.169 [WARN]\u001b[0m [ckwriter] ckwriter.go:238 Exec SQL (CREATE DATABASE IF NOT EXISTS deepflow_admin) failed: flush: writev tcp 172.18.0.4:53562->172.18.0.3:9000: writev: broken pipe, will retry"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:16:24.167479252Z",
+          "line_sha256": "0dc02bf539d332094074d67e6b04e4b617d3f57a15400ffc15938871d9837b38",
+          "redacted_excerpt": "2026-10-26T13:16:24.167479252Z \u001b[33m2026-10-26 13:16:24.167 [WARN]\u001b[0m [ckwriter] ckwriter.go:238 Exec SQL (CREATE DATABASE IF NOT EXISTS flow_tag) failed: client is closed, will retry"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:16:24.169547946Z",
+          "line_sha256": "c1c7bd90d643e9f39d4844196c0d5a065f9c99b98b253bf49618db9f9e376edd",
+          "redacted_excerpt": "2026-10-26T13:16:24.169547946Z \u001b[33m2026-10-26 13:16:24.169 [WARN]\u001b[0m [ckwriter] ckwriter.go:238 Exec SQL (CREATE DATABASE IF NOT EXISTS flow_tag) failed: client is closed, will retry"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:16:24.170574667Z",
+          "line_sha256": "4f42eeffdf19d810c94ee3e1c266d4e3911f4137bc7f2515a87bb075cf83d909",
+          "redacted_excerpt": "2026-10-26T13:16:24.170574667Z \u001b[33m2026-10-26 13:16:24.170 [WARN]\u001b[0m [ckwriter] ckwriter.go:238 Exec SQL (CREATE DATABASE IF NOT EXISTS deepflow_admin) failed: client is closed, will retry"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:16:25.167694473Z",
+          "line_sha256": "298e2140175009d87e94af781bc03e1096048be5c15a52c986bb945d3b0b0cd9",
+          "redacted_excerpt": "2026-10-26T13:16:25.167694473Z \u001b[33m2026-10-26 13:16:25.167 [WARN]\u001b[0m [ckwriter] ckwriter.go:706 create table (flow_tag.deepflow_admin_custom_field_local) failed, drop (200) items: client is closed"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:16:25.169799721Z",
+          "line_sha256": "40ffbdcd2caf641cbfa8455470799a3f88009295a9ba8d0da70d59d692d60340",
+          "redacted_excerpt": "2026-10-26T13:16:25.169799721Z \u001b[33m2026-10-26 13:16:25.169 [WARN]\u001b[0m [ckwriter] ckwriter.go:706 create table (flow_tag.deepflow_admin_custom_field_value_local) failed, drop (861) items: client is closed"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:16:25.170823126Z",
+          "line_sha256": "e62d1a623ac8f64c9ed1aa86a12b9e24b85f8396240acb381b87aeb13c272a4c",
+          "redacted_excerpt": "2026-10-26T13:16:25.170823126Z \u001b[33m2026-10-26 13:16:25.170 [WARN]\u001b[0m [ckwriter] ckwriter.go:706 create table (deepflow_admin.deepflow_server_local) failed, drop (698) items: client is closed"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:16:27.201404245Z",
+          "line_sha256": "c1ce6b37c323babcf20318c3d34d124791cc769c05f26ec913511283d92fd8a8",
+          "redacted_excerpt": "2026-10-26T13:16:27.201404245Z \u001b[33m2026-10-26 13:16:27.201 [WARN]\u001b[0m [ckwriter] ckwriter.go:716 write table (flow_metrics.network.1m_local) failed, drop (2) items: batch item write block failed: flush: writev tcp 172.18.0.4:42424->172.18.0.3:9000: writev: broken pipe"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:16:27.261476938Z",
+          "line_sha256": "9b9668441beaf3c28d6c80b22682a749692a28c767b4f052b4292d4692fcfd62",
+          "redacted_excerpt": "2026-10-26T13:16:27.261476938Z \u001b[33m2026-10-26 13:16:27.261 [WARN]\u001b[0m [ckwriter] ckwriter.go:716 write table (flow_metrics.application_map.1m_local) failed, drop (45) items: batch item write block failed: flush: writev tcp 172.18.0.4:45144->172.18.0.3:9000: writev: broken pipe"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:16:48.175045057Z",
+          "line_sha256": "e28e88edecdf40149c4d5ea684ccf0d5f5fbd3447aa833a32f316579763ea5f4",
+          "redacted_excerpt": "2026-10-26T13:16:48.175045057Z \u001b[33m2026-10-26 13:16:48.175 [WARN]\u001b[0m [ckwriter] ckwriter.go:716 write table (deepflow_tenant.deepflow_collector_local) failed, drop (10) items: batch item write block failed: flush: writev tcp 172.18.0.4:44168->172.18.0.3:9000: writev: broken pipe"
+        },
+        {
+          "docker_timestamp_utc": "2026-10-26T13:18:09.718904336Z",
+          "line_sha256": "39490410169159153eb4976a4bec2799dcf50ab70087bcafb17cbeb4df891b6b",
+          "redacted_excerpt": "2026-10-26T13:18:09.718904336Z \u001b[33m2026-10-26 13:18:09.718 [WARN]\u001b[0m [ckwriter] ckwriter.go:716 write table (flow_tag.flow_log_custom_field_value_local) failed, drop (1) items: batch item write block failed: packet: uvarint: read: read: EOF"
+        }
+      ]
+    }
+  ]
+}

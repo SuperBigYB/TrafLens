@@ -1,0 +1,167 @@
+{
+  "created_at_utc": "2026-10-26T13:40:17.226619+00:00",
+  "run_id": "f20261026c1",
+  "server_stamped_commit": "4b2799823516bc49ff2f3c840a782cd57361f28f",
+  "server_binary_sha256": "b820516ca626e213f71a4955e68e6fccda09b57603b0bd6234d2a4855a8447aa",
+  "time_basis": "Phase overlap/order only dev-240 server fixture and Docker timestamps; cross-host clock offsets are not inferred or corrected.",
+  "phases": {
+    "before": {
+      "passed": true,
+      "protocols": {
+        "http": {
+          "wire_client_records": 20,
+          "wire_server_records": 20,
+          "queried_rows": 20,
+          "missing_rows": 0,
+          "unexpected_or_duplicate_rows": 0,
+          "exact_match": true,
+          "consecutive_exact_reads": 2
+        },
+        "dns": {
+          "wire_client_records": 20,
+          "wire_server_records": 20,
+          "queried_rows": 20,
+          "missing_rows": 0,
+          "unexpected_or_duplicate_rows": 0,
+          "exact_match": true,
+          "consecutive_exact_reads": 2
+        },
+        "mysql": {
+          "wire_client_records": 20,
+          "wire_server_records": 20,
+          "queried_rows": 20,
+          "missing_rows": 0,
+          "unexpected_or_duplicate_rows": 0,
+          "exact_match": true,
+          "consecutive_exact_reads": 2
+        }
+      }
+    },
+    "during": {
+      "passed": true,
+      "protocols": {
+        "http": {
+          "wire_client_records": 20,
+          "wire_server_records": 20,
+          "queried_rows": 20,
+          "missing_rows": 0,
+          "unexpected_or_duplicate_rows": 0,
+          "exact_match": true,
+          "consecutive_exact_reads": 2,
+          "server_time_overlap": {
+            "before_restart": 3,
+            "during_restart_call": 5,
+            "after_restart_return": 12
+          }
+        },
+        "dns": {
+          "wire_client_records": 20,
+          "wire_server_records": 20,
+          "queried_rows": 20,
+          "missing_rows": 0,
+          "unexpected_or_duplicate_rows": 0,
+          "exact_match": true,
+          "consecutive_exact_reads": 2,
+          "server_time_overlap": {
+            "before_restart": 3,
+            "during_restart_call": 5,
+            "after_restart_return": 12
+          }
+        },
+        "mysql": {
+          "wire_client_records": 20,
+          "wire_server_records": 20,
+          "queried_rows": 20,
+          "missing_rows": 0,
+          "unexpected_or_duplicate_rows": 0,
+          "exact_match": true,
+          "consecutive_exact_reads": 2,
+          "server_time_overlap": {
+            "before_restart": 3,
+            "during_restart_call": 5,
+            "after_restart_return": 12
+          }
+        }
+      }
+    },
+    "after": {
+      "passed": true,
+      "protocols": {
+        "http": {
+          "wire_client_records": 20,
+          "wire_server_records": 20,
+          "queried_rows": 20,
+          "missing_rows": 0,
+          "unexpected_or_duplicate_rows": 0,
+          "exact_match": true,
+          "consecutive_exact_reads": 2
+        },
+        "dns": {
+          "wire_client_records": 20,
+          "wire_server_records": 20,
+          "queried_rows": 20,
+          "missing_rows": 0,
+          "unexpected_or_duplicate_rows": 0,
+          "exact_match": true,
+          "consecutive_exact_reads": 2
+        },
+        "mysql": {
+          "wire_client_records": 20,
+          "wire_server_records": 20,
+          "queried_rows": 20,
+          "missing_rows": 0,
+          "unexpected_or_duplicate_rows": 0,
+          "exact_match": true,
+          "consecutive_exact_reads": 2
+        }
+      }
+    }
+  },
+  "accepted_workload_wire_client_total": 180,
+  "accepted_workload_wire_server_total": 180,
+  "accepted_query_unique_rows_total": 180,
+  "dns_warmup_wire_transactions_extra": 1,
+  "restart": {
+    "begin_at_utc": "2026-10-26T13:31:49.192214+00:00",
+    "success": true,
+    "command": [
+      "docker",
+      "restart",
+      "--time",
+      "10",
+      "traflens-lab-clickhouse"
+    ],
+    "returned_at_utc": "2026-10-26T13:31:55.000187+00:00",
+    "new_started_at": "2026-10-26T13:31:54.912926231Z"
+  },
+  "recovery": {
+    "at_utc": "2026-10-26T13:31:57.629214+00:00",
+    "healthy": true,
+    "action": "start-only-if-stopped"
+  },
+  "restart_count": 1,
+  "final_passed": true,
+  "final_exact_readbacks": {
+    "markers": 9,
+    "reads_per_marker": 2,
+    "all18_reads_exact20_rows": true
+  },
+  "resource_proof": {
+    "owned_container_ids_images_and_volume_names_unchanged_within_c1": true,
+    "unrelated_containers_unchanged_within_c1": true,
+    "only_clickhouse_started_at_changed_within_c1": true
+  },
+  "agent_stopped_proof": {
+    "finished_file": "agent-candidate-finished.json",
+    "finished_at_utc": "2026-10-26T13:35:08.256884+00:00",
+    "attempts": 1
+  },
+  "interpretation": [
+    "c1 passed all180 unique accepted records, before/during/after across HTTP,DNS,MySQL with one owned ClickHouse restart and exact final rereads.",
+    "This run shares the explicit one-DNS-warmup premise with baseline b3; it does not establish cold-start behavior.",
+    "Unknown-commit retries remain deliberately forbidden; this passing bounded outage does not promise loss-free handling of longer outages or arbitrary network failures.",
+    "MySQL fixture validates wire responses and performs no database SQL execution.",
+    "No performance parity or exactly-once general guarantee is claimed."
+  ],
+  "archive_policy": "Explicit JSON allowlist; no raw logs, config/env, lock files or credentials."
+}

@@ -1,0 +1,29 @@
+{
+  "kind": "marked-dns-serve",
+  "marker": "warmf20261026c1",
+  "address": "fe80::5a47:caff:fe7c:7859",
+  "interface": "enp2s0f0",
+  "port": 18053,
+  "expected_count": 1,
+  "started_at_utc": "2026-10-26T13:30:57.974875+00:00",
+  "records": [
+    {
+      "sequence": 0,
+      "id": 40960,
+      "name": "q0.warmf20261026c1.traflens.invalid",
+      "address": "198.18.0.1",
+      "rcode": 0,
+      "ttl": 60,
+      "verified": true,
+      "received_at_utc": "2026-10-26T13:31:26.620781+00:00",
+      "replied_at_utc": "2026-10-26T13:31:26.621310+00:00",
+      "peer_address": "fe80::5a47:caff:fe77:66e2",
+      "peer_port": 60254,
+      "query_hex": "a000010000010000000000000271300f7761726d663230323631303236633108747261666c656e7307696e76616c69640000010001",
+      "response_hex": "a000818000010001000000000271300f7761726d663230323631303236633108747261666c656e7307696e76616c69640000010001c00c000100010000003c0004c6120001"
+    }
+  ],
+  "errors": [],
+  "complete": true,
+  "finished_at_utc": "2026-10-26T13:31:26.621616+00:00"
+}

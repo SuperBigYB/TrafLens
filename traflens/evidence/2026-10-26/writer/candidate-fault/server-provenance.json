@@ -1,0 +1,97 @@
+{
+  "captured_at_utc": "2026-10-26T13:37:48.624678+00:00",
+  "server_container_id": "f2e9872ccdfd7e01566bf79b7bb0ed6e29251209b0b0798ea1b847fd43d74e63",
+  "server_version_output": "Name: deepflow-server community edition\nBranch: main\nCommitID: 4b2799823516bc49ff2f3c840a782cd57361f28f\nRevCount: 12748\nCompiler: go version go1.26.2 linux/amd64\nCompileTime: 2026-10-26 21:26:21\n",
+  "server_binary_sha256": "b820516ca626e213f71a4955e68e6fccda09b57603b0bd6234d2a4855a8447aa",
+  "containers": {
+    "traflens-lab-mysql": {
+      "id": "1e39ef9cbe5435d82a358532530a5d408baa8722e818ee285773a68c53a3fd46",
+      "image_id": "sha256:cfddf275c8b1ae1583c0f6afb4899d4dbe14111a6462699559a1f4dc8f4d5f6e",
+      "started_at": "2026-10-26T09:40:44.366365732Z",
+      "running": true,
+      "oom_killed": false,
+      "memory_bytes": 1073741824,
+      "memory_swap_bytes": 1073741824,
+      "nano_cpus": 1000000000,
+      "pids_limit": 256,
+      "restart_policy": {
+        "Name": "no",
+        "MaximumRetryCount": 0
+      },
+      "port_bindings": {},
+      "volume_mounts": {
+        "/var/lib/mysql": "traflens-lab-mysql-data"
+      }
+    },
+    "traflens-lab-clickhouse": {
+      "id": "c0cb6c4f19f1f0f652f77680a4a4f176f37a1a0e0ebbe4e25102e5528bc10e22",
+      "image_id": "sha256:a5ba4e31579aea4b02ab4333ee2fe13b7ddeedff342a714cace9137274e552a7",
+      "started_at": "2026-10-26T13:31:54.912926231Z",
+      "running": true,
+      "oom_killed": false,
+      "memory_bytes": 4294967296,
+      "memory_swap_bytes": 4294967296,
+      "nano_cpus": 2000000000,
+      "pids_limit": 1024,
+      "restart_policy": {
+        "Name": "no",
+        "MaximumRetryCount": 0
+      },
+      "port_bindings": {},
+      "volume_mounts": {
+        "/var/lib/clickhouse_storage": "traflens-lab-clickhouse-storage",
+        "/var/lib/clickhouse": "traflens-lab-clickhouse-data"
+      }
+    },
+    "traflens-lab-server": {
+      "id": "f2e9872ccdfd7e01566bf79b7bb0ed6e29251209b0b0798ea1b847fd43d74e63",
+      "image_id": "sha256:1d1f251be93463301e423fa5e8834975180bf959092200c6e68d95e2c85d3578",
+      "started_at": "2026-10-26T13:29:22.483287222Z",
+      "running": true,
+      "oom_killed": false,
+      "memory_bytes": 4294967296,
+      "memory_swap_bytes": 4294967296,
+      "nano_cpus": 2000000000,
+      "pids_limit": 512,
+      "restart_policy": {
+        "Name": "no",
+        "MaximumRetryCount": 0
+      },
+      "port_bindings": {
+        "20033/tcp": [
+          {
+            "HostIp": "192.168.1.240",
+            "HostPort": "20033"
+          }
+        ],
+        "20033/udp": [
+          {
+            "HostIp": "192.168.1.240",
+            "HostPort": "20033"
+          }
+        ],
+        "20035/tcp": [
+          {
+            "HostIp": "192.168.1.240",
+            "HostPort": "20035"
+          }
+        ],
+        "20416/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "20416"
+          }
+        ],
+        "20417/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "20417"
+          }
+        ]
+      },
+      "volume_mounts": {}
+    }
+  },
+  "old_resource_snapshot_source": "/tmp/traflens-lab-20261026/evidence/resources.json",
+  "old_runtime_snapshot_source": "/tmp/traflens-lab-20261026/evidence/final-runtime.json"
+}

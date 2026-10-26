@@ -1,0 +1,18 @@
+{
+  "private_mysql_password_available_for_in_memory_scan": true,
+  "private_password_in_allowlisted_json": false,
+  "private_password_in_sanitized_log_summary": false,
+  "full_server_log_windows": [
+    {
+      "run_id": "f20261026b2",
+      "contains_private_mysql_password": false
+    },
+    {
+      "run_id": "f20261026b3",
+      "contains_private_mysql_password": false
+    }
+  ],
+  "raw_full_logs_retained_or_transferred": false,
+  "private_config_env_or_lock_files_in_allowlist": false,
+  "scope": "Exact private48-hex MySQL password comparison plus credential-value redaction in CKwriter excerpts; no credentials or password hashes are exported."
+}

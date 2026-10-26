@@ -1,0 +1,9 @@
+Candidate4b279982 after-fault CKwriter observation
+Host:f2e9872ccdfd; server started2026-10-26T13:29:22.483287222Z.
+L7 table tag:flow_log-l7_flow_log_local-l7_flow_log; name:l7_flow_log; thread:0.
+Observed44points every10s from2026-10-26T13:30:23Z through13:37:33Z; no internal missing interval, missing metric field, or duplicate identity.
+Totals (sum per-point increments):retry_count6, retry_failed_count5, write_success_count187, write_failed_count0, write_uncertain_count0.
+Nonzero retry point2026-10-26T13:32:03Z:retry6/retry_failed5/write_success32/write_failed0/write_uncertain0. This is actual evidence of additional retry attempts and a successful retry, following the reported restart window13:31:49.192Z to13:31:55.000Z.
+Coverage limits:initial~61s before first stored L7 point are not observed. Startup-window success187includes warmup/after and is not the c1-specific180unique request count. Collection resets counters; never subtract last from first. Stats shares the faulted sink and can be late/missing; zero/absence alone cannot prove no event.
+Readonly query:max_threads1, max_execution_time10s, local stats table; no debug GetCounter/reset, service/logging/table change, or generated load.
+Re-run light observation on240:python3 /tmp/traflens-ckwriter-stats-20261026/observe.py

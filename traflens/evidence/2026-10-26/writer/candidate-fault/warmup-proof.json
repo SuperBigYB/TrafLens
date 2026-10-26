@@ -1,0 +1,12 @@
+{
+  "kind": "one explicit DNS wire warmup outside all accepted20-record workloads",
+  "marker": "warmf20261026c1",
+  "wire_client_records": 1,
+  "wire_server_records": 1,
+  "both_complete_and_verified": true,
+  "wire_fields_match": true,
+  "server_received_at_utc": "2026-10-26T13:31:26.620781+00:00",
+  "before_dns_first_server_received_at_utc": "2026-10-26T13:31:31.266548+00:00",
+  "precedes_before_on_dev240_clock": true,
+  "no_cross_host_timestamp_ordering": true
+}

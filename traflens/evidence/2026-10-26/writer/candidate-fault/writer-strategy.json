@@ -1,0 +1,44 @@
+{
+  "source_commit": "4b2799823516bc49ff2f3c840a782cd57361f28f",
+  "strategy": {
+    "max_total_attempts": 13,
+    "shared_context_budget_seconds": 10,
+    "existing_driver_cancellation_cleanup_extra_seconds_up_to": 1,
+    "backoff_sequence_ms": [
+      100,
+      200,
+      400,
+      800,
+      1000,
+      1000,
+      1000,
+      1000,
+      1000,
+      1000,
+      1000,
+      1000
+    ],
+    "immediate_refusal_attempt_offsets_ms": [
+      0,
+      100,
+      300,
+      700,
+      1500,
+      2500,
+      3500,
+      4500,
+      5500,
+      6500,
+      7500,
+      8500,
+      9500
+    ],
+    "max_backoff_ms": 1000,
+    "unknown_supply_gate_unchanged": true,
+    "retryable_error_classifier_unchanged": true,
+    "same_endpoint_and_final_batch_reset_unchanged": true
+  },
+  "limits": [
+    "Observed wire/query acceptance is one controlled lab run; unknown commit errors remain non-replayed and outages may exceed this bounded retry budget."
+  ]
+}
