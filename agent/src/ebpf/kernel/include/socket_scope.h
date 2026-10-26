@@ -30,18 +30,26 @@ static __inline bool socket_scope_allows_task(const struct socket_scope_config *
 	    scope->ns_inum_offset > SOCKET_SCOPE_OFFSET_MAX ||
 	    scope->net_ns_offset > SOCKET_SCOPE_OFFSET_MAX - scope->ns_inum_offset)
 		return false;
-	void *nsproxy = NULL, *net = NULL;
-	__u32 inum = 0;
-	/* Helper 4 is supported by the legacy objects too; do not add newer helpers. */
-	if (bpf_probe_read(&nsproxy, sizeof(nsproxy), (char *)task + scope->task_nsproxy_offset) ||
-	    !nsproxy)
+	union {
+		void *pointer;
+		__u64 alignment;
+		__u32 inum;
+	} cursor = {.pointer = task};
+	/* Reuse one eight-byte stack slot across the pointer chain. The inode
+	 * shares its address, not a numeric low-half cast, on either endianness.
+	 * Helper 4 also works in legacy objects; every failed/partial read denies. */
+	if (bpf_probe_read(&cursor.pointer, sizeof(cursor.pointer),
+			   (char *)cursor.pointer + scope->task_nsproxy_offset) ||
+	    !cursor.pointer)
 		return false;
-	if (bpf_probe_read(&net, sizeof(net), (char *)nsproxy + scope->nsproxy_net_offset) || !net)
+	if (bpf_probe_read(&cursor.pointer, sizeof(cursor.pointer),
+			   (char *)cursor.pointer + scope->nsproxy_net_offset) ||
+	    !cursor.pointer)
 		return false;
-	if (bpf_probe_read(&inum, sizeof(inum),
-			   (char *)net + scope->net_ns_offset + scope->ns_inum_offset))
+	if (bpf_probe_read(&cursor.inum, sizeof(cursor.inum),
+			   (char *)cursor.pointer + scope->net_ns_offset + scope->ns_inum_offset))
 		return false;
-	return inum != 0 && inum == scope->netns_id;
+	return cursor.inum != 0 && cursor.inum == scope->netns_id;
 }
 #endif
 #endif
