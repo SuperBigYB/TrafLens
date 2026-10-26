@@ -154,19 +154,20 @@ concatenated. Pure ACKs preserve the pending data window; SYN/FIN/RST packets
 flush their direction and pass through. Original packets feed L4 metrics
 individually; sliding windows and flushed tails feed L7 parsing.
 
-`parser-test` includes both new gates for **168 selected tests**: 119 Agent
-library tests and 49 plugin-crate tests (28 tunnel + 21 segmentation-window).
-All Cargo invocations retain `--locked --no-default-features` and serial test
-execution; the original 127 checks remain included.
+`parser-test` now gates the complete packet Agent library (**371 tests**),
+then both plugin crates (**28 tunnel + 21 window**), for **420 passes** with
+zero failures or ignored tests. `test-library` runs the complete library alone;
+all former focused commands remain available. The WASM integrity check precedes
+tests, and the existing C plugin is built first. Locked dependency versions,
+`--no-default-features` and serial test execution are retained.
 
-The broader packet-mode library run completes 321 tests, with 312 passing and
-9 failures. The segmentation stub, historical handshake expectation and
-service-table port-map failures now pass. The remaining configuration,
-RocketMQ, Hessian, memcached and five WASM failures match the existing inventory.
-See `STATE.md` for the current checkpoint, `README-tunnels.md` and
-`evidence/2026-10-26/tunnels/` for the tunnel checkpoint, and
-`evidence/2026-10-26/baseline/` for the earlier compatible upstream comparison.
-Selected CI success must not be described as a complete library-suite pass.
+The earlier TCP-window checkpoint's321 tests had9 known failures. Those cases
+now pass after configuration, public fixture, Hessian and WASM contract repairs.
+The separate default-feature optimized native library passes382 tests,
+including the unchanged original2023 SDK integration; its two plugin crates
+also pass49. See `README-agent-protocols.md` and
+`evidence/2026-10-27/agent-protocols/summary.json` for scope and qualifications.
+Full library success in these modes is not live eBPF or performance parity.
 
 CI also runs a focused Server configuration gate after the complete Server build:
 
@@ -189,4 +190,4 @@ The ff05c646d checkpoint also validates ordinary, packed-ref and linked-worktree
 Git metadata watching with three direct-production probes. Its packet binary
 embeds the exact tested source commit. CI checks CommitId against HEAD, so a
 cache artifact with stale source metadata fails the gate. These three watcher
-probes are separate from the 168 selected Cargo tests.
+probes are separate from the complete Cargo-library gate.

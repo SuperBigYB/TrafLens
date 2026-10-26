@@ -306,6 +306,31 @@ process are separate from successful collection and product parity.
   locally. No general TCP stream, live eBPF, sustained
   performance or complete DeepFlow parity is claimed.
 
+## Complete Agent-library checkpoint - 2026-10-27
+
+- Core source `913231d6a7918edadd8db48a4e5d38ec9b76601d` closes the earlier9 packet-library failures. Complete
+  packet library371/371, default-feature native library382/382,
+  tunnel28/28 and window21/21 pass with no ignored tests. CI now runs the full
+  packet library instead of the prior168-case subset. Python124 and focusedGo4
+  still pass; both local binaries build from committed source.
+- Configuration restores Lua defaults/capture4 naming and aligns existing
+  Triple/Dameng filter maps without enabling those protocols. RocketMQ golden
+  changes retain all prior fields; the existing public memcached PCAP changes
+  only four global-header bytes, retaining every one of20421 packet records.
+- Hessian complete ASCII/chunk bounds fix EOF/truncation defects and preserve
+  Java/Hessian separation. Legacy SDK2023/current layouts and merge-cache end
+  flags are repaired. Guest memory/context errors fail safely, modern WASI
+  imports remain within an empty capability context, and only typed exit0 is
+  accepted during initialization. HTTP metadata uses already captured headers.
+- Two reproducible Go guests use a pinned compiler/SDK and an explicit IsEnd
+  fixture patch. The unchanged2023 guest passes native integration. Native
+  source is clean, with the disclosed pre-existing jattach Makefile build patch.
+  The first GCC4.8 link failure and first legacy-fixture failure are retained;
+  restoring image login-shell GCC11 resolves the environment issue.
+- Public aggregates: evidence/2026-10-27/agent-protocols/summary.json; detailed
+  logs and environment evidence remain ignored. Guide: README-agent-protocols.md.
+  Live eBPF, sustained workloads and complete DeepFlow parity remain pending.
+
 ## Remaining validation and priorities
 
 1. Design persistence/server-side idempotency for ambiguous commits and longer
@@ -316,10 +341,10 @@ process are separate from successful collection and product parity.
    and sustained workloads; extend protocol
    acceptance to a real MySQL database, DNS error/truncation/TCP,
    reconnects, TLS, loss, agent/server restart and sustained workloads.
-3. Resolve the remaining9 packet-library failures: defaults, RocketMQ, Hessian2,
-   memcached and5 packet-mode WASM cases (four also fail in native mode with
-   different assertions). Investigate inherited full agent_config failures/panic
-   separately. Keep expected behavior intact and validate the feature matrix.
+3. Repair the inherited full agent_config failures/panic, and validate malformed
+   plugin merge streams with missing/changing session identity. Extend Hessian
+   Unicode/map coverage separately; keep current ASCII limits explicit. The
+   complete packet/default-native Agent-library gates currently pass.
 4. Validate native eBPF/syscall/profiling at runtime, other protocols and storage
    robustness; then trace application and GUI. A native build is not runtime proof.
 5. Fix API robustness cases in `lab/KNOWN_LIMITATIONS.md`, then compare pinned
@@ -336,7 +361,7 @@ supervisors expire after 15 minutes or three exits, and stop only their own chil
 process group. Runtime secrets/logs stay ignored; sanitize evidence before commit.
 Keep the hourly task active: full feature/performance parity is not achieved.
 
-Latest completed core CI: both jobs passed for
-`155c5ff79` in <https://github.com/SuperBigYB/TrafLens/actions/runs/40371413194>.
+Latest completed source CI: both jobs passed for
+`913231d6a` in <https://github.com/SuperBigYB/TrafLens/actions/runs/40387456209>.
 Verify the new head's actual CI result; selected gates do not replace the known
 full-suite failures. See the tunnel and writer READMEs and their evidence.

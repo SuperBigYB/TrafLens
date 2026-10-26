@@ -1,0 +1,75 @@
+{
+  "source_commit": "913231d6a7918edadd8db48a4e5d38ec9b76601d",
+  "core_ci_url": "https://github.com/SuperBigYB/TrafLens/actions/runs/40387456209",
+  "packet_library": {
+    "passed": 371,
+    "failed": 0,
+    "ignored": 0
+  },
+  "native_default_library": {
+    "passed": 382,
+    "failed": 0,
+    "ignored": 0,
+    "original_2023_sdk_integration_passed": true
+  },
+  "plugin_crates": {
+    "tunnel_passed": 28,
+    "sliding_window_passed": 21
+  },
+  "packet_gate_total_passed": 420,
+  "native_gate_total_passed": 431,
+  "python_lab_passed": 124,
+  "focused_go_top_level_passed": 4,
+  "guest_input_decoder_tests_passed": 3,
+  "fixture_repeated_builds_per_variant": 2,
+  "sdk_fixture_qualification": "Pinned SDK with explicit checksum-guarded IsEnd serialization patch; original2023 artifact remains unchanged.",
+  "native_build": {
+    "optimized_release": true,
+    "source_version_exact": true,
+    "missing_libraries": false,
+    "bpf_compilation_artifacts": 10,
+    "live_ebpf_validated": false,
+    "binary_sha256": "6df356d48c2961e656fa090502582af0292eea9de27c48919be1be78e11e9e3b",
+    "binary_bytes": 77942632,
+    "rust": "1.97.1",
+    "toolchain_qualification": {
+      "final_gcc": "11.2.1",
+      "final_shell": "login",
+      "prior_core_linker_incident": {
+        "source_commit": "aa1bda6468f2132c8aca1d2186ae25e1e9b32b2d",
+        "failure": "Non-login shell selected GCC 4.8.5 C++ runtime.",
+        "resolution": "Restore prior login-shell profile selecting image GCC 11.2.1 runtime.",
+        "source_or_dependency_change_for_environment_fix": false
+      }
+    },
+    "dependency_overlay": {
+      "component": "jattach Makefile",
+      "preexisting_build_only": true,
+      "upstream_sha256": "b89fae15a808414c953e7d737729b6104cee948d40e802ffedf7afdcc28942ba",
+      "actual_sha256": "779dae6560ae146a969dcda58ad934ffba5d5e7d37d9110360c90af765991fb9",
+      "patch_sha256": "196bc0b7c230013ad562f87517f410f81aea76f26f1256b61c24b31ffb5a91de",
+      "c_source_files_matching": 5,
+      "c_source_files_total": 5,
+      "new_dependency_changes_this_run": false
+    }
+  },
+  "existing_public_pcap_change": {
+    "only_changed_byte_offsets": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "packet_record_bytes_unchanged": true,
+    "records": 20421,
+    "packet_record_sha256": "f78dccea332db603ad6b648d4bdba4c46279a54ba952f365abc293a6077ead2d"
+  },
+  "private_evidence_manifest_sha256": "bd4614408319f12fb40c6d3d8c7989a8e47a468129dcc98f254bc2660324ce0b",
+  "publication_scope": "Aggregates and code fixtures only. Detailed logs, internal runtime metadata and captured lab data remain ignored locally.",
+  "remaining_validation": [
+    "Full Server agent_config inherited failures and panic are not closed by its focused gate",
+    "Malformed plugin streams with missing/changing session identity",
+    "Hessian lookup remains ASCII and best-effort, not a full map/Unicode decoder",
+    "General TCP streams, live eBPF, sustained performance and complete DeepFlow parity"
+  ]
+}

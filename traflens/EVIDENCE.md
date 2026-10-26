@@ -116,3 +116,13 @@ frame bytes/order/drop0 and final cleanup. Complete raw PCAPs, queries, detailed
 internal environment/process/container evidence and logs remain in ignored local
 storage. The public summary includes their manifest fingerprint, not raw data.
 General streams, live eBPF, sustained performance and full parity remain pending.
+
+
+`evidence/2026-10-27/agent-protocols/summary.json` records core913231d6a,
+full packet371 and default-native382 passes, tunnel28/window21, Python124
+and focusedGo4. The original2023 SDK keeper passes; compiler environment retry,
+SDK fixture patch and inherited jattach build patch are qualified. Detailed
+logs/failed controls remain local; only aggregates and a manifest fingerprint
+are published. The existing public PCAP packet-record bytes are unchanged.
+Malformed identity streams, full Go configuration failures, live eBPF,
+sustained performance and complete product parity remain separate validation.
