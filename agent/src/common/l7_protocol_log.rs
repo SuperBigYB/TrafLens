@@ -551,7 +551,14 @@ impl RrtCache {
                 // Requests were already counted (req=1) when they first entered the cache;
                 // re-counting them here would double-count. Only Responses need to be
                 // counted here because they were cached with None on arrival.
-                if cache.msg_type != LogMessageType::Response {
+                // A retained multi-merge Response was accounted when its Request
+                // arrived, so its end-of-flow collection must not count it again.
+                if cache.msg_type != LogMessageType::Response
+                    || cache
+                        .multi_merge_info
+                        .as_ref()
+                        .is_some_and(|info| info.merged)
+                {
                     continue;
                 }
                 if key.is_reversed() {

@@ -1392,15 +1392,16 @@ impl HttpLog {
             self.wasm_hook(param, payload, info);
         }
 
+        if param.parse_perf && info.msg_type == LogMessageType::Response && info.endpoint.is_none()
+        {
+            if let Some(endpoint) = info.load_endpoint_from_cache(param, info.is_reversed) {
+                info.endpoint = Some(endpoint);
+            }
+        }
         info.is_on_blacklist = info.check_on_blacklist(config);
 
         if param.parse_perf {
             let mut perf_stat = L7PerfStats::default();
-            if info.msg_type == LogMessageType::Response && info.endpoint.is_none() {
-                if let Some(endpoint) = info.load_endpoint_from_cache(param, info.is_reversed) {
-                    info.endpoint = Some(endpoint.to_string());
-                }
-            }
             if let Some(stats) = info.perf_stats(param) {
                 info.rrt = stats.rrt_sum;
                 perf_stat.sequential_merge(&stats);
@@ -3286,6 +3287,348 @@ mod tests {
         // reversed with blacklist
         let stats = execute_case(&blacklist_config, &packets);
         assert_eq!(stats, Default::default());
+    }
+
+    fn cached_perf_event(
+        info: &HttpInfo,
+        packet: &MetaPacket,
+        cache: Rc<RefCell<L7PerfCache>>,
+        time: u64,
+    ) -> Option<L7PerfStats> {
+        let mut param = ParseParam::new(
+            packet,
+            Some(cache),
+            Default::default(),
+            #[cfg(any(target_os = "linux", target_os = "android"))]
+            Default::default(),
+            true,
+            true,
+        );
+        param.flow_id = 1;
+        param.time = time;
+        info.perf_stats(&param)
+    }
+
+    #[test]
+    fn cached_response_first_preserves_filter_errors_and_rrt() {
+        let packets =
+            Capture::load_pcap(Path::new(FILE_DIR).join("httpv1.pcap")).collect::<Vec<_>>();
+        for blocked in [false, true] {
+            for response_first in [false, true] {
+                let cache = Rc::new(RefCell::new(L7PerfCache::new(100)));
+                let request = HttpInfo {
+                    msg_type: LogMessageType::Request,
+                    is_on_blacklist: blocked,
+                    ..Default::default()
+                };
+                let response = HttpInfo {
+                    msg_type: LogMessageType::Response,
+                    status: L7ResponseStatus::ServerError,
+                    ..Default::default()
+                };
+                let mut events = vec![(&request, &packets[0], 100), (&response, &packets[1], 200)];
+                if response_first {
+                    events.reverse();
+                }
+                let mut stats = L7PerfStats::default();
+                for (index, (info, packet, time)) in events.into_iter().enumerate() {
+                    let delta = cached_perf_event(info, packet, cache.clone(), time);
+                    if response_first && index == 0 {
+                        assert!(
+                            delta.is_none(),
+                            "unmatched response was counted before filtering"
+                        );
+                    }
+                    if let Some(delta) = delta {
+                        stats.sequential_merge(&delta);
+                    }
+                }
+                let expected = if blocked {
+                    L7PerfStats::default()
+                } else {
+                    L7PerfStats {
+                        request_count: 1,
+                        response_count: 1,
+                        err_server_count: 1,
+                        rrt_count: 1,
+                        rrt_sum: 100,
+                        rrt_max: 100,
+                        ..Default::default()
+                    }
+                };
+                assert_eq!(
+                    stats, expected,
+                    "blocked={blocked}, response_first={response_first}"
+                );
+                let mut cache = cache.borrow_mut();
+                assert!(cache.rrt_cache.collect_flow_perf_stats(1).is_none());
+                assert_eq!(cache.timeout_cache.pop_timeout_count(1, true, false), 0);
+            }
+        }
+    }
+
+    #[test]
+    fn unmatched_cached_response_is_counted_once_at_flow_end() {
+        let packets =
+            Capture::load_pcap(Path::new(FILE_DIR).join("httpv1.pcap")).collect::<Vec<_>>();
+        for blocked in [false, true] {
+            let cache = Rc::new(RefCell::new(L7PerfCache::new(100)));
+            let response = HttpInfo {
+                msg_type: LogMessageType::Response,
+                status: L7ResponseStatus::ClientError,
+                is_on_blacklist: blocked,
+                ..Default::default()
+            };
+            assert!(cached_perf_event(&response, &packets[1], cache.clone(), 200).is_none());
+            let mut cache = cache.borrow_mut();
+            let stats = cache.rrt_cache.collect_flow_perf_stats(1);
+            if blocked {
+                assert!(stats.is_none());
+            } else {
+                assert_eq!(
+                    stats,
+                    Some((
+                        L7PerfStats {
+                            response_count: 1,
+                            err_client_count: 1,
+                            ..Default::default()
+                        },
+                        L7PerfStats::default()
+                    ))
+                );
+            }
+            assert!(cache.rrt_cache.collect_flow_perf_stats(1).is_none());
+            assert_eq!(cache.timeout_cache.pop_timeout_count(1, true, false), 0);
+        }
+    }
+
+    #[test]
+    fn unmatched_cached_request_timeout_excludes_blacklisted_requests() {
+        let packets =
+            Capture::load_pcap(Path::new(FILE_DIR).join("httpv1.pcap")).collect::<Vec<_>>();
+        for blocked in [false, true] {
+            let cache = Rc::new(RefCell::new(L7PerfCache::new(100)));
+            let request = HttpInfo {
+                msg_type: LogMessageType::Request,
+                is_on_blacklist: blocked,
+                ..Default::default()
+            };
+            let stats = cached_perf_event(&request, &packets[0], cache.clone(), 100);
+            assert_eq!(
+                stats.map(|stats| stats.request_count).unwrap_or_default(),
+                u32::from(!blocked)
+            );
+            let mut cache = cache.borrow_mut();
+            assert!(cache.rrt_cache.collect_flow_perf_stats(1).is_none());
+            assert_eq!(
+                cache.timeout_cache.pop_timeout_count(1, true, false),
+                u64::from(!blocked)
+            );
+        }
+    }
+
+    #[test]
+    fn cached_multi_fragment_pair_counts_each_end_once_and_keeps_blacklist() {
+        let packets =
+            Capture::load_pcap(Path::new(FILE_DIR).join("httpv1.pcap")).collect::<Vec<_>>();
+        for blocked in [false, true] {
+            for response_first in [false, true] {
+                let cache = Rc::new(RefCell::new(L7PerfCache::new(100)));
+                let request = HttpInfo {
+                    msg_type: LogMessageType::Request,
+                    raw_data_type: L7ProtoRawDataType::GoHttp2Uprobe,
+                    stream_id: Some(7),
+                    is_on_blacklist: blocked,
+                    ..Default::default()
+                };
+                let request_end = HttpInfo {
+                    is_req_end: true,
+                    is_on_blacklist: false,
+                    ..request.clone()
+                };
+                let response = HttpInfo {
+                    msg_type: LogMessageType::Response,
+                    raw_data_type: L7ProtoRawDataType::GoHttp2Uprobe,
+                    stream_id: Some(7),
+                    is_resp_end: true,
+                    ..Default::default()
+                };
+                let mut events = vec![(&request, &packets[0], 100), (&response, &packets[1], 200)];
+                if response_first {
+                    events.reverse();
+                }
+                events.push((&request_end, &packets[0], 110));
+                let mut stats = L7PerfStats::default();
+                for (info, packet, time) in events {
+                    if let Some(delta) = cached_perf_event(info, packet, cache.clone(), time) {
+                        stats.sequential_merge(&delta);
+                    }
+                }
+                let expected = if blocked {
+                    L7PerfStats::default()
+                } else {
+                    L7PerfStats {
+                        request_count: 1,
+                        response_count: 1,
+                        rrt_count: 1,
+                        rrt_sum: 100,
+                        rrt_max: 100,
+                        ..Default::default()
+                    }
+                };
+                assert_eq!(
+                    stats, expected,
+                    "blocked={blocked}, response_first={response_first}"
+                );
+                let mut cache = cache.borrow_mut();
+                assert!(cache.rrt_cache.collect_flow_perf_stats(1).is_none());
+                assert_eq!(cache.timeout_cache.pop_timeout_count(1, true, false), 0);
+            }
+        }
+    }
+
+    #[test]
+    fn cached_response_first_fragment_is_not_recounted_at_flow_end() {
+        let packets =
+            Capture::load_pcap(Path::new(FILE_DIR).join("httpv1.pcap")).collect::<Vec<_>>();
+        let cache = Rc::new(RefCell::new(L7PerfCache::new(100)));
+        let response = HttpInfo {
+            msg_type: LogMessageType::Response,
+            raw_data_type: L7ProtoRawDataType::GoHttp2Uprobe,
+            stream_id: Some(7),
+            is_resp_end: true,
+            ..Default::default()
+        };
+        let request = HttpInfo {
+            msg_type: LogMessageType::Request,
+            raw_data_type: L7ProtoRawDataType::GoHttp2Uprobe,
+            stream_id: Some(7),
+            ..Default::default()
+        };
+        assert!(cached_perf_event(&response, &packets[1], cache.clone(), 200).is_none());
+        let stats = cached_perf_event(&request, &packets[0], cache.clone(), 100).unwrap();
+        assert_eq!(stats.response_count, 1);
+        assert_eq!(stats.request_count, 0);
+        let mut cache = cache.borrow_mut();
+        assert!(cache.rrt_cache.collect_flow_perf_stats(1).is_none());
+        assert_eq!(cache.timeout_cache.pop_timeout_count(1, true, false), 0);
+    }
+
+    #[test]
+    fn cached_response_fragments_wait_for_request_filter_and_preserve_error() {
+        let packets =
+            Capture::load_pcap(Path::new(FILE_DIR).join("httpv1.pcap")).collect::<Vec<_>>();
+        for blocked in [false, true] {
+            let cache = Rc::new(RefCell::new(L7PerfCache::new(100)));
+            let response = HttpInfo {
+                msg_type: LogMessageType::Response,
+                raw_data_type: L7ProtoRawDataType::GoHttp2Uprobe,
+                stream_id: Some(7),
+                status: L7ResponseStatus::Ok,
+                ..Default::default()
+            };
+            let response_end = HttpInfo {
+                is_resp_end: true,
+                status: L7ResponseStatus::ServerError,
+                ..response.clone()
+            };
+            let request = HttpInfo {
+                msg_type: LogMessageType::Request,
+                raw_data_type: L7ProtoRawDataType::GoHttp2Uprobe,
+                stream_id: Some(7),
+                is_req_end: true,
+                is_on_blacklist: blocked,
+                ..Default::default()
+            };
+            assert!(cached_perf_event(&response, &packets[1], cache.clone(), 200).is_none());
+            assert!(cached_perf_event(&response_end, &packets[1], cache.clone(), 210).is_none());
+            let stats =
+                cached_perf_event(&request, &packets[0], cache.clone(), 100).unwrap_or_default();
+            let expected = if blocked {
+                L7PerfStats::default()
+            } else {
+                L7PerfStats {
+                    request_count: 1,
+                    response_count: 1,
+                    err_server_count: 1,
+                    rrt_count: 1,
+                    rrt_sum: 100,
+                    rrt_max: 100,
+                    ..Default::default()
+                }
+            };
+            assert_eq!(stats, expected, "blocked={blocked}");
+            let mut cache = cache.borrow_mut();
+            assert!(cache.rrt_cache.collect_flow_perf_stats(1).is_none());
+            assert_eq!(cache.timeout_cache.pop_timeout_count(1, true, false), 0);
+        }
+    }
+
+    #[test]
+    fn late_blacklist_retires_only_its_own_pending_request() {
+        let packets =
+            Capture::load_pcap(Path::new(FILE_DIR).join("httpv1.pcap")).collect::<Vec<_>>();
+        for response_discovers_blacklist in [false, true] {
+            let cache = Rc::new(RefCell::new(L7PerfCache::new(100)));
+            let request = HttpInfo {
+                msg_type: LogMessageType::Request,
+                raw_data_type: L7ProtoRawDataType::GoHttp2Uprobe,
+                stream_id: Some(7),
+                ..Default::default()
+            };
+            let other_pending = HttpInfo {
+                stream_id: Some(8),
+                is_req_end: true,
+                ..request.clone()
+            };
+            cached_perf_event(&other_pending, &packets[0], cache.clone(), 90);
+            cached_perf_event(&request, &packets[0], cache.clone(), 100);
+            assert_eq!(
+                cache
+                    .borrow_mut()
+                    .timeout_cache
+                    .get_or_insert_mut(1)
+                    .in_cache[0],
+                2
+            );
+
+            let request_end = HttpInfo {
+                is_req_end: true,
+                is_on_blacklist: !response_discovers_blacklist,
+                ..request.clone()
+            };
+            let response_end = HttpInfo {
+                msg_type: LogMessageType::Response,
+                is_resp_end: true,
+                is_on_blacklist: response_discovers_blacklist,
+                ..request.clone()
+            };
+            let mut events = vec![
+                (&request_end, &packets[0], 110),
+                (&response_end, &packets[1], 200),
+            ];
+            if response_discovers_blacklist {
+                events.reverse();
+            }
+            for (info, packet, time) in events {
+                assert_eq!(
+                    cached_perf_event(info, packet, cache.clone(), time).unwrap_or_default(),
+                    L7PerfStats::default()
+                );
+                assert_eq!(
+                    cache
+                        .borrow_mut()
+                        .timeout_cache
+                        .get_or_insert_mut(1)
+                        .in_cache[0],
+                    1,
+                    "the other stream's pending request was changed"
+                );
+            }
+            let mut cache = cache.borrow_mut();
+            assert!(cache.rrt_cache.collect_flow_perf_stats(1).is_none());
+            assert_eq!(cache.timeout_cache.pop_timeout_count(1, true, false), 1);
+        }
     }
 
     #[test]

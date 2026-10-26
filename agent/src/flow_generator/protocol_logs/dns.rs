@@ -540,22 +540,28 @@ impl DnsLog {
 mod tests {
     use super::*;
 
-    use std::{cell::RefCell, collections::HashMap, fs, path::Path, rc::Rc, time::Duration};
+    use std::{cell::RefCell, fs, path::Path, rc::Rc};
 
+    #[cfg(feature = "libtrace")]
     use public::{buffer::BatchedBox, proto::agent::AgentType};
+    #[cfg(feature = "libtrace")]
+    use std::{collections::HashMap, time::Duration};
 
+    #[cfg(feature = "libtrace")]
     use crate::{
-        common::{
-            flow::{L7Stats, PacketDirection},
-            l7_protocol_log::L7PerfCache,
-            MetaPacket,
-        },
+        common::flow::L7Stats,
         config::{
             config::{TagFilterOperator, UserConfig},
-            handler::{BlacklistTrie, FlowConfig, LogParserConfig, ModuleConfig},
+            handler::{BlacklistTrie, FlowConfig, ModuleConfig},
         },
-        flow_generator::{flow_map, L7_RRT_CACHE_CAPACITY},
-        utils::test_utils::{load_packets, FlowMapTesterBuilder},
+        flow_generator::flow_map,
+        utils::test_utils::FlowMapTesterBuilder,
+    };
+    use crate::{
+        common::{flow::PacketDirection, l7_protocol_log::L7PerfCache, MetaPacket},
+        config::handler::LogParserConfig,
+        flow_generator::L7_RRT_CACHE_CAPACITY,
+        utils::test_utils::load_packets,
     };
 
     const FILE_DIR: &str = "resources/test/flow_generator/dns";
@@ -818,6 +824,7 @@ mod tests {
     }
 
     #[test]
+    #[cfg(feature = "libtrace")]
     fn perf_with_blacklist() {
         let module_config = ModuleConfig {
             flow: FlowConfig {

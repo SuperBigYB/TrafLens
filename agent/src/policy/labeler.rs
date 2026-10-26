@@ -70,7 +70,10 @@ impl EpcNetIpKey {
     fn clone_by_masklen(&self, masklen: usize, is_ipv4: bool) -> Self {
         let max_prefix = if is_ipv4 { IPV4_BITS } else { IPV6_BITS };
         Self {
-            ip: self.ip & (u128::MAX << max_prefix.saturating_sub(masklen)),
+            ip: self.ip
+                & u128::MAX
+                    .checked_shl(max_prefix.saturating_sub(masklen) as u32)
+                    .unwrap_or(0),
             epc_id: self.epc_id,
             masklen: masklen as u8,
         }
@@ -846,6 +849,32 @@ mod tests {
     use super::*;
     use crate::common::platform_data::IpSubnet;
     use public::utils::net::MacAddr;
+
+    #[test]
+    fn cidr_key_matches_all_ipv6_prefixes() {
+        let ip: Ipv6Addr = "fe80::5a47:caff:fe77:66e2".parse().unwrap();
+        let original = EpcNetIpKey::new(&IpAddr::V6(ip), 128, 42);
+        for prefix in 0..=IPV6_BITS {
+            let actual = original.clone_by_masklen(prefix, false);
+            let network = ipnet::Ipv6Net::new(ip, prefix as u8).unwrap().network();
+            assert_eq!(actual.ip, u128::from(network), "IPv6 /{prefix}");
+            assert_eq!(actual.masklen, prefix as u8);
+            assert_eq!(actual.epc_id, 42);
+        }
+    }
+
+    #[test]
+    fn cidr_key_matches_all_ipv4_prefixes() {
+        let ip = Ipv4Addr::new(192, 168, 254, 7);
+        let original = EpcNetIpKey::new(&IpAddr::V4(ip), 32, 42);
+        for prefix in 0..=IPV4_BITS {
+            let actual = original.clone_by_masklen(prefix, true);
+            let network = ipnet::Ipv4Net::new(ip, prefix as u8).unwrap().network();
+            assert_eq!(actual.ip, u32::from(network) as u128, "IPv4 /{prefix}");
+            assert_eq!(actual.masklen, prefix as u8);
+            assert_eq!(actual.epc_id, 42);
+        }
+    }
 
     #[test]
     fn test_mac_normal() {

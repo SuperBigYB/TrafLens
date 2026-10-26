@@ -29,9 +29,9 @@ use crate::{
     flow_generator::{
         protocol_logs::{
             fastcgi::FastCGIInfo, pb_adapter::L7ProtocolSendLog, AmqpInfo, BrpcInfo, DnsInfo,
-            DubboInfo, HttpInfo, KafkaInfo, MemcachedInfo, MongoDBInfo, MqttInfo, MysqlInfo,
-            NatsInfo, OpenWireInfo, PingInfo, PostgreInfo, PulsarInfo, RedisInfo, RocketmqInfo,
-            SofaRpcInfo, TarsInfo, ZmtpInfo,
+            DubboInfo, HttpInfo, KafkaInfo, L7ResponseStatus, MemcachedInfo, MongoDBInfo, MqttInfo,
+            MysqlInfo, NatsInfo, OpenWireInfo, PingInfo, PostgreInfo, PulsarInfo, RedisInfo,
+            RocketmqInfo, SofaRpcInfo, TarsInfo, ZmtpInfo,
         },
         AppProtoHead, Result,
     },
@@ -285,36 +285,53 @@ where
             //
             // If the first log is a response, its perf stats will not be counted here.
             // We need to know whether its corresponding request is on blacklist before accounting.
-            return if !cur_info.on_blacklist {
-                let stats = L7PerfStats::from(&cur_info);
-                if cur_info.msg_type == LogMessageType::Request {
-                    timeout_counter.in_cache[index] += 1;
+            return match cur_info.msg_type {
+                LogMessageType::Request => {
+                    let stats = if !cur_info.on_blacklist {
+                        timeout_counter.in_cache[index] += 1;
+                        Some(L7PerfStats::from(&cur_info))
+                    } else {
+                        None
+                    };
                     rtt_cache.put(key, cur_info);
+                    stats
                 }
-                Some(stats)
-            } else {
-                None
+                LogMessageType::Response => {
+                    rtt_cache.put(key, cur_info);
+                    None
+                }
+                _ if !cur_info.on_blacklist => Some(L7PerfStats::from(&cur_info)),
+                _ => None,
             };
         };
 
+        let previous_stats = L7PerfStats::from(&*prev_info);
+        let previously_merged = prev_info
+            .multi_merge_info
+            .as_ref()
+            .is_some_and(|info| info.merged);
         let mut keep_prev = false;
         if let Some(merge_info) = prev_info.multi_merge_info.as_mut() {
             let cur_merge_info = cur_info.multi_merge_info.as_ref().unwrap();
             merge_info.req_end |= cur_merge_info.req_end;
             merge_info.resp_end |= cur_merge_info.resp_end;
 
+            if !merge_info.merged
+                && prev_info.msg_type == LogMessageType::Request
+                && !prev_info.on_blacklist
+                && (cur_info.on_blacklist || prev_info.msg_type != cur_info.msg_type)
+            {
+                timeout_counter.in_cache[index] = timeout_counter.in_cache[index].saturating_sub(1);
+            }
             if prev_info.msg_type != cur_info.msg_type && !merge_info.merged {
                 merge_info.merged = true;
-                if !(prev_info.on_blacklist || cur_info.on_blacklist) {
-                    timeout_counter.in_cache[index] =
-                        timeout_counter.in_cache[index].saturating_sub(1);
-                }
             }
 
             // keep previous only when
             // 1. multi merge
             // 2. req_end && resp_end == false
             keep_prev = !(merge_info.req_end && merge_info.resp_end);
+            prev_info.on_blacklist |= cur_info.on_blacklist;
         } else {
             if prev_info.msg_type == LogMessageType::Request && !prev_info.on_blacklist {
                 timeout_counter.in_cache[index] = timeout_counter.in_cache[index].saturating_sub(1);
@@ -347,26 +364,69 @@ where
             }
 
             result
+        } else if cur_info.is_request_of(prev_info) {
+            let result = if !(prev_info.on_blacklist || cur_info.on_blacklist) {
+                let mut stats = L7PerfStats::from(&cur_info);
+                if !previously_merged {
+                    stats.sequential_merge(&previous_stats);
+                    let rrt = prev_info.time - cur_info.time;
+                    if rrt > param.rrt_timeout as u64 {
+                        timeout_counter.timeout[index] += 1;
+                    } else {
+                        stats.update_rrt(rrt);
+                    }
+                }
+                Some(stats)
+            } else {
+                None
+            };
+            if !keep_prev {
+                rtt_cache.pop(&key);
+            }
+            result
         } else if !self.need_merge() {
             debug!(
                 "can not calculate rrt, flow_id: {}, previous log type: {:?}, previous time: {}, current log type: {:?}, current time: {}",
                 param.flow_id, prev_info.msg_type, prev_info.time, cur_info.msg_type, cur_info.time,
             );
 
+            let mut stats = if prev_info.msg_type == LogMessageType::Response {
+                previous_stats
+            } else {
+                L7PerfStats::default()
+            };
             if !keep_prev {
                 rtt_cache.pop(&key);
             }
-
-            if !cur_info.on_blacklist {
-                let stats = L7PerfStats::from(&cur_info);
+            if cur_info.msg_type == LogMessageType::Response {
+                rtt_cache.put(key, cur_info);
+            } else {
+                if !cur_info.on_blacklist {
+                    stats.sequential_merge(&L7PerfStats::from(&cur_info));
+                }
                 if cur_info.msg_type == LogMessageType::Request {
+                    if !cur_info.on_blacklist {
+                        timeout_counter.in_cache[index] += 1;
+                    }
                     rtt_cache.put(key, cur_info);
                 }
+            }
+            if stats != L7PerfStats::default() {
                 Some(stats)
             } else {
                 None
             }
         } else {
+            if prev_info.msg_type == LogMessageType::Response
+                && cur_info.msg_type == LogMessageType::Response
+                && !previously_merged
+            {
+                if cur_info.resp_status != L7ResponseStatus::Unknown {
+                    prev_info.resp_status = cur_info.resp_status;
+                }
+                return None;
+            }
+            let on_blacklist = prev_info.on_blacklist || cur_info.on_blacklist;
             if !prev_info.on_blacklist
                 && prev_info.msg_type != cur_info.msg_type
                 && !prev_info.multi_merge_info.as_ref().unwrap().merged
@@ -376,7 +436,7 @@ where
             if !keep_prev {
                 rtt_cache.pop(&key);
             }
-            if !cur_info.on_blacklist {
+            if !on_blacklist {
                 Some(L7PerfStats::from(&cur_info))
             } else {
                 None
