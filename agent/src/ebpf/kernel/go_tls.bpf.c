@@ -301,6 +301,18 @@ UPROG(go_tls_read_exit) (struct pt_regs *ctx)
 		submit_debug(4, 3, bytes_count);
 	}
 
+	struct process_data_extra extra = {
+		.vecs = false,
+		.source = DATA_SOURCE_GO_TLS_UPROBE,
+		.coroutine_id = key.goid,
+		.is_go_process = true,
+	};
+
+#ifdef LINUX_VER_KFUNC
+	/* End the large stack object's lifetime before inlined L7 processing.
+	 * The same value is already required in the active-args map. */
+	{
+#endif
 	struct data_args_t read_args = {
 		.buf = c->buffer,
 		.fd = c->fd,
@@ -309,17 +321,25 @@ UPROG(go_tls_read_exit) (struct pt_regs *ctx)
 		.tcp_seq = c->tcp_seq,
 	};
 
-	struct process_data_extra extra = {
-		.vecs = false,
-		.source = DATA_SOURCE_GO_TLS_UPROBE,
-		.coroutine_id = key.goid,
-		.is_go_process = true,
-	};
 
 	submit_debug_str(4, 4, c->buffer);
 	bpf_map_delete_elem(&tls_conn_map, &key);
+#ifdef LINUX_VER_KFUNC
+	if (active_read_args_map__update(&id, &read_args) != 0) {
+		active_read_args_map__delete(&id);
+		return 0;
+	}
+	}
+	struct data_args_t *process_args = active_read_args_map__lookup(&id);
+	if (process_args == NULL) {
+		active_read_args_map__delete(&id);
+		return 0;
+	}
+#else
 	active_read_args_map__update(&id, &read_args);
-	if (!process_data((struct pt_regs *)ctx, id, T_INGRESS, &read_args,
+	struct data_args_t *process_args = &read_args;
+#endif
+	if (!process_data((struct pt_regs *)ctx, id, T_INGRESS, process_args,
 			  bytes_count, &extra)) {
 		submit_debug(4, 5, 0);
 #if !defined(LINUX_VER_KFUNC) && !defined(LINUX_VER_5_2_PLUS)

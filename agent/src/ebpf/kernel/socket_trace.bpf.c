@@ -184,6 +184,7 @@ MAP_ARRAY(proto_infer_cache_map, __u32, struct proto_infer_cache_t, PROTO_INFER_
 // Store IO event information
 MAP_PERARRAY(io_event_buffer, __u32, struct __io_event_buffer, 1, FEATURE_FLAG_SOCKET_TRACER)
 MAP_ARRAY(socket_scope_map, __u32, struct socket_scope_config, 1, FEATURE_FLAG_SOCKET_TRACER)
+MAP_PERARRAY(socket_scope_scratch_map, __u32, struct socket_scope_scratch, 1, FEATURE_FLAG_SOCKET_TRACER)
 
 static __inline bool socket_scope_matches_current(void)
 {
@@ -195,7 +196,10 @@ static __inline bool socket_scope_matches_current(void)
 		return false;
 	if (scope->netns_id == 0)
 		return true;
-	return socket_scope_allows_task(scope, (void *)bpf_get_current_task());
+	struct socket_scope_scratch *scratch = socket_scope_scratch_map__lookup(&zero);
+	if (!scratch)
+		return false;
+	return socket_scope_allows_task(scope, (void *)bpf_get_current_task(), scratch);
 }
 
 /* *INDENT-ON* */
@@ -3377,8 +3381,10 @@ static __inline int __output_data_common(void *ctx,
 					 int max_size, bool is_close,
 					 __u32 reassembly_bytes)
 {
+	/* Both callers have already acquired push_buffer_refcnt. A denied
+	 * record must release it without reading or copying any payload. */
 	if (!socket_scope_matches_current())
-		return 0;
+		goto exit;
 
 	__u32 k0 = 0;
 	char *buffer = NULL;

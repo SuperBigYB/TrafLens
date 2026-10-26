@@ -21,9 +21,11 @@ C_TEST = r"""
 #include <linux/types.h>
 #include <linux/btf.h>
 static int reads, fail_read, write_before_error, vectors;
+static void (*read_hook)(void);
 static const void *regions[3]; static size_t sizes[3];
 static long fake_read(void *dst, __u32 n, const void *src) {
     reads++;
+    if (read_hook) read_hook();
     if (reads == fail_read && !write_before_error) return -EFAULT;
     for (int i=0;i<3;i++) {
         uintptr_t a=(uintptr_t)src,b=(uintptr_t)regions[i];
@@ -34,12 +36,42 @@ static long fake_read(void *dst, __u32 n, const void *src) {
     }
     return -EFAULT;
 }
+static void (*add_hook)(volatile __u64 *);
+static __u64 fake_xadd_add(volatile __u64 *p,__u64 value) {
+    __u64 before=__atomic_fetch_add(p,value,__ATOMIC_SEQ_CST);
+    if(add_hook)add_hook(p);
+    return before;
+}
+#define __sync_fetch_and_add(p,n) fake_xadd_add((p),(n))
 #define __BPF_TRACING__ 1
 #define bpf_probe_read fake_read
 #include "kernel/include/socket_scope.h"
 #undef __BPF_TRACING__
 #include "user/socket_scope.h"
 #define CHECK(x) do { vectors++; assert(x); } while(0)
+static const struct socket_scope_config *hook_scope;
+static void *hook_task;
+static struct socket_scope_scratch *hook_scratch;
+static int nested_denied;
+static int handed_off;
+static void drop_competing_attempt(volatile __u64 *depth) {
+    add_hook=NULL;
+    CHECK(__atomic_fetch_sub(depth,1,__ATOMIC_SEQ_CST)==2);
+    handed_off++;
+}
+static void nested_hook(void) {
+    if(!socket_scope_allows_task(hook_scope,hook_task,hook_scratch)) nested_denied++;
+}
+static struct socket_scope_config wrapper_scope;
+static struct socket_scope_scratch *wrapper_scratch;
+static int scratch_lookups,current_task_calls;
+static void *wrapper_task;
+static const struct socket_scope_config *socket_scope_map__lookup(__u32 *k) {(void)k;return &wrapper_scope;}
+static struct socket_scope_scratch *socket_scope_scratch_map__lookup(__u32 *k) {(void)k;scratch_lookups++;return wrapper_scratch;}
+static uint64_t fake_current_task(void) {current_task_calls++;return (uintptr_t)wrapper_task;}
+#define bpf_get_current_task fake_current_task
+@MATCH_CURRENT@
+#undef bpf_get_current_task
 struct fake_common { char padding[12]; __u32 inum; };
 struct fake_net { char padding[32]; struct fake_common ns; };
 struct fake_proxy { char padding[24]; struct fake_net *net; };
@@ -57,28 +89,74 @@ static void kernel_vectors(void) {
         .net_ns_offset=offsetof(struct fake_net,ns),
         .ns_inum_offset=offsetof(struct fake_common,inum)};
     struct socket_scope_config cfg=good;
-    reads=0; CHECK(socket_scope_allows_task(&cfg,&task)); CHECK(reads==3);
-    cfg.netns_id=0;reads=0;CHECK(socket_scope_allows_task(&cfg,NULL));CHECK(reads==0);
-    CHECK(!socket_scope_allows_task(NULL,&task));
-    cfg=good; CHECK(!socket_scope_allows_task(&cfg,NULL));
-    cfg.validated=0;CHECK(!socket_scope_allows_task(&cfg,&task));
-    cfg.validated=2;CHECK(!socket_scope_allows_task(&cfg,&task));
-    cfg=good;cfg.netns_id=43;CHECK(!socket_scope_allows_task(&cfg,&task));
-    cfg=good;net.ns.inum=0;CHECK(!socket_scope_allows_task(&cfg,&task));net.ns.inum=42;
-    task.nsproxy=NULL;CHECK(!socket_scope_allows_task(&cfg,&task));task.nsproxy=&proxy;
-    proxy.net=NULL;CHECK(!socket_scope_allows_task(&cfg,&task));proxy.net=&net;
+    struct socket_scope_scratch scratch={0};
+    reads=0; CHECK(socket_scope_allows_task(&cfg,&task,&scratch)); CHECK(reads==3);
+    cfg.netns_id=0;reads=0;CHECK(socket_scope_allows_task(&cfg,NULL,&scratch));CHECK(reads==0);
+    CHECK(!socket_scope_allows_task(NULL,&task,&scratch));
+    cfg=good; CHECK(!socket_scope_allows_task(&cfg,NULL,&scratch));
+    cfg.validated=0;CHECK(!socket_scope_allows_task(&cfg,&task,&scratch));
+    cfg.validated=2;CHECK(!socket_scope_allows_task(&cfg,&task,&scratch));
+    cfg=good;cfg.netns_id=43;CHECK(!socket_scope_allows_task(&cfg,&task,&scratch));
+    cfg=good;net.ns.inum=0;CHECK(!socket_scope_allows_task(&cfg,&task,&scratch));net.ns.inum=42;
+    task.nsproxy=NULL;CHECK(!socket_scope_allows_task(&cfg,&task,&scratch));task.nsproxy=&proxy;
+    proxy.net=NULL;CHECK(!socket_scope_allows_task(&cfg,&task,&scratch));proxy.net=&net;
     for(int n=1;n<=3;n++) {
-        reads=0;fail_read=n;write_before_error=0;CHECK(!socket_scope_allows_task(&cfg,&task));
-        reads=0;write_before_error=1;CHECK(!socket_scope_allows_task(&cfg,&task));
+        reads=0;fail_read=n;write_before_error=0;CHECK(!socket_scope_allows_task(&cfg,&task,&scratch));
+        reads=0;write_before_error=1;CHECK(!socket_scope_allows_task(&cfg,&task,&scratch));
     }
     fail_read=0;write_before_error=0;
     __u32 *offsets[]={&cfg.task_nsproxy_offset,&cfg.nsproxy_net_offset,&cfg.net_ns_offset,&cfg.ns_inum_offset};
     for(int n=0;n<4;n++) {
-        cfg=good;*offsets[n]=SOCKET_SCOPE_OFFSET_MAX+1;CHECK(!socket_scope_allows_task(&cfg,&task));
+        cfg=good;*offsets[n]=SOCKET_SCOPE_OFFSET_MAX+1;CHECK(!socket_scope_allows_task(&cfg,&task,&scratch));
     }
-    cfg=good;cfg.net_ns_offset=65535;CHECK(!socket_scope_allows_task(&cfg,&task));
-    cfg=good;cfg.task_nsproxy_offset=3;CHECK(!socket_scope_allows_task(&cfg,&task));
-    cfg=good;task.nsproxy=(void *)1;CHECK(!socket_scope_allows_task(&cfg,&task));
+    cfg=good;cfg.net_ns_offset=65535;CHECK(!socket_scope_allows_task(&cfg,&task,&scratch));
+    cfg=good;cfg.task_nsproxy_offset=3;CHECK(!socket_scope_allows_task(&cfg,&task,&scratch));
+    cfg=good;task.nsproxy=(void *)1;CHECK(!socket_scope_allows_task(&cfg,&task,&scratch));
+    task.nsproxy=&proxy;cfg=good;reads=0;
+    CHECK(!socket_scope_allows_task(&cfg,&task,NULL));
+    CHECK(reads==0);
+    scratch.depth=1;scratch.cursor.pointer=(void *)0x1234;
+    CHECK(!socket_scope_allows_task(&cfg,&task,&scratch));
+    CHECK(scratch.depth==1 && scratch.cursor.pointer==(void *)0x1234 && reads==0);
+    scratch.depth=0;
+    for(int n=1;n<=3;n++) {
+        reads=0;fail_read=n;write_before_error=1;
+        CHECK(!socket_scope_allows_task(&cfg,&task,&scratch));
+        CHECK(scratch.depth==0);
+        fail_read=0;reads=0;write_before_error=0;
+        CHECK(socket_scope_allows_task(&cfg,&task,&scratch));
+        CHECK(scratch.depth==0);
+    }
+    hook_scope=&cfg;hook_task=&task;hook_scratch=&scratch;
+    nested_denied=0;read_hook=nested_hook;reads=0;
+    CHECK(socket_scope_allows_task(&cfg,&task,&scratch));
+    read_hook=NULL;
+    CHECK(nested_denied==3 && reads==3 && scratch.depth==0);
+    struct socket_scope_scratch other_cpu={0};other_cpu.depth=1;
+    CHECK(socket_scope_allows_task(&cfg,&task,&scratch));
+    CHECK(!socket_scope_allows_task(&cfg,&task,&other_cpu));
+    CHECK(other_cpu.depth==1 && scratch.depth==0);
+    other_cpu.depth=0;
+    CHECK(socket_scope_allows_task(&cfg,&task,&other_cpu));
+    CHECK(other_cpu.depth==0 && scratch.depth==0);
+    wrapper_scope=good;wrapper_scope.netns_id=0;wrapper_scratch=NULL;wrapper_task=NULL;
+    scratch_lookups=current_task_calls=0;
+    CHECK(socket_scope_matches_current());
+    CHECK(scratch_lookups==0 && current_task_calls==0);
+    wrapper_scope=good;wrapper_task=&task;
+    CHECK(!socket_scope_matches_current());
+    CHECK(scratch_lookups==1 && current_task_calls==0);
+    wrapper_scratch=&scratch;
+    CHECK(socket_scope_matches_current());
+    CHECK(scratch_lookups==2 && current_task_calls==1 && scratch.depth==0);
+    scratch.depth=2;scratch.cursor.pointer=(void *)0x4321;reads=0;
+    CHECK(!socket_scope_allows_task(&cfg,&task,&scratch));
+    CHECK(scratch.depth==2 && scratch.cursor.pointer==(void *)0x4321 && reads==0);
+    CHECK(__atomic_fetch_sub(&scratch.depth,1,__ATOMIC_SEQ_CST)==2);
+    handed_off=0;add_hook=drop_competing_attempt;
+    CHECK(socket_scope_allows_task(&cfg,&task,&scratch));
+    CHECK(handed_off==1 && scratch.depth==0);
+    CHECK(sizeof(struct socket_scope_scratch)==16);
     printf("kernel_vectors=%d\n",vectors);
 }
 struct btf { int present; };
@@ -268,6 +346,81 @@ def body(source, name):
     raise AssertionError("unterminated function " + name)
 
 
+C_OUTPUT_REFCNT_TEST = r'''
+#include <assert.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stddef.h>
+#include <string.h>
+#include <stdio.h>
+#include <linux/types.h>
+static int fail_read,reads,copies,copy_result,finalizes;
+static int bpf_probe_read(void *dst,unsigned len,const void *src) {
+    if(++reads==fail_read)return -1;
+    memcpy(dst,src,len);return 0;
+}
+#define __BPF_TRACING__ 1
+#include "kernel/include/socket_scope.h"
+struct net {__u32 inum;};
+struct proxy {struct net *net;};
+struct task {struct proxy *proxy;};
+static struct net ns={42};static struct proxy proxy={&ns};
+static struct task task={&proxy};
+static struct socket_scope_scratch scratch;
+static struct socket_scope_config scope={.netns_id=42,.validated=1};
+static bool socket_scope_matches_current(void) {return socket_scope_allows_task(&scope,&task,&scratch);}
+struct tracer_ctx_s {int push_buffer_refcnt;__u64 last_period_timestamp;};
+struct __socket_data {int source;unsigned data_len;char data[256];};
+struct __socket_data_buffer {unsigned len,events_num;char data[4096];};
+struct data_args_t {const char *buf;unsigned extra_iovlen;};
+enum traffic_direction {T_INGRESS,T_EGRESS};
+#define DATA_SOURCE_IO_EVENT 9
+#define MAX_EVENTS_BURST 32
+#define PERIODIC_PUSH_DELAY_THRESHOLD_NS 100
+static void *io_event_buffer__lookup(__u32 *key) {(void)key;return NULL;}
+static int output_data_copy(const struct data_args_t *args,bool vecs,
+struct __socket_data_buffer *b,struct __socket_data *v,int max_size,
+__u32 reassembly_bytes,char *buffer) {
+(void)args;(void)vecs;(void)b;(void)v;(void)max_size;(void)reassembly_bytes;(void)buffer;
+copies++;return copy_result;
+}
+static __u64 bpf_ktime_get_ns(void) {return 0;}
+static void finalize_data_output(void *ctx,struct tracer_ctx_s *t,__u64 n,__u64 d,
+struct __socket_data_buffer *b) {(void)ctx;(void)t;(void)n;(void)d;(void)b;finalizes++;}
+static int output_extra_data_common(struct data_args_t *a,struct __socket_data_buffer*b,
+struct __socket_data*v,int m,__u32 r){(void)a;(void)b;(void)v;(void)m;(void)r;return 0;}
+static int __output_data_common(void *ctx,struct tracer_ctx_s *tracer_ctx,
+struct __socket_data_buffer *v_buff,const struct data_args_t *args,
+enum traffic_direction dir,bool vecs,int max_size,bool is_close,__u32 reassembly_bytes)@OUTPUT_BODY@
+static int assertions;
+#define CHECK(c) do{assertions++;assert(c);}while(0)
+static void run(int target,int read_fail,int busy,int copy_error,int close) {
+    scope.netns_id=target;reads=0;fail_read=read_fail;copies=0;copy_result=copy_error?-1:4;
+    scratch.depth=busy;scratch.cursor.pointer=(void*)0x1234;
+    struct tracer_ctx_s t={0};struct __socket_data_buffer b={0};
+    struct data_args_t args={.buf="test"};
+    /* This is the acquire contract of both actual callers. */
+    __sync_fetch_and_add(&t.push_buffer_refcnt,1);
+    CHECK(t.push_buffer_refcnt==1);
+    CHECK(__output_data_common(NULL,&t,&b,&args,T_INGRESS,false,1024,close,0)==0);
+    CHECK(t.push_buffer_refcnt==0);
+    CHECK(scratch.depth==(unsigned)busy);
+    if(target!=42 || read_fail || busy) {
+        CHECK(copies==0 && b.len==0 && b.events_num==0);
+        if(busy)CHECK(scratch.cursor.pointer==(void*)0x1234);
+    } else if(close)CHECK(copies==0 && b.events_num==1);
+    else if(copy_error)CHECK(copies==1 && b.events_num==0);
+    else CHECK(copies==1 && b.events_num==1);
+}
+int main(void){
+    run(43,0,0,0,0);run(43,0,0,0,1);
+    for(int n=1;n<=3;n++){run(42,n,0,0,0);run(42,0,0,0,0);}
+    run(42,0,1,0,0);run(42,0,1,0,1);
+    run(42,0,0,1,0);run(42,0,0,0,1);
+    printf("{\"pass\":true,\"refcount_vectors\":12,\"c_assertions\":%d}\n",assertions);
+}
+'''
+
 class SocketScopeTests(unittest.TestCase):
     def test_real_helpers_independent_layouts_and_failures(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -276,7 +429,9 @@ class SocketScopeTests(unittest.TestCase):
             fake.mkdir(parents=True)
             (fake / "btf.h").write_text("#include <linux/btf.h>\n")
             source = directory / "scope.c"
-            source.write_text(C_TEST)
+            kernel = (ROOT / "kernel/socket_trace.bpf.c").read_text()
+            predicate = "static bool socket_scope_matches_current(void) {" + body(kernel, "socket_scope_matches_current") + "}"
+            source.write_text(C_TEST.replace("@MATCH_CURRENT@", predicate))
             output = directory / "scope"
             subprocess.run([CC, "-std=gnu11", "-O2", "-Wall", "-Wextra", "-Werror",
                             "-I", str(directory), "-I", str(ROOT), str(source),
@@ -318,7 +473,9 @@ class SocketScopeTests(unittest.TestCase):
             with self.subTest(function=name):
                 self.assertTrue(body(socket, name).lstrip().startswith(
                     "if (!socket_scope_matches_current())") or name == "process_data" and
-                    body(socket, name).lstrip().startswith("/* Reject before"))
+                    body(socket, name).lstrip().startswith("/* Reject before") or
+                    name == "__output_data_common" and
+                    body(socket, name).lstrip().startswith("/* Both callers"))
                 self.assertIn("socket_scope_matches_current()", body(socket, name))
         io = (ROOT / "kernel/files_rw.bpf.c").read_text()
         self.assertTrue(body(io, "trace_io_event_common").lstrip().startswith(
@@ -378,6 +535,42 @@ class SocketScopeTests(unittest.TestCase):
         kernel = (ROOT / "kernel/socket_trace.bpf.c").read_text()
         predicate = body(kernel, "socket_scope_matches_current")
         self.assertLess(predicate.index("scope->netns_id == 0"), predicate.index("bpf_get_current_task()"))
+        self.assertLess(predicate.index("scope->netns_id == 0"), predicate.index("socket_scope_scratch_map__lookup"))
+        self.assertIn('asm volatile("" ::: "memory")', header)
+        self.assertIn('asm volatile("" : "+r"(allowed) :: "memory")', header)
+        self.assertIn("__sync_fetch_and_add(&scratch->depth, 1);", header)
+        self.assertIn("__sync_fetch_and_add(&scratch->depth, (__u64)-1);", header)
+        self.assertNotIn("__sync_val_compare_and_swap", header)
+        self.assertNotIn("__atomic_", header)
+
+
+    def test_output_scope_denial_releases_caller_refcount(self):
+        socket = (ROOT / "kernel/socket_trace.bpf.c").read_text()
+        output = body(socket, "__output_data_common")
+        for name in ["__data_submit", "__push_close_event"]:
+            caller = body(socket, name)
+            self.assertLess(caller.index("__sync_fetch_and_add(&tracer_ctx->push_buffer_refcnt, 1)"),
+                            caller.index("__output_data_common("))
+        with tempfile.TemporaryDirectory(prefix="scope-refcount-") as tmp:
+            directory = Path(tmp)
+            source = directory / "refcount.c"
+            source.write_text(C_OUTPUT_REFCNT_TEST.replace("@OUTPUT_BODY@", "{" + output + "}"))
+            binary = directory / "refcount"
+            subprocess.run([CC, "-std=gnu11", "-O2", "-Wall", "-Wextra", "-Werror",
+                            "-Wno-unused-parameter", "-I", str(ROOT), str(source),
+                            "-o", str(binary)], check=True)
+            result = subprocess.run([str(binary)], capture_output=True, text=True,
+                                    preexec_fn=no_core_dump)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            print(result.stdout, end="")
+
+    def test_go_tls_map_arguments_and_failure_cleanup(self):
+        helper = ROOT / "test/socket_scope_go_tls_vectors.py"
+        result = subprocess.run(["python3", str(helper), "--root", str(ROOT),
+                                 "--base-root", str(ROOT)],
+                                capture_output=True, text=True, timeout=40)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        print(result.stdout, end="")
 
 
 if __name__ == "__main__":
