@@ -20,6 +20,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"math"
+	"net/http"
+	"unicode/utf8"
 
 	"github.com/gin-gonic/gin"
 
@@ -120,18 +122,43 @@ func (r Response) JSON() interface{} {
 	return r.RawResponse
 }
 
-// JSONString returns the string representation of the response when Data is a byte slice.
-func (r Response) JSONString() string {
-	if r.Page.IsValid() {
-		return fmt.Sprintf(`{"OPT_STATUS":"%s","DESCRIPTION":"%s","DATA":%s,"PAGE":%s}`, r.OptStatus, r.Description, string(r.Data.([]byte)), string(r.Page.Bytes()))
-	} else {
-		return fmt.Sprintf(`{"OPT_STATUS":"%s","DESCRIPTION":"%s","DATA":%s}`, r.OptStatus, r.Description, string(r.Data.([]byte)))
+// marshalJSON validates raw JSON before the HTTP status or body is written.
+func (r Response) marshalJSON() ([]byte, error) {
+	if raw, ok := r.Data.([]byte); ok {
+		if len(raw) == 0 {
+			r.Data = nil
+		} else {
+			r.Data = json.RawMessage(raw)
+		}
 	}
+	body, err := json.Marshal(r.JSON())
+	if err != nil {
+		return nil, err
+	}
+	// RawMessage validates JSON syntax but permits invalid UTF-8 inside strings.
+	// Check the encoded envelope too, including RawMessage nested in map/list data.
+	if !utf8.Valid(body) {
+		return nil, fmt.Errorf("response contains invalid UTF-8 raw JSON")
+	}
+	return body, nil
 }
 
-// JSONBytes returns the byte slice representation of the response when Data is a byte slice.
+func serializationErrorJSON() []byte {
+	// This fixed string/nil envelope cannot fail JSON encoding.
+	body, _ := json.Marshal(RawResponse{OptStatus: httpcommon.SERVER_ERROR, Description: "internal server error", Data: nil})
+	return body
+}
+
+// JSONString returns the response JSON, embedding byte-slice data as raw JSON.
+func (r Response) JSONString() string { return string(r.JSONBytes()) }
+
+// JSONBytes returns a valid generic error envelope if serialization fails.
 func (r Response) JSONBytes() []byte {
-	return []byte(r.JSONString())
+	body, err := r.marshalJSON()
+	if err != nil {
+		return serializationErrorJSON()
+	}
+	return body
 }
 
 func (r Response) CSVBytes() []byte {
@@ -190,13 +217,16 @@ func (p Page) String() string {
 // JSON writes a JSON response to the client.
 func JSON(c *gin.Context, options ...ResponseSetter) {
 	resp := NewResponse(options...)
-
-	if _, ok := resp.Data.([]byte); ok {
-		c.Data(resp.HttpStatus, gin.MIMEJSON, resp.JSONBytes())
+	body, err := resp.marshalJSON()
+	if err != nil {
+		c.Data(http.StatusInternalServerError, gin.MIMEJSON+"; charset=utf-8", serializationErrorJSON())
 		return
 	}
-
-	c.JSON(resp.HttpStatus, resp.JSON())
+	contentType := gin.MIMEJSON + "; charset=utf-8"
+	if _, ok := resp.Data.([]byte); ok {
+		contentType = gin.MIMEJSON
+	}
+	c.Data(resp.HttpStatus, contentType, body)
 }
 
 // DownloadCSV writes a DownloadCSV file to the response. You should set []byte as the data in the response.
