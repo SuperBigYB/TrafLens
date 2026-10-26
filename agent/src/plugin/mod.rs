@@ -165,8 +165,10 @@ impl CustomInfo {
 
             ) x 2
 
-        l7_protocol_str len: 2 bytes
-        l7_protocol_str:     $(l7_protocol_str len) bytes
+        post-April-2024 layout only:
+            l7_protocol_str len: 2 bytes
+            l7_protocol_str: $(l7_protocol_str len) bytes
+        older layout: these two fields are absent
 
         need_protocol_merge: 1 byte, the msb indicate is need protocol merge, the lsb indicate is end, such as 1 000000 1
 
@@ -193,15 +195,29 @@ impl CustomInfo {
 
             ) x len(kv)
 
-        optional biz type: 1 byte (introduced in 2024; absent means 0)
+        current layout: optional biz type, 1 byte (absent means 0)
+        proven 2023 layout: no biz type; the KV section consumes through EOF
 
-        The KV section has no pair count. After complete pairs, a single
+        The current-layout KV section has no pair count. After complete pairs, a single
         remaining byte is the business type. It cannot be distinguished from
         a truncated next string-length prefix; do not guess other extensions.
         Two or more remaining bytes must form another complete key/value pair
         when has kv is 1. Incomplete pairs are errors, not business-type data.
     */
     fn from_legacy_protocol(buf: &[u8], dir: PacketDirection) -> Result<Self, Error> {
+        // The SDK added protocol_str in April 2024 without a format version.
+        // Prefer that layout, then try the complete pre-2024 layout once.
+        // A byte sequence valid under both is inherently ambiguous; current
+        // layout wins. Each attempt validates all flags and consumes the tail.
+        Self::from_legacy_protocol_layout(buf, dir, true)
+            .or_else(|_| Self::from_legacy_protocol_layout(buf, dir, false))
+    }
+
+    fn from_legacy_protocol_layout(
+        buf: &[u8],
+        dir: PacketDirection,
+        has_protocol_str: bool,
+    ) -> Result<Self, Error> {
         let mut off = 0;
         let mut info = Self::default();
         if buf.len() < 9 {
@@ -330,18 +346,21 @@ impl CustomInfo {
             }
         }
 
-        if let Some(proto_str) = read_wasm_str(buf, &mut off) {
-            info.proto_str = proto_str;
-        } else {
-            return Err(Error::WasmSerializeFail(
-                "buf len too short when parse l7_protocol_str".to_string(),
-            ));
+        if has_protocol_str {
+            info.proto_str = read_wasm_str(buf, &mut off).ok_or_else(|| {
+                Error::WasmSerializeFail("buf len too short when parse l7_protocol_str".to_string())
+            })?;
         }
 
         // need_protocol_merge
         if off + 1 > buf.len() {
             return Err(Error::WasmSerializeFail(
                 "buf len too short when parse need protocol merge".to_string(),
+            ));
+        }
+        if !matches!(buf[off], 0 | 0x80 | 0x81) {
+            return Err(Error::WasmSerializeFail(
+                "invalid legacy merge flags".to_string(),
             ));
         }
         info.need_protocol_merge = buf[off] & 128 != 0;
@@ -405,7 +424,10 @@ impl CustomInfo {
         match has_kv {
             0 => {}
             1 => {
-                while buf.len() - off > 1 {
+                // The proven 2023 layout has no business-type trailer.
+                // Only the current layout may reserve a single final byte.
+                let trailer_len = usize::from(has_protocol_str);
+                while buf.len() - off > trailer_len {
                     let key = read_wasm_str(buf, &mut off).ok_or_else(|| {
                         Error::WasmSerializeFail(
                             "buf len too short when parse attribute key".to_string(),
@@ -428,9 +450,9 @@ impl CustomInfo {
 
         // SDKs predating the business-type extension end immediately after
         // trace/KV data. Preserve their default rather than rejecting the log.
-        match &buf[off..] {
-            [] => {}
-            [biz_type] => info.biz_type = *biz_type,
+        match (has_protocol_str, &buf[off..]) {
+            (_, []) => {}
+            (true, [biz_type]) => info.biz_type = *biz_type,
             _ => {
                 return Err(Error::WasmSerializeFail(
                     "unexpected trailing bytes after legacy attributes".to_string(),

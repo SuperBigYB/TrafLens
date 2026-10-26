@@ -426,3 +426,169 @@ fn custom_async_completion_avoids_session_cache_and_retains_flags() {
         assert_eq!(info.is_reversed, Some(true));
     }
 }
+
+// SDK 411f8d47 (2023-08-31) writes merge flags immediately after request or
+// response fields: neither a protocol string nor a business-type trailer.
+fn pre_protocol_string_message(
+    direction: PacketDirection,
+    trace: bool,
+    attributes: bool,
+    merge: bool,
+) -> Vec<u8> {
+    let mut wire = header(true);
+    match direction {
+        PacketDirection::ClientToServer => {
+            for value in ["GET", "endpoint", "example.invalid", "/resource"] {
+                string(&mut wire, value);
+            }
+        }
+        PacketDirection::ServerToClient => {
+            wire.extend_from_slice(&[0, 1]);
+            wire.extend_from_slice(&200u32.to_be_bytes());
+            for value in ["result", "exception"] {
+                string(&mut wire, value);
+            }
+        }
+    }
+    wire.push(if merge { 0x81 } else { 0 });
+    wire.push(u8::from(trace));
+    if trace {
+        for value in ["trace", "span", "parent"] {
+            string(&mut wire, value);
+        }
+    }
+    wire.push(u8::from(attributes));
+    if attributes {
+        for (key, value) in [("empty", ""), ("tag", "value")] {
+            string(&mut wire, key);
+            string(&mut wire, value);
+        }
+    }
+    wire
+}
+
+#[test]
+fn pre_protocol_string_request_response_and_all_prefixes_are_supported() {
+    for direction in [
+        PacketDirection::ClientToServer,
+        PacketDirection::ServerToClient,
+    ] {
+        for trace in [false, true] {
+            for attributes in [false, true] {
+                for merge in [false, true] {
+                    let wire = pre_protocol_string_message(direction, trace, attributes, merge);
+                    let info = CustomInfo::try_from((wire.as_slice(), direction)).unwrap();
+                    assert_eq!(info.request_id, Some(777));
+                    assert_eq!(info.req_len, Some(123));
+                    assert_eq!(info.resp_len, Some(456));
+                    assert!(info.proto_str.is_empty());
+                    assert_eq!(info.biz_type, 0);
+                    assert_eq!(info.need_protocol_merge, merge);
+                    assert_eq!(
+                        info.is_req_end,
+                        merge && direction == PacketDirection::ClientToServer
+                    );
+                    assert_eq!(
+                        info.is_resp_end,
+                        merge && direction == PacketDirection::ServerToClient
+                    );
+                    assert_eq!(info.attributes.len(), if attributes { 2 } else { 0 });
+                    assert_eq!(info.trace.trace_ids.len(), usize::from(trace));
+                    if direction == PacketDirection::ClientToServer {
+                        assert_eq!(info.req.resource, "/resource");
+                    } else {
+                        assert_eq!(info.resp.code, Some(200));
+                        assert_eq!(info.resp.result, "result");
+                    }
+                    for length in 0..=wire.len() {
+                        assert!(catch_unwind(|| CustomInfo::try_from((
+                            &wire[..length],
+                            direction
+                        )))
+                        .is_ok());
+                    }
+                }
+            }
+        }
+    }
+}
+
+#[test]
+fn pre_protocol_string_minimal_old_layout_has_no_optional_field_guessing() {
+    for direction in [
+        PacketDirection::ClientToServer,
+        PacketDirection::ServerToClient,
+    ] {
+        let mut wire = header(false);
+        match direction {
+            PacketDirection::ClientToServer => {
+                for _ in 0..4 {
+                    string(&mut wire, "");
+                }
+            }
+            PacketDirection::ServerToClient => {
+                wire.extend_from_slice(&[0, 0]);
+                string(&mut wire, "");
+                string(&mut wire, "");
+            }
+        }
+        wire.extend_from_slice(&[0, 0, 0]); // no merge, no trace, no attributes
+        let info = CustomInfo::try_from((wire.as_slice(), direction)).unwrap();
+        assert!(
+            !info.need_protocol_merge && info.request_id.is_none() && info.proto_str.is_empty()
+        );
+    }
+}
+
+#[test]
+fn pre_protocol_string_fallback_rejects_noncanonical_flags_and_incomplete_tails() {
+    for direction in [
+        PacketDirection::ClientToServer,
+        PacketDirection::ServerToClient,
+    ] {
+        let wire = pre_protocol_string_message(direction, true, false, true);
+        let merge_offset = wire.len() - (1 + 1 + 7 + 6 + 8 + 1);
+        for bad in [1, 2, 0x82, 0xff] {
+            let mut malformed = wire.clone();
+            malformed[merge_offset] = bad;
+            assert!(CustomInfo::try_from((malformed.as_slice(), direction)).is_err());
+        }
+        let mut malformed = wire.clone();
+        malformed[merge_offset + 1] = 2;
+        assert!(CustomInfo::try_from((malformed.as_slice(), direction)).is_err());
+        let mut malformed = wire.clone();
+        *malformed.last_mut().unwrap() = 2;
+        assert!(CustomInfo::try_from((malformed.as_slice(), direction)).is_err());
+        let mut malformed = wire;
+        malformed.extend_from_slice(&[0xff, 0xff]);
+        assert!(CustomInfo::try_from((malformed.as_slice(), direction)).is_err());
+    }
+}
+
+#[test]
+fn pre_protocol_string_2023_layout_rejects_a_business_trailer() {
+    for direction in [
+        PacketDirection::ClientToServer,
+        PacketDirection::ServerToClient,
+    ] {
+        let mut minimal = header(false);
+        match direction {
+            PacketDirection::ClientToServer => {
+                for _ in 0..4 {
+                    string(&mut minimal, "");
+                }
+            }
+            PacketDirection::ServerToClient => {
+                minimal.extend_from_slice(&[0, 0]);
+                string(&mut minimal, "");
+                string(&mut minimal, "");
+            }
+        }
+        minimal.extend_from_slice(&[0, 0, 0, 0]); // Old flags plus an invalid extra byte.
+                                                  // This is truncated as current layout and has trailing data as 2023.
+        assert!(CustomInfo::try_from((minimal.as_slice(), direction)).is_err());
+        let mut attributes = pre_protocol_string_message(direction, true, true, true);
+        attributes.push(7); // Old uncounted KV block must consume every byte.
+        assert!(CustomInfo::try_from((attributes.as_slice(), direction)).is_err());
+    }
+}
