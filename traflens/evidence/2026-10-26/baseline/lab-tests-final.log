@@ -1,0 +1,51 @@
+test_changed_identity_or_inventory_rejected (test_agent_configuration.GroupScopeTests) ... ok
+test_exact_owned_agent_can_update (test_agent_configuration.GroupScopeTests) ... ok
+test_foreign_disabled_or_pending_member_rejected (test_agent_configuration.GroupScopeTests) ... ok
+test_initial_empty_group (test_agent_configuration.GroupScopeTests) ... ok
+test_populated_group_needs_explicit_update (test_agent_configuration.GroupScopeTests) ... ok
+test_accepts_uncompressed_answer_name (test_dns_traffic.DNSWireTests) ... ok
+test_independent_wire_vectors (test_dns_traffic.DNSWireTests) ... ok
+test_name_wire_roundtrip_and_limits (test_dns_traffic.DNSWireTests) ... ok
+test_rejects_expansion_beyond_dns_limit (test_dns_traffic.DNSWireTests) ... ok
+test_rejects_response_truncation_and_bad_a_record (test_dns_traffic.DNSWireTests) ... ok
+test_rejects_truncated_and_cyclic_compression (test_dns_traffic.DNSWireTests) ... ok
+test_rejects_truncated_queries_and_trailing_data (test_dns_traffic.DNSWireTests) ... ok
+test_rejects_wrong_query_header_type_and_class (test_dns_traffic.DNSWireTests) ... ok
+test_scoped_endpoint_requires_linklocal_and_explicit_interface (test_dns_traffic.DNSWireTests) ... ok
+test_twenty_unique_queries_and_compressed_a_answers (test_dns_traffic.DNSWireTests) ... ok
+test_verification_rejects_wrong_answer_name_and_ttl (test_dns_traffic.DNSWireTests) ... ok
+test_verification_rejects_wrong_id_name_address_and_rcode (test_dns_traffic.DNSWireTests) ... ok
+test_workload_and_ids_are_bounded (test_dns_traffic.DNSWireTests) ... ok
+test_existing_server_image_mismatch_requires_recreate (test_lab.RuntimeProvenanceTests) ... ok
+test_incomplete_stage_is_not_reused (test_lab.RuntimeProvenanceTests) ... ok
+test_matching_image_can_be_reused (test_lab.RuntimeProvenanceTests) ... ok
+test_upgrade_does_not_keep_removed_assets (test_lab.RuntimeProvenanceTests) ... ok
+test_exact_identity_signals_owned_supervisor (test_lab.SupervisorIdentityTests) ... ok
+test_launch_refuses_foreign_live_same_script (test_lab.SupervisorIdentityTests) ... ok
+test_missing_start_ticks_never_signals (test_lab.SupervisorIdentityTests) ... ok
+test_other_script_never_signals (test_lab.SupervisorIdentityTests) ... ok
+test_record_for_other_repo_never_signals (test_lab.SupervisorIdentityTests) ... ok
+test_reused_pid_never_signals (test_lab.SupervisorIdentityTests) ... ok
+test_same_script_other_repo_never_signals (test_lab.SupervisorIdentityTests) ... ok
+test_classic_header_length_excludes_header_and_command_resets_sequence (test_mysql_traffic.PacketContractTests) ... ok
+test_greeting_protocol10_scramble_and_plugin_layout (test_mysql_traffic.PacketContractTests) ... ok
+test_login_rejects_tls_nonempty_auth_and_missing_terminator (test_mysql_traffic.PacketContractTests) ... ok
+test_one_column_text_result_layout_and_packet_sequences (test_mysql_traffic.PacketContractTests) ... ok
+test_protocol41_login_offsets_empty_auth_and_no_tls (test_mysql_traffic.PacketContractTests) ... ok
+test_full_handshake_twenty_unique_queries_results_and_quit (test_mysql_traffic.TransportTests) ... ok
+test_receives_fragmented_header_and_body (test_mysql_traffic.TransportTests) ... ok
+test_rejects_wrong_sequence_oversize_and_truncated_packet (test_mysql_traffic.TransportTests) ... ok
+test_result_verification_rejects_wrong_row_or_column (test_mysql_traffic.TransportTests) ... ok
+test_server_rejects_wrong_marker_query_after_valid_login (test_mysql_traffic.TransportTests) ... ok
+test_total_deadline_stops_idle_peer (test_mysql_traffic.TransportTests) ... ok
+test_dns_requires_exact_answer_and_ttl (test_request_acceptance.RequestAcceptanceTests) ... ok
+test_duplicate_cannot_hide_missing_resource (test_request_acceptance.RequestAcceptanceTests) ... ok
+test_error_status_or_null_code_does_not_match_success (test_request_acceptance.RequestAcceptanceTests) ... ok
+test_exact_records_ignore_order_and_column_order (test_request_acceptance.RequestAcceptanceTests) ... ok
+test_marker_injection_and_duplicate_expectations_rejected (test_request_acceptance.RequestAcceptanceTests) ... ok
+test_query_failure_or_missing_fields_fail_closed (test_request_acceptance.RequestAcceptanceTests) ... ok
+
+----------------------------------------------------------------------
+Ran 46 tests in 0.064s
+
+OK

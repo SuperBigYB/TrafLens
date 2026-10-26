@@ -1,0 +1,27 @@
+Base source: 6944472eab429dc52eaabf1fb98e768431c2dfc8 + time-clamp-fix.patch
+Command: ['/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo', 'test', '--offline', '--locked', '--no-default-features', '--lib', 'flow_generator::protocol_logs::tests', '--', '--nocapture', '--test-threads=1']
+Cwd: /root/yb/git/TrafLens/agent
+Target: existing main target (no copy)
+Patched source SHA256: 5aa12d1f173ddeea405a0e95a117c81cffda7dcee2dc8a7d7fe5e0bfa3c8d1e1
+   Compiling deepflow-agent v0.1.0 (/root/yb/git/TrafLens/agent)
+    Finished `test` profile [unoptimized] target(s) in 13.12s
+     Running unittests src/lib.rs (target/debug/deps/deepflow_agent-4a0e515e9f489f5f)
+
+running 14 tests
+test flow_generator::protocol_logs::tests::test_cross_hour_59_to_00 ... ok
+test flow_generator::protocol_logs::tests::test_exact_120s_boundary ... ok
+test flow_generator::protocol_logs::tests::test_future_time_across_hour_clamped ... ok
+test flow_generator::protocol_logs::tests::test_future_time_clamped ... ok
+test flow_generator::protocol_logs::tests::test_invalid_input_length ... ok
+test flow_generator::protocol_logs::tests::test_invalid_mmss_ranges ... ok
+test flow_generator::protocol_logs::tests::test_invalid_non_ascii_mmss ... ok
+test flow_generator::protocol_logs::tests::test_invalid_signed_mmss ... ok
+test flow_generator::protocol_logs::tests::test_invalid_string ... ok
+test flow_generator::protocol_logs::tests::test_normal_case ... ok
+test flow_generator::protocol_logs::tests::test_older_than_120s_across_hour_invalid ... ok
+test flow_generator::protocol_logs::tests::test_older_than_120s_invalid ... ok
+test flow_generator::protocol_logs::tests::test_subsecond_precision ... ok
+test flow_generator::protocol_logs::tests::test_valid_mmss_boundaries ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 274 filtered out; finished in 0.00s
+

@@ -155,3 +155,29 @@ compile time means a later build is not promised to be byte-identical.
 A successful full native build does **not** prove live eBPF capture, syscall
 tracing or profiling. The separate 20-request HTTP end-to-end check used the
 packet Agent with eBPF disabled; it was not a runtime test of this native binary.
+
+
+## Boundary-fix checkpoint: 4f0a7d96d
+
+The same pinned image, Rust 1.97.1, offline cache and 4 CPU/8 GiB restrictions
+validated exact source `4f0a7d96d833f770668dea304a5a6afaef2c0fbd` without source
+overlays. The optimized default-feature Release builds in 2m10s; its version
+matches this commit. Artifact on dev-240:
+`/tmp/traflens-native-build-20261026/artifacts/deepflow-agent-native-linux-amd64-4f0a7d96`,
+77,938,232 bytes, SHA256
+`2f6bd8507bb50aeaa94af5a475b5d81466e23281a074c3ed1cef2eb8670dda53`.
+
+The C fixture was force-built inside the native image before release tests.
+All six `plugin::c_ffi::process_kname_tests` pass, including real libtrace
+MetaPacket names, actual shared-object callbacks and 55 cross-language ABI
+comparisons. First-time optimized test dependency compilation took 4m42s.
+The response-time module also passes all 15 tests. The generated fixture ELF
+was archived and restored to its committed bytes; final source status is clean.
+This changes no Rust/C/header source and does not conceal a source overlay.
+
+A further WASM feature-mode probe passes one of five tests and fails four
+with real process names present. These remain unresolved; native support cannot
+be inferred from packet-mode failure explanations. Full native suite and live
+eBPF collection/profiling are separate pending gates. The exact commands,
+state, logs, generated-fixture difference and result records accompany this
+checkpoint under `evidence/2026-10-26/agent/`.

@@ -1,0 +1,164 @@
+diff --git a/agent/src/flow_generator/protocol_logs.rs b/agent/src/flow_generator/protocol_logs.rs
+index 29084dafd..4ce013c3b 100644
+--- a/agent/src/flow_generator/protocol_logs.rs
++++ b/agent/src/flow_generator/protocol_logs.rs
+@@ -748,17 +748,20 @@ cfg_if::cfg_if! {
+ // - now_us: current time in microseconds since epoch
+ //
+ // Behavior:
+-// - infer current or previous hour for cross-hour
++// - infer the nearest hour for cross-hour
+ // - Compute microsecond difference with now_us
+ // - Clamp future time to 0
+ // - Ignore if older than 2 minutes
+ pub fn estimate_rrt_us_by_beijing_mmss(mmss: &str, now_us: u64) -> Option<u64> {
+-    if mmss.len() != 4 || now_us == 0 {
++    if mmss.len() != 4 || !mmss.as_bytes().iter().all(u8::is_ascii_digit) || now_us == 0 {
+         return None;
+     }
+ 
+     let input_mm: i64 = mmss[0..2].parse().ok()?;
+     let input_ss: i64 = mmss[2..4].parse().ok()?;
++    if input_mm >= 60 || input_ss >= 60 {
++        return None;
++    }
+     let input_sec = input_mm * 60 + input_ss;
+ 
+     let now_sec = (now_us / 1_000_000) as i64;
+@@ -766,9 +769,11 @@ pub fn estimate_rrt_us_by_beijing_mmss(mmss: &str, now_us: u64) -> Option<u64> {
+ 
+     let mut diff_sec = now_sec_in_hour - input_sec;
+ 
+-    // 59 -> 00 cross-hour correction
+-    if diff_sec < 0 {
++    // Infer the nearest hour so both past and future times can cross it.
++    if diff_sec < -1800 {
+         diff_sec += 3600;
++    } else if diff_sec > 1800 {
++        diff_sec -= 3600;
+     }
+ 
+     // future time
+@@ -776,12 +781,11 @@ pub fn estimate_rrt_us_by_beijing_mmss(mmss: &str, now_us: u64) -> Option<u64> {
+         return Some(0);
+     }
+ 
+-    // RRT exceeding 120s is considered invalid
+-    if diff_sec > 120 {
++    let diff_us = diff_sec * 1_000_000 + (now_us % 1_000_000) as i64;
++    // RRT exceeding 120s is considered invalid, including fractional seconds.
++    if diff_us > 120_000_000 {
+         return None;
+     }
+-
+-    let diff_us = diff_sec * 1_000_000 + (now_us % 1_000_000) as i64;
+     Some(diff_us as u64)
+ }
+ 
+@@ -817,6 +821,18 @@ mod tests {
+         assert_eq!(rrt, 0);
+     }
+ 
++    #[test]
++    fn test_future_time_across_hour_clamped() {
++        let now_us = make_now_us(59, 58);
++        assert_eq!(estimate_rrt_us_by_beijing_mmss("0002", now_us), Some(0));
++    }
++
++    #[test]
++    fn test_older_than_120s_across_hour_invalid() {
++        let now_us = make_now_us(0, 2);
++        assert_eq!(estimate_rrt_us_by_beijing_mmss("5700", now_us), None);
++    }
++
+     #[test]
+     fn test_older_than_120s_invalid() {
+         let now_us = make_now_us(10, 0);
+@@ -824,6 +840,87 @@ mod tests {
+         assert!(rrt.is_none());
+     }
+ 
++    #[test]
++    fn test_invalid_non_ascii_mmss() {
++        let now_us = make_now_us(10, 0);
++        for input in ["€1", "1€", "é12", "１２"] {
++            assert_eq!(
++                estimate_rrt_us_by_beijing_mmss(input, now_us),
++                None,
++                "{input}"
++            );
++        }
++    }
++
++    #[test]
++    fn test_invalid_signed_mmss() {
++        let now_us = make_now_us(10, 0);
++        for input in ["-110", "+110", "0-10", " 010"] {
++            assert_eq!(
++                estimate_rrt_us_by_beijing_mmss(input, now_us),
++                None,
++                "{input}"
++            );
++        }
++    }
++
++    #[test]
++    fn test_invalid_mmss_ranges() {
++        let now_us = make_now_us(10, 0);
++        for input in ["0060", "0099", "6000", "9900", "5960"] {
++            assert_eq!(
++                estimate_rrt_us_by_beijing_mmss(input, now_us),
++                None,
++                "{input}"
++            );
++        }
++    }
++
++    #[test]
++    fn test_valid_mmss_boundaries() {
++        assert_eq!(estimate_rrt_us_by_beijing_mmss("0000", 0), None);
++        assert_eq!(
++            estimate_rrt_us_by_beijing_mmss("0000", 3_600_000_000),
++            Some(0)
++        );
++        assert_eq!(
++            estimate_rrt_us_by_beijing_mmss("5959", make_now_us(59, 59)),
++            Some(0)
++        );
++    }
++
++    #[test]
++    fn test_subsecond_precision() {
++        let now_us = make_now_us(10, 0) + 123_456;
++        assert_eq!(
++            estimate_rrt_us_by_beijing_mmss("0950", now_us),
++            Some(10_123_456)
++        );
++        assert_eq!(
++            estimate_rrt_us_by_beijing_mmss("1000", now_us),
++            Some(123_456)
++        );
++        assert_eq!(estimate_rrt_us_by_beijing_mmss("1010", now_us), Some(0));
++        assert_eq!(
++            estimate_rrt_us_by_beijing_mmss("5958", make_now_us(0, 2) + 123_456),
++            Some(4_123_456)
++        );
++    }
++
++    #[test]
++    fn test_rrt_limit_includes_subsecond_precision() {
++        let now_us = make_now_us(10, 0);
++        assert_eq!(
++            estimate_rrt_us_by_beijing_mmss("0800", now_us),
++            Some(120_000_000)
++        );
++        assert_eq!(estimate_rrt_us_by_beijing_mmss("0800", now_us + 1), None);
++        assert_eq!(
++            estimate_rrt_us_by_beijing_mmss("0801", now_us + 999_999),
++            Some(119_999_999)
++        );
++    }
++
+     #[test]
+     fn test_invalid_input_length() {
+         let now_us = make_now_us(10, 0);

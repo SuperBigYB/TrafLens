@@ -20,3 +20,11 @@ and source checkout `742d143a242bbb053705f4241241c58dcdc3abea`, 2026-10-26.
   metadata migration, controller health, ClickHouse tables, and a real query
   succeeded despite those messages. Native Agent registration and ingestion
   require their own end-to-end verification.
+
+- After the lab's ClickHouse restart, the first DNS batch produced20 verified
+  wire exchanges but19 L7 rows. Its missing q0 had a complete, successfully
+  parsed L4 flow; a concurrent CKwriter broken-pipe warning dropped one L7 item.
+  The writer's failed-write branch drops that batch without retry. Warning logs
+  have no flow ID, so identifying that one dropped item as q0 remains an inference.
+  Warm and subsequent fresh-process cold batches passed20/20. No recovery/delivery
+  fix is included; future retry changes must test partial delivery and duplicates.

@@ -1,0 +1,9 @@
+Source 4f0a7d96d833f770668dea304a5a6afaef2c0fbd; default features enabled.
+Native optimized release: exit0, 2m10s. Binary version matches exact source.
+Release CFFI tests: 6 passed, 0 failed; first release test compile4m42s.
+Container: exit0, OOMKilled=false, network none, 4CPU/cpuset0-3, memory8GiB, no privileged/capabilities.
+Fixture: force-built from committed C/header inside pinned native image; only generated tracked ELF changed, archived then restored.
+Source status after restore: clean. No Rust/C/header overlay.
+Native libtrace.a:45057166bytes; BPF ELF objects:10.
+Binary SHA256:2f6bd8507bb50aeaa94af5a475b5d81466e23281a074c3ed1cef2eb8670dda53.
+No live eBPF capture/syscall/profiling validation was run.

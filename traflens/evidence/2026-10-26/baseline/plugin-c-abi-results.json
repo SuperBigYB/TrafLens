@@ -1,0 +1,12 @@
+[
+  {
+    "mode": "nul-terminated-empty",
+    "exit_code": 0,
+    "log": "plugin-c-abi-nul-terminated-empty.log"
+  },
+  {
+    "mode": "dangling-empty",
+    "exit_code": -11,
+    "log": "plugin-c-abi-dangling-empty.log"
+  }
+]

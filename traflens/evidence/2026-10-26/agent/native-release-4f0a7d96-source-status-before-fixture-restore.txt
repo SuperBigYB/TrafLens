@@ -1,0 +1,1 @@
+ M agent/resources/test/plugins/so_plugin_test

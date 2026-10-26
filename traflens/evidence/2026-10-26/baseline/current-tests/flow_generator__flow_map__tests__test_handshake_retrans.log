@@ -1,0 +1,21 @@
+Source: 6944472eab429dc52eaabf1fb98e768431c2dfc8
+Command: ['/root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/current-test-binary', 'flow_generator::flow_map::tests::test_handshake_retrans', '--exact', '--nocapture', '--test-threads=1']
+Cwd: /root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/current/agent
+Core dump: disabled
+
+running 1 test
+test flow_generator::flow_map::tests::test_handshake_retrans ... 
+thread 'flow_generator::flow_map::tests::test_handshake_retrans' (166572) panicked at src/flow_generator/flow_map.rs:3841:9:
+assertion `left == right` failed
+  left: 1255
+ right: 1567
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    flow_generator::flow_map::tests::test_handshake_retrans
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 280 filtered out; finished in 0.02s
+

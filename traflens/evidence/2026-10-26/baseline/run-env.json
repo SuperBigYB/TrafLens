@@ -1,0 +1,12 @@
+{
+  "RUSTC": "/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc",
+  "RUSTDOC": "/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustdoc",
+  "RUSTFMT": "/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustfmt",
+  "CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER": "cc",
+  "CARGO_BUILD_JOBS": "4",
+  "CARGO_PROFILE_DEV_DEBUG": "0",
+  "CARGO_PROFILE_TEST_DEBUG": "0",
+  "CARGO_TARGET_DIR": "/root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/target",
+  "CARGO_NET_OFFLINE": "true",
+  "CARGO_INCREMENTAL": "0"
+}

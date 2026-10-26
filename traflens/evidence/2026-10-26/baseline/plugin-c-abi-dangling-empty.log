@@ -1,0 +1,11 @@
+Command: ['python3', '/root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/plugin-c-abi-probe.py', '/root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/current/agent/resources/test/plugins/so_plugin_test', 'dangling-empty']
+process_kname: 0x1 offsetof: 64
+===============on_check===========================
+ip type: 4
+src: 0.0.0.0:12345
+dst: 0.0.0.0:8080
+l4 proto: 6
+proto: 0
+ebpf type: 0
+time: 12345678
+direction: 0

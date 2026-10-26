@@ -1,0 +1,23 @@
+TRAFLENS_PHASE=environment
+rustc 1.97.1 (8bab26f4f 2026-07-14)
+cargo 1.97.1 (c980f4866 2026-06-30)
+cc (GCC) 11.2.1 20220127 (Red Hat 11.2.1-9)
+4
+4f0a7d96d833f770668dea304a5a6afaef2c0fbd
+db952ada8d0434a918c1d3c9f0303f1cd01077ac58d3c657adba5b8b381610a8  Cargo.lock
+TRAFLENS_PHASE=default-release-build
+   Compiling deepflow-agent v0.1.0 (/workspace/TrafLens/agent)
+warning: linker stderr: rust-lld: /target/release/deps/libdeepflow_agent-65938f17cefaac42.rlib: archive member 'deepflow_ebpfctl_bin.c' is neither ET_REL nor LLVM bitcode
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `deepflow-agent` (bin "deepflow-agent") generated 1 warning
+    Finished `release` profile [optimized] target(s) in 2m 10s
+TRAFLENS_BUILD_EXIT=0
+12745-4f0a7d96d833f770668dea304a5a6afaef2c0fbd
+Name: deepflow-agent community edition
+Branch: main
+CommitId: 4f0a7d96d833f770668dea304a5a6afaef2c0fbd
+RevCount: 12745
+Compiler: rustc 1.97.1 (8bab26f4f 2026-07-14)
+CompileTime: 2026-10-26 12:05:57

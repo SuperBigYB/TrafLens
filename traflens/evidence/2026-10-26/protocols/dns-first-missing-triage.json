@@ -1,0 +1,115 @@
+{
+  "triage_saved_at_utc": "2026-10-26T11:59:09.206679+00:00",
+  "source_head": "6944472eab429dc52eaabf1fb98e768431c2dfc8",
+  "status": "Not fixed; not stably reproduced. Later warm and fresh-process cold batches passed.",
+  "first_batch": {
+    "marker": "dns-20261026-ingest1",
+    "client_wire_verified": 20,
+    "server_wire_verified": 20,
+    "exact_stored_records": 19,
+    "missing_resource": "q0.dns-20261026-ingest1.traflens.invalid",
+    "missing_sequence": 0,
+    "transaction_id": 40960,
+    "expected_address": "198.18.0.1",
+    "expected_response_result": "A=198.18.0.1 TTL=60",
+    "server_peer_address": "fe80::5a47:caff:fe77:66e2",
+    "server_peer_port": 34800
+  },
+  "confirmed_l4_record": {
+    "client_port": 34800,
+    "server_port": 18053,
+    "packet_tx": 1,
+    "packet_rx": 1,
+    "total_packet_tx": 1,
+    "total_packet_rx": 1,
+    "l7_protocol": 120,
+    "l7_request": 1,
+    "l7_response": 1,
+    "l7_parse_failed": 0,
+    "direction_score": 20,
+    "request_domain": "",
+    "start_time": "2026-10-26 19:43:24.408757",
+    "end_time": "2026-10-26 19:43:29.409081",
+    "flow_id": "7172060016646553601",
+    "query_database": "flow_log",
+    "query_table": "l4_flow_log",
+    "query_predicate": "protocol=17 AND (client_port=34800 OR server_port=34800)"
+  },
+  "confirmed_l7_probe": {
+    "sql": "SELECT flow_id,request_id,request_resource,request_type,response_code,response_status,response_result,type,start_time,end_time FROM flow_log.l7_flow_log WHERE flow_id=7172060016646553601 FORMAT JSONEachRow",
+    "returned_rows": 0
+  },
+  "server_writer_warnings_utc": [
+    {
+      "time": "2026-10-26T11:43:26.715Z",
+      "source": "ckwriter.go:238",
+      "message": "CREATE DATABASE IF NOT EXISTS flow_tag failed: packet: uvarint: read: read: EOF, will retry"
+    },
+    {
+      "time": "2026-10-26T11:43:26.718Z",
+      "source": "ckwriter.go:716",
+      "message": "write table (flow_tag.flow_log_custom_field_value_local) failed, drop (4) items: batch item write block failed: flush: writev tcp 172.18.0.4:52518->172.18.0.3:9000: writev: broken pipe"
+    },
+    {
+      "time": "2026-10-26T11:43:27.715Z",
+      "source": "ckwriter.go:238",
+      "message": "CREATE DATABASE IF NOT EXISTS flow_tag failed: client is closed, will retry"
+    },
+    {
+      "time": "2026-10-26T11:43:28.716Z",
+      "source": "ckwriter.go:706",
+      "message": "create table (flow_tag.flow_log_custom_field_local) failed, drop (1) items: client is closed"
+    },
+    {
+      "time": "2026-10-26T11:43:29.687Z",
+      "source": "ckwriter.go:716",
+      "message": "write table (flow_log.l7_flow_log_local) failed, drop (1) items: batch item write block failed: flush: writev tcp 172.18.0.4:52476->172.18.0.3:9000: writev: broken pipe"
+    },
+    {
+      "time": "2026-10-26T11:43:37.278Z",
+      "source": "ckwriter.go:716",
+      "message": "write table (flow_metrics.application.1s_local) failed, drop (1) items: batch item write block failed: packet: uvarint: read: read: EOF"
+    },
+    {
+      "time": "2026-10-26T11:43:41.681Z",
+      "source": "ckwriter.go:716",
+      "message": "write table (flow_log.l4_flow_log_local) failed, drop (1) items: batch item write block failed: flush: writev tcp 172.18.0.4:52458->172.18.0.3:9000: writev: broken pipe"
+    }
+  ],
+  "localization": {
+    "confirmed": "q0 was captured in both directions and DNS parsing succeeded. Its complete L7 row is absent. A same-window l7_flow_log_local write explicitly dropped one item on broken pipe.",
+    "inference": "The single L7 writer drop is a strong explanation for the uniquely missing q0. Stale pooled connections after the earlier owned ClickHouse restart are plausible.",
+    "remaining_uncertainty": "Writer warning does not include flow_id or resource, so the dropped item cannot be conclusively identified as q0 from that warning alone. First-batch queue and receiver/decoder snapshots were not recorded.",
+    "source_behavior": "server/ingester/pkg/ckwriter/ckwriter.go:714-720 increments WriteFailedCount after cache.Write failure; this Write call has no retry branch.",
+    "dns_source_exclusions": "The first successfully detected DNS request is immediately parsed on the same packet (perf/mod.rs:442-483). AppTable cold miss permits inference; TTL60 is the DNS answer field, not the application inference cache TTL."
+  },
+  "subsequent_evidence": {
+    "warm": {
+      "marker": "dns-20261026-ingest2",
+      "root_reported_exact_stored_records": 20,
+      "independently_observed_q0": "Request, Response, and merged sender Session are present in the queue observation logs."
+    },
+    "fresh_process_cold": {
+      "marker": "dns-20261026-cold1",
+      "root_reported_exact_stored_records": 20,
+      "root_reported_queue_counts": [
+        40,
+        40,
+        20
+      ],
+      "root_reported_packet_capture": "40/40, kernel drops0; q0 present; no warm-up traffic"
+    },
+    "interpretation": "Passing later batches do not erase or repair the first 19/20 result."
+  },
+  "next_run_focus": [
+    "CKWriter stale/closed connection recovery and failed-batch loss semantics",
+    "Correlate q0 flow_id across FlowMap app output, SessionQueue, throttle sender, receiver and writer",
+    "Retain the first failing marker and explicitly record write-failed counters; do not hide failure with warm-up"
+  ],
+  "actions": {
+    "tracked_source_edited": false,
+    "agent_started_or_restarted": false,
+    "live_config_changed": false,
+    "database_restarted": false
+  }
+}

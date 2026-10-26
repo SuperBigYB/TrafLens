@@ -1,0 +1,101 @@
+    Finished `test` profile [unoptimized] target(s) in 0.18s
+     Running unittests src/lib.rs (target/debug/deps/deepflow_agent-4a0e515e9f489f5f)
+
+running 2 tests
+test plugin::shared_obj::test::test_check ... ok
+test plugin::shared_obj::test::test_parse ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 292 filtered out; finished in 0.00s
+
+on init
+===============on_check===========================
+ip type: 4
+src: 1.2.3.4:12345
+dst: 5.6.7.8:8080
+l4 proto: 6
+proto: 0
+ebpf type: 0
+time: 12345678
+direction: 0
+proc: 
+buf size: 0
+payload size: 50
+58, 166, 1, 32, 0, 1, 0, 0, 0, 0, 0, 1, 5, 98, 97, 105, 100, 117, 3, 99, 111, 109, 0, 0, 1, 0, 1, 0, 0, 41, 4, 208, 0, 0, 0, 0, 0, 12, 0, 10, 0, 8, 115, 109, 120, 32, 132, 36, 153, 244
+DNS request:
+ID: 15014
+Flags: 288
+QDCOUNT: 1
+ANCOUNT: 0
+NSCOUNT: 0
+ARCOUNT: 1
+---------------
+Question 1:
+Name: baidu.com.
+Type: 1
+Class: 1
+---------------
+on init
+===============on_parse===========================
+ip type: 4
+src: 1.2.3.4:12345
+dst: 5.6.7.8:8080
+l4 proto: 6
+proto: 1
+ebpf type: 0
+time: 12345678
+direction: 0
+proc: 
+buf size: 0
+payload size: 50
+58, 166, 1, 32, 0, 1, 0, 0, 0, 0, 0, 1, 5, 98, 97, 105, 100, 117, 3, 99, 111, 109, 0, 0, 1, 0, 1, 0, 0, 41, 4, 208, 0, 0, 0, 0, 0, 12, 0, 10, 0, 8, 115, 109, 120, 32, 132, 36, 153, 244
+DNS request:
+ID: 15014
+Flags: 288
+QDCOUNT: 1
+ANCOUNT: 0
+NSCOUNT: 0
+ARCOUNT: 1
+---------------
+Question 1:
+Name: baidu.com.
+Type: 1
+Class: 1
+---------------
+===============on_parse===========================
+ip type: 4
+src: 5.6.7.8:8080
+dst: 1.2.3.4:12345
+l4 proto: 6
+proto: 1
+ebpf type: 0
+time: 12345679
+direction: 1
+proc: 
+buf size: 0
+payload size: 70
+58, 166, 129, 128, 0, 1, 0, 2, 0, 0, 0, 1, 5, 98, 97, 105, 100, 117, 3, 99, 111, 109, 0, 0, 1, 0, 1, 192, 12, 0, 1, 0, 1, 0, 0, 0, 128, 0, 4, 39, 156, 66, 10, 192, 12, 0, 1, 0, 1, 0, 0, 0, 128, 0, 4, 110, 242, 68, 66, 0, 0, 41, 2, 0, 0, 0, 0, 0, 0, 0
+DNS request:
+ID: 15014
+Flags: 33152
+QDCOUNT: 1
+ANCOUNT: 2
+NSCOUNT: 0
+ARCOUNT: 1
+---------------
+Question 1:
+Name: baidu.com.
+Type: 1
+Class: 1
+---------------
+type: 1
+class: 1
+ttl: 128
+len: 4
+ip: 39.156.66.10
+---------------
+type: 1
+class: 1
+ttl: 128
+len: 4
+ip: 110.242.68.66
+---------------

@@ -1,0 +1,191 @@
+{
+  "marker": "mysql20261026a",
+  "protocol": 60,
+  "expected_rows": 20,
+  "sql": "SELECT request_resource,request_type,response_code,response_status FROM l7_flow_log WHERE request_resource LIKE '%mysql20261026a%' AND l7_protocol=60 LIMIT 1001",
+  "attempts": [
+    {
+      "at_utc": "2026-10-26T11:46:23.264876+00:00",
+      "elapsed_seconds": 0.005216,
+      "exact_match": true,
+      "queried_rows": 20,
+      "missing_rows": 0,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:46:25.279814+00:00",
+      "elapsed_seconds": 0.014507,
+      "exact_match": true,
+      "queried_rows": 20,
+      "missing_rows": 0,
+      "unexpected_or_duplicate_rows": 0
+    }
+  ],
+  "passed": true,
+  "final_query": {
+    "OPT_STATUS": "SUCCESS",
+    "DESCRIPTION": "",
+    "result": {
+      "columns": [
+        "request_resource",
+        "request_type",
+        "response_code",
+        "response_status"
+      ],
+      "schemas": [
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "String"
+        },
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "LowCardinality(String)"
+        },
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "Nullable(Int32)"
+        },
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "UInt8"
+        }
+      ],
+      "values": [
+        [
+          "SELECT 'traflens-mysql-mysql20261026a-0000' traflens_mysql_mysql20261026a_0000",
+          "COM_QUERY",
+          null,
+          0
+        ],
+        [
+          "SELECT 'traflens-mysql-mysql20261026a-0001' traflens_mysql_mysql20261026a_0001",
+          "COM_QUERY",
+          null,
+          0
+        ],
+        [
+          "SELECT 'traflens-mysql-mysql20261026a-0002' traflens_mysql_mysql20261026a_0002",
+          "COM_QUERY",
+          null,
+          0
+        ],
+        [
+          "SELECT 'traflens-mysql-mysql20261026a-0003' traflens_mysql_mysql20261026a_0003",
+          "COM_QUERY",
+          null,
+          0
+        ],
+        [
+          "SELECT 'traflens-mysql-mysql20261026a-0004' traflens_mysql_mysql20261026a_0004",
+          "COM_QUERY",
+          null,
+          0
+        ],
+        [
+          "SELECT 'traflens-mysql-mysql20261026a-0005' traflens_mysql_mysql20261026a_0005",
+          "COM_QUERY",
+          null,
+          0
+        ],
+        [
+          "SELECT 'traflens-mysql-mysql20261026a-0006' traflens_mysql_mysql20261026a_0006",
+          "COM_QUERY",
+          null,
+          0
+        ],
+        [
+          "SELECT 'traflens-mysql-mysql20261026a-0007' traflens_mysql_mysql20261026a_0007",
+          "COM_QUERY",
+          null,
+          0
+        ],
+        [
+          "SELECT 'traflens-mysql-mysql20261026a-0008' traflens_mysql_mysql20261026a_0008",
+          "COM_QUERY",
+          null,
+          0
+        ],
+        [
+          "SELECT 'traflens-mysql-mysql20261026a-0009' traflens_mysql_mysql20261026a_0009",
+          "COM_QUERY",
+          null,
+          0
+        ],
+        [
+          "SELECT 'traflens-mysql-mysql20261026a-0010' traflens_mysql_mysql20261026a_0010",
+          "COM_QUERY",
+          null,
+          0
+        ],
+        [
+          "SELECT 'traflens-mysql-mysql20261026a-0011' traflens_mysql_mysql20261026a_0011",
+          "COM_QUERY",
+          null,
+          0
+        ],
+        [
+          "SELECT 'traflens-mysql-mysql20261026a-0012' traflens_mysql_mysql20261026a_0012",
+          "COM_QUERY",
+          null,
+          0
+        ],
+        [
+          "SELECT 'traflens-mysql-mysql20261026a-0013' traflens_mysql_mysql20261026a_0013",
+          "COM_QUERY",
+          null,
+          0
+        ],
+        [
+          "SELECT 'traflens-mysql-mysql20261026a-0014' traflens_mysql_mysql20261026a_0014",
+          "COM_QUERY",
+          null,
+          0
+        ],
+        [
+          "SELECT 'traflens-mysql-mysql20261026a-0015' traflens_mysql_mysql20261026a_0015",
+          "COM_QUERY",
+          null,
+          0
+        ],
+        [
+          "SELECT 'traflens-mysql-mysql20261026a-0016' traflens_mysql_mysql20261026a_0016",
+          "COM_QUERY",
+          null,
+          0
+        ],
+        [
+          "SELECT 'traflens-mysql-mysql20261026a-0017' traflens_mysql_mysql20261026a_0017",
+          "COM_QUERY",
+          null,
+          0
+        ],
+        [
+          "SELECT 'traflens-mysql-mysql20261026a-0018' traflens_mysql_mysql20261026a_0018",
+          "COM_QUERY",
+          null,
+          0
+        ],
+        [
+          "SELECT 'traflens-mysql-mysql20261026a-0019' traflens_mysql_mysql20261026a_0019",
+          "COM_QUERY",
+          null,
+          0
+        ]
+      ]
+    },
+    "debug": null
+  },
+  "scope": "Exact unique request/status acceptance; no performance-parity claim"
+}

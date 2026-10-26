@@ -1,0 +1,4 @@
+Source: 8741e924ff0ae3964a135985c51e5a6ce6bde397
+Command: ['/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo', 'test', '--offline', '--locked', '--no-default-features', '--lib', 'config::config::tests::check_defaults', '--no-run']
+error: cannot update the lock file /root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/upstream/agent/Cargo.lock because --locked was passed to prevent this
+help: to generate the lock file without accessing the network, remove the --locked flag and use --offline instead.

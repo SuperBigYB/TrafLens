@@ -1,0 +1,28 @@
+
+running 1 test
+test plugin::wasm::test::test_wasm_http_resp ... wasm log: wasm register parser
+wasm log: ================ enter http resp ==================
+wasm log: saddr 5.6.7.8: 8080
+wasm log: daddr 1.2.3.4: 12345
+wasm log: l4: 6
+wasm log: l7: 20
+wasm log: dir: 1
+wasm log: ebpf type: 0
+wasm log: time: 12345678
+wasm log: flowid: 1234567
+wasm log: buf_size: 999
+wasm log: p: [72 84 84 80 47 49 46 49 32 50 48 48 32 79 107 13 10 67 111 110 116 101 110 116 45 84 121 112 101 58 32 97 112 112 108 105 99 97 116 105 111 110 47 106 115 111 110 13 10 13 10 123 34 100 97 116 97 34 58 123 34 117 115 101 114 95 105 100 34 58 49 50 51 44 32 34 110 97 109 101 34 58 34 107 107 107 34 125 125] 
+wasm log: test_wasm and  not equal
+
+thread 'plugin::wasm::test::test_wasm_http_resp' (178728) panicked at src/plugin/wasm/test.rs:233:18:
+called `Option::unwrap()` on a `None` value
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    plugin::wasm::test::test_wasm_http_resp
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 272 filtered out; finished in 0.34s
+

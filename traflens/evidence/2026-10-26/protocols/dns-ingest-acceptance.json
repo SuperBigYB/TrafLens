@@ -1,0 +1,676 @@
+{
+  "marker": "dns-20261026-ingest1",
+  "protocol": 120,
+  "expected_rows": 20,
+  "sql": "SELECT request_resource,request_type,response_code,response_status,response_result FROM l7_flow_log WHERE request_resource LIKE '%dns-20261026-ingest1%' AND l7_protocol=120 LIMIT 1001",
+  "attempts": [
+    {
+      "at_utc": "2026-10-26T11:46:24.542126+00:00",
+      "elapsed_seconds": 0.0055,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:46:26.568653+00:00",
+      "elapsed_seconds": 0.024467,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:46:28.584646+00:00",
+      "elapsed_seconds": 0.015342,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:46:30.602330+00:00",
+      "elapsed_seconds": 0.016863,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:46:32.629129+00:00",
+      "elapsed_seconds": 0.024727,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:46:34.645707+00:00",
+      "elapsed_seconds": 0.016025,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:46:36.663265+00:00",
+      "elapsed_seconds": 0.01549,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:46:38.677365+00:00",
+      "elapsed_seconds": 0.012017,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:46:40.695841+00:00",
+      "elapsed_seconds": 0.016416,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:46:42.711608+00:00",
+      "elapsed_seconds": 0.014307,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:46:44.730883+00:00",
+      "elapsed_seconds": 0.017573,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:46:46.749211+00:00",
+      "elapsed_seconds": 0.01626,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:46:48.765808+00:00",
+      "elapsed_seconds": 0.014529,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:46:50.782571+00:00",
+      "elapsed_seconds": 0.014679,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:46:52.803666+00:00",
+      "elapsed_seconds": 0.019055,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:46:54.822106+00:00",
+      "elapsed_seconds": 0.016795,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:46:56.838269+00:00",
+      "elapsed_seconds": 0.015352,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:46:58.857569+00:00",
+      "elapsed_seconds": 0.01719,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:00.873237+00:00",
+      "elapsed_seconds": 0.014707,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:02.889444+00:00",
+      "elapsed_seconds": 0.01416,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:04.900588+00:00",
+      "elapsed_seconds": 0.009091,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:06.918945+00:00",
+      "elapsed_seconds": 0.016305,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:08.936285+00:00",
+      "elapsed_seconds": 0.015284,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:10.951731+00:00",
+      "elapsed_seconds": 0.014424,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:12.969060+00:00",
+      "elapsed_seconds": 0.015334,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:14.988191+00:00",
+      "elapsed_seconds": 0.017058,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:17.005169+00:00",
+      "elapsed_seconds": 0.01489,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:19.020945+00:00",
+      "elapsed_seconds": 0.013729,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:21.035924+00:00",
+      "elapsed_seconds": 0.014629,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:23.042447+00:00",
+      "elapsed_seconds": 0.004476,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:25.060301+00:00",
+      "elapsed_seconds": 0.015818,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:27.077869+00:00",
+      "elapsed_seconds": 0.015489,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:29.098327+00:00",
+      "elapsed_seconds": 0.018417,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:31.116831+00:00",
+      "elapsed_seconds": 0.016388,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:33.144255+00:00",
+      "elapsed_seconds": 0.02537,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:35.161736+00:00",
+      "elapsed_seconds": 0.015436,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:37.166361+00:00",
+      "elapsed_seconds": 0.004494,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:39.182031+00:00",
+      "elapsed_seconds": 0.01453,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:41.198362+00:00",
+      "elapsed_seconds": 0.014301,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:43.214938+00:00",
+      "elapsed_seconds": 0.015157,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:45.233869+00:00",
+      "elapsed_seconds": 0.016852,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:47.252617+00:00",
+      "elapsed_seconds": 0.017639,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:49.268384+00:00",
+      "elapsed_seconds": 0.013673,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:51.286679+00:00",
+      "elapsed_seconds": 0.016654,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:53.304420+00:00",
+      "elapsed_seconds": 0.015657,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:55.321240+00:00",
+      "elapsed_seconds": 0.014763,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:57.336395+00:00",
+      "elapsed_seconds": 0.013095,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:47:59.352399+00:00",
+      "elapsed_seconds": 0.015089,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:48:01.371215+00:00",
+      "elapsed_seconds": 0.016744,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:48:03.389711+00:00",
+      "elapsed_seconds": 0.016384,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:48:05.410284+00:00",
+      "elapsed_seconds": 0.018494,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:48:07.426231+00:00",
+      "elapsed_seconds": 0.013872,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:48:09.444342+00:00",
+      "elapsed_seconds": 0.016068,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:48:11.460290+00:00",
+      "elapsed_seconds": 0.013861,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:48:13.476625+00:00",
+      "elapsed_seconds": 0.015312,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:48:15.492030+00:00",
+      "elapsed_seconds": 0.014722,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:48:17.506391+00:00",
+      "elapsed_seconds": 0.013611,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:48:19.524629+00:00",
+      "elapsed_seconds": 0.016191,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:48:21.541503+00:00",
+      "elapsed_seconds": 0.0162,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:48:23.559986+00:00",
+      "elapsed_seconds": 0.016405,
+      "exact_match": false,
+      "queried_rows": 19,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0
+    }
+  ],
+  "passed": false,
+  "final_query": {
+    "OPT_STATUS": "SUCCESS",
+    "DESCRIPTION": "",
+    "result": {
+      "columns": [
+        "request_resource",
+        "request_type",
+        "response_code",
+        "response_status",
+        "response_result"
+      ],
+      "schemas": [
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "String"
+        },
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "LowCardinality(String)"
+        },
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "Nullable(Int32)"
+        },
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "UInt8"
+        },
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "String"
+        }
+      ],
+      "values": [
+        [
+          "q1.dns-20261026-ingest1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.2 TTL=60"
+        ],
+        [
+          "q2.dns-20261026-ingest1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.3 TTL=60"
+        ],
+        [
+          "q3.dns-20261026-ingest1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.4 TTL=60"
+        ],
+        [
+          "q4.dns-20261026-ingest1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.5 TTL=60"
+        ],
+        [
+          "q5.dns-20261026-ingest1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.6 TTL=60"
+        ],
+        [
+          "q6.dns-20261026-ingest1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.7 TTL=60"
+        ],
+        [
+          "q7.dns-20261026-ingest1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.8 TTL=60"
+        ],
+        [
+          "q8.dns-20261026-ingest1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.9 TTL=60"
+        ],
+        [
+          "q9.dns-20261026-ingest1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.10 TTL=60"
+        ],
+        [
+          "q10.dns-20261026-ingest1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.11 TTL=60"
+        ],
+        [
+          "q11.dns-20261026-ingest1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.12 TTL=60"
+        ],
+        [
+          "q12.dns-20261026-ingest1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.13 TTL=60"
+        ],
+        [
+          "q13.dns-20261026-ingest1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.14 TTL=60"
+        ],
+        [
+          "q14.dns-20261026-ingest1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.15 TTL=60"
+        ],
+        [
+          "q15.dns-20261026-ingest1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.16 TTL=60"
+        ],
+        [
+          "q16.dns-20261026-ingest1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.17 TTL=60"
+        ],
+        [
+          "q17.dns-20261026-ingest1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.18 TTL=60"
+        ],
+        [
+          "q18.dns-20261026-ingest1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.19 TTL=60"
+        ],
+        [
+          "q19.dns-20261026-ingest1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.20 TTL=60"
+        ]
+      ]
+    },
+    "debug": null
+  },
+  "scope": "Exact unique request/status acceptance; no performance-parity claim"
+}

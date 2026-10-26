@@ -1,0 +1,382 @@
+[
+  {
+    "kind": "warm",
+    "marker": "dns-20261026-ingest2",
+    "sender_session_count": 20,
+    "all_names_ids_answers_ttls_rcodes_verified": true,
+    "records": [
+      {
+        "name": "q0.dns-20261026-ingest2.traflens.invalid",
+        "address": "198.18.0.1",
+        "ttl": 60,
+        "id": 40960,
+        "rcode": 0,
+        "flow_id": "7172061528475041814"
+      },
+      {
+        "name": "q1.dns-20261026-ingest2.traflens.invalid",
+        "address": "198.18.0.2",
+        "ttl": 60,
+        "id": 40961,
+        "rcode": 0,
+        "flow_id": "7172061528475041815"
+      },
+      {
+        "name": "q2.dns-20261026-ingest2.traflens.invalid",
+        "address": "198.18.0.3",
+        "ttl": 60,
+        "id": 40962,
+        "rcode": 0,
+        "flow_id": "7172061532770009112"
+      },
+      {
+        "name": "q3.dns-20261026-ingest2.traflens.invalid",
+        "address": "198.18.0.4",
+        "ttl": 60,
+        "id": 40963,
+        "rcode": 0,
+        "flow_id": "7172061532770009113"
+      },
+      {
+        "name": "q4.dns-20261026-ingest2.traflens.invalid",
+        "address": "198.18.0.5",
+        "ttl": 60,
+        "id": 40964,
+        "rcode": 0,
+        "flow_id": "7172061532770009114"
+      },
+      {
+        "name": "q5.dns-20261026-ingest2.traflens.invalid",
+        "address": "198.18.0.6",
+        "ttl": 60,
+        "id": 40965,
+        "rcode": 0,
+        "flow_id": "7172061532770009115"
+      },
+      {
+        "name": "q6.dns-20261026-ingest2.traflens.invalid",
+        "address": "198.18.0.7",
+        "ttl": 60,
+        "id": 40966,
+        "rcode": 0,
+        "flow_id": "7172061532770009116"
+      },
+      {
+        "name": "q7.dns-20261026-ingest2.traflens.invalid",
+        "address": "198.18.0.8",
+        "ttl": 60,
+        "id": 40967,
+        "rcode": 0,
+        "flow_id": "7172061532770009117"
+      },
+      {
+        "name": "q8.dns-20261026-ingest2.traflens.invalid",
+        "address": "198.18.0.9",
+        "ttl": 60,
+        "id": 40968,
+        "rcode": 0,
+        "flow_id": "7172061532770009118"
+      },
+      {
+        "name": "q9.dns-20261026-ingest2.traflens.invalid",
+        "address": "198.18.0.10",
+        "ttl": 60,
+        "id": 40969,
+        "rcode": 0,
+        "flow_id": "7172061532770009119"
+      },
+      {
+        "name": "q10.dns-20261026-ingest2.traflens.invalid",
+        "address": "198.18.0.11",
+        "ttl": 60,
+        "id": 40970,
+        "rcode": 0,
+        "flow_id": "7172061532770009120"
+      },
+      {
+        "name": "q11.dns-20261026-ingest2.traflens.invalid",
+        "address": "198.18.0.12",
+        "ttl": 60,
+        "id": 40971,
+        "rcode": 0,
+        "flow_id": "7172061532770009121"
+      },
+      {
+        "name": "q12.dns-20261026-ingest2.traflens.invalid",
+        "address": "198.18.0.13",
+        "ttl": 60,
+        "id": 40972,
+        "rcode": 0,
+        "flow_id": "7172061532770009122"
+      },
+      {
+        "name": "q13.dns-20261026-ingest2.traflens.invalid",
+        "address": "198.18.0.14",
+        "ttl": 60,
+        "id": 40973,
+        "rcode": 0,
+        "flow_id": "7172061532770009123"
+      },
+      {
+        "name": "q14.dns-20261026-ingest2.traflens.invalid",
+        "address": "198.18.0.15",
+        "ttl": 60,
+        "id": 40974,
+        "rcode": 0,
+        "flow_id": "7172061532770009124"
+      },
+      {
+        "name": "q15.dns-20261026-ingest2.traflens.invalid",
+        "address": "198.18.0.16",
+        "ttl": 60,
+        "id": 40975,
+        "rcode": 0,
+        "flow_id": "7172061532770009125"
+      },
+      {
+        "name": "q16.dns-20261026-ingest2.traflens.invalid",
+        "address": "198.18.0.17",
+        "ttl": 60,
+        "id": 40976,
+        "rcode": 0,
+        "flow_id": "7172061532770009126"
+      },
+      {
+        "name": "q17.dns-20261026-ingest2.traflens.invalid",
+        "address": "198.18.0.18",
+        "ttl": 60,
+        "id": 40977,
+        "rcode": 0,
+        "flow_id": "7172061532770009127"
+      },
+      {
+        "name": "q18.dns-20261026-ingest2.traflens.invalid",
+        "address": "198.18.0.19",
+        "ttl": 60,
+        "id": 40978,
+        "rcode": 0,
+        "flow_id": "7172061532770009128"
+      },
+      {
+        "name": "q19.dns-20261026-ingest2.traflens.invalid",
+        "address": "198.18.0.20",
+        "ttl": 60,
+        "id": 40979,
+        "rcode": 0,
+        "flow_id": "7172061532770009129"
+      }
+    ],
+    "raw_sender_log_ignored_path": ".traflens/work/protocols-20261026/dns-warm-sender.log",
+    "raw_sender_log_sha256": "b474a8cd953b61eb3eba2bb107b9cf26a8c9020bb397c3b596ca5852a9f64830",
+    "queue_counts": {
+      "1-tagged-flow-to-app-protocol-logs": {
+        "debug_items": 40,
+        "debug_bytes": 56959,
+        "acknowledged": true,
+        "errors": []
+      },
+      "1-tagged-flow-to-quadruple-generator": {
+        "debug_items": 40,
+        "debug_bytes": 123418,
+        "acknowledged": true,
+        "errors": []
+      },
+      "2-protolog-to-collector-sender": {
+        "debug_items": 20,
+        "debug_bytes": 29615,
+        "acknowledged": true,
+        "errors": []
+      }
+    }
+  },
+  {
+    "kind": "cold",
+    "marker": "dns-20261026-cold1",
+    "sender_session_count": 20,
+    "all_names_ids_answers_ttls_rcodes_verified": true,
+    "records": [
+      {
+        "name": "q0.dns-20261026-cold1.traflens.invalid",
+        "address": "198.18.0.1",
+        "ttl": 60,
+        "id": 40960,
+        "rcode": 0,
+        "flow_id": "7172062743950786561"
+      },
+      {
+        "name": "q1.dns-20261026-cold1.traflens.invalid",
+        "address": "198.18.0.2",
+        "ttl": 60,
+        "id": 40961,
+        "rcode": 0,
+        "flow_id": "7172062743950786562"
+      },
+      {
+        "name": "q2.dns-20261026-cold1.traflens.invalid",
+        "address": "198.18.0.3",
+        "ttl": 60,
+        "id": 40962,
+        "rcode": 0,
+        "flow_id": "7172062743950786563"
+      },
+      {
+        "name": "q3.dns-20261026-cold1.traflens.invalid",
+        "address": "198.18.0.4",
+        "ttl": 60,
+        "id": 40963,
+        "rcode": 0,
+        "flow_id": "7172062748245753860"
+      },
+      {
+        "name": "q4.dns-20261026-cold1.traflens.invalid",
+        "address": "198.18.0.5",
+        "ttl": 60,
+        "id": 40964,
+        "rcode": 0,
+        "flow_id": "7172062748245753861"
+      },
+      {
+        "name": "q5.dns-20261026-cold1.traflens.invalid",
+        "address": "198.18.0.6",
+        "ttl": 60,
+        "id": 40965,
+        "rcode": 0,
+        "flow_id": "7172062748245753862"
+      },
+      {
+        "name": "q6.dns-20261026-cold1.traflens.invalid",
+        "address": "198.18.0.7",
+        "ttl": 60,
+        "id": 40966,
+        "rcode": 0,
+        "flow_id": "7172062748245753863"
+      },
+      {
+        "name": "q7.dns-20261026-cold1.traflens.invalid",
+        "address": "198.18.0.8",
+        "ttl": 60,
+        "id": 40967,
+        "rcode": 0,
+        "flow_id": "7172062748245753864"
+      },
+      {
+        "name": "q8.dns-20261026-cold1.traflens.invalid",
+        "address": "198.18.0.9",
+        "ttl": 60,
+        "id": 40968,
+        "rcode": 0,
+        "flow_id": "7172062748245753865"
+      },
+      {
+        "name": "q9.dns-20261026-cold1.traflens.invalid",
+        "address": "198.18.0.10",
+        "ttl": 60,
+        "id": 40969,
+        "rcode": 0,
+        "flow_id": "7172062748245753866"
+      },
+      {
+        "name": "q10.dns-20261026-cold1.traflens.invalid",
+        "address": "198.18.0.11",
+        "ttl": 60,
+        "id": 40970,
+        "rcode": 0,
+        "flow_id": "7172062748245753867"
+      },
+      {
+        "name": "q11.dns-20261026-cold1.traflens.invalid",
+        "address": "198.18.0.12",
+        "ttl": 60,
+        "id": 40971,
+        "rcode": 0,
+        "flow_id": "7172062748245753868"
+      },
+      {
+        "name": "q12.dns-20261026-cold1.traflens.invalid",
+        "address": "198.18.0.13",
+        "ttl": 60,
+        "id": 40972,
+        "rcode": 0,
+        "flow_id": "7172062748245753869"
+      },
+      {
+        "name": "q13.dns-20261026-cold1.traflens.invalid",
+        "address": "198.18.0.14",
+        "ttl": 60,
+        "id": 40973,
+        "rcode": 0,
+        "flow_id": "7172062748245753870"
+      },
+      {
+        "name": "q14.dns-20261026-cold1.traflens.invalid",
+        "address": "198.18.0.15",
+        "ttl": 60,
+        "id": 40974,
+        "rcode": 0,
+        "flow_id": "7172062748245753871"
+      },
+      {
+        "name": "q15.dns-20261026-cold1.traflens.invalid",
+        "address": "198.18.0.16",
+        "ttl": 60,
+        "id": 40975,
+        "rcode": 0,
+        "flow_id": "7172062748245753872"
+      },
+      {
+        "name": "q16.dns-20261026-cold1.traflens.invalid",
+        "address": "198.18.0.17",
+        "ttl": 60,
+        "id": 40976,
+        "rcode": 0,
+        "flow_id": "7172062748245753873"
+      },
+      {
+        "name": "q17.dns-20261026-cold1.traflens.invalid",
+        "address": "198.18.0.18",
+        "ttl": 60,
+        "id": 40977,
+        "rcode": 0,
+        "flow_id": "7172062748245753874"
+      },
+      {
+        "name": "q18.dns-20261026-cold1.traflens.invalid",
+        "address": "198.18.0.19",
+        "ttl": 60,
+        "id": 40978,
+        "rcode": 0,
+        "flow_id": "7172062748245753875"
+      },
+      {
+        "name": "q19.dns-20261026-cold1.traflens.invalid",
+        "address": "198.18.0.20",
+        "ttl": 60,
+        "id": 40979,
+        "rcode": 0,
+        "flow_id": "7172062748245753876"
+      }
+    ],
+    "raw_sender_log_ignored_path": ".traflens/work/protocols-20261026/dns-cold-sender.log",
+    "raw_sender_log_sha256": "1b3e158735da5c751762eb41acea40a870ed31ff464f378dd6ba4f693aa49e1f",
+    "queue_counts": {
+      "1-tagged-flow-to-app-protocol-logs": {
+        "debug_items": 40,
+        "debug_bytes": 56871,
+        "acknowledged": true,
+        "errors": []
+      },
+      "1-tagged-flow-to-quadruple-generator": {
+        "debug_items": 40,
+        "debug_bytes": 123444,
+        "acknowledged": true,
+        "errors": []
+      },
+      "2-protolog-to-collector-sender": {
+        "debug_items": 20,
+        "debug_bytes": 29571,
+        "acknowledged": true,
+        "errors": []
+      }
+    }
+  }
+]

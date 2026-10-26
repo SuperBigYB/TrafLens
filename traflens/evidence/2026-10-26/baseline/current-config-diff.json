@@ -1,0 +1,7 @@
+[
+  {
+    "kind": "delete",
+    "context_left": "only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"$4\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMatcher { match_regex: \\b(?:lua|luajit)(\\S)*( +-\\S+)* +(\\S*/)*([^ /]+), match_type: CmdWithArgs, match_languages: [], match_usernames: [], only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"$5\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMat",
+    "context_right": "only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"$4\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMat"
+  }
+]

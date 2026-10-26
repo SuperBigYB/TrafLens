@@ -1,0 +1,19 @@
+Source: 8741e924ff0ae3964a135985c51e5a6ce6bde397 + upstream-build-compat.patch
+Command: ['/root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/upstream-test-binary', 'common::decapsulate::tests::test_decapsulate_all', '--exact', '--nocapture', '--test-threads=1']
+Cwd: /root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/upstream/agent
+Core dump: disabled
+
+running 1 test
+test common::decapsulate::tests::test_decapsulate_all ... 
+thread 'common::decapsulate::tests::test_decapsulate_all' (167591) panicked at src/common/decapsulate.rs:1022:9:
+assertion failed: actual_bitmap.has(TunnelType::Erspan)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    common::decapsulate::tests::test_decapsulate_all
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 272 filtered out; finished in 0.00s
+

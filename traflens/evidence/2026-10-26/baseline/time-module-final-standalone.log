@@ -1,0 +1,24 @@
+Verbatim pure time function plus complete existing test module from agent/src/flow_generator/protocol_logs.rs
+Source SHA256: ec7b1cd8467def0c7e99dca3a5a96f460dd0b3ed34e894ccb8f8f1c960c23511
+Compile: ['/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc', '--edition=2021', '--test', '/root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/time-module-final-harness.rs', '-o', '/root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/time-module-final-tests']
+No Cargo target or locks used; full-crate selected gate delegated to root
+
+running 15 tests
+test tests::test_cross_hour_59_to_00 ... ok
+test tests::test_exact_120s_boundary ... ok
+test tests::test_future_time_across_hour_clamped ... ok
+test tests::test_future_time_clamped ... ok
+test tests::test_invalid_input_length ... ok
+test tests::test_invalid_mmss_ranges ... ok
+test tests::test_invalid_non_ascii_mmss ... ok
+test tests::test_invalid_signed_mmss ... ok
+test tests::test_invalid_string ... ok
+test tests::test_normal_case ... ok
+test tests::test_older_than_120s_across_hour_invalid ... ok
+test tests::test_older_than_120s_invalid ... ok
+test tests::test_rrt_limit_includes_subsecond_precision ... ok
+test tests::test_subsecond_precision ... ok
+test tests::test_valid_mmss_boundaries ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

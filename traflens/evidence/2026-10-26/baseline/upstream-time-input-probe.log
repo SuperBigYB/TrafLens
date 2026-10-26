@@ -1,0 +1,11 @@
+Source function verbatim from upstream 8741e924; std-only harness, no Cargo cache
+Compile: ['/root/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc', '--edition=2021', '/root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/upstream-time-input-probe.rs', '-o', '/root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/upstream-time-input-probe']
+empty Rust str pointer: 0x1
+
+thread 'main' (171735) panicked at /root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/upstream-time-input-probe.rs:6:29:
+end byte index 2 is not a char boundary; it is inside '€' (bytes 0..3 of string)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+input="€1" now_us=3600000000 result=Err(Any { .. })
+input="0060" now_us=3660000000 result=Ok(Some(0))
+input="6000" now_us=3600000000 result=Ok(Some(0))
+input="-110" now_us=3600000000 result=Ok(Some(50000000))

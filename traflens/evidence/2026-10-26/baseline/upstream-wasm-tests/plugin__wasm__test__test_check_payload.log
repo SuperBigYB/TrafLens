@@ -1,0 +1,31 @@
+
+running 1 test
+test plugin::wasm::test::test_check_payload ... wasm log: wasm register parser
+wasm log: ================ check payload ==================
+wasm log: saddr 1.2.3.4: 12345
+wasm log: daddr 5.6.7.8: 8080
+wasm log: l4: 6
+wasm log: l7: 0
+wasm log: dir: 0
+wasm log: ebpf type: 0
+wasm log: proc name: 
+wasm log: time: 12345678
+wasm log: flowid: 1234567
+wasm log: buf_size: 999
+wasm log: payload: [10 6 100 111 109 97 105 110 18 8 114 101 115 111 117 114 99 101 26 4 116 121 112 101 34 8 101 110 100 112 111 105 110 116] 
+wasm log: test_wasm and  not equal
+
+thread 'plugin::wasm::test::test_check_payload' (178696) panicked at src/plugin/wasm/test.rs:280:5:
+assertion `left == right` failed
+  left: None
+ right: Some(Request)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    plugin::wasm::test::test_check_payload
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 272 filtered out; finished in 0.33s
+

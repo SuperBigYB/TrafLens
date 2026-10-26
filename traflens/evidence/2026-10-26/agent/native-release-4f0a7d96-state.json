@@ -1,0 +1,9 @@
+{
+  "Status": "exited",
+  "Running": false,
+  "ExitCode": 0,
+  "OOMKilled": false,
+  "Error": "",
+  "StartedAt": "2026-10-26T12:05:56.759290643Z",
+  "FinishedAt": "2026-10-26T12:12:49.872253394Z"
+}

@@ -1,0 +1,66 @@
+   Compiling deepflow-agent v0.1.0 (/root/yb/git/TrafLens/agent)
+    Finished `test` profile [unoptimized] target(s) in 13.68s
+     Running unittests src/lib.rs (target/debug/deps/deepflow_agent-4a0e515e9f489f5f)
+
+running 5 tests
+test plugin::c_ffi::process_kname_tests::invalid_utf8_source_fallback_is_a_readable_empty_c_string ... ok
+test plugin::c_ffi::process_kname_tests::packet_context_has_a_readable_empty_c_string ... ok
+test plugin::c_ffi::process_kname_tests::process_names_are_terminated_without_losing_full_length_names ... ok
+test plugin::c_ffi::process_kname_tests::public_c_header_matches_all_rust_abi_fields ... ok
+test plugin::c_ffi::process_kname_tests::shared_object_callbacks_read_empty_and_full_length_process_names ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 289 filtered out; finished in 0.00s
+
+on init
+===============on_check===========================
+ip type: 4
+src: 0.0.0.0:0
+dst: 0.0.0.0:0
+l4 proto: 6
+proto: 0
+ebpf type: 255
+time: 0
+direction: 0
+proc: 
+buf size: 0
+payload size: 0
+
+===============on_parse===========================
+ip type: 4
+src: 0.0.0.0:0
+dst: 0.0.0.0:0
+l4 proto: 6
+proto: 1
+ebpf type: 255
+time: 0
+direction: 0
+proc: 
+buf size: 0
+payload size: 0
+
+===============on_check===========================
+ip type: 4
+src: 0.0.0.0:0
+dst: 0.0.0.0:0
+l4 proto: 6
+proto: 0
+ebpf type: 255
+time: 0
+direction: 0
+proc: abcdefghijklmno
+buf size: 0
+payload size: 0
+
+===============on_parse===========================
+ip type: 4
+src: 0.0.0.0:0
+dst: 0.0.0.0:0
+l4 proto: 6
+proto: 1
+ebpf type: 255
+time: 0
+direction: 0
+proc: abcdefghijklmno
+buf size: 0
+payload size: 0
+

@@ -1,0 +1,219 @@
+{
+  "marker": "dns-20261026-cold1",
+  "protocol": 120,
+  "expected_rows": 20,
+  "sql": "SELECT request_resource,request_type,response_code,response_status,response_result FROM l7_flow_log WHERE request_resource LIKE '%dns-20261026-cold1%' AND l7_protocol=120 LIMIT 1001",
+  "attempts": [
+    {
+      "at_utc": "2026-10-26T11:56:48.733083+00:00",
+      "elapsed_seconds": 0.005897,
+      "exact_match": true,
+      "queried_rows": 20,
+      "missing_rows": 0,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T11:56:50.738091+00:00",
+      "elapsed_seconds": 0.004814,
+      "exact_match": true,
+      "queried_rows": 20,
+      "missing_rows": 0,
+      "unexpected_or_duplicate_rows": 0
+    }
+  ],
+  "passed": true,
+  "final_query": {
+    "OPT_STATUS": "SUCCESS",
+    "DESCRIPTION": "",
+    "result": {
+      "columns": [
+        "request_resource",
+        "request_type",
+        "response_code",
+        "response_status",
+        "response_result"
+      ],
+      "schemas": [
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "String"
+        },
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "LowCardinality(String)"
+        },
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "Nullable(Int32)"
+        },
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "UInt8"
+        },
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "String"
+        }
+      ],
+      "values": [
+        [
+          "q0.dns-20261026-cold1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.1 TTL=60"
+        ],
+        [
+          "q1.dns-20261026-cold1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.2 TTL=60"
+        ],
+        [
+          "q2.dns-20261026-cold1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.3 TTL=60"
+        ],
+        [
+          "q3.dns-20261026-cold1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.4 TTL=60"
+        ],
+        [
+          "q4.dns-20261026-cold1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.5 TTL=60"
+        ],
+        [
+          "q5.dns-20261026-cold1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.6 TTL=60"
+        ],
+        [
+          "q6.dns-20261026-cold1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.7 TTL=60"
+        ],
+        [
+          "q7.dns-20261026-cold1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.8 TTL=60"
+        ],
+        [
+          "q8.dns-20261026-cold1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.9 TTL=60"
+        ],
+        [
+          "q9.dns-20261026-cold1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.10 TTL=60"
+        ],
+        [
+          "q10.dns-20261026-cold1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.11 TTL=60"
+        ],
+        [
+          "q11.dns-20261026-cold1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.12 TTL=60"
+        ],
+        [
+          "q12.dns-20261026-cold1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.13 TTL=60"
+        ],
+        [
+          "q13.dns-20261026-cold1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.14 TTL=60"
+        ],
+        [
+          "q14.dns-20261026-cold1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.15 TTL=60"
+        ],
+        [
+          "q15.dns-20261026-cold1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.16 TTL=60"
+        ],
+        [
+          "q16.dns-20261026-cold1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.17 TTL=60"
+        ],
+        [
+          "q17.dns-20261026-cold1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.18 TTL=60"
+        ],
+        [
+          "q18.dns-20261026-cold1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.19 TTL=60"
+        ],
+        [
+          "q19.dns-20261026-cold1.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.0.20 TTL=60"
+        ]
+      ]
+    },
+    "debug": null
+  },
+  "scope": "Exact unique request/status acceptance; no performance-parity claim"
+}

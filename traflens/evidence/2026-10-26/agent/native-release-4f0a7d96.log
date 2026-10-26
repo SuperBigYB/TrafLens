@@ -1,0 +1,503 @@
+TRAFLENS_PHASE=environment
+rustc 1.97.1 (8bab26f4f 2026-07-14)
+cargo 1.97.1 (c980f4866 2026-06-30)
+cc (GCC) 11.2.1 20220127 (Red Hat 11.2.1-9)
+4
+4f0a7d96d833f770668dea304a5a6afaef2c0fbd
+db952ada8d0434a918c1d3c9f0303f1cd01077ac58d3c657adba5b8b381610a8  Cargo.lock
+TRAFLENS_PHASE=default-release-build
+   Compiling deepflow-agent v0.1.0 (/workspace/TrafLens/agent)
+warning: linker stderr: rust-lld: /target/release/deps/libdeepflow_agent-65938f17cefaac42.rlib: archive member 'deepflow_ebpfctl_bin.c' is neither ET_REL nor LLVM bitcode
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `deepflow-agent` (bin "deepflow-agent") generated 1 warning
+    Finished `release` profile [optimized] target(s) in 2m 10s
+TRAFLENS_BUILD_EXIT=0
+12745-4f0a7d96d833f770668dea304a5a6afaef2c0fbd
+Name: deepflow-agent community edition
+Branch: main
+CommitId: 4f0a7d96d833f770668dea304a5a6afaef2c0fbd
+RevCount: 12745
+Compiler: rustc 1.97.1 (8bab26f4f 2026-07-14)
+CompileTime: 2026-10-26 12:05:57
+TRAFLENS_PHASE=rebuild-native-c-fixture
+make: Entering directory `/workspace/TrafLens/agent/resources/test/plugins'
+cc -I../../../src/plugin/shared_obj -O2 -fPIC -std=c11 -shared  -o so_plugin_test so_plugin_test.c
+make: Leaving directory `/workspace/TrafLens/agent/resources/test/plugins'
+535e160ca204dc3391b93435eb33aca0384f420f2d92264c2c498bc9b836b40e  resources/test/plugins/so_plugin_test
+3971b42898302f17b1c557ed04f414b30c5f399b0dbea92463ddb39865e9cf69  resources/test/plugins/so_plugin_test.c
+94dade60fc266618eabb5ff47341d7513867a2035c2db477c0a5e11ba40325d3  src/plugin/shared_obj/so_plugin.h
+TRAFLENS_PHASE=default-release-cffi-tests
+   Compiling cfg-if v1.0.0
+   Compiling libc v0.2.176
+   Compiling serde v1.0.219
+   Compiling memchr v2.5.0
+   Compiling itoa v1.0.6
+   Compiling once_cell v1.17.2
+   Compiling log v0.4.22
+   Compiling equivalent v1.0.1
+   Compiling foldhash v0.1.5
+   Compiling allocator-api2 v0.2.21
+   Compiling hashbrown v0.15.3
+   Compiling smallvec v1.13.2
+   Compiling getrandom v0.2.9
+   Compiling pin-project-lite v0.2.14
+   Compiling scopeguard v1.1.0
+   Compiling bytes v1.10.1
+   Compiling num_cpus v1.15.0
+   Compiling futures-core v0.3.28
+   Compiling bitflags v1.3.2
+   Compiling hashbrown v0.12.3
+   Compiling bitflags v2.9.1
+   Compiling ryu v1.0.13
+   Compiling indexmap v1.9.3
+   Compiling indexmap v2.9.0
+   Compiling lock_api v0.4.9
+   Compiling parking_lot_core v0.9.7
+   Compiling fnv v1.0.7
+   Compiling ahash v0.8.3
+   Compiling signal-hook-registry v1.4.1
+   Compiling futures-sink v0.3.28
+   Compiling slab v0.4.8
+   Compiling parking_lot v0.12.1
+   Compiling socket2 v0.5.10
+   Compiling mio v0.8.11
+   Compiling tracing-core v0.1.31
+   Compiling tracing v0.1.37
+   Compiling tokio v1.37.0
+   Compiling serde_json v1.0.140
+   Compiling futures-task v0.3.28
+   Compiling futures-channel v0.3.28
+   Compiling pin-utils v0.1.0
+   Compiling futures-io v0.3.28
+   Compiling futures-util v0.3.28
+   Compiling thiserror v1.0.47
+   Compiling aho-corasick v1.1.1
+   Compiling num-traits v0.2.15
+   Compiling regex-syntax v0.7.2
+   Compiling crc32fast v1.3.2
+   Compiling crossbeam-utils v0.8.20
+   Compiling regex v1.8.3
+   Compiling rand_core v0.6.4
+   Compiling ppv-lite86 v0.2.17
+   Compiling rand_chacha v0.3.1
+   Compiling tower-service v0.3.3
+   Compiling rand v0.8.5
+   Compiling either v1.8.1
+   Compiling try-lock v0.2.4
+   Compiling want v0.3.0
+   Compiling httparse v1.10.1
+   Compiling http v1.1.0
+   Compiling byteorder v1.5.0
+   Compiling iana-time-zone v0.1.56
+   Compiling chrono v0.4.38
+   Compiling percent-encoding v2.3.1
+   Compiling http-body v1.0.1
+   Compiling tokio-util v0.7.8
+   Compiling linux-raw-sys v0.4.13
+   Compiling zeroize v1.8.1
+   Compiling hashbrown v0.13.2
+   Compiling rustix v0.38.21
+   Compiling stable_deref_trait v1.2.0
+   Compiling rustls-pki-types v1.12.0
+   Compiling form_urlencoded v1.2.1
+   Compiling crossbeam-channel v0.5.8
+   Compiling http v0.2.9
+   Compiling tower-layer v0.3.3
+   Compiling semver v1.0.23
+   Compiling io-lifetimes v1.0.11
+   Compiling hyper v1.6.0
+   Compiling ordered-float v2.10.0
+   Compiling cranelift-entity v0.99.1
+   Compiling spin v0.9.8
+   Compiling fallible-iterator v0.2.0
+   Compiling base64 v0.22.1
+   Compiling untrusted v0.9.0
+   Compiling ipnet v2.7.2
+   Compiling ring v0.17.3
+   Compiling gimli v0.27.2
+   Compiling anyhow v1.0.71
+   Compiling hyper-util v0.1.13
+   Compiling serde-value v0.7.0
+   Compiling thiserror v2.0.12
+   Compiling base64 v0.21.2
+   Compiling mime v0.3.17
+   Compiling adler v1.0.2
+   Compiling miniz_oxide v0.7.1
+   Compiling rustls-webpki v0.103.3
+   Compiling target-lexicon v0.12.16
+   Compiling linux-raw-sys v0.3.8
+   Compiling dyn-clone v1.0.11
+   Compiling subtle v2.6.1
+   Compiling rustls v0.23.28
+   Compiling schemars v0.8.12
+   Compiling rustix v0.37.19
+   Compiling pin-project v1.1.0
+   Compiling flate2 v1.0.26
+   Compiling http-body v0.4.5
+   Compiling http-body-util v0.1.3
+   Compiling concurrent-queue v2.5.0
+   Compiling futures-executor v0.3.28
+   Compiling jsonptr v0.6.3
+   Compiling socket2 v0.4.9
+   Compiling instant v0.1.12
+   Compiling openssl-probe v0.1.5
+   Compiling pnet_base v0.29.0
+   Compiling leb128 v0.2.5
+   Compiling ucd-trie v0.1.7
+   Compiling parking v2.2.1
+   Compiling event-listener v5.4.0
+   Compiling pest v2.8.1
+   Compiling wasm-encoder v0.31.1
+   Compiling rustls-native-certs v0.8.1
+   Compiling tokio-rustls v0.26.2
+   Compiling json-patch v3.0.1
+   Compiling futures v0.3.28
+   Compiling k8s-openapi v0.24.0
+   Compiling typenum v1.16.0
+   Compiling h2 v0.3.26
+   Compiling wasmparser v0.110.0
+   Compiling slice-group-by v0.3.1
+   Compiling sync_wrapper v1.0.2
+   Compiling rustc-hash v1.1.0
+   Compiling unsafe-libyaml v0.2.11
+   Compiling arbitrary v1.3.0
+   Compiling httpdate v1.0.2
+   Compiling kube-core v0.98.0
+   Compiling hyper v0.14.26
+   Compiling cranelift-control v0.99.1
+   Compiling serde_yaml v0.9.25
+   Compiling regalloc2 v0.9.2
+   Compiling tower v0.5.2
+   Compiling async-stream v0.3.6
+   Compiling wasmtime-types v12.0.1
+   Compiling generic-array v0.14.7
+   Compiling jsonpath-rust v0.7.5
+   Compiling hyper-rustls v0.27.7
+   Compiling event-listener-strategy v0.5.4
+   Compiling pnet_macros_support v0.29.0
+   Compiling tower-http v0.6.6
+   Compiling hyper-timeout v0.5.2
+   Compiling pem v3.0.5
+   Compiling cranelift-bforest v0.99.1
+   Compiling wasmparser v0.111.0
+   Compiling rustls-pemfile v2.2.0
+   Compiling object v0.31.1
+   Compiling secrecy v0.10.3
+   Compiling pnet_sys v0.29.0
+   Compiling bumpalo v3.13.0
+   Compiling cranelift-codegen-shared v0.99.1
+   Compiling home v0.5.11
+   Compiling kube-client v0.98.0
+   Compiling cranelift-codegen v0.99.1
+   Compiling pnet_packet v0.29.0
+   Compiling wasmprinter v0.2.63
+   Compiling async-broadcast v0.7.2
+   Compiling axum-core v0.3.4
+   Compiling memoffset v0.8.0
+   Compiling io-lifetimes v2.0.2
+   Compiling backoff v0.4.0
+   Compiling zstd-sys v2.0.13+zstd.1.5.6
+   Compiling tower v0.4.13
+   Compiling num_enum v0.7.5
+   Compiling tokio-io-timeout v1.2.0
+   Compiling ipnetwork v0.18.0
+   Compiling hostname v0.4.1
+   Compiling sync_wrapper v0.1.2
+   Compiling linked-hash-map v0.5.6
+   Compiling matchit v0.7.3
+   Compiling humantime v2.1.0
+   Compiling wasmtime-component-util v12.0.1
+   Compiling unicode-width v0.1.10
+   Compiling wasmtime-environ v12.0.1
+   Compiling axum v0.6.20
+   Compiling yaml-rust v0.4.5
+   Compiling kube-runtime v0.98.0
+   Compiling pnet_datalink v0.29.0
+   Compiling hyper-timeout v0.4.1
+   Compiling crossbeam-epoch v0.9.14
+   Compiling pnet_transport v0.29.0
+   Compiling memoffset v0.6.5
+   Compiling parking_lot_core v0.8.6
+   Compiling block-buffer v0.10.4
+   Compiling crypto-common v0.1.6
+   Compiling strum v0.27.2
+   Compiling prost v0.12.6
+   Compiling itertools v0.10.5
+   Compiling tokio-stream v0.1.17
+   Compiling ambient-authority v0.0.2
+   Compiling termcolor v1.2.0
+   Compiling tonic v0.10.2
+   Compiling neli v0.6.4
+   Compiling public-derive-internals v0.1.0 (/workspace/TrafLens/agent/crates/public-derive-internals)
+   Compiling digest v0.10.7
+   Compiling parking_lot v0.11.2
+   Compiling nix v0.23.2
+   Compiling pnet v0.29.0
+   Compiling kube v0.98.0
+   Compiling crossbeam-deque v0.8.3
+   Compiling psm v0.1.21
+   Compiling io-extras v0.18.0
+   Compiling bincode v2.0.0-rc.3
+   Compiling serde_yaml v0.8.26
+   Compiling fs-set-times v0.20.0
+   Compiling is-terminal v0.4.7
+   Compiling cadence v0.27.0
+   Compiling uuid v1.4.1
+   Compiling wasmtime-asm-macros v12.0.1
+   Compiling arc-swap v1.6.0
+   Compiling maybe-owned v0.3.4
+   Compiling public v0.1.0 (/workspace/TrafLens/agent/crates/public)
+   Compiling cap-primitives v2.0.0
+   Compiling wasmtime-fiber v12.0.1
+   Compiling env_logger v0.10.0
+   Compiling rayon-core v1.11.0
+   Compiling ittapi-sys v0.3.3
+   Compiling memoffset v0.9.0
+   Compiling zstd-safe v5.0.2+zstd.1.5.2
+   Compiling cranelift-native v0.99.1
+   Compiling cranelift-frontend v0.99.1
+   Compiling wasmtime-jit-debug v12.0.1
+   Compiling memfd v0.6.3
+   Compiling bincode v1.3.3
+   Compiling dirs-sys-next v0.1.2
+   Compiling encoding_rs v0.8.32
+   Compiling tinyvec_macros v0.1.1
+   Compiling cpufeatures v0.2.7
+   Compiling sptr v0.3.2
+   Compiling hex v0.4.3
+   Compiling rustc-demangle v0.1.23
+   Compiling sha2 v0.10.6
+   Compiling wasmtime-runtime v12.0.1
+   Compiling tinyvec v1.6.0
+   Compiling directories-next v2.0.0
+   Compiling cranelift-wasm v0.99.1
+   Compiling wasmtime-cranelift-shared v12.0.1
+   Compiling zstd v0.11.2+zstd.1.5.2
+   Compiling ittapi v0.3.3
+   Compiling rayon v1.7.0
+   Compiling file-per-thread-logger v0.2.0
+   Compiling cpp_demangle v0.3.5
+   Compiling debugid v0.8.0
+   Compiling wast v63.0.0
+   Compiling addr2line v0.20.0
+   Compiling fxhash v0.2.1
+   Compiling toml v0.5.11
+   Compiling wasmtime-jit-icache-coherence v12.0.1
+   Compiling wasmtime-jit v12.0.1
+   Compiling wasmtime-cache v12.0.1
+   Compiling wat v1.0.70
+   Compiling fxprof-processed-profile v0.6.0
+   Compiling wasmtime-cranelift v12.0.1
+   Compiling unicode-normalization v0.1.22
+   Compiling cap-std v2.0.0
+   Compiling unicode-bidi v0.3.13
+   Compiling static_assertions v1.1.0
+   Compiling wasmtime v12.0.1
+   Compiling idna v0.3.0
+   Compiling lazy_static v1.5.0
+   Compiling url v2.3.1
+   Compiling twox-hash v1.6.3
+   Compiling cap-rand v2.0.0
+   Compiling errno v0.2.8
+   Compiling wiggle v12.0.1
+   Compiling base64 v0.13.1
+   Compiling plotters-backend v0.3.4
+   Compiling powerfmt v0.2.0
+   Compiling utf8parse v0.2.2
+   Compiling tap v1.0.1
+   Compiling wyz v0.5.1
+   Compiling anstyle-parse v0.2.5
+   Compiling deranged v0.3.11
+   Compiling plotters-svg v0.3.3
+   Compiling wasi-common v12.0.1
+   Compiling stacker v0.1.23
+   Compiling radium v0.7.0
+   Compiling system-interface v0.26.0
+   Compiling ruzstd v0.7.0
+   Compiling cap-fs-ext v2.0.0
+   Compiling procfs-core v0.16.0
+   Compiling cap-time-ext v2.0.0
+   Compiling textwrap v0.11.0
+   Compiling serde_with v3.8.0
+   Compiling atty v0.2.14
+   Compiling csv-core v0.1.10
+   Compiling os_str_bytes v6.5.0
+   Compiling time-core v0.1.2
+   Compiling anstyle v1.0.8
+   Compiling funty v2.0.0
+   Compiling anstyle-query v1.1.1
+   Compiling linux-raw-sys v0.1.4
+   Compiling num-conv v0.1.0
+   Compiling is_terminal_polyfill v1.70.1
+   Compiling fallible-iterator v0.3.0
+   Compiling cast v0.3.0
+   Compiling same-file v1.0.6
+   Compiling colorchoice v1.0.2
+   Compiling half v1.8.2
+   Compiling anstream v0.6.15
+   Compiling walkdir v2.3.3
+   Compiling serde_cbor v0.11.2
+   Compiling criterion-plot v0.4.5
+   Compiling gimli v0.31.0
+   Compiling time v0.3.36
+   Compiling rustix v0.36.14
+   Compiling bitvec v1.0.1
+   Compiling clap_lex v0.2.4
+   Compiling recursive v0.1.1
+   Compiling bollard-stubs v1.44.0-rc.2
+   Compiling csv v1.2.1
+   Compiling procfs v0.16.0
+   Compiling clap v2.34.0
+   Compiling wasi-cap-std-sync v12.0.1
+   Compiling object v0.36.3
+   Compiling nix v0.29.0
+   Compiling pcap v0.9.2
+   Compiling plotters v0.3.4
+   Compiling zstd-safe v7.2.1
+   Compiling k8s-openapi v0.11.0
+   Compiling hyperlocal-next v0.9.0
+   Compiling npb_pcap_policy v0.1.0 (/workspace/TrafLens/agent/plugins/npb_pcap_policy)
+   Compiling btf-rs v1.1.1
+   Compiling serde_urlencoded v0.7.1
+   Compiling env_filter v0.1.2
+   Compiling tinytemplate v1.2.1
+   Compiling serde_bytes v0.11.12
+   Compiling nix v0.24.3
+   Compiling log v0.3.9
+   Compiling nu-ansi-term v0.50.1
+   Compiling minimal-lexical v0.2.1
+   Compiling match_cfg v0.1.0
+   Compiling textwrap v0.16.0
+   Compiling fastrand v1.9.0
+   Compiling arrayvec v0.7.2
+   Compiling strsim v0.10.0
+   Compiling base64 v0.12.3
+   Compiling fsio v0.4.0
+   Compiling bytes v0.5.6
+   Compiling oorandom v11.1.3
+   Compiling xmlparser v0.13.5
+   Compiling httlib-huffman v0.3.4
+   Compiling criterion v0.3.6
+   Compiling hpack v0.3.0 (https://github.com/deepflowio/hpack-rs/#d65b96c2)
+   Compiling roxmltree v0.14.1
+   Compiling envmnt v0.10.4
+   Compiling clap v3.2.25
+   Compiling uluru v3.0.0
+   Compiling tempfile v3.5.0
+   Compiling hostname v0.3.1
+   Compiling nom v7.1.3
+   Compiling flexi_logger v0.29.8
+   Compiling openshift-openapi v0.3.1
+   Compiling cgroups-rs v0.2.11
+   Compiling bson v2.7.0
+   Compiling trace-utils v0.1.0 (/workspace/TrafLens/agent/crates/trace-utils)
+   Compiling env_logger v0.11.5
+   Compiling bollard v0.16.1
+   Compiling npb_handler v0.1.0 (/workspace/TrafLens/agent/plugins/npb_handler)
+   Compiling zstd v0.13.2
+   Compiling pcap v2.4.0
+   Compiling special_recv_engine v0.1.0 (/workspace/TrafLens/agent/plugins/special_recv_engine)
+   Compiling wasmtime-wasi v12.0.1
+   Compiling pcap-sys v0.1.3
+   Compiling sqlparser v0.60.0
+   Compiling procfs v0.14.2 (https://github.com/deepflowio/procfs/#1c94cdad)
+   Compiling signal-hook v0.3.15
+   Compiling reorder v0.1.0 (/workspace/TrafLens/agent/plugins/reorder)
+   Compiling packet_segmentation_reassembly v0.1.0 (/workspace/TrafLens/agent/plugins/packet_segmentation_reassembly)
+   Compiling grpc v0.1.0 (/workspace/TrafLens/agent/plugins/grpc)
+   Compiling pcap_assembler v0.1.0 (/workspace/TrafLens/agent/plugins/pcap_assembler)
+   Compiling packet_sequence_block v0.1.0 (/workspace/TrafLens/agent/plugins/packet_sequence_block)
+   Compiling md-5 v0.10.5
+   Compiling humantime-serde v1.1.1
+   Compiling dns-lookup v1.0.8
+   Compiling lru v0.9.0
+   Compiling dashmap v5.4.0
+   Compiling simple-dns v0.10.1
+   Compiling l7 v0.1.0 (/workspace/TrafLens/agent/plugins/l7)
+   Compiling sysinfo v0.26.9
+   Compiling page_size v0.4.2
+   Compiling fs2 v0.4.3
+   Compiling npb_sender v0.1.0 (/workspace/TrafLens/agent/plugins/npb_sender)
+   Compiling http2 v0.1.0 (/workspace/TrafLens/agent/plugins/http2)
+   Compiling elf v0.4.0
+   Compiling tunnel v0.1.0 (/workspace/TrafLens/agent/plugins/tunnel)
+   Compiling bytesize v1.2.0
+   Compiling cloud_platform v0.1.0 (/workspace/TrafLens/agent/plugins/cloud_platform)
+   Compiling packet_dedup v0.1.0 (/workspace/TrafLens/agent/plugins/packet_dedup)
+   Compiling deepflow-agent v0.1.0 (/workspace/TrafLens/agent)
+warning: linker stderr: rust-lld: /workspace/TrafLens/agent/src/ebpf/libtrace.a: archive member 'deepflow_ebpfctl_bin.c' is neither ET_REL nor LLVM bitcode
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `deepflow-agent` (lib test) generated 1 warning
+    Finished `release` profile [optimized] target(s) in 4m 42s
+     Running unittests src/lib.rs (/target/release/deps/deepflow_agent-1b10d530622708c9)
+
+running 6 tests
+test plugin::c_ffi::process_kname_tests::ebpf_packet_names_keep_full_comm_or_safe_invalid_utf8_fallback ... ok
+test plugin::c_ffi::process_kname_tests::invalid_utf8_source_fallback_is_a_readable_empty_c_string ... ok
+test plugin::c_ffi::process_kname_tests::packet_context_has_a_readable_empty_c_string ... ok
+test plugin::c_ffi::process_kname_tests::process_names_are_terminated_without_losing_full_length_names ... ok
+test plugin::c_ffi::process_kname_tests::public_c_header_matches_all_rust_abi_fields ... ok
+test plugin::c_ffi::process_kname_tests::shared_object_callbacks_read_empty_and_full_length_process_names ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 298 filtered out; finished in 0.00s
+
+on init
+===============on_check===========================
+ip type: 4
+src: 0.0.0.0:0
+dst: 0.0.0.0:0
+l4 proto: 6
+proto: 0
+ebpf type: 255
+time: 0
+direction: 0
+proc: 
+buf size: 0
+payload size: 0
+
+===============on_parse===========================
+ip type: 4
+src: 0.0.0.0:0
+dst: 0.0.0.0:0
+l4 proto: 6
+proto: 1
+ebpf type: 255
+time: 0
+direction: 0
+proc: 
+buf size: 0
+payload size: 0
+
+===============on_check===========================
+ip type: 4
+src: 0.0.0.0:0
+dst: 0.0.0.0:0
+l4 proto: 6
+proto: 0
+ebpf type: 255
+time: 0
+direction: 0
+proc: abcdefghijklmno
+buf size: 0
+payload size: 0
+
+===============on_parse===========================
+ip type: 4
+src: 0.0.0.0:0
+dst: 0.0.0.0:0
+l4 proto: 6
+proto: 1
+ebpf type: 255
+time: 0
+direction: 0
+proc: abcdefghijklmno
+buf size: 0
+payload size: 0
+
+TRAFLENS_TEST_EXIT=0
+TRAFLENS_PHASE=finished
+ M agent/resources/test/plugins/so_plugin_test

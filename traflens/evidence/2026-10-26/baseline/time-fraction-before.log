@@ -1,0 +1,2 @@
+Current function before strict microsecond limit; source SHA256 5aa12d1f173ddeea405a0e95a117c81cffda7dcee2dc8a7d7fe5e0bfa3c8d1e1
+120s+1us: Some(120000001)

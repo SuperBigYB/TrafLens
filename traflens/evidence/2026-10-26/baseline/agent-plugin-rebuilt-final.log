@@ -1,0 +1,178 @@
+Source: 4f0a7d96d833f770668dea304a5a6afaef2c0fbd
+Rust: rustc 1.97.1 (8bab26f4f 2026-07-14)
+Cargo: cargo 1.97.1 (c980f4866 2026-06-30)
+Lock SHA256: db952ada8d0434a918c1d3c9f0303f1cd01077ac58d3c657adba5b8b381610a8
+OpenTelemetry reference: 724e427879e3d2bae2edc0218fff06e37b9eb46e
+Scope: packet agent; --no-default-features; eBPF/syscall/profiling disabled
+Mode: test-plugin; jobs: 4; dev/test debuginfo: 0; linker: cc
+Cargo target directory: /root/yb/git/TrafLens/agent/target
+make: Entering directory '/root/yb/git/TrafLens/agent/resources/test/plugins'
+cc -I../../../src/plugin/shared_obj -O2 -fPIC -std=c11 -shared  -o so_plugin_test so_plugin_test.c
+make: Leaving directory '/root/yb/git/TrafLens/agent/resources/test/plugins'
+   Compiling deepflow-agent v0.1.0 (/root/yb/git/TrafLens/agent)
+    Finished `test` profile [unoptimized] target(s) in 4.44s
+     Running unittests src/lib.rs (target/debug/deps/deepflow_agent-9aeed2f6c031f05e)
+
+running 5 tests
+test plugin::c_ffi::process_kname_tests::invalid_utf8_source_fallback_is_a_readable_empty_c_string ... ok
+test plugin::c_ffi::process_kname_tests::packet_context_has_a_readable_empty_c_string ... ok
+test plugin::c_ffi::process_kname_tests::process_names_are_terminated_without_losing_full_length_names ... ok
+test plugin::c_ffi::process_kname_tests::public_c_header_matches_all_rust_abi_fields ... ok
+test plugin::c_ffi::process_kname_tests::shared_object_callbacks_read_empty_and_full_length_process_names ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 289 filtered out; finished in 0.00s
+
+on init
+===============on_check===========================
+ip type: 4
+src: 0.0.0.0:0
+dst: 0.0.0.0:0
+l4 proto: 6
+proto: 0
+ebpf type: 255
+time: 0
+direction: 0
+proc: 
+buf size: 0
+payload size: 0
+
+===============on_parse===========================
+ip type: 4
+src: 0.0.0.0:0
+dst: 0.0.0.0:0
+l4 proto: 6
+proto: 1
+ebpf type: 255
+time: 0
+direction: 0
+proc: 
+buf size: 0
+payload size: 0
+
+===============on_check===========================
+ip type: 4
+src: 0.0.0.0:0
+dst: 0.0.0.0:0
+l4 proto: 6
+proto: 0
+ebpf type: 255
+time: 0
+direction: 0
+proc: abcdefghijklmno
+buf size: 0
+payload size: 0
+
+===============on_parse===========================
+ip type: 4
+src: 0.0.0.0:0
+dst: 0.0.0.0:0
+l4 proto: 6
+proto: 1
+ebpf type: 255
+time: 0
+direction: 0
+proc: abcdefghijklmno
+buf size: 0
+payload size: 0
+
+    Finished `test` profile [unoptimized] target(s) in 0.17s
+     Running unittests src/lib.rs (target/debug/deps/deepflow_agent-9aeed2f6c031f05e)
+
+running 2 tests
+test plugin::shared_obj::test::test_check ... ok
+test plugin::shared_obj::test::test_parse ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 292 filtered out; finished in 0.00s
+
+on init
+===============on_check===========================
+ip type: 4
+src: 1.2.3.4:12345
+dst: 5.6.7.8:8080
+l4 proto: 6
+proto: 0
+ebpf type: 0
+time: 12345678
+direction: 0
+proc: 
+buf size: 0
+payload size: 50
+58, 166, 1, 32, 0, 1, 0, 0, 0, 0, 0, 1, 5, 98, 97, 105, 100, 117, 3, 99, 111, 109, 0, 0, 1, 0, 1, 0, 0, 41, 4, 208, 0, 0, 0, 0, 0, 12, 0, 10, 0, 8, 115, 109, 120, 32, 132, 36, 153, 244
+DNS request:
+ID: 15014
+Flags: 288
+QDCOUNT: 1
+ANCOUNT: 0
+NSCOUNT: 0
+ARCOUNT: 1
+---------------
+Question 1:
+Name: baidu.com.
+Type: 1
+Class: 1
+---------------
+on init
+===============on_parse===========================
+ip type: 4
+src: 1.2.3.4:12345
+dst: 5.6.7.8:8080
+l4 proto: 6
+proto: 1
+ebpf type: 0
+time: 12345678
+direction: 0
+proc: 
+buf size: 0
+payload size: 50
+58, 166, 1, 32, 0, 1, 0, 0, 0, 0, 0, 1, 5, 98, 97, 105, 100, 117, 3, 99, 111, 109, 0, 0, 1, 0, 1, 0, 0, 41, 4, 208, 0, 0, 0, 0, 0, 12, 0, 10, 0, 8, 115, 109, 120, 32, 132, 36, 153, 244
+DNS request:
+ID: 15014
+Flags: 288
+QDCOUNT: 1
+ANCOUNT: 0
+NSCOUNT: 0
+ARCOUNT: 1
+---------------
+Question 1:
+Name: baidu.com.
+Type: 1
+Class: 1
+---------------
+===============on_parse===========================
+ip type: 4
+src: 5.6.7.8:8080
+dst: 1.2.3.4:12345
+l4 proto: 6
+proto: 1
+ebpf type: 0
+time: 12345679
+direction: 1
+proc: 
+buf size: 0
+payload size: 70
+58, 166, 129, 128, 0, 1, 0, 2, 0, 0, 0, 1, 5, 98, 97, 105, 100, 117, 3, 99, 111, 109, 0, 0, 1, 0, 1, 192, 12, 0, 1, 0, 1, 0, 0, 0, 128, 0, 4, 39, 156, 66, 10, 192, 12, 0, 1, 0, 1, 0, 0, 0, 128, 0, 4, 110, 242, 68, 66, 0, 0, 41, 2, 0, 0, 0, 0, 0, 0, 0
+DNS request:
+ID: 15014
+Flags: 33152
+QDCOUNT: 1
+ANCOUNT: 2
+NSCOUNT: 0
+ARCOUNT: 1
+---------------
+Question 1:
+Name: baidu.com.
+Type: 1
+Class: 1
+---------------
+type: 1
+class: 1
+ttl: 128
+len: 4
+ip: 39.156.66.10
+---------------
+type: 1
+class: 1
+ttl: 128
+len: 4
+ip: 110.242.68.66
+---------------

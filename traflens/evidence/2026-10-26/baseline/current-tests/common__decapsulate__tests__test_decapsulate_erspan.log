@@ -1,0 +1,21 @@
+Source: 6944472eab429dc52eaabf1fb98e768431c2dfc8
+Command: ['/root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/current-test-binary', 'common::decapsulate::tests::test_decapsulate_erspan', '--exact', '--nocapture', '--test-threads=1']
+Cwd: /root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/current/agent
+Core dump: disabled
+
+running 1 test
+test common::decapsulate::tests::test_decapsulate_erspan ... 
+thread 'common::decapsulate::tests::test_decapsulate_erspan' (166560) panicked at src/common/decapsulate.rs:800:9:
+assertion `left == right` failed
+  left: 0
+ right: 24
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    common::decapsulate::tests::test_decapsulate_erspan
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 280 filtered out; finished in 0.00s
+

@@ -1,0 +1,13 @@
+{
+  "checked_at_utc": "2026-10-26T12:05:19.890216+00:00",
+  "owned_recorded_processes": {
+    "supervisor": {
+      "recorded_pid": 174488,
+      "process_exists": false
+    },
+    "deepflow-agent": {
+      "pid_file_exists": false
+    }
+  },
+  "active_queue_observers": []
+}

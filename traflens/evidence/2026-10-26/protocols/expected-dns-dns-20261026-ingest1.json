@@ -1,0 +1,146 @@
+{
+  "marker": "dns-20261026-ingest1",
+  "protocol": 120,
+  "records": [
+    {
+      "request_resource": "q0.dns-20261026-ingest1.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_status": 0,
+      "response_result": "A=198.18.0.1 TTL=60"
+    },
+    {
+      "request_resource": "q1.dns-20261026-ingest1.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_status": 0,
+      "response_result": "A=198.18.0.2 TTL=60"
+    },
+    {
+      "request_resource": "q2.dns-20261026-ingest1.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_status": 0,
+      "response_result": "A=198.18.0.3 TTL=60"
+    },
+    {
+      "request_resource": "q3.dns-20261026-ingest1.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_status": 0,
+      "response_result": "A=198.18.0.4 TTL=60"
+    },
+    {
+      "request_resource": "q4.dns-20261026-ingest1.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_status": 0,
+      "response_result": "A=198.18.0.5 TTL=60"
+    },
+    {
+      "request_resource": "q5.dns-20261026-ingest1.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_status": 0,
+      "response_result": "A=198.18.0.6 TTL=60"
+    },
+    {
+      "request_resource": "q6.dns-20261026-ingest1.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_status": 0,
+      "response_result": "A=198.18.0.7 TTL=60"
+    },
+    {
+      "request_resource": "q7.dns-20261026-ingest1.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_status": 0,
+      "response_result": "A=198.18.0.8 TTL=60"
+    },
+    {
+      "request_resource": "q8.dns-20261026-ingest1.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_status": 0,
+      "response_result": "A=198.18.0.9 TTL=60"
+    },
+    {
+      "request_resource": "q9.dns-20261026-ingest1.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_status": 0,
+      "response_result": "A=198.18.0.10 TTL=60"
+    },
+    {
+      "request_resource": "q10.dns-20261026-ingest1.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_status": 0,
+      "response_result": "A=198.18.0.11 TTL=60"
+    },
+    {
+      "request_resource": "q11.dns-20261026-ingest1.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_status": 0,
+      "response_result": "A=198.18.0.12 TTL=60"
+    },
+    {
+      "request_resource": "q12.dns-20261026-ingest1.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_status": 0,
+      "response_result": "A=198.18.0.13 TTL=60"
+    },
+    {
+      "request_resource": "q13.dns-20261026-ingest1.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_status": 0,
+      "response_result": "A=198.18.0.14 TTL=60"
+    },
+    {
+      "request_resource": "q14.dns-20261026-ingest1.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_status": 0,
+      "response_result": "A=198.18.0.15 TTL=60"
+    },
+    {
+      "request_resource": "q15.dns-20261026-ingest1.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_status": 0,
+      "response_result": "A=198.18.0.16 TTL=60"
+    },
+    {
+      "request_resource": "q16.dns-20261026-ingest1.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_status": 0,
+      "response_result": "A=198.18.0.17 TTL=60"
+    },
+    {
+      "request_resource": "q17.dns-20261026-ingest1.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_status": 0,
+      "response_result": "A=198.18.0.18 TTL=60"
+    },
+    {
+      "request_resource": "q18.dns-20261026-ingest1.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_status": 0,
+      "response_result": "A=198.18.0.19 TTL=60"
+    },
+    {
+      "request_resource": "q19.dns-20261026-ingest1.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_status": 0,
+      "response_result": "A=198.18.0.20 TTL=60"
+    }
+  ]
+}

@@ -1,0 +1,170 @@
+{
+  "created_utc": "2026-10-26T12:04:14.019349+00:00",
+  "current_source": "4f0a7d96d",
+  "upstream_source": "8741e924ff0ae3964a135985c51e5a6ce6bde397 + recorded packet-only build compatibility overlays",
+  "upstream_binary_sha256": "ef557a6501a29b20642346145ab3e3296d0bcad44e39003c2acfb6c5e4b0178a",
+  "builds_run": false,
+  "source_target_or_fixtures_modified": false,
+  "environment": "same dev-79 host; inherited environment plus recorded run-env.json overrides; no credentials captured",
+  "feature_scope": "both --no-default-features Linux x86_64 Rust1.97.1 packet-only binaries",
+  "matching_inputs": {
+    "resources/test/plugins/wasm_test.wasm.gz": {
+      "sha256": "b1c8d8d78643bbc1dd532b2ca3b392d18fa20b9bd76fbd253859a50d624c15a8",
+      "same": true
+    },
+    "src/plugin/wasm/test.rs": {
+      "sha256": "ac78eecaf706b4016662805f856c3ba5823f4c8b6289fba63f4206f3908286e5",
+      "same": true
+    }
+  },
+  "cases": [
+    {
+      "test": "plugin::wasm::test::test_check_payload",
+      "started_utc": "2026-10-26T12:04:12.237863+00:00",
+      "command": [
+        "/root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/upstream-test-binary",
+        "--exact",
+        "plugin::wasm::test::test_check_payload",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "cwd": "/root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/upstream/agent",
+      "exit_code": 101,
+      "observed_tests": 1,
+      "upstream_panic": {
+        "location": "src/plugin/wasm/test.rs:280:5",
+        "message": "assertion `left == right` failed\n  left: None\n right: Some(Request)"
+      },
+      "current_panic": {
+        "location": "src/plugin/wasm/test.rs:280:5",
+        "message": "assertion `left == right` failed\n  left: None\n right: Some(Request)"
+      },
+      "same_panic": true,
+      "same_empty_process_name_rejection": true,
+      "upstream_log": "upstream-wasm-tests/plugin__wasm__test__test_check_payload.log",
+      "current_log": "/root/yb/git/TrafLens/.traflens/work/protocols-20261026/agent-full-lib-final.log"
+    },
+    {
+      "test": "plugin::wasm::test::test_wasm_http_req",
+      "started_utc": "2026-10-26T12:04:12.603895+00:00",
+      "command": [
+        "/root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/upstream-test-binary",
+        "--exact",
+        "plugin::wasm::test::test_wasm_http_req",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "cwd": "/root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/upstream/agent",
+      "exit_code": 101,
+      "observed_tests": 1,
+      "upstream_panic": {
+        "location": "src/plugin/wasm/test.rs:175:18",
+        "message": "called `Option::unwrap()` on a `None` value"
+      },
+      "current_panic": {
+        "location": "src/plugin/wasm/test.rs:175:18",
+        "message": "called `Option::unwrap()` on a `None` value"
+      },
+      "same_panic": true,
+      "same_empty_process_name_rejection": true,
+      "upstream_log": "upstream-wasm-tests/plugin__wasm__test__test_wasm_http_req.log",
+      "current_log": "/root/yb/git/TrafLens/.traflens/work/protocols-20261026/agent-full-lib-final.log"
+    },
+    {
+      "test": "plugin::wasm::test::test_wasm_http_resp",
+      "started_utc": "2026-10-26T12:04:12.919626+00:00",
+      "command": [
+        "/root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/upstream-test-binary",
+        "--exact",
+        "plugin::wasm::test::test_wasm_http_resp",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "cwd": "/root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/upstream/agent",
+      "exit_code": 101,
+      "observed_tests": 1,
+      "upstream_panic": {
+        "location": "src/plugin/wasm/test.rs:233:18",
+        "message": "called `Option::unwrap()` on a `None` value"
+      },
+      "current_panic": {
+        "location": "src/plugin/wasm/test.rs:233:18",
+        "message": "called `Option::unwrap()` on a `None` value"
+      },
+      "same_panic": true,
+      "same_empty_process_name_rejection": true,
+      "upstream_log": "upstream-wasm-tests/plugin__wasm__test__test_wasm_http_resp.log",
+      "current_log": "/root/yb/git/TrafLens/.traflens/work/protocols-20261026/agent-full-lib-final.log"
+    },
+    {
+      "test": "plugin::wasm::test::test_wasm_parse_payload_req",
+      "started_utc": "2026-10-26T12:04:13.285329+00:00",
+      "command": [
+        "/root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/upstream-test-binary",
+        "--exact",
+        "plugin::wasm::test::test_wasm_parse_payload_req",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "cwd": "/root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/upstream/agent",
+      "exit_code": 101,
+      "observed_tests": 1,
+      "upstream_panic": {
+        "location": "src/plugin/wasm/test.rs:305:10",
+        "message": "called `Result::unwrap()` on an `Err` value: WasmParseFail"
+      },
+      "current_panic": {
+        "location": "src/plugin/wasm/test.rs:305:10",
+        "message": "called `Result::unwrap()` on an `Err` value: WasmParseFail"
+      },
+      "same_panic": true,
+      "same_empty_process_name_rejection": true,
+      "upstream_log": "upstream-wasm-tests/plugin__wasm__test__test_wasm_parse_payload_req.log",
+      "current_log": "/root/yb/git/TrafLens/.traflens/work/protocols-20261026/agent-full-lib-final.log"
+    },
+    {
+      "test": "plugin::wasm::test::test_wasm_parse_payload_resp",
+      "started_utc": "2026-10-26T12:04:13.652785+00:00",
+      "command": [
+        "/root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/upstream-test-binary",
+        "--exact",
+        "plugin::wasm::test::test_wasm_parse_payload_resp",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "cwd": "/root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/upstream/agent",
+      "exit_code": 101,
+      "observed_tests": 1,
+      "upstream_panic": {
+        "location": "src/plugin/wasm/test.rs:380:10",
+        "message": "called `Result::unwrap()` on an `Err` value: WasmParseFail"
+      },
+      "current_panic": {
+        "location": "src/plugin/wasm/test.rs:380:10",
+        "message": "called `Result::unwrap()` on an `Err` value: WasmParseFail"
+      },
+      "same_panic": true,
+      "same_empty_process_name_rejection": true,
+      "upstream_log": "upstream-wasm-tests/plugin__wasm__test__test_wasm_parse_payload_resp.log",
+      "current_log": "/root/yb/git/TrafLens/.traflens/work/protocols-20261026/agent-full-lib-final.log"
+    }
+  ],
+  "conclusion": "All five failures reproduce on compatible pinned upstream with identical panic location/message and empty process-name rejection. These are not newly introduced by the plugin pointer/ABI repair.",
+  "limits": [
+    "Only these five exact tests executed in the upstream binary; no upstream full-suite result is claimed.",
+    "WASM fixture expects test_wasm but packet-only builds omit the cfg(libtrace) process-name field. Default-feature behavior is outside this comparison.",
+    "No fixes applied to these five tests in this task."
+  ],
+  "source_evidence": [
+    {
+      "file": "agent/src/plugin/wasm/vm.rs",
+      "lines": "158-165",
+      "behavior": "VmCtxBase sets process_kname=None when feature libtrace is disabled."
+    },
+    {
+      "file": "agent/src/plugin/wasm/test.rs",
+      "lines": "62-68,107-113",
+      "behavior": "Both fixture ParseParam constructors provide test_wasm only inside cfg(feature=libtrace)."
+    }
+  ]
+}

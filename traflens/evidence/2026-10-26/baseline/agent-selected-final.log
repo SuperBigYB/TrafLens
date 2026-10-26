@@ -1,0 +1,287 @@
+Source: 6944472eab429dc52eaabf1fb98e768431c2dfc8
+Rust: rustc 1.97.1 (8bab26f4f 2026-07-14)
+Cargo: cargo 1.97.1 (c980f4866 2026-06-30)
+Lock SHA256: db952ada8d0434a918c1d3c9f0303f1cd01077ac58d3c657adba5b8b381610a8
+OpenTelemetry reference: 724e427879e3d2bae2edc0218fff06e37b9eb46e
+Scope: packet agent; --no-default-features; eBPF/syscall/profiling disabled
+Mode: parser-test; jobs: 4; dev/test debuginfo: 0; linker: cc
+Cargo target directory: /root/yb/git/TrafLens/agent/target
+   Compiling public v0.1.0 (/root/yb/git/TrafLens/agent/crates/public)
+   Compiling deepflow-agent v0.1.0 (/root/yb/git/TrafLens/agent)
+   Compiling grpc v0.1.0 (/root/yb/git/TrafLens/agent/plugins/grpc)
+   Compiling packet_segmentation_reassembly v0.1.0 (/root/yb/git/TrafLens/agent/plugins/packet_segmentation_reassembly)
+   Compiling reorder v0.1.0 (/root/yb/git/TrafLens/agent/plugins/reorder)
+   Compiling special_recv_engine v0.1.0 (/root/yb/git/TrafLens/agent/plugins/special_recv_engine)
+   Compiling packet_sequence_block v0.1.0 (/root/yb/git/TrafLens/agent/plugins/packet_sequence_block)
+   Compiling pcap_assembler v0.1.0 (/root/yb/git/TrafLens/agent/plugins/pcap_assembler)
+   Compiling npb_handler v0.1.0 (/root/yb/git/TrafLens/agent/plugins/npb_handler)
+    Finished `test` profile [unoptimized] target(s) in 13.47s
+     Running unittests src/lib.rs (target/debug/deps/deepflow_agent-9aeed2f6c031f05e)
+
+running 20 tests
+test flow_generator::protocol_logs::http::tests::blacklist ... ok
+test flow_generator::protocol_logs::http::tests::cached_multi_fragment_pair_counts_each_end_once_and_keeps_blacklist ... ok
+test flow_generator::protocol_logs::http::tests::cached_response_first_fragment_is_not_recounted_at_flow_end ... ok
+test flow_generator::protocol_logs::http::tests::cached_response_first_preserves_filter_errors_and_rrt ... ok
+test flow_generator::protocol_logs::http::tests::cached_response_fragments_wait_for_request_filter_and_preserve_error ... ok
+test flow_generator::protocol_logs::http::tests::check ... ok
+test flow_generator::protocol_logs::http::tests::check_grpc_unary ... ok
+test flow_generator::protocol_logs::http::tests::check_perf ... ok
+test flow_generator::protocol_logs::http::tests::get_http_v1_header_from_payload ... ok
+test flow_generator::protocol_logs::http::tests::header_priority ... ok
+test flow_generator::protocol_logs::http::tests::late_blacklist_retires_only_its_own_pending_request ... ok
+test flow_generator::protocol_logs::http::tests::panic_caused_by_invalid_header ... ok
+test flow_generator::protocol_logs::http::tests::segmented_tcp_false_positive ... ok
+test flow_generator::protocol_logs::http::tests::test_enterprise_set_endpoint_by_config_avoids_path_owned_clone ... ok
+test flow_generator::protocol_logs::http::tests::test_handle_endpoint ... ok
+test flow_generator::protocol_logs::http::tests::test_non_enterprise_set_endpoint_by_config_uses_borrowed_path_name ... ok
+test flow_generator::protocol_logs::http::tests::test_one_line_resp ... ok
+test flow_generator::protocol_logs::http::tests::test_preferred_endpoint_path_prefers_endpoint_then_path ... ok
+test flow_generator::protocol_logs::http::tests::unmatched_cached_request_timeout_excludes_blacklisted_requests ... ok
+test flow_generator::protocol_logs::http::tests::unmatched_cached_response_is_counted_once_at_flow_end ... ok
+
+test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 274 filtered out; finished in 0.06s
+
+    Finished `test` profile [unoptimized] target(s) in 0.18s
+     Running unittests src/lib.rs (target/debug/deps/deepflow_agent-9aeed2f6c031f05e)
+
+running 4 tests
+test flow_generator::protocol_logs::dns::tests::check ... ok
+test flow_generator::protocol_logs::dns::tests::check_perf ... ok
+test flow_generator::protocol_logs::dns::tests::malformed_packet ... ok
+test flow_generator::protocol_logs::dns::tests::nxdomain_ignore ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 290 filtered out; finished in 0.01s
+
+    Finished `test` profile [unoptimized] target(s) in 0.18s
+     Running unittests src/lib.rs (target/debug/deps/deepflow_agent-9aeed2f6c031f05e)
+
+running 8 tests
+test flow_generator::protocol_logs::sql::mysql::tests::check ... ok
+test flow_generator::protocol_logs::sql::mysql::tests::check_perf ... ok
+test flow_generator::protocol_logs::sql::mysql::tests::check_truncate ... ok
+test flow_generator::protocol_logs::sql::mysql::tests::comment_extractor ... ok
+test flow_generator::protocol_logs::sql::mysql::tests::test_generate_endpoint ... ok
+test flow_generator::protocol_logs::sql::mysql::tests::test_kv_extractor ... ok
+test flow_generator::protocol_logs::sql::mysql::tests::test_parse_parameter ... ok
+test flow_generator::protocol_logs::sql::mysql::tests::test_set_parameter_counter ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 286 filtered out; finished in 2.11s
+
+    Finished `test` profile [unoptimized] target(s) in 0.18s
+     Running unittests src/lib.rs (target/debug/deps/deepflow_agent-9aeed2f6c031f05e)
+
+running 19 tests
+test policy::labeler::tests::cidr_key_matches_all_ipv4_prefixes ... ok
+test policy::labeler::tests::cidr_key_matches_all_ipv6_prefixes ... ok
+test policy::labeler::tests::test_cidr_match ... ok
+test policy::labeler::tests::test_cidr_order ... ok
+test policy::labeler::tests::test_cidr_tunnel ... ok
+test policy::labeler::tests::test_cidr_vip ... ok
+test policy::labeler::tests::test_cidr_wan ... ok
+test policy::labeler::tests::test_epc_ip_normal ... ok
+test policy::labeler::tests::test_get_endpoint_date ... ok
+test policy::labeler::tests::test_get_vip ... ok
+test policy::labeler::tests::test_ip6_netmask ... ok
+test policy::labeler::tests::test_ip_lan_wan ... ok
+test policy::labeler::tests::test_ip_litte_netmask ... ok
+test policy::labeler::tests::test_ip_netmask ... ok
+test policy::labeler::tests::test_local_epc ... ok
+test policy::labeler::tests::test_mac_normal ... ok
+test policy::labeler::tests::test_modify_endpoint_date ... ok
+test policy::labeler::tests::test_modify_internet_epc ... ok
+test policy::labeler::tests::test_peer_normal ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 275 filtered out; finished in 0.00s
+
+    Finished `test` profile [unoptimized] target(s) in 0.18s
+     Running unittests src/lib.rs (target/debug/deps/deepflow_agent-9aeed2f6c031f05e)
+
+running 15 tests
+test flow_generator::protocol_logs::tests::test_cross_hour_59_to_00 ... ok
+test flow_generator::protocol_logs::tests::test_exact_120s_boundary ... ok
+test flow_generator::protocol_logs::tests::test_future_time_across_hour_clamped ... ok
+test flow_generator::protocol_logs::tests::test_future_time_clamped ... ok
+test flow_generator::protocol_logs::tests::test_invalid_input_length ... ok
+test flow_generator::protocol_logs::tests::test_invalid_mmss_ranges ... ok
+test flow_generator::protocol_logs::tests::test_invalid_non_ascii_mmss ... ok
+test flow_generator::protocol_logs::tests::test_invalid_signed_mmss ... ok
+test flow_generator::protocol_logs::tests::test_invalid_string ... ok
+test flow_generator::protocol_logs::tests::test_normal_case ... ok
+test flow_generator::protocol_logs::tests::test_older_than_120s_across_hour_invalid ... ok
+test flow_generator::protocol_logs::tests::test_older_than_120s_invalid ... ok
+test flow_generator::protocol_logs::tests::test_rrt_limit_includes_subsecond_precision ... ok
+test flow_generator::protocol_logs::tests::test_subsecond_precision ... ok
+test flow_generator::protocol_logs::tests::test_valid_mmss_boundaries ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 279 filtered out; finished in 0.00s
+
+make: Entering directory '/root/yb/git/TrafLens/agent/resources/test/plugins'
+make: Nothing to be done for 'all'.
+make: Leaving directory '/root/yb/git/TrafLens/agent/resources/test/plugins'
+    Finished `test` profile [unoptimized] target(s) in 0.19s
+     Running unittests src/lib.rs (target/debug/deps/deepflow_agent-9aeed2f6c031f05e)
+
+running 5 tests
+test plugin::c_ffi::process_kname_tests::invalid_utf8_source_fallback_is_a_readable_empty_c_string ... ok
+test plugin::c_ffi::process_kname_tests::packet_context_has_a_readable_empty_c_string ... ok
+test plugin::c_ffi::process_kname_tests::process_names_are_terminated_without_losing_full_length_names ... ok
+test plugin::c_ffi::process_kname_tests::public_c_header_matches_all_rust_abi_fields ... ok
+test plugin::c_ffi::process_kname_tests::shared_object_callbacks_read_empty_and_full_length_process_names ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 289 filtered out; finished in 0.00s
+
+on init
+===============on_check===========================
+ip type: 4
+src: 0.0.0.0:0
+dst: 0.0.0.0:0
+l4 proto: 6
+proto: 0
+ebpf type: 255
+time: 0
+direction: 0
+proc: 
+buf size: 0
+payload size: 0
+
+===============on_parse===========================
+ip type: 4
+src: 0.0.0.0:0
+dst: 0.0.0.0:0
+l4 proto: 6
+proto: 1
+ebpf type: 255
+time: 0
+direction: 0
+proc: 
+buf size: 0
+payload size: 0
+
+===============on_check===========================
+ip type: 4
+src: 0.0.0.0:0
+dst: 0.0.0.0:0
+l4 proto: 6
+proto: 0
+ebpf type: 255
+time: 0
+direction: 0
+proc: abcdefghijklmno
+buf size: 0
+payload size: 0
+
+===============on_parse===========================
+ip type: 4
+src: 0.0.0.0:0
+dst: 0.0.0.0:0
+l4 proto: 6
+proto: 1
+ebpf type: 255
+time: 0
+direction: 0
+proc: abcdefghijklmno
+buf size: 0
+payload size: 0
+
+    Finished `test` profile [unoptimized] target(s) in 0.18s
+     Running unittests src/lib.rs (target/debug/deps/deepflow_agent-9aeed2f6c031f05e)
+
+running 2 tests
+test plugin::shared_obj::test::test_check ... ok
+test plugin::shared_obj::test::test_parse ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 292 filtered out; finished in 0.00s
+
+on init
+===============on_check===========================
+ip type: 4
+src: 1.2.3.4:12345
+dst: 5.6.7.8:8080
+l4 proto: 6
+proto: 0
+ebpf type: 0
+time: 12345678
+direction: 0
+proc: 
+buf size: 0
+payload size: 50
+58, 166, 1, 32, 0, 1, 0, 0, 0, 0, 0, 1, 5, 98, 97, 105, 100, 117, 3, 99, 111, 109, 0, 0, 1, 0, 1, 0, 0, 41, 4, 208, 0, 0, 0, 0, 0, 12, 0, 10, 0, 8, 115, 109, 120, 32, 132, 36, 153, 244
+DNS request:
+ID: 15014
+Flags: 288
+QDCOUNT: 1
+ANCOUNT: 0
+NSCOUNT: 0
+ARCOUNT: 1
+---------------
+Question 1:
+Name: baidu.com.
+Type: 1
+Class: 1
+---------------
+on init
+===============on_parse===========================
+ip type: 4
+src: 1.2.3.4:12345
+dst: 5.6.7.8:8080
+l4 proto: 6
+proto: 1
+ebpf type: 0
+time: 12345678
+direction: 0
+proc: 
+buf size: 0
+payload size: 50
+58, 166, 1, 32, 0, 1, 0, 0, 0, 0, 0, 1, 5, 98, 97, 105, 100, 117, 3, 99, 111, 109, 0, 0, 1, 0, 1, 0, 0, 41, 4, 208, 0, 0, 0, 0, 0, 12, 0, 10, 0, 8, 115, 109, 120, 32, 132, 36, 153, 244
+DNS request:
+ID: 15014
+Flags: 288
+QDCOUNT: 1
+ANCOUNT: 0
+NSCOUNT: 0
+ARCOUNT: 1
+---------------
+Question 1:
+Name: baidu.com.
+Type: 1
+Class: 1
+---------------
+===============on_parse===========================
+ip type: 4
+src: 5.6.7.8:8080
+dst: 1.2.3.4:12345
+l4 proto: 6
+proto: 1
+ebpf type: 0
+time: 12345679
+direction: 1
+proc: 
+buf size: 0
+payload size: 70
+58, 166, 129, 128, 0, 1, 0, 2, 0, 0, 0, 1, 5, 98, 97, 105, 100, 117, 3, 99, 111, 109, 0, 0, 1, 0, 1, 192, 12, 0, 1, 0, 1, 0, 0, 0, 128, 0, 4, 39, 156, 66, 10, 192, 12, 0, 1, 0, 1, 0, 0, 0, 128, 0, 4, 110, 242, 68, 66, 0, 0, 41, 2, 0, 0, 0, 0, 0, 0, 0
+DNS request:
+ID: 15014
+Flags: 33152
+QDCOUNT: 1
+ANCOUNT: 2
+NSCOUNT: 0
+ARCOUNT: 1
+---------------
+Question 1:
+Name: baidu.com.
+Type: 1
+Class: 1
+---------------
+type: 1
+class: 1
+ttl: 128
+len: 4
+ip: 39.156.66.10
+---------------
+type: 1
+class: 1
+ttl: 128
+len: 4
+ip: 110.242.68.66
+---------------

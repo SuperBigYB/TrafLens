@@ -1,0 +1,7 @@
+Source: 6944472eab429dc52eaabf1fb98e768431c2dfc8
+Command: ['/root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/current-test-binary', 'plugin::shared_obj::test::test_check', '--exact', '--nocapture', '--test-threads=1']
+Cwd: /root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/current/agent
+Core dump: disabled
+
+running 1 test
+test plugin::shared_obj::test::test_check ... 

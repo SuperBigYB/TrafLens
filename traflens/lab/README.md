@@ -162,3 +162,36 @@ test configuration and are unsuitable for comparing unrestricted throughput.
 
 See `KNOWN_LIMITATIONS.md` for issues observed while bringing up this pinned
 upstream version. The lab does not patch those production code paths.
+
+## Repeatable DNS and MySQL packet acceptance
+
+Stop the owned Agent before changing restart-tagged protocol settings. In the
+existing isolated lab, `configure-agent.py --profile protocols
+--update-owned-agent` preserves CPU/RAM/interface limits and enables only HTTP
+TCP18080, DNS UDP18053 and MySQL TCP18060. The populated group must contain only
+the exact registered dev-79 identity; the default command still refuses it.
+The explicit flag does not remotely stop an Agent, so check the supervisor first.
+The controller configuration is verified by an exact readback before capture.
+
+Use `dns-traffic.py` or `mysql-traffic.py` in `serve` mode on dev-240 and `client`
+mode on dev-79, with the server's scoped link-local IPv6 address, each host's
+explicit direct-link interface, a fresh matching marker and count20. Wait for
+the ready event and for the Agent dispatcher plus three-listener policy sync
+before sending the first request. Both fixtures have total deadlines and check
+all replies; the MySQL server is a deterministic wire fixture and executes no SQL.
+Its JSON explicitly records `database_execution=false`.
+
+Retain both endpoints' raw JSON, independently compare all twenty records, then
+construct an expected JSON document for `verify-requests.py`. It requires marker,
+numeric protocol (HTTP20/MySQL60/DNS120), and unique records containing
+request_resource/request_type/response_code/response_status. DNS additionally
+requires exact response_result such as `A=198.18.0.1 TTL=60`; successful MySQL
+uses response_code null and response_status0. The script checks query results as
+a multiset so missing, duplicate and unexpected rows all fail. Two consecutive
+matching reads are required by default. The committed protocol evidence retains
+the exact expected documents and preparation command used for these runs.
+
+MySQL passed20/20; DNS warm and fresh-process cold batches passed20/20 including
+q0. The initial DNS batch failed19/20, with a same-window CKwriter broken-pipe
+drop of one L7 record after the previous database restart. That loss remains
+unfixed and recorded separately; the later passes are not a reliability fix.

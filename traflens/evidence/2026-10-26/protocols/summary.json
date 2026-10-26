@@ -1,0 +1,12 @@
+{
+  "verified_at_utc": "2026-10-26T12:02:36.076618+00:00",
+  "controller_healthy": true,
+  "mysql_schema_version": "7.1.0.40",
+  "mysql_table_count": 161,
+  "agent_count": 1,
+  "query_status": "SUCCESS",
+  "all_containers_running": true,
+  "query_sql": "SELECT Count(row) FROM l7_flow_log",
+  "private_password_found_in_server_logs": false,
+  "note": "Storage/query readiness only; no Agent traffic or performance-parity claim."
+}

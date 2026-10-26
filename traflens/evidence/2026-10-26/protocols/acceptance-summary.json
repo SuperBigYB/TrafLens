@@ -1,0 +1,56 @@
+{
+  "verified_at_utc": "2026-10-26T12:07:11.434016+00:00",
+  "protocol_batches": [
+    {
+      "marker": "dns-20261026-ingest1",
+      "protocol": 120,
+      "client_wire_count": 20,
+      "server_wire_count": 20,
+      "expected_rows": 20,
+      "queried_rows": 19,
+      "exact_database_match": false,
+      "missing_rows": 1,
+      "unexpected_or_duplicate_rows": 0,
+      "acceptance_file": "dns-ingest-acceptance.json"
+    },
+    {
+      "marker": "dns-20261026-ingest2",
+      "protocol": 120,
+      "client_wire_count": 20,
+      "server_wire_count": 20,
+      "expected_rows": 20,
+      "queried_rows": 20,
+      "exact_database_match": true,
+      "missing_rows": 0,
+      "unexpected_or_duplicate_rows": 0,
+      "acceptance_file": "dns-warm-ingest-acceptance.json"
+    },
+    {
+      "marker": "dns-20261026-cold1",
+      "protocol": 120,
+      "client_wire_count": 20,
+      "server_wire_count": 20,
+      "expected_rows": 20,
+      "queried_rows": 20,
+      "exact_database_match": true,
+      "missing_rows": 0,
+      "unexpected_or_duplicate_rows": 0,
+      "acceptance_file": "dns-cold-ingest-acceptance.json"
+    },
+    {
+      "marker": "mysql20261026a",
+      "protocol": 60,
+      "client_wire_count": 20,
+      "server_wire_count": 20,
+      "expected_rows": 20,
+      "queried_rows": 20,
+      "exact_database_match": true,
+      "missing_rows": 0,
+      "unexpected_or_duplicate_rows": 0,
+      "acceptance_file": "mysql-ingest-acceptance.json"
+    }
+  ],
+  "prior_http_exact_reverification": true,
+  "initial_dns_failure_preserved": true,
+  "note": "Later warm/cold successes are not a production fix for the first lost row."
+}

@@ -1,0 +1,261 @@
+{
+  "metadata": "metadata.json",
+  "comparison": [
+    {
+      "test": "common::decapsulate::tests::test_decapsulate_all",
+      "category": "open_source_tunnel_plugin_stub",
+      "current": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'common::decapsulate::tests::test_decapsulate_all' (166558) panicked at src/common/decapsulate.rs:1022:9:\nassertion failed: actual_bitmap.has(TunnelType::Erspan)\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nFAILED\n",
+        "log": "current-tests/common__decapsulate__tests__test_decapsulate_all.log"
+      },
+      "upstream_with_build_compat": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'common::decapsulate::tests::test_decapsulate_all' (167591) panicked at src/common/decapsulate.rs:1022:9:\nassertion failed: actual_bitmap.has(TunnelType::Erspan)\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nFAILED\n",
+        "log": "upstream-tests/common__decapsulate__tests__test_decapsulate_all.log"
+      }
+    },
+    {
+      "test": "common::decapsulate::tests::test_decapsulate_erspan",
+      "category": "open_source_tunnel_plugin_stub",
+      "current": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'common::decapsulate::tests::test_decapsulate_erspan' (166560) panicked at src/common/decapsulate.rs:800:9:\nassertion `left == right` failed\n  left: 0\n right: 24\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+        "log": "current-tests/common__decapsulate__tests__test_decapsulate_erspan.log"
+      },
+      "upstream_with_build_compat": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'common::decapsulate::tests::test_decapsulate_erspan' (167593) panicked at src/common/decapsulate.rs:800:9:\nassertion `left == right` failed\n  left: 0\n right: 24\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+        "log": "upstream-tests/common__decapsulate__tests__test_decapsulate_erspan.log"
+      }
+    },
+    {
+      "test": "common::decapsulate::tests::test_decapsulate_erspan_ii",
+      "category": "open_source_tunnel_plugin_stub",
+      "current": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'common::decapsulate::tests::test_decapsulate_erspan_ii' (166562) panicked at src/common/decapsulate.rs:834:9:\nassertion `left == right` failed\n  left: 0\n right: 36\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+        "log": "current-tests/common__decapsulate__tests__test_decapsulate_erspan_ii.log"
+      },
+      "upstream_with_build_compat": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'common::decapsulate::tests::test_decapsulate_erspan_ii' (167595) panicked at src/common/decapsulate.rs:834:9:\nassertion `left == right` failed\n  left: 0\n right: 36\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+        "log": "upstream-tests/common__decapsulate__tests__test_decapsulate_erspan_ii.log"
+      }
+    },
+    {
+      "test": "common::decapsulate::tests::test_decapsulate_erspan_iii",
+      "category": "open_source_tunnel_plugin_stub",
+      "current": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'common::decapsulate::tests::test_decapsulate_erspan_iii' (166564) panicked at src/common/decapsulate.rs:868:9:\nassertion `left == right` failed\n  left: 0\n right: 40\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+        "log": "current-tests/common__decapsulate__tests__test_decapsulate_erspan_iii.log"
+      },
+      "upstream_with_build_compat": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'common::decapsulate::tests::test_decapsulate_erspan_iii' (167597) panicked at src/common/decapsulate.rs:868:9:\nassertion `left == right` failed\n  left: 0\n right: 40\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+        "log": "upstream-tests/common__decapsulate__tests__test_decapsulate_erspan_iii.log"
+      }
+    },
+    {
+      "test": "common::decapsulate::tests::test_decapsulate_teb",
+      "category": "open_source_tunnel_plugin_stub",
+      "current": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'common::decapsulate::tests::test_decapsulate_teb' (166566) panicked at src/common/decapsulate.rs:948:9:\nassertion `left == right` failed\n  left: 0\n right: 28\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+        "log": "current-tests/common__decapsulate__tests__test_decapsulate_teb.log"
+      },
+      "upstream_with_build_compat": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'common::decapsulate::tests::test_decapsulate_teb' (167599) panicked at src/common/decapsulate.rs:948:9:\nassertion `left == right` failed\n  left: 0\n right: 28\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+        "log": "upstream-tests/common__decapsulate__tests__test_decapsulate_teb.log"
+      }
+    },
+    {
+      "test": "common::decapsulate::tests::test_decapsulate_vxlan_nsh",
+      "category": "open_source_tunnel_plugin_stub",
+      "current": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'common::decapsulate::tests::test_decapsulate_vxlan_nsh' (166568) panicked at src/common/decapsulate.rs:1069:9:\nassertion `left == right` failed\n  left: 0\n right: 74\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+        "log": "current-tests/common__decapsulate__tests__test_decapsulate_vxlan_nsh.log"
+      },
+      "upstream_with_build_compat": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'common::decapsulate::tests::test_decapsulate_vxlan_nsh' (167601) panicked at src/common/decapsulate.rs:1069:9:\nassertion `left == right` failed\n  left: 0\n right: 74\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+        "log": "upstream-tests/common__decapsulate__tests__test_decapsulate_vxlan_nsh.log"
+      }
+    },
+    {
+      "test": "config::config::tests::check_defaults",
+      "category": "template_vs_rust_default_drift",
+      "current": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'config::config::tests::check_defaults' (166570) panicked at src/config/config.rs:4147:9:\nassertion `left == right` failed\n  left: Inputs { proc: Proc { enabled: true, proc_dir_path: \"/proc\", socket_info_sync_interval: 0ns, min_lifetime: 3s, tag_extraction: TagExtraction { script_command: [], exec_username: \"deepflow\" }, process_blacklist: [\"awk\", \"bash\", \"curl\", \"grep\", \"pause\", \"runc\", \"sed\", \"sh\", \"sleep\"], process_matcher: [ProcessMatcher { match_regex: \\bjava( +\\S+)* +-jar +(\\S*/)*([^ /]+\\.jar), match_type: CmdWithArgs, match_languages: [], match_usernames: [], only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"$3\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMatcher { match_regex: \\bjava( +\\S+)* +-(?:cp|classpath) +\\S+ +(?P<CLASS_NAME>[$_A-Za-z][$_0-9A-Za-z]*(?:\\.[$_A-Za-z][$_0-9A-Za-z]*)*), match_type: CmdWithArgs, match_languages: [], match_usernames: [], only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"${CLASS_NAME}\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMatcher { match_regex: \\bpython(\\S)*( +-\\S+)* +(\\S*/)*([^ /]+), match_type: CmdWithArgs, match_languages: [], match_usernames: [], only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"$4\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMatcher { match_regex: \\b(?:lua|luajit)(\\S)*( +-\\S+)* +(\\S*/)*([^ /]+), match_type: CmdWithArgs, match_languages: [], match_usernames: [], only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"$5\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMatcher { match_regex: \\bphp(\\d+)?(-fpm|-cli|-cgi)?( +-\\S+)* +(\\S*/)*([^ /]+\\.php), match_type: CmdWithArgs, match_languages: [], match_usernames: [], only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"$5\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMatcher { match_regex: \\b(node|nodejs)( +--\\S+)* +(\\S*/)*([^ /]+\\.js), match_type: CmdWithArgs, match_languages: [], match_usernames: [], only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"$4\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMatcher { match_regex: ^deepflow-, match_type: ProcessName, match_languages: [], match_usernames: [], only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMatcher { match_regex: .*, match_type: ProcessName, match_languages: [], match_usernames: [], only_in_container: true, only_with_tag: false, ignore: false, rewrite_name: \"\", enabled_features: [\"proc.gprocess_info\"] }], symbol_table: SymbolTable { golang_specific: GolangSpecific { enabled: false }, java: Java { refresh_defer_duration: 60s } }, ai_agent: AiAgentConfig { http_endpoints: [\"/v1/chat/completions\", \"/v1/embeddings\", \"/v1/responses\"], max_payload_size: 0, file_io_enabled: true } }, cbpf: Cbpf { common: Common { capture_mode: Local }, af_packet: AfPacket { interface_regex: \"^(tap.*|cali.*|veth.*|eth.*|en[osipx].*|lxc.*|lo|[0-9a-f]+_h)$\", inner_interface_capture_enabled: false, inner_interface_regex: \"^eth\\\\d+$\", bond_interfaces: [], extra_netns_regex: \"\", extra_bpf_filter: \"\", src_interfaces: [], vlan_pcp_in_physical_mirror_traffic: 0, bpf_filter_disabled: false, skip_npb_bpf: false, tunning: AfPacketTunning { socket_version: Auto, ring_blocks_enabled: false, ring_blocks: 128, packet_fanout_count: 1, packet_fanout_mode: 0, promisc: false } }, special_network: SpecialNetwork { dpdk: Dpdk { source: None, reorder_cache_window_size: 60ms }, libpcap: Libpcap { enabled: false }, vhost_user: VhostUser { vhost_socket_path: \"\" }, physical_switch: PhysicalSwitch { sflow_ports: [], netflow_ports: [] } }, tunning: CbpfTunning { dispatcher_queue_enabled: false, max_capture_packet_size: 65535, raw_packet_buffer_block_size: 65536, raw_packet_queue_size: 131072, max_capture_pps: 1048576 }, preprocess: PreProcess { tunnel_decap_protocols: [1, 2], tunnel_trim_protocols: [], packet_segmentation_reassembly: [] }, physical_mirror: PhysicalMirror { default_capture_network_type: 3, packet_dedup_disabled: false, private_cloud_gateway_traffic: false } }, ebpf: Ebpf { disabled: false, socket: EbpfSocket { uprobe: EbpfSocketUprobe { golang: EbpfSocketUprobeGolang { enabled: false, tracing_timeout: 120s }, tls: EbpfSocketUprobeTls { enabled: false }, dpdk: EbpfSocketUprobeDpdk { command: \"\", rx_hooks: [], tx_hooks: [] } }, kprobe: EbpfSocketKprobe { disabled: false, enable_unix_socket: false, blacklist: EbpfSocketKprobePorts { ports: \"\" }, whitelist: EbpfSocketKprobePorts { ports: \"\" } }, sock_ops: EbpfSocketSockOps { tcp_option_trace: EbpfTcpOptionTrace { enabled: false, sampling_window_bytes: 16384 } }, tunning: EbpfSocketTunning { max_capture_rate: 0, syscall_trace_id_disabled: false, map_prealloc_disabled: false, fentry_enabled: false, hooked_socket_syscalls: [\"read\", \"readv\", \"recvfrom\", \"recvmsg\", \"recvmmsg\", \"sendmsg\", \"sendmmsg\", \"sendto\", \"write\", \"writev\"] }, preprocess: EbpfSocketPreprocess { out_of_order_reassembly_cache_size: 256, out_of_order_reassembly_protocols: [], out_of_order_reassembly_timeout: 100ms, segmentation_reassembly_protocols: [] } }, file: EbpfFile { io_event: EbpfFileIoEvent { collect_mode: 1, minimal_duration: 1ms, enable_virtual_file_collect: false } }, profile: EbpfProfile { on_cpu: EbpfProfileOnCpu { disabled: false, sampling_frequency: 99, aggregate_by_cpu: false }, off_cpu: EbpfProfileOffCpu { disabled: true, min_blocking_time: 50\u00b5s, aggregate_by_cpu: false }, memory: EbpfProfileMemory { disabled: true, report_interval: 10s, allocated_addresses_lru_len: 131072, sort_length: 16384, sort_interval: 1.5s, queue_size: 32768 }, unwinding: Unwinding { dwarf_disabled: true, dwarf_regex: \"\", dwarf_process_map_size: 1024, dwarf_shard_map_size: 128 }, preprocess: EbpfProfilePreprocess { stack_compression: true }, languages: EbpfProfileLanguages { python_disabled: false, php_disabled: false, nodejs_disabled: false, lua_disabled: false } }, tunning: EbpfTunning { collector_queue_size: 65535, userspace_worker_threads: 1, kick_kern_nice: 0, perf_pages_count: 128, kernel_ring_size: 65536, max_socket_entries: 131072, socket_map_reclaim_threshold: 120000, max_trace_entries: 131072 }, network: EbpfNetwork { nic_opt_enabled: false, nic_optimize: [] }, java_symbol_file_refresh_defer_interval: 60 }, resources: Resources { push_interval: 10s, private_cloud: PrivateCloud { hypervisor_resource_enabled: false, vm_mac_source: IfMac, vm_xml_directory: \"/etc/libvirt/qemu/\", vm_mac_mapping_script: \"\" }, kubernetes: Kubernetes { kubernetes_namespace: \"\", api_resources: [ApiResources { name: \"namespaces\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"nodes\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"pods\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"replicationcontrollers\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"services\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"daemonsets\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"deployments\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"replicasets\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"statefulsets\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"ingresses\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"configmaps\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }], api_list_page_size: 1000, api_list_max_interval: 600s, ingress_flavour: \"kubernetes\", pod_mac_collection_method: Adaptive } }, integration: Integration { enabled: true, listen_port: 38086, compression: Compression { trace: true, profile: true }, prometheus_extra_labels: PrometheusExtraLabels { enabled: false, extra_labels: [], label_length: 1024, value_length: 4096 }, feature_control: FeatureControl { profile_integration_disabled: false, trace_integration_disabled: false, metric_integration_disabled: false, log_integration_disabled: false } }, vector: Vector { enabled: false, config: Null } }\n right: Inputs { proc: Proc { enabled: true, proc_dir_path: \"/proc\", socket_info_sync_interval: 0ns, min_lifetime: 3s, tag_extraction: TagExtraction { script_command: [], exec_username: \"deepflow\" }, process_blacklist: [\"awk\", \"bash\", \"curl\", \"grep\", \"pause\", \"runc\", \"sed\", \"sh\", \"sleep\"], process_matcher: [ProcessMatcher { match_regex: \\bjava( +\\S+)* +-jar +(\\S*/)*([^ /]+\\.jar), match_type: CmdWithArgs, match_languages: [], match_usernames: [], only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"$3\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMatcher { match_regex: \\bjava( +\\S+)* +-(?:cp|classpath) +\\S+ +(?P<CLASS_NAME>[$_A-Za-z][$_0-9A-Za-z]*(?:\\.[$_A-Za-z][$_0-9A-Za-z]*)*), match_type: CmdWithArgs, match_languages: [], match_usernames: [], only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"${CLASS_NAME}\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMatcher { match_regex: \\bpython(\\S)*( +-\\S+)* +(\\S*/)*([^ /]+), match_type: CmdWithArgs, match_languages: [], match_usernames: [], only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"$4\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMatcher { match_regex: \\bphp(\\d+)?(-fpm|-cli|-cgi)?( +-\\S+)* +(\\S*/)*([^ /]+\\.php), match_type: CmdWithArgs, match_languages: [], match_usernames: [], only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"$5\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMatcher { match_regex: \\b(node|nodejs)( +--\\S+)* +(\\S*/)*([^ /]+\\.js), match_type: CmdWithArgs, match_languages: [], match_usernames: [], only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"$4\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMatcher { match_regex: ^deepflow-, match_type: ProcessName, match_languages: [], match_usernames: [], only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMatcher { match_regex: .*, match_type: ProcessName, match_languages: [], match_usernames: [], only_in_container: true, only_with_tag: false, ignore: false, rewrite_name: \"\", enabled_features: [\"proc.gprocess_info\"] }], symbol_table: SymbolTable { golang_specific: GolangSpecific { enabled: false }, java: Java { refresh_defer_duration: 60s } }, ai_agent: AiAgentConfig { http_endpoints: [\"/v1/chat/completions\", \"/v1/embeddings\", \"/v1/responses\"], max_payload_size: 0, file_io_enabled: true } }, cbpf: Cbpf { common: Common { capture_mode: Local }, af_packet: AfPacket { interface_regex: \"^(tap.*|cali.*|veth.*|eth.*|en[osipx].*|lxc.*|lo|[0-9a-f]+_h)$\", inner_interface_capture_enabled: false, inner_interface_regex: \"^eth\\\\d+$\", bond_interfaces: [], extra_netns_regex: \"\", extra_bpf_filter: \"\", src_interfaces: [], vlan_pcp_in_physical_mirror_traffic: 0, bpf_filter_disabled: false, skip_npb_bpf: false, tunning: AfPacketTunning { socket_version: Auto, ring_blocks_enabled: false, ring_blocks: 128, packet_fanout_count: 1, packet_fanout_mode: 0, promisc: false } }, special_network: SpecialNetwork { dpdk: Dpdk { source: None, reorder_cache_window_size: 60ms }, libpcap: Libpcap { enabled: false }, vhost_user: VhostUser { vhost_socket_path: \"\" }, physical_switch: PhysicalSwitch { sflow_ports: [], netflow_ports: [] } }, tunning: CbpfTunning { dispatcher_queue_enabled: false, max_capture_packet_size: 65535, raw_packet_buffer_block_size: 65536, raw_packet_queue_size: 131072, max_capture_pps: 1048576 }, preprocess: PreProcess { tunnel_decap_protocols: [1, 2], tunnel_trim_protocols: [], packet_segmentation_reassembly: [] }, physical_mirror: PhysicalMirror { default_capture_network_type: 3, packet_dedup_disabled: false, private_cloud_gateway_traffic: false } }, ebpf: Ebpf { disabled: false, socket: EbpfSocket { uprobe: EbpfSocketUprobe { golang: EbpfSocketUprobeGolang { enabled: false, tracing_timeout: 120s }, tls: EbpfSocketUprobeTls { enabled: false }, dpdk: EbpfSocketUprobeDpdk { command: \"\", rx_hooks: [], tx_hooks: [] } }, kprobe: EbpfSocketKprobe { disabled: false, enable_unix_socket: false, blacklist: EbpfSocketKprobePorts { ports: \"\" }, whitelist: EbpfSocketKprobePorts { ports: \"\" } }, sock_ops: EbpfSocketSockOps { tcp_option_trace: EbpfTcpOptionTrace { enabled: false, sampling_window_bytes: 16384 } }, tunning: EbpfSocketTunning { max_capture_rate: 0, syscall_trace_id_disabled: false, map_prealloc_disabled: false, fentry_enabled: false, hooked_socket_syscalls: [\"read\", \"readv\", \"recvfrom\", \"recvmsg\", \"recvmmsg\", \"sendmsg\", \"sendmmsg\", \"sendto\", \"write\", \"writev\"] }, preprocess: EbpfSocketPreprocess { out_of_order_reassembly_cache_size: 256, out_of_order_reassembly_protocols: [], out_of_order_reassembly_timeout: 100ms, segmentation_reassembly_protocols: [] } }, file: EbpfFile { io_event: EbpfFileIoEvent { collect_mode: 1, minimal_duration: 1ms, enable_virtual_file_collect: false } }, profile: EbpfProfile { on_cpu: EbpfProfileOnCpu { disabled: false, sampling_frequency: 99, aggregate_by_cpu: false }, off_cpu: EbpfProfileOffCpu { disabled: true, min_blocking_time: 50\u00b5s, aggregate_by_cpu: false }, memory: EbpfProfileMemory { disabled: true, report_interval: 10s, allocated_addresses_lru_len: 131072, sort_length: 16384, sort_interval: 1.5s, queue_size: 32768 }, unwinding: Unwinding { dwarf_disabled: true, dwarf_regex: \"\", dwarf_process_map_size: 1024, dwarf_shard_map_size: 128 }, preprocess: EbpfProfilePreprocess { stack_compression: true }, languages: EbpfProfileLanguages { python_disabled: false, php_disabled: false, nodejs_disabled: false, lua_disabled: false } }, tunning: EbpfTunning { collector_queue_size: 65535, userspace_worker_threads: 1, kick_kern_nice: 0, perf_pages_count: 128, kernel_ring_size: 65536, max_socket_entries: 131072, socket_map_reclaim_threshold: 120000, max_trace_entries: 131072 }, network: EbpfNetwork { nic_opt_enabled: false, nic_optimize: [] }, java_symbol_file_refresh_defer_interval: 60 }, resources: Resources { push_interval: 10s, private_cloud: PrivateCloud { hypervisor_resource_enabled: false, vm_mac_source: IfMac, vm_xml_directory: \"/etc/libvirt/qemu/\", vm_mac_mapping_script: \"\" }, kubernetes: Kubernetes { kubernetes_namespace: \"\", api_resources: [ApiResources { name: \"namespaces\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"nodes\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"pods\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"replicationcontrollers\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"services\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"daemonsets\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"deployments\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"replicasets\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"statefulsets\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"ingresses\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"configmaps\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }], api_list_page_size: 1000, api_list_max_interval: 600s, ingress_flavour: \"kubernetes\", pod_mac_collection_method: Adaptive } }, integration: Integration { enabled: true, listen_port: 38086, compression: Compression { trace: true, profile: true }, prometheus_extra_labels: PrometheusExtraLabels { enabled: false, extra_labels: [], label_length: 1024, value_length: 4096 }, feature_control: FeatureControl { profile_integration_disabled: false, trace_integration_disabled: false, metric_integration_disabled: false, log_integration_disabled: false } }, vector: Vector { enabled: false, config: Null } }\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+        "log": "current-tests/config__config__tests__check_defaults.log"
+      },
+      "upstream_with_build_compat": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'config::config::tests::check_defaults' (167603) panicked at src/config/config.rs:4147:9:\nassertion `left == right` failed\n  left: Inputs { proc: Proc { enabled: true, proc_dir_path: \"/proc\", socket_info_sync_interval: 0ns, min_lifetime: 3s, tag_extraction: TagExtraction { script_command: [], exec_username: \"deepflow\" }, process_blacklist: [\"awk\", \"bash\", \"curl\", \"grep\", \"pause\", \"runc\", \"sed\", \"sh\", \"sleep\"], process_matcher: [ProcessMatcher { match_regex: \\bjava( +\\S+)* +-jar +(\\S*/)*([^ /]+\\.jar), match_type: CmdWithArgs, match_languages: [], match_usernames: [], only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"$3\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMatcher { match_regex: \\bjava( +\\S+)* +-(?:cp|classpath) +\\S+ +(?P<CLASS_NAME>[$_A-Za-z][$_0-9A-Za-z]*(?:\\.[$_A-Za-z][$_0-9A-Za-z]*)*), match_type: CmdWithArgs, match_languages: [], match_usernames: [], only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"${CLASS_NAME}\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMatcher { match_regex: \\bpython(\\S)*( +-\\S+)* +(\\S*/)*([^ /]+), match_type: CmdWithArgs, match_languages: [], match_usernames: [], only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"$4\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMatcher { match_regex: \\b(?:lua|luajit)(\\S)*( +-\\S+)* +(\\S*/)*([^ /]+), match_type: CmdWithArgs, match_languages: [], match_usernames: [], only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"$5\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMatcher { match_regex: \\bphp(\\d+)?(-fpm|-cli|-cgi)?( +-\\S+)* +(\\S*/)*([^ /]+\\.php), match_type: CmdWithArgs, match_languages: [], match_usernames: [], only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"$5\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMatcher { match_regex: \\b(node|nodejs)( +--\\S+)* +(\\S*/)*([^ /]+\\.js), match_type: CmdWithArgs, match_languages: [], match_usernames: [], only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"$4\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMatcher { match_regex: ^deepflow-, match_type: ProcessName, match_languages: [], match_usernames: [], only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMatcher { match_regex: .*, match_type: ProcessName, match_languages: [], match_usernames: [], only_in_container: true, only_with_tag: false, ignore: false, rewrite_name: \"\", enabled_features: [\"proc.gprocess_info\"] }], symbol_table: SymbolTable { golang_specific: GolangSpecific { enabled: false }, java: Java { refresh_defer_duration: 60s } }, ai_agent: AiAgentConfig { http_endpoints: [\"/v1/chat/completions\", \"/v1/embeddings\", \"/v1/responses\"], max_payload_size: 0, file_io_enabled: true } }, cbpf: Cbpf { common: Common { capture_mode: Local }, af_packet: AfPacket { interface_regex: \"^(tap.*|cali.*|veth.*|eth.*|en[osipx].*|lxc.*|lo|[0-9a-f]+_h)$\", inner_interface_capture_enabled: false, inner_interface_regex: \"^eth\\\\d+$\", bond_interfaces: [], extra_netns_regex: \"\", extra_bpf_filter: \"\", src_interfaces: [], vlan_pcp_in_physical_mirror_traffic: 0, bpf_filter_disabled: false, skip_npb_bpf: false, tunning: AfPacketTunning { socket_version: Auto, ring_blocks_enabled: false, ring_blocks: 128, packet_fanout_count: 1, packet_fanout_mode: 0, promisc: false } }, special_network: SpecialNetwork { dpdk: Dpdk { source: None, reorder_cache_window_size: 60ms }, libpcap: Libpcap { enabled: false }, vhost_user: VhostUser { vhost_socket_path: \"\" }, physical_switch: PhysicalSwitch { sflow_ports: [], netflow_ports: [] } }, tunning: CbpfTunning { dispatcher_queue_enabled: false, max_capture_packet_size: 65535, raw_packet_buffer_block_size: 65536, raw_packet_queue_size: 131072, max_capture_pps: 1048576 }, preprocess: PreProcess { tunnel_decap_protocols: [1, 2], tunnel_trim_protocols: [], packet_segmentation_reassembly: [] }, physical_mirror: PhysicalMirror { default_capture_network_type: 3, packet_dedup_disabled: false, private_cloud_gateway_traffic: false } }, ebpf: Ebpf { disabled: false, socket: EbpfSocket { uprobe: EbpfSocketUprobe { golang: EbpfSocketUprobeGolang { enabled: false, tracing_timeout: 120s }, tls: EbpfSocketUprobeTls { enabled: false }, dpdk: EbpfSocketUprobeDpdk { command: \"\", rx_hooks: [], tx_hooks: [] } }, kprobe: EbpfSocketKprobe { disabled: false, enable_unix_socket: false, blacklist: EbpfSocketKprobePorts { ports: \"\" }, whitelist: EbpfSocketKprobePorts { ports: \"\" } }, sock_ops: EbpfSocketSockOps { tcp_option_trace: EbpfTcpOptionTrace { enabled: false, sampling_window_bytes: 16384 } }, tunning: EbpfSocketTunning { max_capture_rate: 0, syscall_trace_id_disabled: false, map_prealloc_disabled: false, fentry_enabled: false, hooked_socket_syscalls: [\"read\", \"readv\", \"recvfrom\", \"recvmsg\", \"recvmmsg\", \"sendmsg\", \"sendmmsg\", \"sendto\", \"write\", \"writev\"] }, preprocess: EbpfSocketPreprocess { out_of_order_reassembly_cache_size: 256, out_of_order_reassembly_protocols: [], out_of_order_reassembly_timeout: 100ms, segmentation_reassembly_protocols: [] } }, file: EbpfFile { io_event: EbpfFileIoEvent { collect_mode: 1, minimal_duration: 1ms, enable_virtual_file_collect: false } }, profile: EbpfProfile { on_cpu: EbpfProfileOnCpu { disabled: false, sampling_frequency: 99, aggregate_by_cpu: false }, off_cpu: EbpfProfileOffCpu { disabled: true, min_blocking_time: 50\u00b5s, aggregate_by_cpu: false }, memory: EbpfProfileMemory { disabled: true, report_interval: 10s, allocated_addresses_lru_len: 131072, sort_length: 16384, sort_interval: 1.5s, queue_size: 32768 }, unwinding: Unwinding { dwarf_disabled: true, dwarf_regex: \"\", dwarf_process_map_size: 1024, dwarf_shard_map_size: 128 }, preprocess: EbpfProfilePreprocess { stack_compression: true }, languages: EbpfProfileLanguages { python_disabled: false, php_disabled: false, nodejs_disabled: false, lua_disabled: false } }, tunning: EbpfTunning { collector_queue_size: 65535, userspace_worker_threads: 1, kick_kern_nice: 0, perf_pages_count: 128, kernel_ring_size: 65536, max_socket_entries: 131072, socket_map_reclaim_threshold: 120000, max_trace_entries: 131072 }, network: EbpfNetwork { nic_opt_enabled: false, nic_optimize: [] }, java_symbol_file_refresh_defer_interval: 60 }, resources: Resources { push_interval: 10s, private_cloud: PrivateCloud { hypervisor_resource_enabled: false, vm_mac_source: IfMac, vm_xml_directory: \"/etc/libvirt/qemu/\", vm_mac_mapping_script: \"\" }, kubernetes: Kubernetes { kubernetes_namespace: \"\", api_resources: [ApiResources { name: \"namespaces\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"nodes\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"pods\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"replicationcontrollers\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"services\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"daemonsets\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"deployments\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"replicasets\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"statefulsets\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"ingresses\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"configmaps\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }], api_list_page_size: 1000, api_list_max_interval: 600s, ingress_flavour: \"kubernetes\", pod_mac_collection_method: Adaptive } }, integration: Integration { enabled: true, listen_port: 38086, compression: Compression { trace: true, profile: true }, prometheus_extra_labels: PrometheusExtraLabels { enabled: false, extra_labels: [], label_length: 1024, value_length: 4096 }, feature_control: FeatureControl { profile_integration_disabled: false, trace_integration_disabled: false, metric_integration_disabled: false, log_integration_disabled: false } }, vector: Vector { enabled: false, config: Null } }\n right: Inputs { proc: Proc { enabled: true, proc_dir_path: \"/proc\", socket_info_sync_interval: 0ns, min_lifetime: 3s, tag_extraction: TagExtraction { script_command: [], exec_username: \"deepflow\" }, process_blacklist: [\"awk\", \"bash\", \"curl\", \"grep\", \"pause\", \"runc\", \"sed\", \"sh\", \"sleep\"], process_matcher: [ProcessMatcher { match_regex: \\bjava( +\\S+)* +-jar +(\\S*/)*([^ /]+\\.jar), match_type: CmdWithArgs, match_languages: [], match_usernames: [], only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"$3\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMatcher { match_regex: \\bjava( +\\S+)* +-(?:cp|classpath) +\\S+ +(?P<CLASS_NAME>[$_A-Za-z][$_0-9A-Za-z]*(?:\\.[$_A-Za-z][$_0-9A-Za-z]*)*), match_type: CmdWithArgs, match_languages: [], match_usernames: [], only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"${CLASS_NAME}\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMatcher { match_regex: \\bpython(\\S)*( +-\\S+)* +(\\S*/)*([^ /]+), match_type: CmdWithArgs, match_languages: [], match_usernames: [], only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"$4\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMatcher { match_regex: \\bphp(\\d+)?(-fpm|-cli|-cgi)?( +-\\S+)* +(\\S*/)*([^ /]+\\.php), match_type: CmdWithArgs, match_languages: [], match_usernames: [], only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"$5\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMatcher { match_regex: \\b(node|nodejs)( +--\\S+)* +(\\S*/)*([^ /]+\\.js), match_type: CmdWithArgs, match_languages: [], match_usernames: [], only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"$4\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMatcher { match_regex: ^deepflow-, match_type: ProcessName, match_languages: [], match_usernames: [], only_in_container: false, only_with_tag: false, ignore: false, rewrite_name: \"\", enabled_features: [\"ebpf.profile.on_cpu\", \"proc.gprocess_info\"] }, ProcessMatcher { match_regex: .*, match_type: ProcessName, match_languages: [], match_usernames: [], only_in_container: true, only_with_tag: false, ignore: false, rewrite_name: \"\", enabled_features: [\"proc.gprocess_info\"] }], symbol_table: SymbolTable { golang_specific: GolangSpecific { enabled: false }, java: Java { refresh_defer_duration: 60s } }, ai_agent: AiAgentConfig { http_endpoints: [\"/v1/chat/completions\", \"/v1/embeddings\", \"/v1/responses\"], max_payload_size: 0, file_io_enabled: true } }, cbpf: Cbpf { common: Common { capture_mode: Local }, af_packet: AfPacket { interface_regex: \"^(tap.*|cali.*|veth.*|eth.*|en[osipx].*|lxc.*|lo|[0-9a-f]+_h)$\", inner_interface_capture_enabled: false, inner_interface_regex: \"^eth\\\\d+$\", bond_interfaces: [], extra_netns_regex: \"\", extra_bpf_filter: \"\", src_interfaces: [], vlan_pcp_in_physical_mirror_traffic: 0, bpf_filter_disabled: false, skip_npb_bpf: false, tunning: AfPacketTunning { socket_version: Auto, ring_blocks_enabled: false, ring_blocks: 128, packet_fanout_count: 1, packet_fanout_mode: 0, promisc: false } }, special_network: SpecialNetwork { dpdk: Dpdk { source: None, reorder_cache_window_size: 60ms }, libpcap: Libpcap { enabled: false }, vhost_user: VhostUser { vhost_socket_path: \"\" }, physical_switch: PhysicalSwitch { sflow_ports: [], netflow_ports: [] } }, tunning: CbpfTunning { dispatcher_queue_enabled: false, max_capture_packet_size: 65535, raw_packet_buffer_block_size: 65536, raw_packet_queue_size: 131072, max_capture_pps: 1048576 }, preprocess: PreProcess { tunnel_decap_protocols: [1, 2], tunnel_trim_protocols: [], packet_segmentation_reassembly: [] }, physical_mirror: PhysicalMirror { default_capture_network_type: 3, packet_dedup_disabled: false, private_cloud_gateway_traffic: false } }, ebpf: Ebpf { disabled: false, socket: EbpfSocket { uprobe: EbpfSocketUprobe { golang: EbpfSocketUprobeGolang { enabled: false, tracing_timeout: 120s }, tls: EbpfSocketUprobeTls { enabled: false }, dpdk: EbpfSocketUprobeDpdk { command: \"\", rx_hooks: [], tx_hooks: [] } }, kprobe: EbpfSocketKprobe { disabled: false, enable_unix_socket: false, blacklist: EbpfSocketKprobePorts { ports: \"\" }, whitelist: EbpfSocketKprobePorts { ports: \"\" } }, sock_ops: EbpfSocketSockOps { tcp_option_trace: EbpfTcpOptionTrace { enabled: false, sampling_window_bytes: 16384 } }, tunning: EbpfSocketTunning { max_capture_rate: 0, syscall_trace_id_disabled: false, map_prealloc_disabled: false, fentry_enabled: false, hooked_socket_syscalls: [\"read\", \"readv\", \"recvfrom\", \"recvmsg\", \"recvmmsg\", \"sendmsg\", \"sendmmsg\", \"sendto\", \"write\", \"writev\"] }, preprocess: EbpfSocketPreprocess { out_of_order_reassembly_cache_size: 256, out_of_order_reassembly_protocols: [], out_of_order_reassembly_timeout: 100ms, segmentation_reassembly_protocols: [] } }, file: EbpfFile { io_event: EbpfFileIoEvent { collect_mode: 1, minimal_duration: 1ms, enable_virtual_file_collect: false } }, profile: EbpfProfile { on_cpu: EbpfProfileOnCpu { disabled: false, sampling_frequency: 99, aggregate_by_cpu: false }, off_cpu: EbpfProfileOffCpu { disabled: true, min_blocking_time: 50\u00b5s, aggregate_by_cpu: false }, memory: EbpfProfileMemory { disabled: true, report_interval: 10s, allocated_addresses_lru_len: 131072, sort_length: 16384, sort_interval: 1.5s, queue_size: 32768 }, unwinding: Unwinding { dwarf_disabled: true, dwarf_regex: \"\", dwarf_process_map_size: 1024, dwarf_shard_map_size: 128 }, preprocess: EbpfProfilePreprocess { stack_compression: true }, languages: EbpfProfileLanguages { python_disabled: false, php_disabled: false, nodejs_disabled: false, lua_disabled: false } }, tunning: EbpfTunning { collector_queue_size: 65535, userspace_worker_threads: 1, kick_kern_nice: 0, perf_pages_count: 128, kernel_ring_size: 65536, max_socket_entries: 131072, socket_map_reclaim_threshold: 120000, max_trace_entries: 131072 }, network: EbpfNetwork { nic_opt_enabled: false, nic_optimize: [] }, java_symbol_file_refresh_defer_interval: 60 }, resources: Resources { push_interval: 10s, private_cloud: PrivateCloud { hypervisor_resource_enabled: false, vm_mac_source: IfMac, vm_xml_directory: \"/etc/libvirt/qemu/\", vm_mac_mapping_script: \"\" }, kubernetes: Kubernetes { kubernetes_namespace: \"\", api_resources: [ApiResources { name: \"namespaces\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"nodes\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"pods\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"replicationcontrollers\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"services\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"daemonsets\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"deployments\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"replicasets\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"statefulsets\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"ingresses\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }, ApiResources { name: \"configmaps\", disabled: false, group: \"\", version: \"\", field_selector: \"\" }], api_list_page_size: 1000, api_list_max_interval: 600s, ingress_flavour: \"kubernetes\", pod_mac_collection_method: Adaptive } }, integration: Integration { enabled: true, listen_port: 38086, compression: Compression { trace: true, profile: true }, prometheus_extra_labels: PrometheusExtraLabels { enabled: false, extra_labels: [], label_length: 1024, value_length: 4096 }, feature_control: FeatureControl { profile_integration_disabled: false, trace_integration_disabled: false, metric_integration_disabled: false, log_integration_disabled: false } }, vector: Vector { enabled: false, config: Null } }\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+        "log": "upstream-tests/config__config__tests__check_defaults.log"
+      }
+    },
+    {
+      "test": "flow_generator::flow_map::tests::test_handshake_retrans",
+      "category": "real_assertion_unresolved_handshake_metrics",
+      "current": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'flow_generator::flow_map::tests::test_handshake_retrans' (166572) panicked at src/flow_generator/flow_map.rs:3841:9:\nassertion `left == right` failed\n  left: 1255\n right: 1567\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+        "log": "current-tests/flow_generator__flow_map__tests__test_handshake_retrans.log"
+      },
+      "upstream_with_build_compat": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'flow_generator::flow_map::tests::test_handshake_retrans' (167605) panicked at src/flow_generator/flow_map.rs:3841:9:\nassertion `left == right` failed\n  left: 1255\n right: 1567\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+        "log": "upstream-tests/flow_generator__flow_map__tests__test_handshake_retrans.log"
+      }
+    },
+    {
+      "test": "flow_generator::flow_node::tests::test_packet_segmentation_reassembly",
+      "category": "open_source_reassembly_plugin_stub",
+      "current": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'flow_generator::flow_node::tests::test_packet_segmentation_reassembly' (166574) panicked at src/flow_generator/flow_node.rs:438:9:\nassertion `left == right` failed\n  left: 0\n right: 2\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+        "log": "current-tests/flow_generator__flow_node__tests__test_packet_segmentation_reassembly.log"
+      },
+      "upstream_with_build_compat": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'flow_generator::flow_node::tests::test_packet_segmentation_reassembly' (167607) panicked at src/flow_generator/flow_node.rs:438:9:\nassertion `left == right` failed\n  left: 0\n right: 2\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+        "log": "upstream-tests/flow_generator__flow_node__tests__test_packet_segmentation_reassembly.log"
+      }
+    },
+    {
+      "test": "flow_generator::protocol_logs::dns::tests::perf_with_blacklist",
+      "category": "libtrace_only_fixture_unsupported_in_packet_mode",
+      "current": {
+        "exit_code": 0,
+        "observed_tests": 0,
+        "error": "not selected (0 tests)",
+        "log": "current-tests/flow_generator__protocol_logs__dns__tests__perf_with_blacklist.log"
+      },
+      "upstream_with_build_compat": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'flow_generator::protocol_logs::dns::tests::perf_with_blacklist' (167609) panicked at src/utils/test_utils.rs:70:14:\nunsupported file resources/test/flow_generator/dns/udp-from-same-socket.log\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nFAILED\n",
+        "log": "upstream-tests/flow_generator__protocol_logs__dns__tests__perf_with_blacklist.log"
+      }
+    },
+    {
+      "test": "flow_generator::protocol_logs::mq::rocketmq::tests::check",
+      "category": "stale_debug_string_snapshot_first_fixture",
+      "current": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'flow_generator::protocol_logs::mq::rocketmq::tests::check' (166577) panicked at src/flow_generator/protocol_logs/mq/rocketmq.rs:1982:17:\noutput different from expected rocketmq-heartbeat.result, written to \"actual.txt\"\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nFAILED\n",
+        "log": "current-tests/flow_generator__protocol_logs__mq__rocketmq__tests__check.log"
+      },
+      "upstream_with_build_compat": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'flow_generator::protocol_logs::mq::rocketmq::tests::check' (167611) panicked at src/flow_generator/protocol_logs/mq/rocketmq.rs:1982:17:\noutput different from expected rocketmq-heartbeat.result, written to \"actual.txt\"\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nFAILED\n",
+        "log": "upstream-tests/flow_generator__protocol_logs__mq__rocketmq__tests__check.log"
+      }
+    },
+    {
+      "test": "flow_generator::protocol_logs::rpc::dubbo::hessian2::tests::decode_trace_id",
+      "category": "fixture_tag_vs_decoder_dialect_mismatch_needs_review",
+      "current": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'flow_generator::protocol_logs::rpc::dubbo::hessian2::tests::decode_trace_id' (166579) panicked at src/flow_generator/protocol_logs/rpc/dubbo/hessian2.rs:219:9:\nassertion `left == right` failed\n  left: 0\n right: 1\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+        "log": "current-tests/flow_generator__protocol_logs__rpc__dubbo__hessian2__tests__decode_trace_id.log"
+      },
+      "upstream_with_build_compat": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'flow_generator::protocol_logs::rpc::dubbo::hessian2::tests::decode_trace_id' (167613) panicked at src/flow_generator/protocol_logs/rpc/dubbo/hessian2.rs:219:9:\nassertion `left == right` failed\n  left: 0\n right: 1\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+        "log": "upstream-tests/flow_generator__protocol_logs__rpc__dubbo__hessian2__tests__decode_trace_id.log"
+      }
+    },
+    {
+      "test": "flow_generator::protocol_logs::sql::memcached::tests::check",
+      "category": "malformed_pcap_fixture_header",
+      "current": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'flow_generator::protocol_logs::sql::memcached::tests::check' (166581) panicked at src/utils/test_utils.rs:81:50:\ncalled `Result::unwrap()` on an `Err` value: PcapError(\"unsupported pcap savefile version 512.1024\")\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nFAILED\n",
+        "log": "current-tests/flow_generator__protocol_logs__sql__memcached__tests__check.log"
+      },
+      "upstream_with_build_compat": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'flow_generator::protocol_logs::sql::memcached::tests::check' (167615) panicked at src/utils/test_utils.rs:81:50:\ncalled `Result::unwrap()` on an `Err` value: PcapError(\"unsupported pcap savefile version 512.1024\")\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nFAILED\n",
+        "log": "upstream-tests/flow_generator__protocol_logs__sql__memcached__tests__check.log"
+      }
+    },
+    {
+      "test": "flow_generator::protocol_logs::tests::test_future_time_clamped",
+      "category": "confirmed_time_clamp_defect_fixed_with_regressions",
+      "current": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'flow_generator::protocol_logs::tests::test_future_time_clamped' (166583) panicked at src/flow_generator/protocol_logs.rs:816:67:\ncalled `Option::unwrap()` on a `None` value\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nFAILED\n",
+        "log": "current-tests/flow_generator__protocol_logs__tests__test_future_time_clamped.log"
+      },
+      "upstream_with_build_compat": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'flow_generator::protocol_logs::tests::test_future_time_clamped' (167617) panicked at src/flow_generator/protocol_logs.rs:816:67:\ncalled `Option::unwrap()` on a `None` value\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nFAILED\n",
+        "log": "upstream-tests/flow_generator__protocol_logs__tests__test_future_time_clamped.log"
+      }
+    },
+    {
+      "test": "flow_generator::service_table::tests::port_map",
+      "category": "real_assertion_unresolved_service_score",
+      "current": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'flow_generator::service_table::tests::port_map' (166585) panicked at src/flow_generator/service_table.rs:916:9:\nassertion `left == right` failed\n  left: 253\n right: 0\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+        "log": "current-tests/flow_generator__service_table__tests__port_map.log"
+      },
+      "upstream_with_build_compat": {
+        "exit_code": 101,
+        "observed_tests": 1,
+        "error": "thread 'flow_generator::service_table::tests::port_map' (167619) panicked at src/flow_generator/service_table.rs:916:9:\nassertion `left == right` failed\n  left: 253\n right: 0\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+        "log": "upstream-tests/flow_generator__service_table__tests__port_map.log"
+      }
+    },
+    {
+      "test": "plugin::shared_obj::test::test_check",
+      "category": "confirmed_c_string_ffi_boundary_crash_followup_assigned",
+      "current": {
+        "exit_code": -11,
+        "observed_tests": 1,
+        "error": "SIGSEGV",
+        "log": "current-tests/plugin__shared_obj__test__test_check.log"
+      },
+      "upstream_with_build_compat": {
+        "exit_code": -11,
+        "observed_tests": 1,
+        "error": "SIGSEGV",
+        "log": "upstream-tests/plugin__shared_obj__test__test_check.log"
+      }
+    }
+  ]
+}

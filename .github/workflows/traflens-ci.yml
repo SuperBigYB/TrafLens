@@ -45,7 +45,7 @@ jobs:
       - name: Test host preflight tooling
         run: make -C traflens test
 
-      - name: Test lab ownership and runtime provenance
+      - name: Test lab wire fixtures, ownership and acceptance
         run: python3 -m unittest discover -s traflens/lab/tests -p 'test_*.py' -v
 
       - name: Build the complete community server
@@ -109,7 +109,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-traflens-packet-rust-1.97.1-
 
-      - name: Test packet parser fixtures and CIDR classification
+      - name: Test parsers, CIDR, time and C plugin contracts
         run: bash traflens/scripts/agent-packet.sh parser-test
 
       - name: Build the packet Agent functional binary

@@ -30,9 +30,10 @@ process are separate from successful collection and product parity.
 - `742d143a242bbb053705f4241241c58dcdc3abea` isolates 24 upstream-only jobs and
   adds native TrafLens CI. Its server CI passed, with binary artifact, in run
   <https://github.com/SuperBigYB/TrafLens/actions/runs/40297869105>.
-- The packet Agent CI extension runs the selected packet tests and functional
-  build using pinned Rust 1.97.1. Check the new commit's actual run result before
-  treating this newly added job as a passed remote gate.
+- Both Server and packet Agent jobs passed for `6944472ea` in run
+  <https://github.com/SuperBigYB/TrafLens/actions/runs/40314728930>.
+  The next checkpoint expands the selected Agent gate to time and plugin ABI
+  regressions. Check the new commit's actual run before claiming its remote gate.
 
 ## Agent correctness and builds
 
@@ -42,7 +43,7 @@ process are separate from successful collection and product parity.
 - `6aec171bf820e5ce516349ed3677395050b8a384` fixes blacklist accounting, request/
   response ordering, fragment/flow-end double counting and timeout retirement,
   and the IPv6 `/0` shift overflow reproduced by real traffic.
-- The final packet entry point passes HTTP 20, DNS 4, MySQL 8 and policy-labeler
+- The `6aec171bf` checkpoint passes HTTP 20, DNS 4, MySQL 8 and policy-labeler
   19 tests (51 total). The one DNS test reading an eBPF `.log` fixture requires
   `libtrace`; native builds retain it. It is not silently ignored in that mode.
 - Full default-feature, optimized native Agent release build passed on dev-240
@@ -102,20 +103,71 @@ process are separate from successful collection and product parity.
   runtime extraction. The private-password scan of complete Server logs found
   no match. The Agent supervisor is stopped; three owned lab containers remain.
 
+## Protocol acceptance and boundary repairs - next checkpoint
+
+- `4f0a7d96d833f770668dea304a5a6afaef2c0fbd` repairs future/cross-hour
+  response-time inference, rejects non-ASCII/invalid minute-second inputs before
+  slicing, and enforces the 120-second limit at microsecond precision.
+- The same commit repairs the C plugin's dangling empty-string pointer and
+  safely retains a NUL-terminated process name, including a full 15-byte comm,
+  across each callback. It also aligns the public C header with the existing
+  Rust response/check-result ABI and rebuilds the test shared object through a
+  new Makefile. Fifty-five C/Rust size/alignment/offset comparisons pass.
+- Default-feature native Release from exact `4f0a7d96d` also passes, with
+  ten BPF objects, no source overlays and clean source after archiving/restoring
+  the generated test ELF. Six native CFFI tests pass, including the libtrace
+  MetaPacket process-name case; the native response-time module passes 15/15.
+  Binary SHA256 is
+  `2f6bd8507bb50aeaa94af5a475b5d81466e23281a074c3ed1cef2eb8670dda53`.
+  Follow-up native WASM tests pass one of five and fail four despite a valid
+  process name. Those four need further diagnosis; missing packet-mode process
+  context does not explain all WASM failures. Live eBPF tracing is still untested.
+- Final packet selected gate passes 73 tests: HTTP 20, DNS 4, MySQL 8, labeler
+  19, response-time 15, process-name/ABI 5 and shared-object integration 2.
+  The 46 lab tests cover independent DNS/MySQL wire vectors, deadlines, malformed
+  responses, group ownership and exact query multisets. DNS acceptance requires
+  the exact answer address/TTL; duplicate rows cannot hide missing requests.
+- A complete packet library run now finishes without SIGSEGV: 294 cases,
+  276 passed and 18 failed. All eighteen failures were reproduced individually
+  against the compatible pinned upstream baseline. Its pristine locked build
+  cannot run; the explicit minimal build-only overlays and exact evidence are in
+  `evidence/2026-10-26/baseline/`. This is not a full upstream-suite pass.
+- The three-protocol profile preserves all original resource/interface limits,
+  adding only UDP 18053/DNS and TCP 18060/MySQL to HTTP 18080. Updating a populated
+  group requires an explicit flag and the sole exact registered dev-79 identity;
+  the operator must stop the owned Agent before applying restart-tagged settings.
+- Real cross-host MySQL wire acceptance passed: complete greeting/login,
+  20 unique COM_QUERY SQL strings and verified one-row results, then exact
+  20-row query-API readback of SQL/type/success status twice. This is a bounded
+  protocol fixture, not execution against a real database engine or TLS proof.
+- DNS first batch `dns-20261026-ingest1` failed strict acceptance at 19/20.
+  q0 had one request/one response in L4, DNS parsed successfully, but no L7 row.
+  A contemporaneous CKwriter broken-pipe warning explicitly dropped one L7 item;
+  correspondence to q0 is a strong inference because the warning has no flow ID.
+  No reliability fix is included and the failed evidence is preserved.
+- The next warm DNS batch and a new-process, no-warmup cold DNS batch each passed
+  exact 20/20 domain/type/rcode/status/A-address/TTL query readback twice. Each
+  observed batch independently captured 40 packets with zero kernel capture
+  drops, 40 app records and 20 complete sender Sessions. The later passes do not
+  erase or establish a fix for the first loss. Both bounded Agent runs stopped;
+  queue observers are off, and only the three owned lab containers remain.
+
 ## Remaining validation and priorities
 
-1. Expand the passed HTTP acceptance case to DNS/MySQL, reconnects, loss and
-   restart/recovery tests. Add independently verified acceptance cases instead of
-   inferring full product behavior from a single successful workload.
-2. The broad packet `--lib` attempt observed 15 failures then a plugin test
-   SIGSEGV. Baseline comparison is pending; do not attribute them all to upstream
-   or claim the full suite passed. Raw inventory is committed with that caveat.
-3. Validate native eBPF/syscall/profiling at runtime, other protocols, storage
-   robustness and all feature acceptance cases; then trace application and GUI.
-4. Fix the confirmed API robustness cases listed in `lab/KNOWN_LIMITATIONS.md`
-   without confusing unsupported query syntax with storage health.
-5. Compare pinned candidate/reference with repeatable collector-on/off workloads,
-   packet loss, CPU/RSS, flow/span rates and visibility delay before parity claims.
+1. Fix and fault-test CKwriter connection recovery and failed-batch delivery
+   semantics. Reproduce a database restart with marked traffic, and verify both
+   loss and duplicate behavior; do not add blind retries with unknown delivery.
+2. Extend protocol acceptance to a real MySQL database, DNS error/truncation/TCP,
+   reconnects, TLS, loss, agent/server restart and sustained workloads.
+3. Resolve the remaining 18 packet-library failures: six tunnel plugin stubs,
+   segmentation/reassembly stub, defaults/snapshot/PCAP/Hessian compatibility,
+   handshake RTT and service score assertions, and five packet-mode WASM fixture
+   cases (four also fail in native mode with different assertions). Keep expected behavior intact and validate the feature-mode matrix.
+4. Validate native eBPF/syscall/profiling at runtime, other protocols and storage
+   robustness; then trace application and GUI. A native build is not runtime proof.
+5. Fix API robustness cases in `lab/KNOWN_LIMITATIONS.md`, then compare pinned
+   candidate/reference collector workloads with loss, CPU/RSS, flow/span rates
+   and visibility delay before performance or full-parity claims.
 
 Both direct links were enabled at runtime only; no management routes/persistent
 network/offload settings were changed. Initial iperf3 4-stream/10-second receiver

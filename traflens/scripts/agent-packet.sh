@@ -5,7 +5,7 @@ fail() { printf 'TrafLens packet agent: %s\n' "$*" >&2; exit 1; }
 usage() {
   cat <<'USAGE'
 Usage: bash traflens/scripts/agent-packet.sh [mode]
-Modes: build (default), build-release, test-http, test-dns, test-mysql, test-labeler, parser-test
+Modes: build (default), build-release, test-http, test-dns, test-mysql, test-labeler, test-time, test-plugin, parser-test
 
 Uses existing Rust/Cargo 1.97.1 and --locked --no-default-features.
 This builds the packet agent without eBPF, syscall tracing or profiling.
@@ -17,7 +17,7 @@ mode=${1:-build}
 if [[ "$mode" == --help || "$mode" == -h ]]; then usage; exit 0; fi
 [[ $# -le 1 ]] || { usage >&2; exit 2; }
 case "$mode" in
-  build|build-release|test-http|test-dns|test-mysql|test-labeler|parser-test) ;;
+  build|build-release|test-http|test-dns|test-mysql|test-labeler|test-time|test-plugin|parser-test) ;;
   *) usage >&2; fail "unknown mode: $mode" ;;
 esac
 
@@ -118,10 +118,20 @@ case "$mode" in
   test-dns) parser_test flow_generator::protocol_logs::dns::tests ;;
   test-mysql) parser_test flow_generator::protocol_logs::sql::mysql::tests ;;
   test-labeler) parser_test policy::labeler::tests ;;
+  test-time) parser_test flow_generator::protocol_logs::tests ;;
+  test-plugin)
+    make -B -C resources/test/plugins
+    parser_test plugin::c_ffi
+    parser_test plugin::shared_obj::test
+    ;;
   parser-test)
     parser_test flow_generator::protocol_logs::http::tests
     parser_test flow_generator::protocol_logs::dns::tests
     parser_test flow_generator::protocol_logs::sql::mysql::tests
     parser_test policy::labeler::tests
+    parser_test flow_generator::protocol_logs::tests
+    make -B -C resources/test/plugins
+    parser_test plugin::c_ffi
+    parser_test plugin::shared_obj::test
     ;;
 esac

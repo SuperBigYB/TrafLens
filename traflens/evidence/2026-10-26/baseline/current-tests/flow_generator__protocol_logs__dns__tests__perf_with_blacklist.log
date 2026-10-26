@@ -1,0 +1,9 @@
+Source: 6944472eab429dc52eaabf1fb98e768431c2dfc8
+Command: ['/root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/current-test-binary', 'flow_generator::protocol_logs::dns::tests::perf_with_blacklist', '--exact', '--nocapture', '--test-threads=1']
+Cwd: /root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/current/agent
+Core dump: disabled
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 281 filtered out; finished in 0.00s
+

@@ -1,0 +1,28 @@
+
+running 1 test
+test plugin::wasm::test::test_wasm_parse_payload_resp ... wasm log: wasm register parser
+wasm log: ================ parse payload ==================
+wasm log: saddr 5.6.7.8: 8080
+wasm log: daddr 1.2.3.4: 12345
+wasm log: l4: 6
+wasm log: l7: 1
+wasm log: dir: 1
+wasm log: ebpf type: 0
+wasm log: time: 12345678
+wasm log: flowid: 1234567
+wasm log: buf_size: 999
+wasm log: p: [8 231 7 18 6 114 101 115 117 108 116] 
+wasm log: test_wasm and  not equal
+
+thread 'plugin::wasm::test::test_wasm_parse_payload_resp' (178760) panicked at src/plugin/wasm/test.rs:380:10:
+called `Result::unwrap()` on an `Err` value: WasmParseFail
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    plugin::wasm::test::test_wasm_parse_payload_resp
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 272 filtered out; finished in 0.33s
+

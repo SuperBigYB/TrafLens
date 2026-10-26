@@ -99,3 +99,18 @@ with no matching CIDR metadata. Use `test-labeler` to run that module alone.
 The DNS test that reads an eBPF `.log` fixture is gated on `libtrace`; its PCAP
 tests remain enabled here. Selected packet checks do not imply the full Agent
 library or eBPF runtime suites pass.
+
+## Time and C plugin contract gate
+
+`parser-test` now includes 15 response-time boundary tests, 5 packet-mode C
+process-name/ABI tests and 2 real shared-object integrations, for 73 selected
+tests total. Use `test-time` or `test-plugin` to run these groups alone. The
+plugin gate forces a native `make -B -C agent/resources/test/plugins` rebuild
+before loading the fixture, so it uses the current architecture and C header.
+There are 55 independent C/Rust struct size/alignment/field-offset comparisons.
+The additional libtrace process-name test belongs to the native feature gate.
+
+The broader packet library run completes 294 tests, with 276 passing and 18
+failures. See `STATE.md` and `evidence/2026-10-26/baseline/` for the compatible
+upstream comparison and explicit fixture/feature/implementation gaps. Selected
+CI success must not be described as a complete library-suite pass.

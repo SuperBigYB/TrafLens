@@ -1,0 +1,81 @@
+{
+  "source_head": "6944472eab429dc52eaabf1fb98e768431c2dfc8",
+  "scope": "plugin C string lifetime and C/Rust ABI compatibility; no Rust repr(C) field/layout change",
+  "files": [
+    "agent/src/plugin/c_ffi.rs",
+    "agent/src/flow_generator/protocol_logs/plugin/shared_obj.rs",
+    "agent/src/plugin/shared_obj/so_plugin.h",
+    "agent/src/plugin/shared_obj/test.rs",
+    "agent/resources/test/plugins/so_plugin_test.c",
+    "agent/resources/test/plugins/so_plugin_test",
+    "agent/resources/test/plugins/Makefile"
+  ],
+  "proof": {
+    "default_pointer_before": {
+      "exit_code": 101,
+      "log": "current-plugin-process-kname-before.log",
+      "failure": "empty slice pointer 0x1"
+    },
+    "c_header_before": {
+      "exit_code": 101,
+      "log": "current-plugin-c-abi-before.log",
+      "failure": "CheckResult C sizeof17 vs Rust18"
+    },
+    "c_ffi_after": {
+      "passed": 5,
+      "failed": 0,
+      "log": "current-plugin-process-kname-complete.log"
+    },
+    "shared_obj_after": {
+      "passed": 2,
+      "failed": 0,
+      "log": "current-plugin-shared-obj-complete.log"
+    },
+    "libtrace_specific_test": "checked in; not executed on dev-79 packet-only target; default-feature verification delegated to dev-240"
+  },
+  "abi_values_compared": 55,
+  "abi_current_amd64": {
+    "ParseCtx": {
+      "size": 88,
+      "align": 8,
+      "process_kname_offset": 64,
+      "payload_offset": 80
+    },
+    "CheckResult": {
+      "size": 18,
+      "direction_offset": 17
+    },
+    "Request": {
+      "size": 448
+    },
+    "Response": {
+      "size": 840,
+      "req_type_offset": 648,
+      "endpoint_offset": 712
+    },
+    "TraceInfo": {
+      "size": 384
+    },
+    "ParseInfo": {
+      "size": 7392,
+      "req_resp_offset": 404,
+      "attr_len_offset": 1244,
+      "attributes_offset": 1248
+    },
+    "ParseResult": {
+      "size": 8
+    }
+  },
+  "fixture": {
+    "build_command": "make -C agent/resources/test/plugins",
+    "compiler": "cc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+    "sha256": "ce9be931b65349b1a97494d3fb8c5aa26b7b81487694bd6653a0f5d499c35efd"
+  },
+  "patch": {
+    "path": "/root/yb/git/TrafLens/.traflens/work/agent-baseline-20261026/plugin-process-name-abi-fix.patch",
+    "sha256": "42fba2c71176e6cc07b3460378f809ac068520db702be2f9c4af1a0df73b8ac7"
+  },
+  "cargo_target_dir": "/root/yb/git/TrafLens/agent/target",
+  "no_new_target_copy": true,
+  "no_commits_or_pushes": true
+}

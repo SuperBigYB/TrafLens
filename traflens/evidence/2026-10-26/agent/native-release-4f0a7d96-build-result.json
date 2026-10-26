@@ -1,0 +1,34 @@
+{
+  "phase": "default_feature_release_build_complete",
+  "test_status": "release CFFI test dependency compilation still running; not yet passed",
+  "source": "4f0a7d96d833f770668dea304a5a6afaef2c0fbd",
+  "source_bundle_sha256": "b1ddd2be9efc2b7053b13d0823b3360c714d6d8716e564f7b9b2a894e1479188",
+  "build_exit_code": 0,
+  "build_elapsed_log": "2m 10s",
+  "binary_version": "12745-4f0a7d96d833f770668dea304a5a6afaef2c0fbd\nName: deepflow-agent community edition\nBranch: main\nCommitId: 4f0a7d96d833f770668dea304a5a6afaef2c0fbd\nRevCount: 12745\nCompiler: rustc 1.97.1 (8bab26f4f 2026-07-14)\nCompileTime: 2026-10-26 12:05:57\n",
+  "binary_path": "/tmp/traflens-native-build-20261026/artifacts/deepflow-agent-native-linux-amd64-4f0a7d96",
+  "binary_size_bytes": 77938232,
+  "binary_sha256": "2f6bd8507bb50aeaa94af5a475b5d81466e23281a074c3ed1cef2eb8670dda53",
+  "container_status": "running",
+  "oom_killed_so_far": false,
+  "observed_utc": "2026-10-26T12:11:25.398436+00:00",
+  "source_status_at_build_start": "clean",
+  "source_status_after_intentional_native_fixture_regeneration": " M agent/resources/test/plugins/so_plugin_test\n",
+  "generated_fixture_allowed_path": "agent/resources/test/plugins/so_plugin_test",
+  "source_overlays": [],
+  "limits": {
+    "Memory": 8589934592,
+    "MemorySwap": 8589934592,
+    "NanoCpus": 4000000000,
+    "CpusetCpus": "0,1,2,3",
+    "PidsLimit": 4096,
+    "NetworkMode": "none",
+    "Privileged": false,
+    "CapDrop": [
+      "ALL"
+    ],
+    "SecurityOpt": [
+      "no-new-privileges"
+    ]
+  }
+}

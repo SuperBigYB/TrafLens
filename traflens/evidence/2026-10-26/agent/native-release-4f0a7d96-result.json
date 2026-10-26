@@ -1,0 +1,76 @@
+{
+  "source": "4f0a7d96d833f770668dea304a5a6afaef2c0fbd",
+  "completed_utc": "2026-10-26T12:12:49.940850+00:00",
+  "container": "traflens-native-release-4f0a7d96",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "ExitCode": 0,
+    "OOMKilled": false,
+    "Error": "",
+    "StartedAt": "2026-10-26T12:05:56.759290643Z",
+    "FinishedAt": "2026-10-26T12:12:49.872253394Z"
+  },
+  "limits": {
+    "Memory": 8589934592,
+    "MemorySwap": 8589934592,
+    "NanoCpus": 4000000000,
+    "CpusetCpus": "0,1,2,3",
+    "PidsLimit": 4096,
+    "NetworkMode": "none",
+    "Privileged": false,
+    "CapDrop": [
+      "ALL"
+    ],
+    "SecurityOpt": [
+      "no-new-privileges"
+    ]
+  },
+  "build_exit_marker": [
+    "0"
+  ],
+  "test_exit_marker": [
+    "0"
+  ],
+  "six_tests_passed": true,
+  "source_status_before_fixture_restore": " M agent/resources/test/plugins/so_plugin_test\n",
+  "changed_tracked_paths": [
+    "agent/resources/test/plugins/so_plugin_test"
+  ],
+  "source_overlay_paths": [],
+  "fixture_sha256": "535e160ca204dc3391b93435eb33aca0384f420f2d92264c2c498bc9b836b40e",
+  "fixture_artifact": "/tmp/traflens-native-build-20261026/artifacts/so-plugin-test-native-4f0a7d96",
+  "fixture_c_sha256": "3971b42898302f17b1c557ed04f414b30c5f399b0dbea92463ddb39865e9cf69",
+  "fixture_header_sha256": "94dade60fc266618eabb5ff47341d7513867a2035c2db477c0a5e11ba40325d3",
+  "cargo_lock_sha256": "db952ada8d0434a918c1d3c9f0303f1cd01077ac58d3c657adba5b8b381610a8",
+  "binary_version": "12745-4f0a7d96d833f770668dea304a5a6afaef2c0fbd\nName: deepflow-agent community edition\nBranch: main\nCommitId: 4f0a7d96d833f770668dea304a5a6afaef2c0fbd\nRevCount: 12745\nCompiler: rustc 1.97.1 (8bab26f4f 2026-07-14)\nCompileTime: 2026-10-26 12:05:57\n",
+  "binary_version_matches_source": true,
+  "binary_artifact": "/tmp/traflens-native-build-20261026/artifacts/deepflow-agent-native-linux-amd64-4f0a7d96",
+  "binary_size_bytes": 77938232,
+  "binary_sha256": "2f6bd8507bb50aeaa94af5a475b5d81466e23281a074c3ed1cef2eb8670dda53",
+  "ldd_exit_code": 0,
+  "libtrace_size_bytes": 45057166,
+  "bpf_elf_objects": [
+    "agent/src/ebpf/kernel/build/3_10_0/socket_trace.bpf.elf",
+    "agent/src/ebpf/kernel/build/5_15_plus/perf_profiler.bpf.elf",
+    "agent/src/ebpf/kernel/build/5_2_plus/perf_profiler.bpf.elf",
+    "agent/src/ebpf/kernel/build/5_2_plus/socket_trace.bpf.elf",
+    "agent/src/ebpf/kernel/build/common/perf_profiler.bpf.elf",
+    "agent/src/ebpf/kernel/build/common/socket_trace.bpf.elf",
+    "agent/src/ebpf/kernel/build/kfunc/socket_trace.bpf.elf",
+    "agent/src/ebpf/kernel/build/kprobe/socket_trace.bpf.elf",
+    "agent/src/ebpf/kernel/build/kylin/socket_trace.bpf.elf",
+    "agent/src/ebpf/kernel/build/rt/socket_trace.bpf.elf"
+  ],
+  "generated_fixture_restored_after_archiving": true,
+  "source_status_after": "",
+  "bpf_elf_count": 10,
+  "default_features": true,
+  "optimized_release": true,
+  "build_elapsed_log": "2m 10s",
+  "release_test_compile_elapsed_log": "4m 42s",
+  "runtime_ebpf_capture_tested": false,
+  "build_script_output_candidates": [
+    "/tmp/traflens-native-build-20261026/target/release/build/deepflow-agent-eaa436772f528ac3/output"
+  ]
+}

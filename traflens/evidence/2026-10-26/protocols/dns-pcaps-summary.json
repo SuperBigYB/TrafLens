@@ -1,0 +1,36 @@
+[
+  {
+    "marker": "dns-20261026-ingest2",
+    "raw_pcap_ignored_path": ".traflens/work/dns-ingest2-wire.pcap",
+    "sha256": "edc97cd9824ebe65b2278edaf7a4577f0ad7ef66059094c6dc3f0edb9241bc20",
+    "bytes": 5804,
+    "linktype": 1,
+    "snaplen": 262144,
+    "packet_count": 40,
+    "unique_questions": 20,
+    "unique_answers": 20,
+    "all_names_ids_answers_rcodes_ttls_verified": true,
+    "q0_present_in_both_directions": true,
+    "first_timestamp_utc": "2026-10-26T11:49:43.130247+00:00",
+    "last_timestamp_utc": "2026-10-26T11:49:44.107726+00:00",
+    "kernel_drops": null,
+    "kernel_drop_note": "PCAP contains no kernel-drop counter; parent run reported zero."
+  },
+  {
+    "marker": "dns-20261026-cold1",
+    "raw_pcap_ignored_path": ".traflens/work/dns-cold1-wire.pcap",
+    "sha256": "65a9e9b67490fd90ef110ced74ae0e13e3fdb551a7d13715d8e2ad54323acfec",
+    "bytes": 5724,
+    "linktype": 1,
+    "snaplen": 262144,
+    "packet_count": 40,
+    "unique_questions": 20,
+    "unique_answers": 20,
+    "all_names_ids_answers_rcodes_ttls_verified": true,
+    "q0_present_in_both_directions": true,
+    "first_timestamp_utc": "2026-10-26T11:54:46.926535+00:00",
+    "last_timestamp_utc": "2026-10-26T11:54:47.904091+00:00",
+    "kernel_drops": null,
+    "kernel_drop_note": "PCAP contains no kernel-drop counter; parent run reported zero."
+  }
+]
