@@ -209,6 +209,13 @@ fn test_parse() {
         unreachable!()
     }
 
+    // Parser stats are a per-payload delta; collect the request before parsing
+    // the response, which clears the previous payload's stats.
+    let mut stat = p.perf_stats().remove(0);
+    assert_eq!(stat.request_count, 1);
+    assert_eq!(stat.response_count, 0);
+    assert_eq!(stat.rrt_count, 0);
+
     let param = get_resp_param(rrt_cache, plugin.clone());
     let infos = p.parse_payload(&RESP_PAYLOAD, &param).unwrap();
     let info = infos.unwrap_single();
@@ -242,7 +249,11 @@ fn test_parse() {
         unreachable!()
     }
 
-    let stat = p.perf_stats().remove(0);
+    let response_stat = p.perf_stats().remove(0);
+    assert_eq!(response_stat.request_count, 0);
+    assert_eq!(response_stat.response_count, 1);
+    assert_eq!(response_stat.rrt_count, 1);
+    stat.sequential_merge(&response_stat);
     assert_eq!(stat.request_count, 1);
     assert_eq!(stat.response_count, 1);
     assert_eq!(stat.rrt_count, 1);

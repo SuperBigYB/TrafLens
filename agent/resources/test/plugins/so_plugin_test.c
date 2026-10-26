@@ -15,6 +15,7 @@
  */
 
 #include <arpa/inet.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -209,7 +210,7 @@ struct check_result on_check_payload(struct parse_ctx *ctx) {
     printf("l4 proto: %d\n", ctx->l4_protocol);
     printf("proto: %d\n", ctx->proto);
     printf("ebpf type: %d\n", ctx->ebpf_type);
-    printf("time: %d\n", ctx->time);
+    printf("time: %llu\n", ctx->time);
     printf("direction: %d\n", ctx->direction);
     printf("proc: %s\n", ctx->process_kname);
     printf("buf size: %d\n", ctx->buf_size);
@@ -233,6 +234,7 @@ struct check_result on_check_payload(struct parse_ctx *ctx) {
         return ret;
     }
     ret.proto = DNS_PROTO;
+    ret.direction = 1; // CheckResult uses 1=request (ParseCtx direction uses 0).
     memcpy(&ret.proto_name[0], DNS_PROTO_STR, sizeof(DNS_PROTO_STR));
     return ret;
 }
@@ -254,7 +256,7 @@ struct parse_result on_parse_payload(struct parse_ctx *ctx,
     printf("l4 proto: %d\n", ctx->l4_protocol);
     printf("proto: %d\n", ctx->proto);
     printf("ebpf type: %d\n", ctx->ebpf_type);
-    printf("time: %d\n", ctx->time);
+    printf("time: %llu\n", ctx->time);
     printf("direction: %d\n", ctx->direction);
     printf("proc: %s\n", ctx->process_kname);
     printf("buf size: %d\n", ctx->buf_size);
@@ -342,4 +344,48 @@ struct parse_result on_parse_payload(struct parse_ctx *ctx,
     }
     ret.action = ACTION_OK;
     return ret;
+}
+
+// Test-only layout oracle compiled from the public C header. Rust compares every
+// field, not a hand-maintained numeric snapshot of one architecture's layout.
+size_t traflens_test_abi_value(unsigned int index) {
+#define LAYOUT(type) sizeof(struct type), _Alignof(struct type)
+#define FIELD(type, field) offsetof(struct type, field)
+    static const size_t values[] = {
+        LAYOUT(parse_ctx),
+        FIELD(parse_ctx, ip_type), FIELD(parse_ctx, ip_src),
+        FIELD(parse_ctx, ip_dst), FIELD(parse_ctx, port_src),
+        FIELD(parse_ctx, port_dst), FIELD(parse_ctx, l4_protocol),
+        FIELD(parse_ctx, proto), FIELD(parse_ctx, ebpf_type),
+        FIELD(parse_ctx, time), FIELD(parse_ctx, direction),
+        FIELD(parse_ctx, process_kname), FIELD(parse_ctx, buf_size),
+        FIELD(parse_ctx, payload_size), FIELD(parse_ctx, payload),
+        LAYOUT(check_result),
+        FIELD(check_result, proto), FIELD(check_result, proto_name),
+        FIELD(check_result, direction),
+        LAYOUT(request),
+        FIELD(request, req_type), FIELD(request, domain),
+        FIELD(request, resource), FIELD(request, endpoint),
+        LAYOUT(response),
+        FIELD(response, status), FIELD(response, code),
+        FIELD(response, exception), FIELD(response, result),
+        FIELD(response, req_type), FIELD(response, endpoint),
+        LAYOUT(trace_info),
+        FIELD(trace_info, trace_id), FIELD(trace_info, span_id),
+        FIELD(trace_info, parent_span_id),
+        LAYOUT(parse_info),
+        FIELD(parse_info, msg_type), FIELD(parse_info, req_len),
+        FIELD(parse_info, resp_len), FIELD(parse_info, has_request_id),
+        FIELD(parse_info, request_id), FIELD(parse_info, trace),
+        FIELD(parse_info, req_resp), FIELD(parse_info, attr_len),
+        FIELD(parse_info, attributes),
+        LAYOUT(parse_result),
+        FIELD(parse_result, action), FIELD(parse_result, len),
+    };
+#undef FIELD
+#undef LAYOUT
+    if (index >= sizeof(values) / sizeof(values[0])) {
+        return (size_t)-1;
+    }
+    return values[index];
 }

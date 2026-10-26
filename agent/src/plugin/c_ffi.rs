@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+use std::borrow::Cow;
+use std::ffi::CStr;
+#[cfg(any(feature = "libtrace", test))]
+use std::ffi::CString;
 use std::net::IpAddr;
 use std::sync::{Arc, Weak};
 
@@ -76,14 +80,18 @@ impl From<(&ParseParam<'_>, &[u8])> for ParseCtx {
             ebpf_type: (p.ebpf_type as u8),
             time: p.time,
             direction: (p.direction as u8),
-            process_kname: "".as_ptr(),
+            process_kname: b"\0".as_ptr(),
             buf_size: p.buf_size as i32,
             payload_size: payload.len() as i32,
             payload: payload.as_ptr(),
         };
         #[cfg(feature = "libtrace")]
         if let Some(e) = p.ebpf_param.as_ref() {
-            ctx.process_kname = e.process_kname.as_ptr();
+            // A Rust str is not necessarily NUL-terminated. Only borrow a
+            // proven C string here; callers retain owned names when needed.
+            if e.process_kname.as_bytes().contains(&0) {
+                ctx.process_kname = e.process_kname.as_ptr();
+            }
         }
 
         match (p.ip_src, p.ip_dst) {
@@ -101,6 +109,43 @@ impl From<(&ParseParam<'_>, &[u8])> for ParseCtx {
         };
 
         ctx
+    }
+}
+
+impl ParseCtx {
+    pub fn process_kname<'a>(_param: &ParseParam<'a>) -> Cow<'a, CStr> {
+        #[cfg(feature = "libtrace")]
+        if let Some(e) = _param.ebpf_param.as_ref() {
+            return process_kname_cstr(e.process_kname);
+        }
+        Cow::Borrowed(CStr::from_bytes_with_nul(b"\0").unwrap())
+    }
+
+    // The caller must keep process_kname alive until the synchronous C callback
+    // returns, just as it must keep the borrowed packet payload alive.
+    pub fn with_process_kname(
+        param: &ParseParam<'_>,
+        payload: &[u8],
+        process_kname: &CStr,
+    ) -> Self {
+        let mut ctx = Self::from((param, payload));
+        ctx.process_kname = process_kname.as_ptr().cast();
+        ctx
+    }
+}
+
+#[cfg(any(feature = "libtrace", test))]
+fn process_kname_cstr(name: &str) -> Cow<'_, CStr> {
+    let bytes = name.as_bytes();
+    if let Some(end) = bytes.iter().position(|&byte| byte == 0) {
+        // Bytes after the first NUL are padding, not part of the C name.
+        Cow::Borrowed(CStr::from_bytes_with_nul(&bytes[..=end]).unwrap())
+    } else if bytes.is_empty() {
+        Cow::Borrowed(CStr::from_bytes_with_nul(b"\0").unwrap())
+    } else {
+        // MetaPacket keeps only 15 comm bytes: a maximal-length process name
+        // has no terminator. CString owns stable storage across the callback.
+        Cow::Owned(CString::new(bytes).unwrap())
     }
 }
 
@@ -428,4 +473,230 @@ fn read_attr(attr_bytes: &[u8], mut attr_len: u32) -> Vec<KeyVal> {
         attr_len -= 1;
     }
     attr
+}
+
+#[cfg(test)]
+mod process_kname_tests {
+    use super::*;
+    use crate::common::{ebpf::EbpfType, meta_packet::MetaPacket};
+    use std::ffi::CStr;
+
+    fn packet_param<'a>(packet: &'a MetaPacket<'a>) -> ParseParam<'a> {
+        ParseParam::new(
+            packet,
+            None,
+            Default::default(),
+            Default::default(),
+            false,
+            true,
+        )
+    }
+
+    fn packet() -> MetaPacket<'static> {
+        let mut packet = MetaPacket::empty();
+        packet.lookup_key.proto = IpProtocol::TCP;
+        packet.ebpf_type = EbpfType::None;
+        packet
+    }
+
+    #[test]
+    fn process_names_are_terminated_without_losing_full_length_names() {
+        for name in ["", "abcdefghijklmno", "worker\0padding", "工具"] {
+            let owned_name = process_kname_cstr(name);
+            let expected = name.split('\0').next().unwrap().as_bytes();
+            assert_eq!(owned_name.to_bytes(), expected);
+            if name == "abcdefghijklmno" {
+                assert!(matches!(owned_name, Cow::Owned(_)));
+            } else if name.contains('\0') || name.is_empty() {
+                assert!(matches!(owned_name, Cow::Borrowed(_)));
+            }
+            let packet = packet();
+            let param = packet_param(&packet);
+            let ctx = ParseCtx::with_process_kname(&param, b"", owned_name.as_ref());
+            assert_eq!(
+                unsafe { CStr::from_ptr(ctx.process_kname.cast()) }.to_bytes(),
+                expected
+            );
+            assert_eq!(
+                unsafe { libc::strlen(ctx.process_kname.cast()) },
+                expected.len()
+            );
+            let mut printed = [0i8; 64];
+            let count = unsafe {
+                libc::snprintf(
+                    printed.as_mut_ptr(),
+                    printed.len(),
+                    b"%s\0".as_ptr().cast(),
+                    ctx.process_kname,
+                )
+            };
+            assert_eq!(count as usize, expected.len());
+            assert_eq!(
+                unsafe { CStr::from_ptr(printed.as_ptr()) }.to_bytes(),
+                expected
+            );
+        }
+    }
+
+    #[test]
+    fn invalid_utf8_source_fallback_is_a_readable_empty_c_string() {
+        // ParseParam::new uses this fallback for invalid kernel comm bytes.
+        let raw = std::hint::black_box([0xff, 0, 0]);
+        let name = std::str::from_utf8(&raw).unwrap_or("");
+        let name = process_kname_cstr(name);
+        assert_eq!(unsafe { libc::strlen(name.as_ptr()) }, 0);
+        assert_eq!(name.to_bytes(), b"");
+    }
+
+    #[cfg(feature = "libtrace")]
+    #[test]
+    fn ebpf_packet_names_keep_full_comm_or_safe_invalid_utf8_fallback() {
+        for (raw, expected) in [
+            (*b"abcdefghijklmno", b"abcdefghijklmno".as_slice()),
+            (*b"worker\0padding!", b"worker".as_slice()),
+            ([0xff; 15], b"".as_slice()),
+            ([0; 15], b"".as_slice()),
+        ] {
+            let mut packet = packet();
+            packet.ebpf_type = EbpfType::TracePoint;
+            packet.process_kname = raw;
+            let param = packet_param(&packet);
+            let process_kname = ParseCtx::process_kname(&param);
+            let ctx = ParseCtx::with_process_kname(&param, b"", process_kname.as_ref());
+            assert_eq!(
+                unsafe { CStr::from_ptr(ctx.process_kname.cast()) }.to_bytes(),
+                expected
+            );
+            assert_eq!(
+                unsafe { libc::strlen(ctx.process_kname.cast()) },
+                expected.len()
+            );
+        }
+    }
+
+    #[test]
+    fn shared_object_callbacks_read_empty_and_full_length_process_names() {
+        let binary = std::fs::read("resources/test/plugins/so_plugin_test").unwrap();
+        let plugin =
+            crate::plugin::shared_obj::load_plugin(&binary, &"process-name-test".into()).unwrap();
+        let packet = packet();
+        let param = packet_param(&packet);
+        for name in ["", "abcdefghijklmno"] {
+            let process_kname = process_kname_cstr(name);
+            let mut ctx = if name.is_empty() {
+                ParseCtx::from((&param, b"".as_slice()))
+            } else {
+                ParseCtx::with_process_kname(&param, b"", process_kname.as_ref())
+            };
+            // The existing C fixture prints ctx->process_kname with %s in both
+            // callbacks, then rejects this intentionally empty DNS payload.
+            let checked = unsafe { (plugin.check_payload)(&ctx) };
+            assert_eq!(checked.proto, 0);
+            ctx.proto = 1;
+            let mut info = ParseInfo::default();
+            let parsed = unsafe { (plugin.parse_payload)(&ctx, &mut info, 1) };
+            assert_eq!(parsed.action, ACTION_ERROR);
+        }
+    }
+
+    #[test]
+    fn public_c_header_matches_all_rust_abi_fields() {
+        use std::mem::{align_of, offset_of, size_of};
+
+        macro_rules! layout {
+            ($ty:ty) => {
+                [
+                    (concat!(stringify!($ty), ".sizeof"), size_of::<$ty>()),
+                    (concat!(stringify!($ty), ".alignof"), align_of::<$ty>()),
+                ]
+            };
+        }
+        macro_rules! fields {
+            ($ty:ty, $($field:ident),+) => {
+                [$((
+                    concat!(stringify!($ty), ".", stringify!($field)),
+                    offset_of!($ty, $field),
+                )),+]
+            };
+        }
+        let expected = [
+            layout!(ParseCtx).as_slice(),
+            fields!(
+                ParseCtx,
+                ip_type,
+                ip_src,
+                ip_dst,
+                port_src,
+                port_dst,
+                l4_protocol,
+                proto,
+                ebpf_type,
+                time,
+                direction,
+                process_kname,
+                buf_size,
+                payload_size,
+                payload
+            )
+            .as_slice(),
+            layout!(CheckResult).as_slice(),
+            fields!(CheckResult, proto, proto_name, direction).as_slice(),
+            layout!(Request).as_slice(),
+            fields!(Request, req_type, domain, resource, endpoint).as_slice(),
+            layout!(Response).as_slice(),
+            fields!(Response, status, code, exception, result, req_type, endpoint).as_slice(),
+            layout!(TraceInfo).as_slice(),
+            fields!(TraceInfo, trace_id, span_id, parent_span_id).as_slice(),
+            layout!(ParseInfo).as_slice(),
+            fields!(
+                ParseInfo,
+                msg_type,
+                req_len,
+                resp_len,
+                has_request_id,
+                request_id,
+                trace,
+                req_resp,
+                attr_len,
+                attributes
+            )
+            .as_slice(),
+            layout!(ParseResult).as_slice(),
+            fields!(ParseResult, action, len).as_slice(),
+        ]
+        .concat();
+        let path = std::fs::canonicalize("resources/test/plugins/so_plugin_test").unwrap();
+        let path = CString::new(path.as_os_str().as_encoded_bytes()).unwrap();
+        let handle = unsafe { libc::dlopen(path.as_ptr(), libc::RTLD_LOCAL | libc::RTLD_NOW) };
+        assert!(!handle.is_null(), "could not load the C ABI fixture");
+        let symbol = unsafe { libc::dlsym(handle, b"traflens_test_abi_value\0".as_ptr().cast()) };
+        assert!(
+            !symbol.is_null(),
+            "rebuild resources/test/plugins/so_plugin_test with make"
+        );
+        let value: unsafe extern "C" fn(u32) -> usize = unsafe { std::mem::transmute(symbol) };
+        for (index, (name, expected)) in expected.iter().enumerate() {
+            assert_eq!(
+                unsafe { value(index as u32) },
+                *expected,
+                "C/Rust ABI mismatch at {name}"
+            );
+        }
+        assert_eq!(unsafe { value(expected.len() as u32) }, usize::MAX);
+        assert_eq!(unsafe { libc::dlclose(handle) }, 0);
+    }
+
+    #[test]
+    fn packet_context_has_a_readable_empty_c_string() {
+        let packet = packet();
+        let param = packet_param(&packet);
+        let ctx = ParseCtx::from((&param, b"".as_slice()));
+        // An empty Rust slice has no readable terminator (typically address 0x1).
+        assert_ne!(ctx.process_kname, "".as_ptr());
+        assert_eq!(
+            unsafe { CStr::from_ptr(ctx.process_kname.cast()) }.to_bytes(),
+            b""
+        );
+        assert_eq!(unsafe { libc::strlen(ctx.process_kname.cast()) }, 0);
+    }
 }

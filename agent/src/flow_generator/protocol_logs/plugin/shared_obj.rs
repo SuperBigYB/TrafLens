@@ -50,7 +50,8 @@ impl L7ProtocolParserInterface for SoLog {
         let Some(c_funcs) = &*so_func_ref else {
             return None;
         };
-        let ctx = &ParseCtx::from((param, payload));
+        let process_kname = ParseCtx::process_kname(param);
+        let ctx = &ParseCtx::with_process_kname(param, payload, process_kname.as_ref());
 
         for c in c_funcs.iter() {
             let counter = &c.check_payload_counter;
@@ -110,7 +111,8 @@ impl L7ProtocolParserInterface for SoLog {
             return Err(Error::NoParseConfig);
         };
 
-        let ctx = &mut ParseCtx::from((param, payload));
+        let process_kname = ParseCtx::process_kname(param);
+        let ctx = &mut ParseCtx::with_process_kname(param, payload, process_kname.as_ref());
         ctx.proto = self.proto_num.unwrap();
         let mut resp = [ParseInfo::default(); RESULT_LEN as usize];
         self.perf_stats.clear();

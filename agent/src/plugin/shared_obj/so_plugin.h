@@ -80,6 +80,8 @@ struct response {
     int code;
     unsigned char exception[128];
     unsigned char result[512];
+    unsigned char req_type[64];
+    unsigned char endpoint[128];
 };
 
 // reference src/plugin/c_ffi.rs struct TraceInfo 
@@ -110,6 +112,7 @@ struct parse_info {
 struct check_result {
     unsigned char proto;
     unsigned char proto_name[16];
+    unsigned char direction; // 1=request, 2=response, 0=unknown
 };
 
 // reference src/plugin/c_ffi.rs struct ParseResult 
