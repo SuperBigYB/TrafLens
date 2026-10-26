@@ -1,0 +1,19 @@
+Source: ff05c646d60df4dfafa26a7572121c97413d62e3
+Rust: rustc 1.97.1 (8bab26f4f 2026-07-14)
+Cargo: cargo 1.97.1 (c980f4866 2026-06-30)
+Lock SHA256: db952ada8d0434a918c1d3c9f0303f1cd01077ac58d3c657adba5b8b381610a8
+OpenTelemetry reference: 724e427879e3d2bae2edc0218fff06e37b9eb46e
+Scope: packet agent; --no-default-features; eBPF/syscall/profiling disabled
+Mode: build; jobs: 4; dev/test debuginfo: 0; linker: cc
+Cargo target directory: /root/yb/git/TrafLens/agent/target
+warning: unused import: `Path`
+  --> build.rs:17:17
+   |
+17 | use std::path::{Path, PathBuf};
+   |                 ^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `deepflow-agent` (build script) generated 1 warning
+   Compiling deepflow-agent v0.1.0 (/root/yb/git/TrafLens/agent)
+    Finished `dev` profile [unoptimized] target(s) in 5.09s

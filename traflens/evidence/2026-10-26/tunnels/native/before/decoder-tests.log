@@ -1,0 +1,36 @@
+   Compiling tunnel v0.1.0 (/workspace/TrafLens/agent/plugins/tunnel)
+    Finished `release` profile [optimized] target(s) in 0.55s
+     Running unittests src/lib.rs (/target/release/deps/tunnel-8bb272cc9be78859)
+
+running 28 tests
+test gre::tests::erspan_rejects_wrong_profile_version_and_non_ethernet_frame_type ... ok
+test gre::tests::erspan_type_i_ii_iii_wire_vectors ... ok
+test gre::tests::every_required_header_and_ethernet_truncation_is_rejected ... ok
+test gre::tests::existing_pcap_frames_match_protocol_offsets_and_ids ... ok
+test gre::tests::ignores_receiver_reserved_gre_bits_including_erratum_bit_five ... ok
+test gre::tests::ipv4_logical_end_does_not_borrow_ethernet_padding ... ok
+test gre::tests::ipv4_options_obey_tlv_lengths_and_eol_padding ... ok
+test gre::tests::malformed_vectors_never_panic_or_escape_capture_bounds ... ok
+test gre::tests::rejects_mismatched_arguments_wrong_ipv4_and_noninitial_fragments ... ok
+test gre::tests::rejects_routing_ssr_and_versions_without_tencent_opt_in ... ok
+test gre::tests::snaplen_truncation_after_inner_header_is_accepted ... ok
+test gre::tests::teb_all_checksum_key_sequence_layouts_and_ipv4_options ... ok
+test tencent_gre::tests::ethernet_padding_cannot_complete_logically_short_datagram ... ok
+test tencent_gre::tests::every_header_prefix_is_transactional_payload_snaplen_is_supported ... ok
+test tencent_gre::tests::full_width_and_zero_keys_preserve_the_fastpath_mac_contract ... ok
+test tencent_gre::tests::independent_optional_fields_versions_and_inner_protocols ... ok
+test tencent_gre::tests::rejects_caller_arguments_envelope_and_inner_disagreement ... ok
+test tencent_gre::tests::rejects_unsupported_flags_and_protocols_without_mutation ... ok
+test tencent_gre::tests::vlan_outer_offset_is_relative_to_its_full_l2_header ... ok
+test vxlan_gpe::tests::ethernet_padding_cannot_supply_missing_declared_headers ... ok
+test vxlan_gpe::tests::every_header_prefix_fails_without_mutation_payload_snaplen_succeeds ... ok
+test vxlan_gpe::tests::independent_direct_protocol_vectors ... ok
+test vxlan_gpe::tests::independent_nsh_metadata_vectors ... ok
+test vxlan_gpe::tests::ipv6_version_and_logical_length_are_checked ... ok
+test vxlan_gpe::tests::legacy_p_zero_is_ethernet_only ... ok
+test vxlan_gpe::tests::rejects_envelope_and_inner_mismatches_without_mutation ... ok
+test vxlan_gpe::tests::rejects_invalid_flags_protocol_and_nsh_lengths_transactionally ... ok
+test vxlan_gpe::tests::vlan_outer_and_inner_ipv4_options_preserve_payload ... ok
+
+test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

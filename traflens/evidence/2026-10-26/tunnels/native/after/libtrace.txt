@@ -1,0 +1,1 @@
+45057166 /tmp/traflens-native-build-20261026/repo/agent/src/ebpf/libtrace.a

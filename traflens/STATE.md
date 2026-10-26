@@ -229,8 +229,16 @@ process are separate from successful collection and product parity.
 - Outer-IPv6 GRE/GPE, extension chains, outer fragment reassembly, ERSPAN raw-IP
   frame types/custom C/K extensions and IPIP layouts with IP header no larger
   than L2 remain unsupported. No new live tunnel traffic or throughput claim
-  follows from these parser tests. Exact-commit native Release validation is
-  recorded separately after the source checkpoint.
+  follows from these parser tests.
+- Exact source `ff05c646d` passes the complete default-feature native Release,
+  all 54 native tunnel tests, host version/ldd and clean-source checks. Binary
+  SHA256 `14f60cbf02ebce613732b2f9b45bdeb3197e37a2ed90f0a6693fd3c7205ffe90`; ten BPF ELF files and libtrace are built. The first
+  4778380b2 build failed version acceptance despite passing tests; legacy Git
+  cache invalidation is repaired and its failed evidence retained. Three real
+  repository-layout probes pass; CI now checks embedded CommitId against HEAD.
+  Both current lab Agent binaries embed ff05c646d; the bounded Agent remains
+  stopped. Full native suite/live tracing and actual tunneled traffic remain
+  separate pending gates.
 
 ## Remaining validation and priorities
 
@@ -238,7 +246,8 @@ process are separate from successful collection and product parity.
    outages before replaying supplied blocks. Extend recovery coverage to DDL,
    queue pressure and process restart, and investigate unfaulted cold/idle DNS
    first-record loss independently of the passed warm restart experiment.
-2. Extend protocol acceptance to a real MySQL database, DNS error/truncation/TCP,
+2. Add real tunneled HTTP/DNS acceptance on the direct link; extend protocol
+   acceptance to a real MySQL database, DNS error/truncation/TCP,
    reconnects, TLS, loss, agent/server restart and sustained workloads.
 3. Resolve the remaining 12 packet-library failures: segmentation/reassembly
    stub, defaults/snapshot/PCAP/Hessian compatibility,

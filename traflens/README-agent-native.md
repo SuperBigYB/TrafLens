@@ -181,3 +181,26 @@ be inferred from packet-mode failure explanations. Full native suite and live
 eBPF collection/profiling are separate pending gates. The exact commands,
 state, logs, generated-fixture difference and result records accompany this
 checkpoint under `evidence/2026-10-26/agent/`.
+
+
+## Tunnel checkpoint and legacy Git metadata repair: ff05c646d
+
+Exact source `ff05c646d60df4dfafa26a7572121c97413d62e3` builds default-feature Release in the same pinned
+offline image with 4 CPU/8 GiB limits and no source overlays. Native tunnel
+tests pass 26 caller cases and 28 decoder cases. Host version/ldd checks pass;
+source status is empty. The artifact is
+`/tmp/traflens-native-build-20261026/artifacts/deepflow-agent-native-linux-amd64-ff05c646`,
+77,964,016 bytes, SHA256 `14f60cbf02ebce613732b2f9b45bdeb3197e37a2ed90f0a6693fd3c7205ffe90`. libtrace is 45,057,166 bytes and
+ten kernel BPF ELF files are identified directly in the kernel build tree.
+
+The prior 4778380b2 run passed compilation/tests but failed version acceptance:
+the cache still embedded 4f0a7d96d. Git 1.8.3.1 silently echoes unsupported
+`rev-parse --git-path`; resolving --git-dir and commondir explicitly repairs
+the watcher. Ordinary/packed/linked repository probes and the actual native
+build output validate the replacement. Failed-before and successful-after raw
+logs and exact drivers are retained in `evidence/2026-10-26/tunnels/native/`.
+The first driver deliberately stops at its mismatched CommitId, so its missing
+later artifact files are expected. Its binary is marked stale-metadata.
+
+These are selected native tests and build/link checks, not a complete native
+suite, live eBPF capture, tunneled end-to-end acceptance or performance parity.

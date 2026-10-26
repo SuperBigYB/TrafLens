@@ -86,3 +86,10 @@ a pristine upstream suite. Source hashes, commands and raw results identify
 the tested code. See `README-tunnels.md` for wire layouts and explicit limits.
 Native build results, when present, are distinct from live eBPF or tunnel capture
 and from sustained performance acceptance.
+
+
+`tunnels/native/` preserves the first successful native compile/tests with failed
+version acceptance, Git 1.8.3.1 compatibility diagnosis, three real repository
+watcher probes, and the final exact ff05c646d Release/54 native tunnel passes.
+Both final packet/native version probes match source; source status is clean.
+No live tunnel, eBPF-runtime or sustained performance validation is implied.

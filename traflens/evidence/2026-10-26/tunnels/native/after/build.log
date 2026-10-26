@@ -1,0 +1,7 @@
+   Compiling deepflow-agent v0.1.0 (/workspace/TrafLens/agent)
+warning: linker stderr: rust-lld: /target/release/deps/libdeepflow_agent-65938f17cefaac42.rlib: archive member 'deepflow_ebpfctl_bin.c' is neither ET_REL nor LLVM bitcode
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `deepflow-agent` (bin "deepflow-agent") generated 1 warning
+    Finished `release` profile [optimized] target(s) in 2m 12s

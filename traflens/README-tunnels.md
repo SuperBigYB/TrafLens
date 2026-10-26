@@ -24,7 +24,7 @@ the previous failure inventory. A selected gate is not a full-suite pass.
 - ERSPAN types I, II and III over IPv4 GRE return the inner Ethernet frame.
   Type I has no ERSPAN feature header and ID zero. Types II and III extract
   the ten-bit session ID. The type III optional eight-byte platform subheader
-  is length-checked and skipped. The standard ERSPAN sequence-only GRE profile
+  is length-checked and skipped. Type III accepts FT=0 only. The standard ERSPAN sequence-only GRE profile
   is supported; checksum/key extensions and non-Ethernet frame types are not.
 - TEB over IPv4 GRE handles checksum, key and sequence optional fields in wire
   order. Its tunnel ID is the full 32-bit key, or zero when absent.
@@ -94,3 +94,24 @@ and [Cisco ERSPAN draft 03](https://datatracker.ietf.org/doc/html/draft-foschian
 The latter two are Internet-Drafts, not RFCs. DeepFlow's public
 [configuration example](https://github.com/deepflowio/deepflow/blob/8741e924ff0ae3964a135985c51e5a6ce6bde397/server/agent_config/example.yaml)
 describes the decapsulation selectors; TrafLens does not import private code.
+
+
+## Exact-source native validation
+
+Default-feature optimized Release and both native tunnel groups (26 Agent plus
+28 decoder tests) pass from exact source `ff05c646d60df4dfafa26a7572121c97413d62e3`. The same source passes
+all 127 selected packet tests and builds the packet functional binary. Both
+binaries embed this source revision; native source is clean with no overlays.
+The native artifact is 77,964,016 bytes, SHA256 `14f60cbf02ebce613732b2f9b45bdeb3197e37a2ed90f0a6693fd3c7205ffe90`. It links
+libtrace and has ten BPF ELF build products. See `native/manifest.json` for
+the pinned image, actual resource limits, versions, raw logs and checksums.
+
+The first native run from `4778380b2` compiled and passed 54 tunnel tests, but
+its binary still embedded the old `4f0a7d96d` revision. The version guard failed
+and that artifact is retained with a `stale-metadata` label. Git 1.8.3.1 in the
+fixed image echoes unsupported `--git-path` with exit zero, so the previous
+watcher emitted no Git paths. `ff05c646d` uses `--git-dir` plus the worktree's
+commondir file; actual build output now watches HEAD. Three direct-production
+watcher probes pass with ordinary, packed-ref and linked detached repositories.
+The CI packet job now asserts embedded CommitId equals its actual checkout.
+These build checks do not add live tunnel/eBPF or load-test evidence.

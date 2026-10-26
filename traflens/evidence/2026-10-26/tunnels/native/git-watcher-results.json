@@ -1,0 +1,34 @@
+{
+  "source_commit": "ff05c646d60df4dfafa26a7572121c97413d62e3",
+  "source_sha256": "f9105bbf103e8640740a10774a03374a384d15dde123aa39acce4dac35cfe88c",
+  "scope": "verbatim production set_build_info path-watcher prefix, actual ordinary/packed/linked Git repositories",
+  "cases": [
+    {
+      "case": "ordinary repository",
+      "passed": true,
+      "paths": [
+        "/root/yb/git/TrafLens/.traflens/work/git-metadata-probe/repos-z_2up1yn/primary/.git/HEAD",
+        "/root/yb/git/TrafLens/.traflens/work/git-metadata-probe/repos-z_2up1yn/primary/.git/refs/heads"
+      ]
+    },
+    {
+      "case": "packed branch refs",
+      "passed": true,
+      "paths": [
+        "/root/yb/git/TrafLens/.traflens/work/git-metadata-probe/repos-z_2up1yn/primary/.git/HEAD",
+        "/root/yb/git/TrafLens/.traflens/work/git-metadata-probe/repos-z_2up1yn/primary/.git/packed-refs",
+        "/root/yb/git/TrafLens/.traflens/work/git-metadata-probe/repos-z_2up1yn/primary/.git/refs/heads"
+      ]
+    },
+    {
+      "case": "linked detached worktree",
+      "passed": true,
+      "paths": [
+        "/root/yb/git/TrafLens/.traflens/work/git-metadata-probe/repos-z_2up1yn/primary/.git/packed-refs",
+        "/root/yb/git/TrafLens/.traflens/work/git-metadata-probe/repos-z_2up1yn/primary/.git/refs/heads",
+        "/root/yb/git/TrafLens/.traflens/work/git-metadata-probe/repos-z_2up1yn/primary/.git/worktrees/linked/HEAD",
+        "/root/yb/git/TrafLens/.traflens/work/git-metadata-probe/repos-z_2up1yn/primary/.git/worktrees/linked/commondir"
+      ]
+    }
+  ]
+}

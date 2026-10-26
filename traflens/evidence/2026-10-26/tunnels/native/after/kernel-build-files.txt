@@ -1,0 +1,20 @@
+/tmp/traflens-native-build-20261026/repo/agent/src/ebpf/kernel/build/5_2_plus/perf_profiler.bpf.elf: ELF 64-bit LSB relocatable, eBPF, version 1 (SYSV), not stripped
+/tmp/traflens-native-build-20261026/repo/agent/src/ebpf/kernel/build/5_2_plus/perf_profiler.bpf.ll: LLVM IR bitcode
+/tmp/traflens-native-build-20261026/repo/agent/src/ebpf/kernel/build/5_2_plus/socket_trace.bpf.elf: ELF 64-bit LSB relocatable, eBPF, version 1 (SYSV), not stripped
+/tmp/traflens-native-build-20261026/repo/agent/src/ebpf/kernel/build/5_2_plus/socket_trace.bpf.ll: LLVM IR bitcode
+/tmp/traflens-native-build-20261026/repo/agent/src/ebpf/kernel/build/3_10_0/socket_trace.bpf.elf: ELF 64-bit LSB relocatable, eBPF, version 1 (SYSV), not stripped
+/tmp/traflens-native-build-20261026/repo/agent/src/ebpf/kernel/build/3_10_0/socket_trace.bpf.ll: LLVM IR bitcode
+/tmp/traflens-native-build-20261026/repo/agent/src/ebpf/kernel/build/rt/socket_trace.bpf.elf: ELF 64-bit LSB relocatable, eBPF, version 1 (SYSV), not stripped
+/tmp/traflens-native-build-20261026/repo/agent/src/ebpf/kernel/build/rt/socket_trace.bpf.ll: LLVM IR bitcode
+/tmp/traflens-native-build-20261026/repo/agent/src/ebpf/kernel/build/5_15_plus/perf_profiler.bpf.elf: ELF 64-bit LSB relocatable, eBPF, version 1 (SYSV), not stripped
+/tmp/traflens-native-build-20261026/repo/agent/src/ebpf/kernel/build/5_15_plus/perf_profiler.bpf.ll: LLVM IR bitcode
+/tmp/traflens-native-build-20261026/repo/agent/src/ebpf/kernel/build/kfunc/socket_trace.bpf.elf: ELF 64-bit LSB relocatable, eBPF, version 1 (SYSV), not stripped
+/tmp/traflens-native-build-20261026/repo/agent/src/ebpf/kernel/build/kfunc/socket_trace.bpf.ll: LLVM IR bitcode
+/tmp/traflens-native-build-20261026/repo/agent/src/ebpf/kernel/build/kylin/socket_trace.bpf.elf: ELF 64-bit LSB relocatable, eBPF, version 1 (SYSV), not stripped
+/tmp/traflens-native-build-20261026/repo/agent/src/ebpf/kernel/build/kylin/socket_trace.bpf.ll: LLVM IR bitcode
+/tmp/traflens-native-build-20261026/repo/agent/src/ebpf/kernel/build/kprobe/socket_trace.bpf.elf: ELF 64-bit LSB relocatable, eBPF, version 1 (SYSV), not stripped
+/tmp/traflens-native-build-20261026/repo/agent/src/ebpf/kernel/build/kprobe/socket_trace.bpf.ll: LLVM IR bitcode
+/tmp/traflens-native-build-20261026/repo/agent/src/ebpf/kernel/build/common/perf_profiler.bpf.elf: ELF 64-bit LSB relocatable, eBPF, version 1 (SYSV), not stripped
+/tmp/traflens-native-build-20261026/repo/agent/src/ebpf/kernel/build/common/perf_profiler.bpf.ll: LLVM IR bitcode
+/tmp/traflens-native-build-20261026/repo/agent/src/ebpf/kernel/build/common/socket_trace.bpf.elf: ELF 64-bit LSB relocatable, eBPF, version 1 (SYSV), not stripped
+/tmp/traflens-native-build-20261026/repo/agent/src/ebpf/kernel/build/common/socket_trace.bpf.ll: LLVM IR bitcode

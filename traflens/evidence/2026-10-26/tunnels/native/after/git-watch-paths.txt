@@ -1,0 +1,3 @@
+cargo:rerun-if-changed=/workspace/TrafLens/.git/HEAD
+cargo:rerun-if-changed=/workspace/TrafLens/.git/refs/heads
+cargo:rerun-if-changed=/workspace/TrafLens/.git/packed-refs

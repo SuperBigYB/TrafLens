@@ -1,0 +1,39 @@
+   Compiling deepflow-agent v0.1.0 (/workspace/TrafLens/agent)
+warning: linker stderr: rust-lld: /workspace/TrafLens/agent/src/ebpf/libtrace.a: archive member 'deepflow_ebpfctl_bin.c' is neither ET_REL nor LLVM bitcode
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `deepflow-agent` (lib test) generated 1 warning
+    Finished `release` profile [optimized] target(s) in 46.58s
+     Running unittests src/lib.rs (/target/release/deps/deepflow_agent-1b10d530622708c9)
+
+running 26 tests
+test common::decapsulate::regression::fragmented_underlay_is_not_misinterpreted_as_a_tunnel_header ... ok
+test common::decapsulate::regression::ipip_inner_length_must_fit_logical_outer_but_capture_may_be_short ... ok
+test common::decapsulate::regression::ipip_unrepresentable_offsets_do_not_mutate_or_wrap ... ok
+test common::decapsulate::regression::ipv4_options_are_used_for_udp_and_vni_offsets ... ok
+test common::decapsulate::regression::ipv4_options_tlv_lengths_are_validated_before_udp_dispatch ... ok
+test common::decapsulate::regression::ipv6_geneve_returns_inner_ethernet_offset ... ok
+test common::decapsulate::regression::minimal_ipip_packets_do_not_need_an_erspan_sized_guard ... ok
+test common::decapsulate::regression::nested_tencent_preserves_the_outermost_tunnel_identity ... ok
+test common::decapsulate::regression::payload_snaplen_is_allowed_but_declared_header_bounds_are_enforced ... ok
+test common::decapsulate::regression::public_decapsulators_reject_short_and_extreme_inputs_without_panicking ... ok
+test common::decapsulate::regression::short_udp_length_cannot_consume_padding_as_tunnel_data ... ok
+test common::decapsulate::regression::tencent_rewrite_keeps_original_outer_addresses ... ok
+test common::decapsulate::regression::udp_declared_length_must_fit_logical_ip_even_with_padding ... ok
+test common::decapsulate::tests::bitmap_add ... ok
+test common::decapsulate::tests::bitmap_new ... ok
+test common::decapsulate::tests::test_decapsulate_all ... ok
+test common::decapsulate::tests::test_decapsulate_erspan ... ok
+test common::decapsulate::tests::test_decapsulate_erspan_ii ... ok
+test common::decapsulate::tests::test_decapsulate_erspan_iii ... ok
+test common::decapsulate::tests::test_decapsulate_ff_vxlan ... ok
+test common::decapsulate::tests::test_decapsulate_geneve ... ok
+test common::decapsulate::tests::test_decapsulate_ipip ... ok
+test common::decapsulate::tests::test_decapsulate_ipv6_vxlan ... ok
+test common::decapsulate::tests::test_decapsulate_teb ... ok
+test common::decapsulate::tests::test_decapsulate_vxlan ... ok
+test common::decapsulate::tests::test_decapsulate_vxlan_nsh ... ok
+
+test result: ok. 26 passed; 0 failed; 0 ignored; 0 measured; 291 filtered out; finished in 0.01s
+

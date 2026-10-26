@@ -1,0 +1,219 @@
+{
+  "source_commit": "ff05c646d60df4dfafa26a7572121c97413d62e3",
+  "source_clean": true,
+  "source_overlays": false,
+  "native_build": "default features, release, locked, offline; exit 0",
+  "native_selected_tests": {
+    "agent_caller": 26,
+    "tunnel_decoder": 28,
+    "failed": 0
+  },
+  "packet_selected_tests": {
+    "passed": 127,
+    "failed": 0
+  },
+  "native_binary": {
+    "sha256": "14f60cbf02ebce613732b2f9b45bdeb3197e37a2ed90f0a6693fd3c7205ffe90",
+    "bytes": 77964016,
+    "path": "/tmp/traflens-native-build-20261026/artifacts/deepflow-agent-native-linux-amd64-ff05c646"
+  },
+  "packet_binary": {
+    "sha256": "f45bb1570dd529f4ff8e2ad1ee62f4804094b4f24c88982459156f411a9a54f8",
+    "bytes": 116956792,
+    "path": "/root/yb/git/TrafLens/agent/target/debug/deepflow-agent",
+    "profile": "dev, functional only"
+  },
+  "libtrace_bytes": 45057166,
+  "bpf_elf_count": 10,
+  "image": "ghcr.io/deepflowio/rust-build@sha256:b018b2a5970d3c8f36a95f56dec56ad780020ec782419e42c571c7be5867d310",
+  "container_limits": {
+    "NetworkMode": "none",
+    "NanoCpus": 4000000000,
+    "Memory": 8589934592,
+    "MemorySwap": 8589934592,
+    "CpusetCpus": "0,1,2,3",
+    "PidsLimit": 4096,
+    "CapDrop": [
+      "ALL"
+    ],
+    "SecurityOpt": [
+      "no-new-privileges"
+    ]
+  },
+  "before": {
+    "source_commit": "4778380b292700a6e80cc493cae9e812172185ab",
+    "binary_embedded_commit": "4f0a7d96d833f770668dea304a5a6afaef2c0fbd",
+    "driver_exit_code": 1,
+    "release_and_54_tests_passed": true,
+    "version_acceptance_passed": false,
+    "reason": "Git 1.8.3.1 echoes unsupported --git-path with exit 0; no Git watch path emitted"
+  },
+  "git_watcher_cases_passed": 3,
+  "live_tunnel_capture": "not run",
+  "live_ebpf_capture": "not run",
+  "performance": "not measured",
+  "source_sha256": {
+    "agent/build.rs": "f9105bbf103e8640740a10774a03374a384d15dde123aa39acce4dac35cfe88c",
+    "agent/Cargo.lock": "db952ada8d0434a918c1d3c9f0303f1cd01077ac58d3c657adba5b8b381610a8",
+    "agent/plugins/tunnel/src/lib.rs": "e6fa39db93aaed9cfa6ba91a8e9834a6cebbae952afddc4fd7af40ecc4aa367b",
+    "agent/plugins/tunnel/src/gre.rs": "1da0cb7fcbe5ae64b39d71c8092d40b21fe2264165157c296a0675bd1c5af152",
+    "agent/plugins/tunnel/src/tencent_gre.rs": "de481d1c9ec5c3facb0094254a672b6ec171d38b10860f32db9014fffa2e9ac0",
+    "agent/plugins/tunnel/src/vxlan_gpe.rs": "36fac28cb2a6bfaa182b7275ff3c394113f6c8007048b4820f5d0517f2a7a02c",
+    "agent/src/common/decapsulate.rs": "ed311d521f040087ca812f46bc269243be9d1ae3822e157482b3e3dcd7c51b34",
+    "agent/src/common/decapsulate_regression.rs": "f5beeb64527a29471fc3f73f593ab3ca8b2ea76cf24fa7c27d76065ea63b173b"
+  },
+  "files": {
+    "after/binary-size.txt": {
+      "bytes": 9,
+      "sha256": "19fd7f68332528c576e9ebbc9ea3542bdd322eb1c9e4b6a1d4151ae3a5244737"
+    },
+    "after/binary.sha256": {
+      "bytes": 155,
+      "sha256": "1851b6750d4b9551fd71d076a56ef84f8a9f4d5645bc4e63396ea51c0a5c4eef"
+    },
+    "after/build.log": {
+      "bytes": 422,
+      "sha256": "4133fa294fb787f9103e59a6c3b7bb2c800524cdb04348965aa307c9c37f3e0c"
+    },
+    "after/caller-tests.log": {
+      "bytes": 2732,
+      "sha256": "e1fd749c1fcf9bfab68d09adb0cfe550d3b98bca6f4c39814c51e800e5a20ac8"
+    },
+    "after/container.log": {
+      "bytes": 273,
+      "sha256": "108ba62dd503eab127cca7b1e6de424d59a46cc889aa7baa3a517f9ae9ca4fdc"
+    },
+    "after/decoder-tests.log": {
+      "bytes": 2532,
+      "sha256": "d3bb4a921fc5b773b352393da04fed31fb04017fe5a3b32f1c843865464e1692"
+    },
+    "after/docker-host-config.json": {
+      "bytes": 3177,
+      "sha256": "a7bc64fbb6d55c62483ed3fd04fd4638f7cb8320a4084770e220da7c797dadd3"
+    },
+    "after/driver.sh": {
+      "bytes": 3483,
+      "sha256": "81798d7d0e83faa88ffa6e81194e37df35b57b5687ee93be08671d99415a28b8"
+    },
+    "after/end.txt": {
+      "bytes": 26,
+      "sha256": "bc94ba7c63eae3a53fa121ebe7b752b89bd4806e3bf47524ee1b72312a83e354"
+    },
+    "after/git-watch-paths.txt": {
+      "bytes": 172,
+      "sha256": "b010c81fa81567ae1614c4daa2a409cf81b579e614efeb9346aad6d34bde233e"
+    },
+    "after/host-objects.txt": {
+      "bytes": 5275,
+      "sha256": "869a2a5f2abae2c275437e93e19ddc4314ecca65db346d99491e768ab1b15326"
+    },
+    "after/image-id.txt": {
+      "bytes": 72,
+      "sha256": "2bc25b20c265f575e22976648ba6fdf7abd423f81ac1e362dc9b78a1433ba197"
+    },
+    "after/kernel-build-files.txt": {
+      "bytes": 2768,
+      "sha256": "190c8be9be1e3c9177e027a8ca06c8ac18645aa9b8ddf5c338600ecca64c020c"
+    },
+    "after/ldd.txt": {
+      "bytes": 658,
+      "sha256": "c789e76ed4c90e6fa70290e52b9ed00e3718cd73c6e754f9014ef13725a71051"
+    },
+    "after/libtrace.txt": {
+      "bytes": 76,
+      "sha256": "6e5f5563915f3199ec6a2f77729d686a60a6dce16734697c692792240e3167df"
+    },
+    "after/source-status.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "after/start.txt": {
+      "bytes": 26,
+      "sha256": "60ce4529e4409ccf6529b373a6e01810a504fbe5e3bf85f996842601df55f079"
+    },
+    "after/version.txt": {
+      "bytes": 245,
+      "sha256": "fa7155a10dd8315cc5e5ce5a7cfd57c3beffabd629e06b01596de09c7910638d"
+    },
+    "before/build.log": {
+      "bytes": 492,
+      "sha256": "5f0b5350b10330ca201a1e8ca502951ce43443c6b1caf67ad77b7a55ff88ac9e"
+    },
+    "before/caller-tests.log": {
+      "bytes": 2802,
+      "sha256": "d7d1f8c87cbd174f788d9d304e699944b9f2cd5e557c36438ca812745b9afdc1"
+    },
+    "before/container.log": {
+      "bytes": 273,
+      "sha256": "a7c3d103f0d9179e8463d50dcb03cf9b5df30ec067db9726a4eb79dcb1f49ea3"
+    },
+    "before/decoder-tests.log": {
+      "bytes": 2602,
+      "sha256": "77957780dd85dd3f4e32b320a59606ff88f6eeb620837dc98f0520cb6dab40f2"
+    },
+    "before/docker-host-config.json": {
+      "bytes": 3177,
+      "sha256": "a324c87f9de31928cae5028250e10ea20084217b410771ddfd6d7c4029b14a7c"
+    },
+    "before/driver.sh": {
+      "bytes": 3483,
+      "sha256": "c9c1b1b5e8de6d0b743e88bdd03de4fd53142f34678b45f7d66002e779537b5f"
+    },
+    "before/end.txt": {
+      "bytes": 26,
+      "sha256": "a1f09c4af8a1fb9d35eb1dfc5100f4cac112dc0e067884bdaa2230b721b59408"
+    },
+    "before/git-path-probe.log": {
+      "bytes": 97,
+      "sha256": "48eee5d75bce3fca94e71b264b7cd42484072b864e899e47c1b253b35593b1d1"
+    },
+    "before/image-id.txt": {
+      "bytes": 72,
+      "sha256": "2bc25b20c265f575e22976648ba6fdf7abd423f81ac1e362dc9b78a1433ba197"
+    },
+    "before/source-status.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "before/stale-binary.sha256": {
+      "bytes": 170,
+      "sha256": "356dfaeccde7028aa0a49ce5308dce5637c62a438e6976a971acd5a38c77beaa"
+    },
+    "before/start.txt": {
+      "bytes": 26,
+      "sha256": "a8d2d9b9c48ac8af2dda6e3d560ca73286f374ec809673e91763136e86dc864c"
+    },
+    "before/version.txt": {
+      "bytes": 245,
+      "sha256": "5e551db99b4790bafabe5ba6ab3d3d1dccb5f2299f9c9e2cc5e35897907d031e"
+    },
+    "git-watcher-probe.py": {
+      "bytes": 2933,
+      "sha256": "09232e058d8ed3f2bac92e36a5e4ee95c6c670a281bcdf041543d07ee56b715e"
+    },
+    "git-watcher-probe.rs": {
+      "bytes": 1128,
+      "sha256": "0fed69b61a234e8f3577a17d434eb15dcf23ada70b2fd6d457385e33fe7d96fd"
+    },
+    "git-watcher-results.json": {
+      "bytes": 1550,
+      "sha256": "0e1f456c0dbf5c8aaceadbd5339364405866f00b1e5823241ae557777e8e93e7"
+    },
+    "packet-binary-ff05c646.sha256": {
+      "bytes": 100,
+      "sha256": "bd128dc892cf18393fe64d9f0e9a307abe596f2e58591205302df924a46c7522"
+    },
+    "packet-build-ff05c646.log": {
+      "bytes": 860,
+      "sha256": "49b8d6a2dfe28dc4c251cfd777bfa2b1e3f356108eca279de1365ab138061977"
+    },
+    "packet-version-ff05c646.txt": {
+      "bytes": 245,
+      "sha256": "68d2b4627f72eceb08cb6f8a25a72cb1a331c3127441105ac1c4587980bf88c4"
+    },
+    "selected-packet-ff05c646.log": {
+      "bytes": 17954,
+      "sha256": "412572bd6df0b573c2145004361df894d3523f174db470a3d7fff2d94610a416"
+    }
+  }
+}

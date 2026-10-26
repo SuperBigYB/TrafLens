@@ -132,3 +132,10 @@ regressions were added, and the remaining failures match the prior inventory.
 See `README-tunnels.md`, `STATE.md`, `evidence/2026-10-26/tunnels/` and the
 earlier compatible upstream comparison in `evidence/2026-10-26/baseline/`. Selected
 CI success must not be described as a complete library-suite pass.
+
+
+The ff05c646d checkpoint also validates ordinary, packed-ref and linked-worktree
+Git metadata watching with three direct-production probes. Its packet binary
+embeds the exact tested source commit. CI checks CommitId against HEAD, so a
+cache artifact with stale source metadata fails the gate. These three watcher
+probes are separate from the 127 selected Cargo tests.

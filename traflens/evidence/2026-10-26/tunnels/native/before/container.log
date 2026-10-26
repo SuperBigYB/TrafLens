@@ -1,0 +1,7 @@
+rustc 1.97.1 (8bab26f4f 2026-07-14)
+cargo 1.97.1 (c980f4866 2026-06-30)
+4778380b292700a6e80cc493cae9e812172185ab
+db952ada8d0434a918c1d3c9f0303f1cd01077ac58d3c657adba5b8b381610a8  Cargo.lock
+native-release-build-passed
+native-caller-tests-passed
+native-decoder-tests-passed
