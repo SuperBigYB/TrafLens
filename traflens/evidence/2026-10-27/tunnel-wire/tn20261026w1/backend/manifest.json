@@ -1,0 +1,1661 @@
+{
+  "acceptance_files": {
+    "dns": "expected-dns.json",
+    "http": "expected-http.json"
+  },
+  "count_per_flavor_ip_protocol": 1,
+  "flavors": [
+    "erspan-i",
+    "erspan-ii",
+    "erspan-iii",
+    "teb",
+    "tencent-v0",
+    "tencent-v1",
+    "gpe-ethernet",
+    "gpe-raw-ipv4",
+    "gpe-raw-ipv6",
+    "nsh-md1",
+    "nsh-md2"
+  ],
+  "frame_count": 260,
+  "generator_sha256": "efa376dcaa0907d1571727178cadf6e0f1400cdfdf78a65c71ca98de22afc0b0",
+  "marker": "tn20261026w1",
+  "outer": {
+    "destination_ip": "198.18.0.79",
+    "destination_mac": "58:47:ca:77:66:e2",
+    "interface": "enp2s0f0",
+    "receiver_interface": "enp1s0f0",
+    "source_ip": "198.18.0.240",
+    "source_mac": "58:47:ca:7c:78:59"
+  },
+  "pcap_sha256": "72409ac2965c50fad24c0974384909525b37cca93deadc08e16be14db7130e70",
+  "pcap_timestamps": "Deterministic synthetic epoch 1700000000; actual emit UTC times are in result.json",
+  "pps": 20,
+  "real_http_service": false,
+  "request_count": 40,
+  "requests": [
+    {
+      "expected_l7": {
+        "request_domain": "traflens-tunnel.invalid",
+        "request_resource": "/traflens-tunnel/tn20261026w1/erspan-i/v4/0",
+        "request_type": "GET",
+        "response_code": 200,
+        "response_result": "",
+        "response_status": 0
+      },
+      "flavor": "erspan-i",
+      "frame_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "inner_5tuple": {
+        "client_ip": "198.19.162.204",
+        "client_port": 31675,
+        "ip_protocol": 6,
+        "server_ip": "198.18.1.79",
+        "server_port": 18080
+      },
+      "ip_version": 4,
+      "protocol": 20,
+      "request_resource": "/traflens-tunnel/tn20261026w1/erspan-i/v4/0",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "ERSPAN",
+        "decoded_type_id": 6,
+        "id": 0,
+        "policy": "trim"
+      }
+    },
+    {
+      "dns": {
+        "address": "198.18.2.2",
+        "id": 40961,
+        "name": "tn20261026w1.erspan-i.v4.0.traflens.invalid",
+        "rcode": 0,
+        "ttl": 60,
+        "type": "A"
+      },
+      "expected_l7": {
+        "request_domain": "tn20261026w1.erspan-i.v4.0.traflens.invalid",
+        "request_resource": "tn20261026w1.erspan-i.v4.0.traflens.invalid",
+        "request_type": "A",
+        "response_code": 0,
+        "response_result": "A=198.18.2.2 TTL=60",
+        "response_status": 0
+      },
+      "flavor": "erspan-i",
+      "frame_indices": [
+        11,
+        12
+      ],
+      "inner_5tuple": {
+        "client_ip": "198.19.162.205",
+        "client_port": 31676,
+        "ip_protocol": 17,
+        "server_ip": "198.18.1.79",
+        "server_port": 18053
+      },
+      "ip_version": 4,
+      "protocol": 120,
+      "request_resource": "tn20261026w1.erspan-i.v4.0.traflens.invalid",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "ERSPAN",
+        "decoded_type_id": 6,
+        "id": 0,
+        "policy": "trim"
+      }
+    },
+    {
+      "expected_l7": {
+        "request_domain": "traflens-tunnel.invalid",
+        "request_resource": "/traflens-tunnel/tn20261026w1/erspan-i/v6/0",
+        "request_type": "GET",
+        "response_code": 200,
+        "response_result": "",
+        "response_status": 0
+      },
+      "flavor": "erspan-i",
+      "frame_indices": [
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "inner_5tuple": {
+        "client_ip": "fd00:7472:a2cb::3",
+        "client_port": 31677,
+        "ip_protocol": 6,
+        "server_ip": "fd00:7472::79",
+        "server_port": 18080
+      },
+      "ip_version": 6,
+      "protocol": 20,
+      "request_resource": "/traflens-tunnel/tn20261026w1/erspan-i/v6/0",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "ERSPAN",
+        "decoded_type_id": 6,
+        "id": 0,
+        "policy": "trim"
+      }
+    },
+    {
+      "dns": {
+        "address": "198.18.2.4",
+        "id": 40963,
+        "name": "tn20261026w1.erspan-i.v6.0.traflens.invalid",
+        "rcode": 0,
+        "ttl": 60,
+        "type": "A"
+      },
+      "expected_l7": {
+        "request_domain": "tn20261026w1.erspan-i.v6.0.traflens.invalid",
+        "request_resource": "tn20261026w1.erspan-i.v6.0.traflens.invalid",
+        "request_type": "A",
+        "response_code": 0,
+        "response_result": "A=198.18.2.4 TTL=60",
+        "response_status": 0
+      },
+      "flavor": "erspan-i",
+      "frame_indices": [
+        24,
+        25
+      ],
+      "inner_5tuple": {
+        "client_ip": "fd00:7472:a2cb::4",
+        "client_port": 31678,
+        "ip_protocol": 17,
+        "server_ip": "fd00:7472::79",
+        "server_port": 18053
+      },
+      "ip_version": 6,
+      "protocol": 120,
+      "request_resource": "tn20261026w1.erspan-i.v6.0.traflens.invalid",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "ERSPAN",
+        "decoded_type_id": 6,
+        "id": 0,
+        "policy": "trim"
+      }
+    },
+    {
+      "expected_l7": {
+        "request_domain": "traflens-tunnel.invalid",
+        "request_resource": "/traflens-tunnel/tn20261026w1/erspan-ii/v4/0",
+        "request_type": "GET",
+        "response_code": 200,
+        "response_result": "",
+        "response_status": 0
+      },
+      "flavor": "erspan-ii",
+      "frame_indices": [
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36
+      ],
+      "inner_5tuple": {
+        "client_ip": "198.19.162.208",
+        "client_port": 31679,
+        "ip_protocol": 6,
+        "server_ip": "198.18.1.79",
+        "server_port": 18080
+      },
+      "ip_version": 4,
+      "protocol": 20,
+      "request_resource": "/traflens-tunnel/tn20261026w1/erspan-ii/v4/0",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "ERSPAN",
+        "decoded_type_id": 6,
+        "id": 298,
+        "policy": "trim"
+      }
+    },
+    {
+      "dns": {
+        "address": "198.18.2.6",
+        "id": 40965,
+        "name": "tn20261026w1.erspan-ii.v4.0.traflens.invalid",
+        "rcode": 0,
+        "ttl": 60,
+        "type": "A"
+      },
+      "expected_l7": {
+        "request_domain": "tn20261026w1.erspan-ii.v4.0.traflens.invalid",
+        "request_resource": "tn20261026w1.erspan-ii.v4.0.traflens.invalid",
+        "request_type": "A",
+        "response_code": 0,
+        "response_result": "A=198.18.2.6 TTL=60",
+        "response_status": 0
+      },
+      "flavor": "erspan-ii",
+      "frame_indices": [
+        37,
+        38
+      ],
+      "inner_5tuple": {
+        "client_ip": "198.19.162.209",
+        "client_port": 31680,
+        "ip_protocol": 17,
+        "server_ip": "198.18.1.79",
+        "server_port": 18053
+      },
+      "ip_version": 4,
+      "protocol": 120,
+      "request_resource": "tn20261026w1.erspan-ii.v4.0.traflens.invalid",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "ERSPAN",
+        "decoded_type_id": 6,
+        "id": 298,
+        "policy": "trim"
+      }
+    },
+    {
+      "expected_l7": {
+        "request_domain": "traflens-tunnel.invalid",
+        "request_resource": "/traflens-tunnel/tn20261026w1/erspan-ii/v6/0",
+        "request_type": "GET",
+        "response_code": 200,
+        "response_result": "",
+        "response_status": 0
+      },
+      "flavor": "erspan-ii",
+      "frame_indices": [
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49
+      ],
+      "inner_5tuple": {
+        "client_ip": "fd00:7472:a2cb::7",
+        "client_port": 31681,
+        "ip_protocol": 6,
+        "server_ip": "fd00:7472::79",
+        "server_port": 18080
+      },
+      "ip_version": 6,
+      "protocol": 20,
+      "request_resource": "/traflens-tunnel/tn20261026w1/erspan-ii/v6/0",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "ERSPAN",
+        "decoded_type_id": 6,
+        "id": 298,
+        "policy": "trim"
+      }
+    },
+    {
+      "dns": {
+        "address": "198.18.2.8",
+        "id": 40967,
+        "name": "tn20261026w1.erspan-ii.v6.0.traflens.invalid",
+        "rcode": 0,
+        "ttl": 60,
+        "type": "A"
+      },
+      "expected_l7": {
+        "request_domain": "tn20261026w1.erspan-ii.v6.0.traflens.invalid",
+        "request_resource": "tn20261026w1.erspan-ii.v6.0.traflens.invalid",
+        "request_type": "A",
+        "response_code": 0,
+        "response_result": "A=198.18.2.8 TTL=60",
+        "response_status": 0
+      },
+      "flavor": "erspan-ii",
+      "frame_indices": [
+        50,
+        51
+      ],
+      "inner_5tuple": {
+        "client_ip": "fd00:7472:a2cb::8",
+        "client_port": 31682,
+        "ip_protocol": 17,
+        "server_ip": "fd00:7472::79",
+        "server_port": 18053
+      },
+      "ip_version": 6,
+      "protocol": 120,
+      "request_resource": "tn20261026w1.erspan-ii.v6.0.traflens.invalid",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "ERSPAN",
+        "decoded_type_id": 6,
+        "id": 298,
+        "policy": "trim"
+      }
+    },
+    {
+      "expected_l7": {
+        "request_domain": "traflens-tunnel.invalid",
+        "request_resource": "/traflens-tunnel/tn20261026w1/erspan-iii/v4/0",
+        "request_type": "GET",
+        "response_code": 200,
+        "response_result": "",
+        "response_status": 0
+      },
+      "flavor": "erspan-iii",
+      "frame_indices": [
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62
+      ],
+      "inner_5tuple": {
+        "client_ip": "198.19.162.212",
+        "client_port": 31683,
+        "ip_protocol": 6,
+        "server_ip": "198.18.1.79",
+        "server_port": 18080
+      },
+      "ip_version": 4,
+      "protocol": 20,
+      "request_resource": "/traflens-tunnel/tn20261026w1/erspan-iii/v4/0",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "ERSPAN",
+        "decoded_type_id": 6,
+        "id": 341,
+        "policy": "trim"
+      }
+    },
+    {
+      "dns": {
+        "address": "198.18.2.10",
+        "id": 40969,
+        "name": "tn20261026w1.erspan-iii.v4.0.traflens.invalid",
+        "rcode": 0,
+        "ttl": 60,
+        "type": "A"
+      },
+      "expected_l7": {
+        "request_domain": "tn20261026w1.erspan-iii.v4.0.traflens.invalid",
+        "request_resource": "tn20261026w1.erspan-iii.v4.0.traflens.invalid",
+        "request_type": "A",
+        "response_code": 0,
+        "response_result": "A=198.18.2.10 TTL=60",
+        "response_status": 0
+      },
+      "flavor": "erspan-iii",
+      "frame_indices": [
+        63,
+        64
+      ],
+      "inner_5tuple": {
+        "client_ip": "198.19.162.213",
+        "client_port": 31684,
+        "ip_protocol": 17,
+        "server_ip": "198.18.1.79",
+        "server_port": 18053
+      },
+      "ip_version": 4,
+      "protocol": 120,
+      "request_resource": "tn20261026w1.erspan-iii.v4.0.traflens.invalid",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "ERSPAN",
+        "decoded_type_id": 6,
+        "id": 341,
+        "policy": "trim"
+      }
+    },
+    {
+      "expected_l7": {
+        "request_domain": "traflens-tunnel.invalid",
+        "request_resource": "/traflens-tunnel/tn20261026w1/erspan-iii/v6/0",
+        "request_type": "GET",
+        "response_code": 200,
+        "response_result": "",
+        "response_status": 0
+      },
+      "flavor": "erspan-iii",
+      "frame_indices": [
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75
+      ],
+      "inner_5tuple": {
+        "client_ip": "fd00:7472:a2cb::b",
+        "client_port": 31685,
+        "ip_protocol": 6,
+        "server_ip": "fd00:7472::79",
+        "server_port": 18080
+      },
+      "ip_version": 6,
+      "protocol": 20,
+      "request_resource": "/traflens-tunnel/tn20261026w1/erspan-iii/v6/0",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "ERSPAN",
+        "decoded_type_id": 6,
+        "id": 341,
+        "policy": "trim"
+      }
+    },
+    {
+      "dns": {
+        "address": "198.18.2.12",
+        "id": 40971,
+        "name": "tn20261026w1.erspan-iii.v6.0.traflens.invalid",
+        "rcode": 0,
+        "ttl": 60,
+        "type": "A"
+      },
+      "expected_l7": {
+        "request_domain": "tn20261026w1.erspan-iii.v6.0.traflens.invalid",
+        "request_resource": "tn20261026w1.erspan-iii.v6.0.traflens.invalid",
+        "request_type": "A",
+        "response_code": 0,
+        "response_result": "A=198.18.2.12 TTL=60",
+        "response_status": 0
+      },
+      "flavor": "erspan-iii",
+      "frame_indices": [
+        76,
+        77
+      ],
+      "inner_5tuple": {
+        "client_ip": "fd00:7472:a2cb::c",
+        "client_port": 31686,
+        "ip_protocol": 17,
+        "server_ip": "fd00:7472::79",
+        "server_port": 18053
+      },
+      "ip_version": 6,
+      "protocol": 120,
+      "request_resource": "tn20261026w1.erspan-iii.v6.0.traflens.invalid",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "ERSPAN",
+        "decoded_type_id": 6,
+        "id": 341,
+        "policy": "trim"
+      }
+    },
+    {
+      "expected_l7": {
+        "request_domain": "traflens-tunnel.invalid",
+        "request_resource": "/traflens-tunnel/tn20261026w1/teb/v4/0",
+        "request_type": "GET",
+        "response_code": 200,
+        "response_result": "",
+        "response_status": 0
+      },
+      "flavor": "teb",
+      "frame_indices": [
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88
+      ],
+      "inner_5tuple": {
+        "client_ip": "198.19.162.216",
+        "client_port": 31687,
+        "ip_protocol": 6,
+        "server_ip": "198.18.1.79",
+        "server_port": 18080
+      },
+      "ip_version": 4,
+      "protocol": 20,
+      "request_resource": "/traflens-tunnel/tn20261026w1/teb/v4/0",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "TEB",
+        "decoded_type_id": 7,
+        "id": 305441741,
+        "policy": "trim"
+      }
+    },
+    {
+      "dns": {
+        "address": "198.18.2.14",
+        "id": 40973,
+        "name": "tn20261026w1.teb.v4.0.traflens.invalid",
+        "rcode": 0,
+        "ttl": 60,
+        "type": "A"
+      },
+      "expected_l7": {
+        "request_domain": "tn20261026w1.teb.v4.0.traflens.invalid",
+        "request_resource": "tn20261026w1.teb.v4.0.traflens.invalid",
+        "request_type": "A",
+        "response_code": 0,
+        "response_result": "A=198.18.2.14 TTL=60",
+        "response_status": 0
+      },
+      "flavor": "teb",
+      "frame_indices": [
+        89,
+        90
+      ],
+      "inner_5tuple": {
+        "client_ip": "198.19.162.217",
+        "client_port": 31688,
+        "ip_protocol": 17,
+        "server_ip": "198.18.1.79",
+        "server_port": 18053
+      },
+      "ip_version": 4,
+      "protocol": 120,
+      "request_resource": "tn20261026w1.teb.v4.0.traflens.invalid",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "TEB",
+        "decoded_type_id": 7,
+        "id": 305441741,
+        "policy": "trim"
+      }
+    },
+    {
+      "expected_l7": {
+        "request_domain": "traflens-tunnel.invalid",
+        "request_resource": "/traflens-tunnel/tn20261026w1/teb/v6/0",
+        "request_type": "GET",
+        "response_code": 200,
+        "response_result": "",
+        "response_status": 0
+      },
+      "flavor": "teb",
+      "frame_indices": [
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101
+      ],
+      "inner_5tuple": {
+        "client_ip": "fd00:7472:a2cb::f",
+        "client_port": 31689,
+        "ip_protocol": 6,
+        "server_ip": "fd00:7472::79",
+        "server_port": 18080
+      },
+      "ip_version": 6,
+      "protocol": 20,
+      "request_resource": "/traflens-tunnel/tn20261026w1/teb/v6/0",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "TEB",
+        "decoded_type_id": 7,
+        "id": 305441741,
+        "policy": "trim"
+      }
+    },
+    {
+      "dns": {
+        "address": "198.18.2.16",
+        "id": 40975,
+        "name": "tn20261026w1.teb.v6.0.traflens.invalid",
+        "rcode": 0,
+        "ttl": 60,
+        "type": "A"
+      },
+      "expected_l7": {
+        "request_domain": "tn20261026w1.teb.v6.0.traflens.invalid",
+        "request_resource": "tn20261026w1.teb.v6.0.traflens.invalid",
+        "request_type": "A",
+        "response_code": 0,
+        "response_result": "A=198.18.2.16 TTL=60",
+        "response_status": 0
+      },
+      "flavor": "teb",
+      "frame_indices": [
+        102,
+        103
+      ],
+      "inner_5tuple": {
+        "client_ip": "fd00:7472:a2cb::10",
+        "client_port": 31690,
+        "ip_protocol": 17,
+        "server_ip": "fd00:7472::79",
+        "server_port": 18053
+      },
+      "ip_version": 6,
+      "protocol": 120,
+      "request_resource": "tn20261026w1.teb.v6.0.traflens.invalid",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "TEB",
+        "decoded_type_id": 7,
+        "id": 305441741,
+        "policy": "trim"
+      }
+    },
+    {
+      "expected_l7": {
+        "request_domain": "traflens-tunnel.invalid",
+        "request_resource": "/traflens-tunnel/tn20261026w1/tencent-v0/v4/0",
+        "request_type": "GET",
+        "response_code": 200,
+        "response_result": "",
+        "response_status": 0
+      },
+      "flavor": "tencent-v0",
+      "frame_indices": [
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114
+      ],
+      "inner_5tuple": {
+        "client_ip": "198.19.162.220",
+        "client_port": 31691,
+        "ip_protocol": 6,
+        "server_ip": "198.18.1.79",
+        "server_port": 18080
+      },
+      "ip_version": 4,
+      "protocol": 20,
+      "request_resource": "/traflens-tunnel/tn20261026w1/tencent-v0/v4/0",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "TencentGre",
+        "decoded_type_id": 3,
+        "id": 66181,
+        "policy": "retain"
+      }
+    },
+    {
+      "dns": {
+        "address": "198.18.2.18",
+        "id": 40977,
+        "name": "tn20261026w1.tencent-v0.v4.0.traflens.invalid",
+        "rcode": 0,
+        "ttl": 60,
+        "type": "A"
+      },
+      "expected_l7": {
+        "request_domain": "tn20261026w1.tencent-v0.v4.0.traflens.invalid",
+        "request_resource": "tn20261026w1.tencent-v0.v4.0.traflens.invalid",
+        "request_type": "A",
+        "response_code": 0,
+        "response_result": "A=198.18.2.18 TTL=60",
+        "response_status": 0
+      },
+      "flavor": "tencent-v0",
+      "frame_indices": [
+        115,
+        116
+      ],
+      "inner_5tuple": {
+        "client_ip": "198.19.162.221",
+        "client_port": 31692,
+        "ip_protocol": 17,
+        "server_ip": "198.18.1.79",
+        "server_port": 18053
+      },
+      "ip_version": 4,
+      "protocol": 120,
+      "request_resource": "tn20261026w1.tencent-v0.v4.0.traflens.invalid",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "TencentGre",
+        "decoded_type_id": 3,
+        "id": 66181,
+        "policy": "retain"
+      }
+    },
+    {
+      "expected_l7": {
+        "request_domain": "traflens-tunnel.invalid",
+        "request_resource": "/traflens-tunnel/tn20261026w1/tencent-v0/v6/0",
+        "request_type": "GET",
+        "response_code": 200,
+        "response_result": "",
+        "response_status": 0
+      },
+      "flavor": "tencent-v0",
+      "frame_indices": [
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127
+      ],
+      "inner_5tuple": {
+        "client_ip": "fd00:7472:a2cb::13",
+        "client_port": 31693,
+        "ip_protocol": 6,
+        "server_ip": "fd00:7472::79",
+        "server_port": 18080
+      },
+      "ip_version": 6,
+      "protocol": 20,
+      "request_resource": "/traflens-tunnel/tn20261026w1/tencent-v0/v6/0",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "TencentGre",
+        "decoded_type_id": 3,
+        "id": 66181,
+        "policy": "retain"
+      }
+    },
+    {
+      "dns": {
+        "address": "198.18.2.20",
+        "id": 40979,
+        "name": "tn20261026w1.tencent-v0.v6.0.traflens.invalid",
+        "rcode": 0,
+        "ttl": 60,
+        "type": "A"
+      },
+      "expected_l7": {
+        "request_domain": "tn20261026w1.tencent-v0.v6.0.traflens.invalid",
+        "request_resource": "tn20261026w1.tencent-v0.v6.0.traflens.invalid",
+        "request_type": "A",
+        "response_code": 0,
+        "response_result": "A=198.18.2.20 TTL=60",
+        "response_status": 0
+      },
+      "flavor": "tencent-v0",
+      "frame_indices": [
+        128,
+        129
+      ],
+      "inner_5tuple": {
+        "client_ip": "fd00:7472:a2cb::14",
+        "client_port": 31694,
+        "ip_protocol": 17,
+        "server_ip": "fd00:7472::79",
+        "server_port": 18053
+      },
+      "ip_version": 6,
+      "protocol": 120,
+      "request_resource": "tn20261026w1.tencent-v0.v6.0.traflens.invalid",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "TencentGre",
+        "decoded_type_id": 3,
+        "id": 66181,
+        "policy": "retain"
+      }
+    },
+    {
+      "expected_l7": {
+        "request_domain": "traflens-tunnel.invalid",
+        "request_resource": "/traflens-tunnel/tn20261026w1/tencent-v1/v4/0",
+        "request_type": "GET",
+        "response_code": 200,
+        "response_result": "",
+        "response_status": 0
+      },
+      "flavor": "tencent-v1",
+      "frame_indices": [
+        130,
+        131,
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138,
+        139,
+        140
+      ],
+      "inner_5tuple": {
+        "client_ip": "198.19.162.224",
+        "client_port": 31695,
+        "ip_protocol": 6,
+        "server_ip": "198.18.1.79",
+        "server_port": 18080
+      },
+      "ip_version": 4,
+      "protocol": 20,
+      "request_resource": "/traflens-tunnel/tn20261026w1/tencent-v1/v4/0",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "TencentGre",
+        "decoded_type_id": 3,
+        "id": 2596016692,
+        "policy": "retain"
+      }
+    },
+    {
+      "dns": {
+        "address": "198.18.2.22",
+        "id": 40981,
+        "name": "tn20261026w1.tencent-v1.v4.0.traflens.invalid",
+        "rcode": 0,
+        "ttl": 60,
+        "type": "A"
+      },
+      "expected_l7": {
+        "request_domain": "tn20261026w1.tencent-v1.v4.0.traflens.invalid",
+        "request_resource": "tn20261026w1.tencent-v1.v4.0.traflens.invalid",
+        "request_type": "A",
+        "response_code": 0,
+        "response_result": "A=198.18.2.22 TTL=60",
+        "response_status": 0
+      },
+      "flavor": "tencent-v1",
+      "frame_indices": [
+        141,
+        142
+      ],
+      "inner_5tuple": {
+        "client_ip": "198.19.162.225",
+        "client_port": 31696,
+        "ip_protocol": 17,
+        "server_ip": "198.18.1.79",
+        "server_port": 18053
+      },
+      "ip_version": 4,
+      "protocol": 120,
+      "request_resource": "tn20261026w1.tencent-v1.v4.0.traflens.invalid",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "TencentGre",
+        "decoded_type_id": 3,
+        "id": 2596016692,
+        "policy": "retain"
+      }
+    },
+    {
+      "expected_l7": {
+        "request_domain": "traflens-tunnel.invalid",
+        "request_resource": "/traflens-tunnel/tn20261026w1/tencent-v1/v6/0",
+        "request_type": "GET",
+        "response_code": 200,
+        "response_result": "",
+        "response_status": 0
+      },
+      "flavor": "tencent-v1",
+      "frame_indices": [
+        143,
+        144,
+        145,
+        146,
+        147,
+        148,
+        149,
+        150,
+        151,
+        152,
+        153
+      ],
+      "inner_5tuple": {
+        "client_ip": "fd00:7472:a2cb::17",
+        "client_port": 31697,
+        "ip_protocol": 6,
+        "server_ip": "fd00:7472::79",
+        "server_port": 18080
+      },
+      "ip_version": 6,
+      "protocol": 20,
+      "request_resource": "/traflens-tunnel/tn20261026w1/tencent-v1/v6/0",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "TencentGre",
+        "decoded_type_id": 3,
+        "id": 2596016692,
+        "policy": "retain"
+      }
+    },
+    {
+      "dns": {
+        "address": "198.18.2.24",
+        "id": 40983,
+        "name": "tn20261026w1.tencent-v1.v6.0.traflens.invalid",
+        "rcode": 0,
+        "ttl": 60,
+        "type": "A"
+      },
+      "expected_l7": {
+        "request_domain": "tn20261026w1.tencent-v1.v6.0.traflens.invalid",
+        "request_resource": "tn20261026w1.tencent-v1.v6.0.traflens.invalid",
+        "request_type": "A",
+        "response_code": 0,
+        "response_result": "A=198.18.2.24 TTL=60",
+        "response_status": 0
+      },
+      "flavor": "tencent-v1",
+      "frame_indices": [
+        154,
+        155
+      ],
+      "inner_5tuple": {
+        "client_ip": "fd00:7472:a2cb::18",
+        "client_port": 31698,
+        "ip_protocol": 17,
+        "server_ip": "fd00:7472::79",
+        "server_port": 18053
+      },
+      "ip_version": 6,
+      "protocol": 120,
+      "request_resource": "tn20261026w1.tencent-v1.v6.0.traflens.invalid",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "TencentGre",
+        "decoded_type_id": 3,
+        "id": 2596016692,
+        "policy": "retain"
+      }
+    },
+    {
+      "expected_l7": {
+        "request_domain": "traflens-tunnel.invalid",
+        "request_resource": "/traflens-tunnel/tn20261026w1/gpe-ethernet/v4/0",
+        "request_type": "GET",
+        "response_code": 200,
+        "response_result": "",
+        "response_status": 0
+      },
+      "flavor": "gpe-ethernet",
+      "frame_indices": [
+        156,
+        157,
+        158,
+        159,
+        160,
+        161,
+        162,
+        163,
+        164,
+        165,
+        166
+      ],
+      "inner_5tuple": {
+        "client_ip": "198.19.162.228",
+        "client_port": 31699,
+        "ip_protocol": 6,
+        "server_ip": "198.18.1.79",
+        "server_port": 18080
+      },
+      "ip_version": 4,
+      "protocol": 20,
+      "request_resource": "/traflens-tunnel/tn20261026w1/gpe-ethernet/v4/0",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "VxlanNsh",
+        "decoded_type_id": 5,
+        "id": 1193046,
+        "policy": "retain"
+      }
+    },
+    {
+      "dns": {
+        "address": "198.18.2.26",
+        "id": 40985,
+        "name": "tn20261026w1.gpe-ethernet.v4.0.traflens.invalid",
+        "rcode": 0,
+        "ttl": 60,
+        "type": "A"
+      },
+      "expected_l7": {
+        "request_domain": "tn20261026w1.gpe-ethernet.v4.0.traflens.invalid",
+        "request_resource": "tn20261026w1.gpe-ethernet.v4.0.traflens.invalid",
+        "request_type": "A",
+        "response_code": 0,
+        "response_result": "A=198.18.2.26 TTL=60",
+        "response_status": 0
+      },
+      "flavor": "gpe-ethernet",
+      "frame_indices": [
+        167,
+        168
+      ],
+      "inner_5tuple": {
+        "client_ip": "198.19.162.229",
+        "client_port": 31700,
+        "ip_protocol": 17,
+        "server_ip": "198.18.1.79",
+        "server_port": 18053
+      },
+      "ip_version": 4,
+      "protocol": 120,
+      "request_resource": "tn20261026w1.gpe-ethernet.v4.0.traflens.invalid",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "VxlanNsh",
+        "decoded_type_id": 5,
+        "id": 1193046,
+        "policy": "retain"
+      }
+    },
+    {
+      "expected_l7": {
+        "request_domain": "traflens-tunnel.invalid",
+        "request_resource": "/traflens-tunnel/tn20261026w1/gpe-ethernet/v6/0",
+        "request_type": "GET",
+        "response_code": 200,
+        "response_result": "",
+        "response_status": 0
+      },
+      "flavor": "gpe-ethernet",
+      "frame_indices": [
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        175,
+        176,
+        177,
+        178,
+        179
+      ],
+      "inner_5tuple": {
+        "client_ip": "fd00:7472:a2cb::1b",
+        "client_port": 31701,
+        "ip_protocol": 6,
+        "server_ip": "fd00:7472::79",
+        "server_port": 18080
+      },
+      "ip_version": 6,
+      "protocol": 20,
+      "request_resource": "/traflens-tunnel/tn20261026w1/gpe-ethernet/v6/0",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "VxlanNsh",
+        "decoded_type_id": 5,
+        "id": 1193046,
+        "policy": "retain"
+      }
+    },
+    {
+      "dns": {
+        "address": "198.18.2.28",
+        "id": 40987,
+        "name": "tn20261026w1.gpe-ethernet.v6.0.traflens.invalid",
+        "rcode": 0,
+        "ttl": 60,
+        "type": "A"
+      },
+      "expected_l7": {
+        "request_domain": "tn20261026w1.gpe-ethernet.v6.0.traflens.invalid",
+        "request_resource": "tn20261026w1.gpe-ethernet.v6.0.traflens.invalid",
+        "request_type": "A",
+        "response_code": 0,
+        "response_result": "A=198.18.2.28 TTL=60",
+        "response_status": 0
+      },
+      "flavor": "gpe-ethernet",
+      "frame_indices": [
+        180,
+        181
+      ],
+      "inner_5tuple": {
+        "client_ip": "fd00:7472:a2cb::1c",
+        "client_port": 31702,
+        "ip_protocol": 17,
+        "server_ip": "fd00:7472::79",
+        "server_port": 18053
+      },
+      "ip_version": 6,
+      "protocol": 120,
+      "request_resource": "tn20261026w1.gpe-ethernet.v6.0.traflens.invalid",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "VxlanNsh",
+        "decoded_type_id": 5,
+        "id": 1193046,
+        "policy": "retain"
+      }
+    },
+    {
+      "expected_l7": {
+        "request_domain": "traflens-tunnel.invalid",
+        "request_resource": "/traflens-tunnel/tn20261026w1/gpe-raw-ipv4/v4/0",
+        "request_type": "GET",
+        "response_code": 200,
+        "response_result": "",
+        "response_status": 0
+      },
+      "flavor": "gpe-raw-ipv4",
+      "frame_indices": [
+        182,
+        183,
+        184,
+        185,
+        186,
+        187,
+        188,
+        189,
+        190,
+        191,
+        192
+      ],
+      "inner_5tuple": {
+        "client_ip": "198.19.162.232",
+        "client_port": 31703,
+        "ip_protocol": 6,
+        "server_ip": "198.18.1.79",
+        "server_port": 18080
+      },
+      "ip_version": 4,
+      "protocol": 20,
+      "request_resource": "/traflens-tunnel/tn20261026w1/gpe-raw-ipv4/v4/0",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "VxlanNsh",
+        "decoded_type_id": 5,
+        "id": 1193047,
+        "policy": "retain"
+      }
+    },
+    {
+      "dns": {
+        "address": "198.18.2.30",
+        "id": 40989,
+        "name": "tn20261026w1.gpe-raw-ipv4.v4.0.traflens.invalid",
+        "rcode": 0,
+        "ttl": 60,
+        "type": "A"
+      },
+      "expected_l7": {
+        "request_domain": "tn20261026w1.gpe-raw-ipv4.v4.0.traflens.invalid",
+        "request_resource": "tn20261026w1.gpe-raw-ipv4.v4.0.traflens.invalid",
+        "request_type": "A",
+        "response_code": 0,
+        "response_result": "A=198.18.2.30 TTL=60",
+        "response_status": 0
+      },
+      "flavor": "gpe-raw-ipv4",
+      "frame_indices": [
+        193,
+        194
+      ],
+      "inner_5tuple": {
+        "client_ip": "198.19.162.233",
+        "client_port": 31704,
+        "ip_protocol": 17,
+        "server_ip": "198.18.1.79",
+        "server_port": 18053
+      },
+      "ip_version": 4,
+      "protocol": 120,
+      "request_resource": "tn20261026w1.gpe-raw-ipv4.v4.0.traflens.invalid",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "VxlanNsh",
+        "decoded_type_id": 5,
+        "id": 1193047,
+        "policy": "retain"
+      }
+    },
+    {
+      "expected_l7": {
+        "request_domain": "traflens-tunnel.invalid",
+        "request_resource": "/traflens-tunnel/tn20261026w1/gpe-raw-ipv6/v6/0",
+        "request_type": "GET",
+        "response_code": 200,
+        "response_result": "",
+        "response_status": 0
+      },
+      "flavor": "gpe-raw-ipv6",
+      "frame_indices": [
+        195,
+        196,
+        197,
+        198,
+        199,
+        200,
+        201,
+        202,
+        203,
+        204,
+        205
+      ],
+      "inner_5tuple": {
+        "client_ip": "fd00:7472:a2cb::1f",
+        "client_port": 31705,
+        "ip_protocol": 6,
+        "server_ip": "fd00:7472::79",
+        "server_port": 18080
+      },
+      "ip_version": 6,
+      "protocol": 20,
+      "request_resource": "/traflens-tunnel/tn20261026w1/gpe-raw-ipv6/v6/0",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "VxlanNsh",
+        "decoded_type_id": 5,
+        "id": 1193048,
+        "policy": "retain"
+      }
+    },
+    {
+      "dns": {
+        "address": "198.18.2.32",
+        "id": 40991,
+        "name": "tn20261026w1.gpe-raw-ipv6.v6.0.traflens.invalid",
+        "rcode": 0,
+        "ttl": 60,
+        "type": "A"
+      },
+      "expected_l7": {
+        "request_domain": "tn20261026w1.gpe-raw-ipv6.v6.0.traflens.invalid",
+        "request_resource": "tn20261026w1.gpe-raw-ipv6.v6.0.traflens.invalid",
+        "request_type": "A",
+        "response_code": 0,
+        "response_result": "A=198.18.2.32 TTL=60",
+        "response_status": 0
+      },
+      "flavor": "gpe-raw-ipv6",
+      "frame_indices": [
+        206,
+        207
+      ],
+      "inner_5tuple": {
+        "client_ip": "fd00:7472:a2cb::20",
+        "client_port": 31706,
+        "ip_protocol": 17,
+        "server_ip": "fd00:7472::79",
+        "server_port": 18053
+      },
+      "ip_version": 6,
+      "protocol": 120,
+      "request_resource": "tn20261026w1.gpe-raw-ipv6.v6.0.traflens.invalid",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "VxlanNsh",
+        "decoded_type_id": 5,
+        "id": 1193048,
+        "policy": "retain"
+      }
+    },
+    {
+      "expected_l7": {
+        "request_domain": "traflens-tunnel.invalid",
+        "request_resource": "/traflens-tunnel/tn20261026w1/nsh-md1/v4/0",
+        "request_type": "GET",
+        "response_code": 200,
+        "response_result": "",
+        "response_status": 0
+      },
+      "flavor": "nsh-md1",
+      "frame_indices": [
+        208,
+        209,
+        210,
+        211,
+        212,
+        213,
+        214,
+        215,
+        216,
+        217,
+        218
+      ],
+      "inner_5tuple": {
+        "client_ip": "198.19.162.236",
+        "client_port": 31707,
+        "ip_protocol": 6,
+        "server_ip": "198.18.1.79",
+        "server_port": 18080
+      },
+      "ip_version": 4,
+      "protocol": 20,
+      "request_resource": "/traflens-tunnel/tn20261026w1/nsh-md1/v4/0",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "VxlanNsh",
+        "decoded_type_id": 5,
+        "id": 1193049,
+        "policy": "retain"
+      }
+    },
+    {
+      "dns": {
+        "address": "198.18.2.34",
+        "id": 40993,
+        "name": "tn20261026w1.nsh-md1.v4.0.traflens.invalid",
+        "rcode": 0,
+        "ttl": 60,
+        "type": "A"
+      },
+      "expected_l7": {
+        "request_domain": "tn20261026w1.nsh-md1.v4.0.traflens.invalid",
+        "request_resource": "tn20261026w1.nsh-md1.v4.0.traflens.invalid",
+        "request_type": "A",
+        "response_code": 0,
+        "response_result": "A=198.18.2.34 TTL=60",
+        "response_status": 0
+      },
+      "flavor": "nsh-md1",
+      "frame_indices": [
+        219,
+        220
+      ],
+      "inner_5tuple": {
+        "client_ip": "198.19.162.237",
+        "client_port": 31708,
+        "ip_protocol": 17,
+        "server_ip": "198.18.1.79",
+        "server_port": 18053
+      },
+      "ip_version": 4,
+      "protocol": 120,
+      "request_resource": "tn20261026w1.nsh-md1.v4.0.traflens.invalid",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "VxlanNsh",
+        "decoded_type_id": 5,
+        "id": 1193049,
+        "policy": "retain"
+      }
+    },
+    {
+      "expected_l7": {
+        "request_domain": "traflens-tunnel.invalid",
+        "request_resource": "/traflens-tunnel/tn20261026w1/nsh-md1/v6/0",
+        "request_type": "GET",
+        "response_code": 200,
+        "response_result": "",
+        "response_status": 0
+      },
+      "flavor": "nsh-md1",
+      "frame_indices": [
+        221,
+        222,
+        223,
+        224,
+        225,
+        226,
+        227,
+        228,
+        229,
+        230,
+        231
+      ],
+      "inner_5tuple": {
+        "client_ip": "fd00:7472:a2cb::23",
+        "client_port": 31709,
+        "ip_protocol": 6,
+        "server_ip": "fd00:7472::79",
+        "server_port": 18080
+      },
+      "ip_version": 6,
+      "protocol": 20,
+      "request_resource": "/traflens-tunnel/tn20261026w1/nsh-md1/v6/0",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "VxlanNsh",
+        "decoded_type_id": 5,
+        "id": 1193049,
+        "policy": "retain"
+      }
+    },
+    {
+      "dns": {
+        "address": "198.18.2.36",
+        "id": 40995,
+        "name": "tn20261026w1.nsh-md1.v6.0.traflens.invalid",
+        "rcode": 0,
+        "ttl": 60,
+        "type": "A"
+      },
+      "expected_l7": {
+        "request_domain": "tn20261026w1.nsh-md1.v6.0.traflens.invalid",
+        "request_resource": "tn20261026w1.nsh-md1.v6.0.traflens.invalid",
+        "request_type": "A",
+        "response_code": 0,
+        "response_result": "A=198.18.2.36 TTL=60",
+        "response_status": 0
+      },
+      "flavor": "nsh-md1",
+      "frame_indices": [
+        232,
+        233
+      ],
+      "inner_5tuple": {
+        "client_ip": "fd00:7472:a2cb::24",
+        "client_port": 31710,
+        "ip_protocol": 17,
+        "server_ip": "fd00:7472::79",
+        "server_port": 18053
+      },
+      "ip_version": 6,
+      "protocol": 120,
+      "request_resource": "tn20261026w1.nsh-md1.v6.0.traflens.invalid",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "VxlanNsh",
+        "decoded_type_id": 5,
+        "id": 1193049,
+        "policy": "retain"
+      }
+    },
+    {
+      "expected_l7": {
+        "request_domain": "traflens-tunnel.invalid",
+        "request_resource": "/traflens-tunnel/tn20261026w1/nsh-md2/v4/0",
+        "request_type": "GET",
+        "response_code": 200,
+        "response_result": "",
+        "response_status": 0
+      },
+      "flavor": "nsh-md2",
+      "frame_indices": [
+        234,
+        235,
+        236,
+        237,
+        238,
+        239,
+        240,
+        241,
+        242,
+        243,
+        244
+      ],
+      "inner_5tuple": {
+        "client_ip": "198.19.162.240",
+        "client_port": 31711,
+        "ip_protocol": 6,
+        "server_ip": "198.18.1.79",
+        "server_port": 18080
+      },
+      "ip_version": 4,
+      "protocol": 20,
+      "request_resource": "/traflens-tunnel/tn20261026w1/nsh-md2/v4/0",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "VxlanNsh",
+        "decoded_type_id": 5,
+        "id": 1193050,
+        "policy": "retain"
+      }
+    },
+    {
+      "dns": {
+        "address": "198.18.2.38",
+        "id": 40997,
+        "name": "tn20261026w1.nsh-md2.v4.0.traflens.invalid",
+        "rcode": 0,
+        "ttl": 60,
+        "type": "A"
+      },
+      "expected_l7": {
+        "request_domain": "tn20261026w1.nsh-md2.v4.0.traflens.invalid",
+        "request_resource": "tn20261026w1.nsh-md2.v4.0.traflens.invalid",
+        "request_type": "A",
+        "response_code": 0,
+        "response_result": "A=198.18.2.38 TTL=60",
+        "response_status": 0
+      },
+      "flavor": "nsh-md2",
+      "frame_indices": [
+        245,
+        246
+      ],
+      "inner_5tuple": {
+        "client_ip": "198.19.162.241",
+        "client_port": 31712,
+        "ip_protocol": 17,
+        "server_ip": "198.18.1.79",
+        "server_port": 18053
+      },
+      "ip_version": 4,
+      "protocol": 120,
+      "request_resource": "tn20261026w1.nsh-md2.v4.0.traflens.invalid",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "VxlanNsh",
+        "decoded_type_id": 5,
+        "id": 1193050,
+        "policy": "retain"
+      }
+    },
+    {
+      "expected_l7": {
+        "request_domain": "traflens-tunnel.invalid",
+        "request_resource": "/traflens-tunnel/tn20261026w1/nsh-md2/v6/0",
+        "request_type": "GET",
+        "response_code": 200,
+        "response_result": "",
+        "response_status": 0
+      },
+      "flavor": "nsh-md2",
+      "frame_indices": [
+        247,
+        248,
+        249,
+        250,
+        251,
+        252,
+        253,
+        254,
+        255,
+        256,
+        257
+      ],
+      "inner_5tuple": {
+        "client_ip": "fd00:7472:a2cb::27",
+        "client_port": 31713,
+        "ip_protocol": 6,
+        "server_ip": "fd00:7472::79",
+        "server_port": 18080
+      },
+      "ip_version": 6,
+      "protocol": 20,
+      "request_resource": "/traflens-tunnel/tn20261026w1/nsh-md2/v6/0",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "VxlanNsh",
+        "decoded_type_id": 5,
+        "id": 1193050,
+        "policy": "retain"
+      }
+    },
+    {
+      "dns": {
+        "address": "198.18.2.40",
+        "id": 40999,
+        "name": "tn20261026w1.nsh-md2.v6.0.traflens.invalid",
+        "rcode": 0,
+        "ttl": 60,
+        "type": "A"
+      },
+      "expected_l7": {
+        "request_domain": "tn20261026w1.nsh-md2.v6.0.traflens.invalid",
+        "request_resource": "tn20261026w1.nsh-md2.v6.0.traflens.invalid",
+        "request_type": "A",
+        "response_code": 0,
+        "response_result": "A=198.18.2.40 TTL=60",
+        "response_status": 0
+      },
+      "flavor": "nsh-md2",
+      "frame_indices": [
+        258,
+        259
+      ],
+      "inner_5tuple": {
+        "client_ip": "fd00:7472:a2cb::28",
+        "client_port": 31714,
+        "ip_protocol": 17,
+        "server_ip": "fd00:7472::79",
+        "server_port": 18053
+      },
+      "ip_version": 6,
+      "protocol": 120,
+      "request_resource": "tn20261026w1.nsh-md2.v6.0.traflens.invalid",
+      "sequence": 0,
+      "tunnel": {
+        "decoded_type": "VxlanNsh",
+        "decoded_type_id": 5,
+        "id": 1193050,
+        "policy": "retain"
+      }
+    }
+  ],
+  "schema_version": 1,
+  "scope": "Synthetic wire conversations; send success is not backend acceptance",
+  "synthetic_wire": true
+}

@@ -1,0 +1,219 @@
+{
+  "marker": "tn20261026w3",
+  "protocol": 120,
+  "expected_rows": 20,
+  "sql": "SELECT request_resource,request_type,response_code,response_status,response_result FROM l7_flow_log WHERE request_resource LIKE '%tn20261026w3%' AND l7_protocol=120 LIMIT 1001",
+  "attempts": [
+    {
+      "at_utc": "2026-10-26T16:00:01.396821+00:00",
+      "elapsed_seconds": 0.005412,
+      "exact_match": true,
+      "queried_rows": 20,
+      "missing_rows": 0,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T16:00:03.414520+00:00",
+      "elapsed_seconds": 0.015644,
+      "exact_match": true,
+      "queried_rows": 20,
+      "missing_rows": 0,
+      "unexpected_or_duplicate_rows": 0
+    }
+  ],
+  "passed": true,
+  "final_query": {
+    "OPT_STATUS": "SUCCESS",
+    "DESCRIPTION": "",
+    "result": {
+      "columns": [
+        "request_resource",
+        "request_type",
+        "response_code",
+        "response_status",
+        "response_result"
+      ],
+      "schemas": [
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "String"
+        },
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "LowCardinality(String)"
+        },
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "Nullable(Int32)"
+        },
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "UInt8"
+        },
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "String"
+        }
+      ],
+      "values": [
+        [
+          "tn20261026w3.erspan-i.v6.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.4 TTL=60"
+        ],
+        [
+          "tn20261026w3.erspan-i.v4.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.2 TTL=60"
+        ],
+        [
+          "tn20261026w3.erspan-ii.v4.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.6 TTL=60"
+        ],
+        [
+          "tn20261026w3.erspan-ii.v6.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.8 TTL=60"
+        ],
+        [
+          "tn20261026w3.erspan-iii.v4.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.10 TTL=60"
+        ],
+        [
+          "tn20261026w3.erspan-iii.v6.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.12 TTL=60"
+        ],
+        [
+          "tn20261026w3.teb.v6.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.16 TTL=60"
+        ],
+        [
+          "tn20261026w3.teb.v4.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.14 TTL=60"
+        ],
+        [
+          "tn20261026w3.tencent-v0.v4.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.18 TTL=60"
+        ],
+        [
+          "tn20261026w3.tencent-v0.v6.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.20 TTL=60"
+        ],
+        [
+          "tn20261026w3.tencent-v1.v4.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.22 TTL=60"
+        ],
+        [
+          "tn20261026w3.tencent-v1.v6.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.24 TTL=60"
+        ],
+        [
+          "tn20261026w3.gpe-ethernet.v6.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.28 TTL=60"
+        ],
+        [
+          "tn20261026w3.gpe-ethernet.v4.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.26 TTL=60"
+        ],
+        [
+          "tn20261026w3.gpe-raw-ipv4.v4.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.30 TTL=60"
+        ],
+        [
+          "tn20261026w3.gpe-raw-ipv6.v6.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.32 TTL=60"
+        ],
+        [
+          "tn20261026w3.nsh-md1.v4.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.34 TTL=60"
+        ],
+        [
+          "tn20261026w3.nsh-md1.v6.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.36 TTL=60"
+        ],
+        [
+          "tn20261026w3.nsh-md2.v6.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.40 TTL=60"
+        ],
+        [
+          "tn20261026w3.nsh-md2.v4.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.38 TTL=60"
+        ]
+      ]
+    },
+    "debug": null
+  },
+  "scope": "Exact unique request/status acceptance; no performance-parity claim"
+}

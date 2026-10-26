@@ -1,0 +1,19 @@
+{
+  "started_at_utc": "2026-10-26T15:41:45.726211+00:00",
+  "maximum_runtime_seconds": 900,
+  "source_head": "4e1b7d50246ac419e06cc7976062fbe69d01e234",
+  "source_status": [
+    " M traflens/lab/configure-agent.py",
+    " M traflens/lab/tests/test_agent_configuration.py",
+    "?? traflens/lab/tests/test_tunnel_acceptance.py",
+    "?? traflens/lab/tests/test_tunnel_link.py",
+    "?? traflens/lab/tests/test_tunnel_traffic.py",
+    "?? traflens/lab/tunnel-link.py",
+    "?? traflens/lab/tunnel-traffic.py",
+    "?? traflens/lab/verify-tunnels.py"
+  ],
+  "binary_sha256": "f45bb1570dd529f4ff8e2ad1ee62f4804094b4f24c88982459156f411a9a54f8",
+  "config_sha256": "25a8716a77c1dc895c85ac2d389fd02295288cba859bb7c30d00fbb734f34366",
+  "binary_version": "12751-ff05c646d60df4dfafa26a7572121c97413d62e3\nName: deepflow-agent community edition\nBranch: main\nCommitId: ff05c646d60df4dfafa26a7572121c97413d62e3\nRevCount: 12751\nCompiler: rustc 1.97.1 (8bab26f4f 2026-07-14)\nCompileTime: 2026-10-26 23:02:08\n",
+  "console_start_offset": 706695
+}

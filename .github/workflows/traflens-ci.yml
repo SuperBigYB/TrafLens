@@ -40,7 +40,7 @@ jobs:
       - name: Install native build prerequisites
         run: |
           sudo apt-get update
-          sudo apt-get install --no-install-recommends -y protobuf-compiler python3-venv make patch gcc
+          sudo apt-get install --no-install-recommends -y protobuf-compiler python3-venv make patch gcc tcpdump
 
       - name: Test host preflight tooling
         run: make -C traflens test

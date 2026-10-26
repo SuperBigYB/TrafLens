@@ -1,0 +1,9 @@
+{
+  "expected_frames": 260,
+  "received_frames": 260,
+  "ordered_bytes_equal": true,
+  "exact_frame_multiset": true,
+  "scope": "Ethernet frame bytes only; synthetic PCAP timestamps are not emit times",
+  "transmitted_pcap_sha256": "15ba6a9afe977dcb84f6960a64d8b664207bc3d3d4d429414c907ff5016566a2",
+  "received_pcap_sha256": "c15561969835f223e1caf06ba88be30c35dbde8f2784dea87be1da03c9afa952"
+}

@@ -1,0 +1,25 @@
+{
+  "backend_acceptance": null,
+  "complete": true,
+  "elapsed_seconds": 13.018751,
+  "errors": [],
+  "finished_at_utc": "2026-10-26T15:49:26.549363+00:00",
+  "frame_count": 260,
+  "ifindex": 150,
+  "interface": "enp2s0f0",
+  "kind": "tunnel-wire-emit",
+  "local_lease": {
+    "deadline_monotonic": 470180.16682729,
+    "estimated_send_seconds": 12.95,
+    "ifindex": 150,
+    "marker": "tn20261026w2",
+    "path": "/tmp/traflens-tunnel-link-tn20261026w2/lease.json",
+    "remote_readiness": "Coordinator must separately prove dev-79 ready through send completion",
+    "verified_at_utc": "2026-10-26T15:49:13.530647+00:00"
+  },
+  "pps": 20,
+  "real_http_service": false,
+  "sent_frames": 260,
+  "started_at_utc": "2026-10-26T15:49:13.530670+00:00",
+  "timeout_seconds": 120
+}

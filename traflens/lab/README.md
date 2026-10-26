@@ -236,3 +236,14 @@ the same before/during/after workload and one restart per run. An earlier
 unfaulted DNS19/20 failure is retained and never counted as a restart failure.
 This is one functional recovery case, not durable exactly-once or throughput
 validation. Preserve failed runs; do not rerun markers or relax expectations.
+
+## Synthetic tunnel wire acceptance
+
+See [the two-host tunnel wire guide](../README-tunnel-wire.md) for the separate
+`tunnels` profile, temporary benchmark /32 leases, capture-before-emit ordering,
+40 marked HTTP/DNS requests across eleven tunnel flavors, and exact L7 plus
+associated L4 metadata checks. The profile uses Mirror mode and skips built-in
+NPB exclusions for ERSPAN III while retaining its strict direct-link BPF and
+resource limits. These synthetic conversations do not run a real HTTP service
+or DNS resolver. Keep failed Local/default-NPB runs beside the corrected run;
+neither raw send counts nor queue observations alone establish acceptance.

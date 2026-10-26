@@ -1,0 +1,16 @@
+{
+  "link": {
+    "ifindex": 150,
+    "ifname": "enp2s0f0",
+    "address": "58:47:ca:7c:78:59",
+    "flags": [
+      "BROADCAST",
+      "MULTICAST",
+      "UP",
+      "LOWER_UP"
+    ],
+    "operstate": "UP"
+  },
+  "bench_addresses": [],
+  "covering_nondefault_routes": []
+}

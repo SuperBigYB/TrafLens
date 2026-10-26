@@ -1,0 +1,10 @@
+{
+  "expected_frames": 260,
+  "received_frames": 0,
+  "ordered_bytes_equal": false,
+  "exact_frame_multiset": false,
+  "scope": "Ethernet frame bytes only; synthetic PCAP timestamps are not emit times",
+  "transmitted_pcap_sha256": "72409ac2965c50fad24c0974384909525b37cca93deadc08e16be14db7130e70",
+  "received_pcap_sha256": "704e5e5b3234433c01fcfd1b20a306e77e985038120492dc53965c3edd38a4ea",
+  "limitation": "Initial capture expired before emit; no packet-loss inference from this empty capture"
+}

@@ -1,0 +1,58 @@
+{
+  "marker": "tn20261026w1",
+  "protocol": 120,
+  "expected_rows": 20,
+  "sql": "SELECT request_resource,request_type,response_code,response_status,response_result FROM l7_flow_log WHERE request_resource LIKE '%tn20261026w1%' AND l7_protocol=120 LIMIT 1001",
+  "attempts": [
+    {
+      "at_utc": "2026-10-26T15:37:08.544002+00:00",
+      "elapsed_seconds": 0.005417,
+      "exact_match": false,
+      "queried_rows": 30,
+      "missing_rows": 14,
+      "unexpected_or_duplicate_rows": 24
+    },
+    {
+      "at_utc": "2026-10-26T15:37:10.568784+00:00",
+      "elapsed_seconds": 0.022743,
+      "exact_match": false,
+      "queried_rows": 30,
+      "missing_rows": 14,
+      "unexpected_or_duplicate_rows": 24
+    },
+    {
+      "at_utc": "2026-10-26T15:37:12.587771+00:00",
+      "elapsed_seconds": 0.016928,
+      "exact_match": false,
+      "queried_rows": 30,
+      "missing_rows": 14,
+      "unexpected_or_duplicate_rows": 24
+    },
+    {
+      "at_utc": "2026-10-26T15:37:14.605448+00:00",
+      "elapsed_seconds": 0.016109,
+      "exact_match": false,
+      "queried_rows": 30,
+      "missing_rows": 14,
+      "unexpected_or_duplicate_rows": 24
+    },
+    {
+      "at_utc": "2026-10-26T15:37:16.624148+00:00",
+      "elapsed_seconds": 0.016645,
+      "exact_match": false,
+      "queried_rows": 30,
+      "missing_rows": 14,
+      "unexpected_or_duplicate_rows": 24
+    },
+    {
+      "at_utc": "2026-10-26T15:37:18.639293+00:00",
+      "elapsed_seconds": 0.014036,
+      "exact_match": false,
+      "queried_rows": 30,
+      "missing_rows": 14,
+      "unexpected_or_duplicate_rows": 24
+    }
+  ],
+  "passed": false,
+  "scope": "Exact unique request/status acceptance; no performance-parity claim"
+}

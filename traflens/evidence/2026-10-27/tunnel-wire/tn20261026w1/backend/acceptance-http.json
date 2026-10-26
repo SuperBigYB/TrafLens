@@ -1,0 +1,139 @@
+{
+  "marker": "tn20261026w1",
+  "protocol": 20,
+  "expected_rows": 20,
+  "sql": "SELECT request_resource,request_type,response_code,response_status FROM l7_flow_log WHERE request_resource LIKE '%tn20261026w1%' AND l7_protocol=20 LIMIT 1001",
+  "attempts": [
+    {
+      "at_utc": "2026-10-26T15:35:19.803535+00:00",
+      "elapsed_seconds": 0.00685,
+      "exact_match": false,
+      "queried_rows": 6,
+      "missing_rows": 14,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:35:21.809936+00:00",
+      "elapsed_seconds": 0.004665,
+      "exact_match": false,
+      "queried_rows": 6,
+      "missing_rows": 14,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:35:23.827420+00:00",
+      "elapsed_seconds": 0.015427,
+      "exact_match": false,
+      "queried_rows": 6,
+      "missing_rows": 14,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:35:25.845685+00:00",
+      "elapsed_seconds": 0.01622,
+      "exact_match": false,
+      "queried_rows": 6,
+      "missing_rows": 14,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:35:27.863485+00:00",
+      "elapsed_seconds": 0.01726,
+      "exact_match": false,
+      "queried_rows": 6,
+      "missing_rows": 14,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:35:29.879642+00:00",
+      "elapsed_seconds": 0.014341,
+      "exact_match": false,
+      "queried_rows": 6,
+      "missing_rows": 14,
+      "unexpected_or_duplicate_rows": 0
+    }
+  ],
+  "passed": false,
+  "final_query": {
+    "OPT_STATUS": "SUCCESS",
+    "DESCRIPTION": "",
+    "result": {
+      "columns": [
+        "request_resource",
+        "request_type",
+        "response_code",
+        "response_status"
+      ],
+      "schemas": [
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "String"
+        },
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "LowCardinality(String)"
+        },
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "Nullable(Int32)"
+        },
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "UInt8"
+        }
+      ],
+      "values": [
+        [
+          "/traflens-tunnel/tn20261026w1/erspan-i/v4/0",
+          "GET",
+          200,
+          0
+        ],
+        [
+          "/traflens-tunnel/tn20261026w1/erspan-i/v6/0",
+          "GET",
+          200,
+          0
+        ],
+        [
+          "/traflens-tunnel/tn20261026w1/erspan-ii/v4/0",
+          "GET",
+          200,
+          0
+        ],
+        [
+          "/traflens-tunnel/tn20261026w1/erspan-ii/v6/0",
+          "GET",
+          200,
+          0
+        ],
+        [
+          "/traflens-tunnel/tn20261026w1/teb/v6/0",
+          "GET",
+          200,
+          0
+        ],
+        [
+          "/traflens-tunnel/tn20261026w1/teb/v4/0",
+          "GET",
+          200,
+          0
+        ]
+      ]
+    },
+    "debug": null
+  },
+  "scope": "Exact unique request/status acceptance; no performance-parity claim"
+}

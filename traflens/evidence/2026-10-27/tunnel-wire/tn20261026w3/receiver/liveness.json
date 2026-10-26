@@ -1,0 +1,86 @@
+{
+  "status": "ok",
+  "version": {
+    "name": "deepflow-agent-ce",
+    "branch": "main",
+    "commit_id": "ff05c646d60df4dfafa26a7572121c97413d62e3",
+    "rev_count": "12751",
+    "compiler": "rustc 1.97.1 (8bab26f4f 2026-07-14)",
+    "compile_time": "2026-10-26 23:02:08",
+    "revision": "main 12751-ff05c646d60df4dfafa26a7572121c97413d62e3"
+  },
+  "uptime_ms": 148132,
+  "failed_components": [],
+  "components": [
+    {
+      "module": "dispatcher",
+      "id": 0,
+      "display_name": "dispatcher mirror",
+      "running": true,
+      "required": true,
+      "timeout_ms": 60000,
+      "last_heartbeat_ago_ms": 38,
+      "last_event": "Heartbeat",
+      "last_location": {
+        "file": "src/dispatcher/mirror_mode_dispatcher.rs",
+        "line": 606
+      }
+    },
+    {
+      "module": "guard",
+      "id": 0,
+      "display_name": "guard",
+      "running": true,
+      "required": true,
+      "timeout_ms": 20000,
+      "last_heartbeat_ago_ms": 7975,
+      "last_event": "Heartbeat",
+      "last_location": {
+        "file": "src/utils/guard.rs",
+        "line": 837
+      }
+    },
+    {
+      "module": "main-loop",
+      "id": 0,
+      "display_name": "main loop",
+      "running": true,
+      "required": true,
+      "timeout_ms": 60000,
+      "last_heartbeat_ago_ms": 7623,
+      "last_event": "Heartbeat",
+      "last_location": {
+        "file": "src/trident.rs",
+        "line": 1004
+      }
+    },
+    {
+      "module": "synchronizer",
+      "id": 0,
+      "display_name": "synchronizer sync",
+      "running": true,
+      "required": false,
+      "timeout_ms": 90000,
+      "last_heartbeat_ago_ms": 7631,
+      "last_event": "Heartbeat",
+      "last_location": {
+        "file": "src/rpc/synchronizer.rs",
+        "line": 1998
+      }
+    },
+    {
+      "module": "synchronizer",
+      "id": 1,
+      "display_name": "synchronizer triggered",
+      "running": true,
+      "required": false,
+      "timeout_ms": 90000,
+      "last_heartbeat_ago_ms": 88090,
+      "last_event": "Heartbeat",
+      "last_location": {
+        "file": "src/rpc/synchronizer.rs",
+        "line": 1383
+      }
+    }
+  ]
+}

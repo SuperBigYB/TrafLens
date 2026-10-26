@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "role": "dev-240",
+  "interface": "enp2s0f0",
+  "mac": "58:47:ca:7c:78:59",
+  "local": "198.18.0.240",
+  "peer": "198.18.0.79",
+  "marker": "tn20261026w1",
+  "seconds": 240,
+  "lease_dir": "/tmp/traflens-tunnel-link-tn20261026w1",
+  "add_argv": [
+    [
+      "ip",
+      "-4",
+      "address",
+      "add",
+      "198.18.0.240/32",
+      "dev",
+      "enp2s0f0",
+      "label",
+      "enp2s0f0:tlens"
+    ],
+    [
+      "ip",
+      "-4",
+      "route",
+      "add",
+      "198.18.0.79/32",
+      "dev",
+      "enp2s0f0",
+      "src",
+      "198.18.0.240",
+      "proto",
+      "static",
+      "metric",
+      "42796",
+      "table",
+      "main"
+    ]
+  ],
+  "pid": 1391329,
+  "started_at_utc": "2026-10-26T15:31:53.339773+00:00",
+  "status": "finished",
+  "ready_at_utc": "2026-10-26T15:31:53.344120+00:00",
+  "deadline_monotonic": 469170.670497872,
+  "interface_identity": {
+    "ifindex": 150,
+    "ifname": "enp2s0f0",
+    "address": "58:47:ca:7c:78:59",
+    "flags": [
+      "BROADCAST",
+      "MULTICAST",
+      "UP",
+      "LOWER_UP"
+    ],
+    "operstate": "UP"
+  },
+  "finished_at_utc": "2026-10-26T15:35:53.367236+00:00",
+  "elapsed_seconds": 240.028,
+  "cleanup_ok": true,
+  "cleanup_errors": [],
+  "address_added": false,
+  "route_added": false,
+  "uncertain_add": null,
+  "error": null
+}

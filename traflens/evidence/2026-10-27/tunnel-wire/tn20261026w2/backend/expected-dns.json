@@ -1,0 +1,146 @@
+{
+  "marker": "tn20261026w2",
+  "protocol": 120,
+  "records": [
+    {
+      "request_resource": "tn20261026w2.erspan-i.v4.0.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_result": "A=198.18.2.2 TTL=60",
+      "response_status": 0
+    },
+    {
+      "request_resource": "tn20261026w2.erspan-i.v6.0.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_result": "A=198.18.2.4 TTL=60",
+      "response_status": 0
+    },
+    {
+      "request_resource": "tn20261026w2.erspan-ii.v4.0.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_result": "A=198.18.2.6 TTL=60",
+      "response_status": 0
+    },
+    {
+      "request_resource": "tn20261026w2.erspan-ii.v6.0.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_result": "A=198.18.2.8 TTL=60",
+      "response_status": 0
+    },
+    {
+      "request_resource": "tn20261026w2.erspan-iii.v4.0.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_result": "A=198.18.2.10 TTL=60",
+      "response_status": 0
+    },
+    {
+      "request_resource": "tn20261026w2.erspan-iii.v6.0.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_result": "A=198.18.2.12 TTL=60",
+      "response_status": 0
+    },
+    {
+      "request_resource": "tn20261026w2.teb.v4.0.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_result": "A=198.18.2.14 TTL=60",
+      "response_status": 0
+    },
+    {
+      "request_resource": "tn20261026w2.teb.v6.0.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_result": "A=198.18.2.16 TTL=60",
+      "response_status": 0
+    },
+    {
+      "request_resource": "tn20261026w2.tencent-v0.v4.0.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_result": "A=198.18.2.18 TTL=60",
+      "response_status": 0
+    },
+    {
+      "request_resource": "tn20261026w2.tencent-v0.v6.0.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_result": "A=198.18.2.20 TTL=60",
+      "response_status": 0
+    },
+    {
+      "request_resource": "tn20261026w2.tencent-v1.v4.0.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_result": "A=198.18.2.22 TTL=60",
+      "response_status": 0
+    },
+    {
+      "request_resource": "tn20261026w2.tencent-v1.v6.0.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_result": "A=198.18.2.24 TTL=60",
+      "response_status": 0
+    },
+    {
+      "request_resource": "tn20261026w2.gpe-ethernet.v4.0.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_result": "A=198.18.2.26 TTL=60",
+      "response_status": 0
+    },
+    {
+      "request_resource": "tn20261026w2.gpe-ethernet.v6.0.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_result": "A=198.18.2.28 TTL=60",
+      "response_status": 0
+    },
+    {
+      "request_resource": "tn20261026w2.gpe-raw-ipv4.v4.0.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_result": "A=198.18.2.30 TTL=60",
+      "response_status": 0
+    },
+    {
+      "request_resource": "tn20261026w2.gpe-raw-ipv6.v6.0.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_result": "A=198.18.2.32 TTL=60",
+      "response_status": 0
+    },
+    {
+      "request_resource": "tn20261026w2.nsh-md1.v4.0.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_result": "A=198.18.2.34 TTL=60",
+      "response_status": 0
+    },
+    {
+      "request_resource": "tn20261026w2.nsh-md1.v6.0.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_result": "A=198.18.2.36 TTL=60",
+      "response_status": 0
+    },
+    {
+      "request_resource": "tn20261026w2.nsh-md2.v4.0.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_result": "A=198.18.2.38 TTL=60",
+      "response_status": 0
+    },
+    {
+      "request_resource": "tn20261026w2.nsh-md2.v6.0.traflens.invalid",
+      "request_type": "A",
+      "response_code": 0,
+      "response_result": "A=198.18.2.40 TTL=60",
+      "response_status": 0
+    }
+  ]
+}

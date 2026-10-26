@@ -1,0 +1,99 @@
+{
+  "recorded_at_utc": "2026-10-26T15:54:14.673647+00:00",
+  "marker": "tn20261026w1",
+  "w1_preserved": true,
+  "actual_application_query": {
+    "http": {
+      "passed": false,
+      "row_count": 6,
+      "flavors": {
+        "erspan-i": {
+          "rows": 2,
+          "successful_sessions": 2
+        },
+        "erspan-ii": {
+          "rows": 2,
+          "successful_sessions": 2
+        },
+        "teb": {
+          "rows": 2,
+          "successful_sessions": 2
+        }
+      }
+    },
+    "dns": {
+      "passed": false,
+      "row_count": 30,
+      "flavors": {
+        "erspan-i": {
+          "rows": 2,
+          "successful_sessions": 2
+        },
+        "erspan-ii": {
+          "rows": 2,
+          "successful_sessions": 2
+        },
+        "teb": {
+          "rows": 2,
+          "successful_sessions": 2
+        },
+        "tencent-v0": {
+          "rows": 4,
+          "successful_sessions": 0
+        },
+        "tencent-v1": {
+          "rows": 4,
+          "successful_sessions": 0
+        },
+        "gpe-ethernet": {
+          "rows": 4,
+          "successful_sessions": 0
+        },
+        "gpe-raw-ipv4": {
+          "rows": 2,
+          "successful_sessions": 0
+        },
+        "gpe-raw-ipv6": {
+          "rows": 2,
+          "successful_sessions": 0
+        },
+        "nsh-md1": {
+          "rows": 4,
+          "successful_sessions": 0
+        },
+        "nsh-md2": {
+          "rows": 4,
+          "successful_sessions": 0
+        }
+      }
+    }
+  },
+  "teb_conclusion": "TEB was present and successful for IPv4/IPv6 HTTP/DNS; the initial interpretation of the six successes was incorrect.",
+  "erspan_iii_conclusion": "ERSPAN-III is absent in both application query results, while every real emitted ERSPAN-III frame passes the current exact production decoder offline.",
+  "decoder_probe": {
+    "total_frames": 260,
+    "decoded_frames": 260,
+    "source_head": "4e1b7d50246ac419e06cc7976062fbe69d01e234",
+    "source_prefix_sha256": "716d98f7408999c92dfdba131cd8406d62679181c22714d3f52f77ed32d6580b",
+    "pcap_sha256": "72409ac2965c50fad24c0974384909525b37cca93deadc08e16be14db7130e70",
+    "no_full_cargo": true
+  },
+  "erspan_iii_builtin_filter": {
+    "source": "agent/src/dispatcher/recv_engine/bpf.rs:787-809 (pcap syntax); :217 (bytecode)",
+    "default_setting": "inputs.cbpf.af_packet.skip_npb_bpf=false",
+    "effect": "The built-in NPB exclusion rejects outerIPv4 GRE protocol0x22eb, even when the additional user filter permits GRE.",
+    "minimal_lab_correction": "Set inputs.cbpf.af_packet.skip_npb_bpf=true; retain the exact outer MAC/IP/GRE-or-4790 user filter and bpf_filter_disabled=false.",
+    "requires_agent_restart": true,
+    "schema_source": "server/agent_config/template.yaml:2070-2087 marks agent_restart; handler.rs:3236"
+  },
+  "retained_tunnel_local_mode": {
+    "confirmed_source": "Local dispatcher derives endpoint-local flags from the fixed one-way outer MACs for retained tunnels. Mirror capture_mode1 has an empty-inventory fallback using(false,false) and one stable pipeline.",
+    "inference": "This matches the retained request/response split into different flows; a new marker in Mirror mode is required to prove resolution."
+  },
+  "actions": {
+    "tracked_source_edited": false,
+    "config_changed": false,
+    "traffic_sent": false,
+    "services_started_or_restarted": false
+  }
+}

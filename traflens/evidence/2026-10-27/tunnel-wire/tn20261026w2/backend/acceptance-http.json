@@ -1,0 +1,347 @@
+{
+  "marker": "tn20261026w2",
+  "protocol": 20,
+  "expected_rows": 20,
+  "sql": "SELECT request_resource,request_type,response_code,response_status FROM l7_flow_log WHERE request_resource LIKE '%tn20261026w2%' AND l7_protocol=20 LIMIT 1001",
+  "attempts": [
+    {
+      "at_utc": "2026-10-26T15:50:29.679158+00:00",
+      "elapsed_seconds": 0.00539,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:31.693522+00:00",
+      "elapsed_seconds": 0.012309,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:33.710160+00:00",
+      "elapsed_seconds": 0.014586,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:35.729794+00:00",
+      "elapsed_seconds": 0.017568,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:37.748039+00:00",
+      "elapsed_seconds": 0.016131,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:39.753795+00:00",
+      "elapsed_seconds": 0.00404,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:41.768651+00:00",
+      "elapsed_seconds": 0.012811,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:43.785782+00:00",
+      "elapsed_seconds": 0.015067,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:45.804877+00:00",
+      "elapsed_seconds": 0.017034,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:47.816364+00:00",
+      "elapsed_seconds": 0.011049,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:49.832463+00:00",
+      "elapsed_seconds": 0.014042,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:51.845096+00:00",
+      "elapsed_seconds": 0.010587,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:53.858428+00:00",
+      "elapsed_seconds": 0.011225,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:55.873875+00:00",
+      "elapsed_seconds": 0.013364,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:57.885744+00:00",
+      "elapsed_seconds": 0.009836,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:59.895733+00:00",
+      "elapsed_seconds": 0.009298,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:51:01.914044+00:00",
+      "elapsed_seconds": 0.01625,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:51:03.929585+00:00",
+      "elapsed_seconds": 0.014986,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:51:05.948415+00:00",
+      "elapsed_seconds": 0.016788,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:51:07.966283+00:00",
+      "elapsed_seconds": 0.016858,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:51:09.978313+00:00",
+      "elapsed_seconds": 0.009924,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:51:11.989482+00:00",
+      "elapsed_seconds": 0.01053,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:51:14.005154+00:00",
+      "elapsed_seconds": 0.014232,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    }
+  ],
+  "passed": false,
+  "final_query": {
+    "OPT_STATUS": "SUCCESS",
+    "DESCRIPTION": "",
+    "result": {
+      "columns": [
+        "request_resource",
+        "request_type",
+        "response_code",
+        "response_status"
+      ],
+      "schemas": [
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "String"
+        },
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "LowCardinality(String)"
+        },
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "Nullable(Int32)"
+        },
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "UInt8"
+        }
+      ],
+      "values": [
+        [
+          "/traflens-tunnel/tn20261026w2/erspan-i/v4/0",
+          "GET",
+          200,
+          0
+        ],
+        [
+          "/traflens-tunnel/tn20261026w2/nsh-md1/v6/0",
+          "GET",
+          200,
+          0
+        ],
+        [
+          "/traflens-tunnel/tn20261026w2/nsh-md2/v6/0",
+          "GET",
+          200,
+          0
+        ],
+        [
+          "/traflens-tunnel/tn20261026w2/nsh-md2/v4/0",
+          "GET",
+          200,
+          0
+        ],
+        [
+          "/traflens-tunnel/tn20261026w2/erspan-i/v6/0",
+          "GET",
+          200,
+          0
+        ],
+        [
+          "/traflens-tunnel/tn20261026w2/erspan-ii/v4/0",
+          "GET",
+          200,
+          0
+        ],
+        [
+          "/traflens-tunnel/tn20261026w2/erspan-ii/v6/0",
+          "GET",
+          200,
+          0
+        ],
+        [
+          "/traflens-tunnel/tn20261026w2/teb/v6/0",
+          "GET",
+          200,
+          0
+        ],
+        [
+          "/traflens-tunnel/tn20261026w2/teb/v4/0",
+          "GET",
+          200,
+          0
+        ],
+        [
+          "/traflens-tunnel/tn20261026w2/tencent-v0/v4/0",
+          "GET",
+          200,
+          0
+        ],
+        [
+          "/traflens-tunnel/tn20261026w2/tencent-v0/v6/0",
+          "GET",
+          200,
+          0
+        ],
+        [
+          "/traflens-tunnel/tn20261026w2/tencent-v1/v4/0",
+          "GET",
+          200,
+          0
+        ],
+        [
+          "/traflens-tunnel/tn20261026w2/tencent-v1/v6/0",
+          "GET",
+          200,
+          0
+        ],
+        [
+          "/traflens-tunnel/tn20261026w2/gpe-ethernet/v6/0",
+          "GET",
+          200,
+          0
+        ],
+        [
+          "/traflens-tunnel/tn20261026w2/gpe-ethernet/v4/0",
+          "GET",
+          200,
+          0
+        ],
+        [
+          "/traflens-tunnel/tn20261026w2/gpe-raw-ipv4/v4/0",
+          "GET",
+          200,
+          0
+        ],
+        [
+          "/traflens-tunnel/tn20261026w2/gpe-raw-ipv6/v6/0",
+          "GET",
+          200,
+          0
+        ],
+        [
+          "/traflens-tunnel/tn20261026w2/nsh-md1/v4/0",
+          "GET",
+          200,
+          0
+        ]
+      ]
+    },
+    "debug": null
+  },
+  "scope": "Exact unique request/status acceptance; no performance-parity claim"
+}

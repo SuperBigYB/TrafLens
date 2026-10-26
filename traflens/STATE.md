@@ -1,4 +1,4 @@
-# TrafLens development checkpoint - 2026-10-26
+# TrafLens development checkpoint - 2026-10-27
 
 The objective remains ongoing: validate and extend DeepFlow functionality and
 performance. Read this file, `git status --short --branch`, and the latest evidence
@@ -240,13 +240,46 @@ process are separate from successful collection and product parity.
   stopped. Full native suite/live tracing and actual tunneled traffic remain
   separate pending gates.
 
+## Actual tunnel-wire checkpoint - 2026-10-27
+
+- New bounded link/traffic/capture/acceptance helpers validate eleven supported
+  tunnel layouts with IPv4/IPv6 inner HTTP and DNS on the first direct link.
+  The final tn20261026w3 case sends 260 frames at 20 pps: 20 HTTP and 20 DNS
+  synthetic conversations, not a real HTTP service or DNS resolver workload.
+- Actual receiver PCAP contains all 260 frames in identical byte order to the
+  generated frames, with zero kernel capture drops. The Agent observes 80 app
+  records and sends 40 complete Sessions. Both exact protocol multisets match
+  twice, including DNS answer address and TTL60. All 40 L7 records also match
+  inner endpoints/types and their persisted L4 tunnel metadata/closure twice.
+- ERSPAN/TEB intentionally trim metadata (L7 tunnel_type zero); Tencent GRE
+  retains type3 and GPE/NSH type5, tier1, full key/VNI and the original outer
+  transport addresses. Both inner directions are mirrored 240-to-79; the outer
+  response addresses must not be reversed. L7 has no tunnel ID/outer-IP fields.
+- Retained failures remain explicit: w1 Local mode splits retained-tunnel
+  request/response flows; its capture expired before emission and is not loss
+  evidence. w2 Mirror merges these but only gives HTTP18/20 and DNS18/20 because
+  default NPB BPF excludes ERSPANIII before decoding. Final lab-only mode1 with
+  skip_npb_bpf=true fixes the configuration, retaining strict full BPF/MAC/IP
+  scope and all CPU/memory/output limits. No Rust production default is changed.
+- Both 240-second link leases clean their exact bench-only /32 addresses and
+  peer routes in all three cases; final cleanup succeeds with no unknown state.
+  The bounded Agent and observers are stopped. Only the three owned lab
+  containers remain; unrelated containers and management routes are preserved.
+- Runtime packet source ff05c646d and Server4b2799823 are verified by version
+  and binary hashes. All119 lab helper tests pass, including real offline BPF,
+  independent wire/checksum/TCP/DNS vectors and strict metadata counterexamples.
+  CI installs tcpdump so the offline BPF gate cannot be skipped for its absence.
+  Sources, raw PCAPs/queries, failures and exact hashes are under
+  evidence/2026-10-27/tunnel-wire/. See README-tunnel-wire.md for commands.
+
 ## Remaining validation and priorities
 
 1. Design persistence/server-side idempotency for ambiguous commits and longer
    outages before replaying supplied blocks. Extend recovery coverage to DDL,
    queue pressure and process restart, and investigate unfaulted cold/idle DNS
    first-record loss independently of the passed warm restart experiment.
-2. Add real tunneled HTTP/DNS acceptance on the direct link; extend protocol
+2. Extend tunnel acceptance to malformed/lost/reordered traffic, real services
+   and sustained workloads; extend protocol
    acceptance to a real MySQL database, DNS error/truncation/TCP,
    reconnects, TLS, loss, agent/server restart and sustained workloads.
 3. Resolve the remaining 12 packet-library failures: segmentation/reassembly
@@ -269,7 +302,7 @@ supervisors expire after 15 minutes or three exits, and stop only their own chil
 process group. Runtime secrets/logs stay ignored; sanitize evidence before commit.
 Keep the hourly task active: full feature/performance parity is not achieved.
 
-Latest completed CI before this tunnel checkpoint: both jobs passed for
-`52fa57a8b` in <https://github.com/SuperBigYB/TrafLens/actions/runs/40334004947>.
+Latest completed CI before this wire checkpoint: both jobs passed for
+`4e1b7d502` in <https://github.com/SuperBigYB/TrafLens/actions/runs/40346563645>.
 Verify the new head's actual CI result; selected gates do not replace the known
 full-suite failures. See the tunnel and writer READMEs and their evidence.

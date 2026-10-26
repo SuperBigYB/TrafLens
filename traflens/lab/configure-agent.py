@@ -68,6 +68,28 @@ def profile_config(profile):
         request_log["application_protocol_inference"]["enabled_protocols"] = ["HTTP", "DNS", "MySQL"]
         request_log["filters"]["port_number_prefilters"] = {
             "HTTP": "18080", "DNS": "18053", "MySQL": "18060"}
+    elif profile == "tunnels":
+        # Retained tunnels use the outer MACs; mirror mode keeps both L2 ends
+        # neutral so the inner request and response share one flow.
+        config["inputs"]["cbpf"]["common"]["capture_mode"] = 1
+        # Lab-only: built-in NPB exclusions suppress ERSPAN III (GRE 0x22eb).
+        # Keep BPF enabled and retain the exact direct-link identity filter.
+        config["inputs"]["cbpf"]["af_packet"]["skip_npb_bpf"] = True
+        config["inputs"]["cbpf"]["af_packet"]["bpf_filter_disabled"] = False
+        config["inputs"]["cbpf"]["af_packet"]["extra_bpf_filter"] = (
+            "ether src 58:47:ca:7c:78:59 and ether dst 58:47:ca:77:66:e2 "
+            "and ip src 198.18.0.240 and ip dst 198.18.0.79 "
+            "and (ip proto 47 or udp dst port 4790)")
+        # Nested VXLAN/IPIP/Geneve remain enabled; the BPF admits only the
+        # dedicated outer GRE/GPE wire vectors on the direct lab link.
+        config["inputs"]["cbpf"]["preprocess"] = {
+            "tunnel_decap_protocols": [1, 2, 3, 4, 5],
+            "tunnel_trim_protocols": ["ERSPAN", "TEB"],
+        }
+        request_log = config["processors"]["request_log"]
+        request_log["application_protocol_inference"]["enabled_protocols"] = ["HTTP", "DNS"]
+        request_log["filters"]["port_number_prefilters"] = {"HTTP": "18080", "DNS": "18053"}
+        request_log["filters"]["tag_filters"] = {"HTTP": [], "DNS": []}
     elif profile != "http":
         raise ValueError("Unknown packet smoke profile")
     return config
@@ -76,7 +98,7 @@ def profile_config(profile):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=pathlib.Path, default=pathlib.Path("/tmp/traflens-lab-20261026"))
-    parser.add_argument("--profile", choices=("http", "protocols"), default="http")
+    parser.add_argument("--profile", choices=("http", "protocols", "tunnels"), default="http")
     parser.add_argument("--update-owned-agent", action="store_true",
                         help="After stopping the lab Agent, allow its exact registered dev-79 identity")
     args = parser.parse_args()

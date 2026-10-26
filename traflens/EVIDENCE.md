@@ -93,3 +93,14 @@ version acceptance, Git 1.8.3.1 compatibility diagnosis, three real repository
 watcher probes, and the final exact ff05c646d Release/54 native tunnel passes.
 Both final packet/native version probes match source; source status is clean.
 No live tunnel, eBPF-runtime or sustained performance validation is implied.
+
+
+`evidence/2026-10-27/tunnel-wire/` records the three-stage real direct-link
+synthetic tunnel acceptance. It preserves the Local-mode failure and incomplete
+first capture, Mirror-mode 18/20 per-protocol failure due to NPB ERSPANIII BPF,
+then exact HTTP20/DNS20 and complete associated L4 metadata success. Final260
+received frame bytes match the generated frame sequence; kernel capture drops
+are zero. Three-case lease cleanup and stopped observers/Agent are verified.
+The119 helper tests and precise source/binary hashes accompany raw PCAP, expected
+records, queries and traces. Synthetic conversations, low rate and selected
+protocols do not establish real-service, loss/reorder, eBPF or performance parity.

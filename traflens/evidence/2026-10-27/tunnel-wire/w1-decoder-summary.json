@@ -1,0 +1,996 @@
+{
+  "source_head": "4e1b7d50246ac419e06cc7976062fbe69d01e234",
+  "production_prefix_sha256": "716d98f7408999c92dfdba131cd8406d62679181c22714d3f52f77ed32d6580b",
+  "pcap_sha256": "72409ac2965c50fad24c0974384909525b37cca93deadc08e16be14db7130e70",
+  "method": "Verbatim current production common prefix plus current production tunnel crate built with standalone rustc; existing dependency rlibs; no fullCargo/no source edits/no traffic",
+  "cached_dependency_rlibs": {
+    "public": "agent/target/debug/deps/libpublic-72984bcd77b619c7.rlib",
+    "serde": "agent/target/debug/deps/libserde-c953c97583b93d13.rlib",
+    "num_enum": "agent/target/debug/deps/libnum_enum-a2ca775ff8695f85.rlib",
+    "log": "agent/target/debug/deps/liblog-71f8d07c857d210d.rlib"
+  },
+  "decoded_frames": 260,
+  "total_frames": 260,
+  "requests": [
+    {
+      "flavor": "erspan-i",
+      "ip_version": 4,
+      "protocol": 20,
+      "resource": "/traflens-tunnel/tn20261026w1/erspan-i/v4/0",
+      "all_frames_decode": true,
+      "offsets": [
+        24
+      ],
+      "ids": [
+        0
+      ],
+      "types": [
+        "Erspan"
+      ],
+      "frame_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "flavor": "erspan-i",
+      "ip_version": 4,
+      "protocol": 120,
+      "resource": "tn20261026w1.erspan-i.v4.0.traflens.invalid",
+      "all_frames_decode": true,
+      "offsets": [
+        24
+      ],
+      "ids": [
+        0
+      ],
+      "types": [
+        "Erspan"
+      ],
+      "frame_indices": [
+        11,
+        12
+      ]
+    },
+    {
+      "flavor": "erspan-i",
+      "ip_version": 6,
+      "protocol": 20,
+      "resource": "/traflens-tunnel/tn20261026w1/erspan-i/v6/0",
+      "all_frames_decode": true,
+      "offsets": [
+        24
+      ],
+      "ids": [
+        0
+      ],
+      "types": [
+        "Erspan"
+      ],
+      "frame_indices": [
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ]
+    },
+    {
+      "flavor": "erspan-i",
+      "ip_version": 6,
+      "protocol": 120,
+      "resource": "tn20261026w1.erspan-i.v6.0.traflens.invalid",
+      "all_frames_decode": true,
+      "offsets": [
+        24
+      ],
+      "ids": [
+        0
+      ],
+      "types": [
+        "Erspan"
+      ],
+      "frame_indices": [
+        24,
+        25
+      ]
+    },
+    {
+      "flavor": "erspan-ii",
+      "ip_version": 4,
+      "protocol": 20,
+      "resource": "/traflens-tunnel/tn20261026w1/erspan-ii/v4/0",
+      "all_frames_decode": true,
+      "offsets": [
+        36
+      ],
+      "ids": [
+        298
+      ],
+      "types": [
+        "Erspan"
+      ],
+      "frame_indices": [
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36
+      ]
+    },
+    {
+      "flavor": "erspan-ii",
+      "ip_version": 4,
+      "protocol": 120,
+      "resource": "tn20261026w1.erspan-ii.v4.0.traflens.invalid",
+      "all_frames_decode": true,
+      "offsets": [
+        36
+      ],
+      "ids": [
+        298
+      ],
+      "types": [
+        "Erspan"
+      ],
+      "frame_indices": [
+        37,
+        38
+      ]
+    },
+    {
+      "flavor": "erspan-ii",
+      "ip_version": 6,
+      "protocol": 20,
+      "resource": "/traflens-tunnel/tn20261026w1/erspan-ii/v6/0",
+      "all_frames_decode": true,
+      "offsets": [
+        36
+      ],
+      "ids": [
+        298
+      ],
+      "types": [
+        "Erspan"
+      ],
+      "frame_indices": [
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49
+      ]
+    },
+    {
+      "flavor": "erspan-ii",
+      "ip_version": 6,
+      "protocol": 120,
+      "resource": "tn20261026w1.erspan-ii.v6.0.traflens.invalid",
+      "all_frames_decode": true,
+      "offsets": [
+        36
+      ],
+      "ids": [
+        298
+      ],
+      "types": [
+        "Erspan"
+      ],
+      "frame_indices": [
+        50,
+        51
+      ]
+    },
+    {
+      "flavor": "erspan-iii",
+      "ip_version": 4,
+      "protocol": 20,
+      "resource": "/traflens-tunnel/tn20261026w1/erspan-iii/v4/0",
+      "all_frames_decode": true,
+      "offsets": [
+        40
+      ],
+      "ids": [
+        341
+      ],
+      "types": [
+        "Erspan"
+      ],
+      "frame_indices": [
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62
+      ]
+    },
+    {
+      "flavor": "erspan-iii",
+      "ip_version": 4,
+      "protocol": 120,
+      "resource": "tn20261026w1.erspan-iii.v4.0.traflens.invalid",
+      "all_frames_decode": true,
+      "offsets": [
+        40
+      ],
+      "ids": [
+        341
+      ],
+      "types": [
+        "Erspan"
+      ],
+      "frame_indices": [
+        63,
+        64
+      ]
+    },
+    {
+      "flavor": "erspan-iii",
+      "ip_version": 6,
+      "protocol": 20,
+      "resource": "/traflens-tunnel/tn20261026w1/erspan-iii/v6/0",
+      "all_frames_decode": true,
+      "offsets": [
+        40
+      ],
+      "ids": [
+        341
+      ],
+      "types": [
+        "Erspan"
+      ],
+      "frame_indices": [
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75
+      ]
+    },
+    {
+      "flavor": "erspan-iii",
+      "ip_version": 6,
+      "protocol": 120,
+      "resource": "tn20261026w1.erspan-iii.v6.0.traflens.invalid",
+      "all_frames_decode": true,
+      "offsets": [
+        40
+      ],
+      "ids": [
+        341
+      ],
+      "types": [
+        "Erspan"
+      ],
+      "frame_indices": [
+        76,
+        77
+      ]
+    },
+    {
+      "flavor": "teb",
+      "ip_version": 4,
+      "protocol": 20,
+      "resource": "/traflens-tunnel/tn20261026w1/teb/v4/0",
+      "all_frames_decode": true,
+      "offsets": [
+        28
+      ],
+      "ids": [
+        305441741
+      ],
+      "types": [
+        "Teb"
+      ],
+      "frame_indices": [
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88
+      ]
+    },
+    {
+      "flavor": "teb",
+      "ip_version": 4,
+      "protocol": 120,
+      "resource": "tn20261026w1.teb.v4.0.traflens.invalid",
+      "all_frames_decode": true,
+      "offsets": [
+        28
+      ],
+      "ids": [
+        305441741
+      ],
+      "types": [
+        "Teb"
+      ],
+      "frame_indices": [
+        89,
+        90
+      ]
+    },
+    {
+      "flavor": "teb",
+      "ip_version": 6,
+      "protocol": 20,
+      "resource": "/traflens-tunnel/tn20261026w1/teb/v6/0",
+      "all_frames_decode": true,
+      "offsets": [
+        28
+      ],
+      "ids": [
+        305441741
+      ],
+      "types": [
+        "Teb"
+      ],
+      "frame_indices": [
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101
+      ]
+    },
+    {
+      "flavor": "teb",
+      "ip_version": 6,
+      "protocol": 120,
+      "resource": "tn20261026w1.teb.v6.0.traflens.invalid",
+      "all_frames_decode": true,
+      "offsets": [
+        28
+      ],
+      "ids": [
+        305441741
+      ],
+      "types": [
+        "Teb"
+      ],
+      "frame_indices": [
+        102,
+        103
+      ]
+    },
+    {
+      "flavor": "tencent-v0",
+      "ip_version": 4,
+      "protocol": 20,
+      "resource": "/traflens-tunnel/tn20261026w1/tencent-v0/v4/0",
+      "all_frames_decode": true,
+      "offsets": [
+        14
+      ],
+      "ids": [
+        66181
+      ],
+      "types": [
+        "TencentGre"
+      ],
+      "frame_indices": [
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114
+      ]
+    },
+    {
+      "flavor": "tencent-v0",
+      "ip_version": 4,
+      "protocol": 120,
+      "resource": "tn20261026w1.tencent-v0.v4.0.traflens.invalid",
+      "all_frames_decode": true,
+      "offsets": [
+        14
+      ],
+      "ids": [
+        66181
+      ],
+      "types": [
+        "TencentGre"
+      ],
+      "frame_indices": [
+        115,
+        116
+      ]
+    },
+    {
+      "flavor": "tencent-v0",
+      "ip_version": 6,
+      "protocol": 20,
+      "resource": "/traflens-tunnel/tn20261026w1/tencent-v0/v6/0",
+      "all_frames_decode": true,
+      "offsets": [
+        14
+      ],
+      "ids": [
+        66181
+      ],
+      "types": [
+        "TencentGre"
+      ],
+      "frame_indices": [
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127
+      ]
+    },
+    {
+      "flavor": "tencent-v0",
+      "ip_version": 6,
+      "protocol": 120,
+      "resource": "tn20261026w1.tencent-v0.v6.0.traflens.invalid",
+      "all_frames_decode": true,
+      "offsets": [
+        14
+      ],
+      "ids": [
+        66181
+      ],
+      "types": [
+        "TencentGre"
+      ],
+      "frame_indices": [
+        128,
+        129
+      ]
+    },
+    {
+      "flavor": "tencent-v1",
+      "ip_version": 4,
+      "protocol": 20,
+      "resource": "/traflens-tunnel/tn20261026w1/tencent-v1/v4/0",
+      "all_frames_decode": true,
+      "offsets": [
+        18
+      ],
+      "ids": [
+        2596016692
+      ],
+      "types": [
+        "TencentGre"
+      ],
+      "frame_indices": [
+        130,
+        131,
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138,
+        139,
+        140
+      ]
+    },
+    {
+      "flavor": "tencent-v1",
+      "ip_version": 4,
+      "protocol": 120,
+      "resource": "tn20261026w1.tencent-v1.v4.0.traflens.invalid",
+      "all_frames_decode": true,
+      "offsets": [
+        18
+      ],
+      "ids": [
+        2596016692
+      ],
+      "types": [
+        "TencentGre"
+      ],
+      "frame_indices": [
+        141,
+        142
+      ]
+    },
+    {
+      "flavor": "tencent-v1",
+      "ip_version": 6,
+      "protocol": 20,
+      "resource": "/traflens-tunnel/tn20261026w1/tencent-v1/v6/0",
+      "all_frames_decode": true,
+      "offsets": [
+        18
+      ],
+      "ids": [
+        2596016692
+      ],
+      "types": [
+        "TencentGre"
+      ],
+      "frame_indices": [
+        143,
+        144,
+        145,
+        146,
+        147,
+        148,
+        149,
+        150,
+        151,
+        152,
+        153
+      ]
+    },
+    {
+      "flavor": "tencent-v1",
+      "ip_version": 6,
+      "protocol": 120,
+      "resource": "tn20261026w1.tencent-v1.v6.0.traflens.invalid",
+      "all_frames_decode": true,
+      "offsets": [
+        18
+      ],
+      "ids": [
+        2596016692
+      ],
+      "types": [
+        "TencentGre"
+      ],
+      "frame_indices": [
+        154,
+        155
+      ]
+    },
+    {
+      "flavor": "gpe-ethernet",
+      "ip_version": 4,
+      "protocol": 20,
+      "resource": "/traflens-tunnel/tn20261026w1/gpe-ethernet/v4/0",
+      "all_frames_decode": true,
+      "offsets": [
+        36
+      ],
+      "ids": [
+        1193046
+      ],
+      "types": [
+        "VxlanNsh"
+      ],
+      "frame_indices": [
+        156,
+        157,
+        158,
+        159,
+        160,
+        161,
+        162,
+        163,
+        164,
+        165,
+        166
+      ]
+    },
+    {
+      "flavor": "gpe-ethernet",
+      "ip_version": 4,
+      "protocol": 120,
+      "resource": "tn20261026w1.gpe-ethernet.v4.0.traflens.invalid",
+      "all_frames_decode": true,
+      "offsets": [
+        36
+      ],
+      "ids": [
+        1193046
+      ],
+      "types": [
+        "VxlanNsh"
+      ],
+      "frame_indices": [
+        167,
+        168
+      ]
+    },
+    {
+      "flavor": "gpe-ethernet",
+      "ip_version": 6,
+      "protocol": 20,
+      "resource": "/traflens-tunnel/tn20261026w1/gpe-ethernet/v6/0",
+      "all_frames_decode": true,
+      "offsets": [
+        36
+      ],
+      "ids": [
+        1193046
+      ],
+      "types": [
+        "VxlanNsh"
+      ],
+      "frame_indices": [
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        175,
+        176,
+        177,
+        178,
+        179
+      ]
+    },
+    {
+      "flavor": "gpe-ethernet",
+      "ip_version": 6,
+      "protocol": 120,
+      "resource": "tn20261026w1.gpe-ethernet.v6.0.traflens.invalid",
+      "all_frames_decode": true,
+      "offsets": [
+        36
+      ],
+      "ids": [
+        1193046
+      ],
+      "types": [
+        "VxlanNsh"
+      ],
+      "frame_indices": [
+        180,
+        181
+      ]
+    },
+    {
+      "flavor": "gpe-raw-ipv4",
+      "ip_version": 4,
+      "protocol": 20,
+      "resource": "/traflens-tunnel/tn20261026w1/gpe-raw-ipv4/v4/0",
+      "all_frames_decode": true,
+      "offsets": [
+        22
+      ],
+      "ids": [
+        1193047
+      ],
+      "types": [
+        "VxlanNsh"
+      ],
+      "frame_indices": [
+        182,
+        183,
+        184,
+        185,
+        186,
+        187,
+        188,
+        189,
+        190,
+        191,
+        192
+      ]
+    },
+    {
+      "flavor": "gpe-raw-ipv4",
+      "ip_version": 4,
+      "protocol": 120,
+      "resource": "tn20261026w1.gpe-raw-ipv4.v4.0.traflens.invalid",
+      "all_frames_decode": true,
+      "offsets": [
+        22
+      ],
+      "ids": [
+        1193047
+      ],
+      "types": [
+        "VxlanNsh"
+      ],
+      "frame_indices": [
+        193,
+        194
+      ]
+    },
+    {
+      "flavor": "gpe-raw-ipv6",
+      "ip_version": 6,
+      "protocol": 20,
+      "resource": "/traflens-tunnel/tn20261026w1/gpe-raw-ipv6/v6/0",
+      "all_frames_decode": true,
+      "offsets": [
+        22
+      ],
+      "ids": [
+        1193048
+      ],
+      "types": [
+        "VxlanNsh"
+      ],
+      "frame_indices": [
+        195,
+        196,
+        197,
+        198,
+        199,
+        200,
+        201,
+        202,
+        203,
+        204,
+        205
+      ]
+    },
+    {
+      "flavor": "gpe-raw-ipv6",
+      "ip_version": 6,
+      "protocol": 120,
+      "resource": "tn20261026w1.gpe-raw-ipv6.v6.0.traflens.invalid",
+      "all_frames_decode": true,
+      "offsets": [
+        22
+      ],
+      "ids": [
+        1193048
+      ],
+      "types": [
+        "VxlanNsh"
+      ],
+      "frame_indices": [
+        206,
+        207
+      ]
+    },
+    {
+      "flavor": "nsh-md1",
+      "ip_version": 4,
+      "protocol": 20,
+      "resource": "/traflens-tunnel/tn20261026w1/nsh-md1/v4/0",
+      "all_frames_decode": true,
+      "offsets": [
+        46
+      ],
+      "ids": [
+        1193049
+      ],
+      "types": [
+        "VxlanNsh"
+      ],
+      "frame_indices": [
+        208,
+        209,
+        210,
+        211,
+        212,
+        213,
+        214,
+        215,
+        216,
+        217,
+        218
+      ]
+    },
+    {
+      "flavor": "nsh-md1",
+      "ip_version": 4,
+      "protocol": 120,
+      "resource": "tn20261026w1.nsh-md1.v4.0.traflens.invalid",
+      "all_frames_decode": true,
+      "offsets": [
+        46
+      ],
+      "ids": [
+        1193049
+      ],
+      "types": [
+        "VxlanNsh"
+      ],
+      "frame_indices": [
+        219,
+        220
+      ]
+    },
+    {
+      "flavor": "nsh-md1",
+      "ip_version": 6,
+      "protocol": 20,
+      "resource": "/traflens-tunnel/tn20261026w1/nsh-md1/v6/0",
+      "all_frames_decode": true,
+      "offsets": [
+        46
+      ],
+      "ids": [
+        1193049
+      ],
+      "types": [
+        "VxlanNsh"
+      ],
+      "frame_indices": [
+        221,
+        222,
+        223,
+        224,
+        225,
+        226,
+        227,
+        228,
+        229,
+        230,
+        231
+      ]
+    },
+    {
+      "flavor": "nsh-md1",
+      "ip_version": 6,
+      "protocol": 120,
+      "resource": "tn20261026w1.nsh-md1.v6.0.traflens.invalid",
+      "all_frames_decode": true,
+      "offsets": [
+        46
+      ],
+      "ids": [
+        1193049
+      ],
+      "types": [
+        "VxlanNsh"
+      ],
+      "frame_indices": [
+        232,
+        233
+      ]
+    },
+    {
+      "flavor": "nsh-md2",
+      "ip_version": 4,
+      "protocol": 20,
+      "resource": "/traflens-tunnel/tn20261026w1/nsh-md2/v4/0",
+      "all_frames_decode": true,
+      "offsets": [
+        52
+      ],
+      "ids": [
+        1193050
+      ],
+      "types": [
+        "VxlanNsh"
+      ],
+      "frame_indices": [
+        234,
+        235,
+        236,
+        237,
+        238,
+        239,
+        240,
+        241,
+        242,
+        243,
+        244
+      ]
+    },
+    {
+      "flavor": "nsh-md2",
+      "ip_version": 4,
+      "protocol": 120,
+      "resource": "tn20261026w1.nsh-md2.v4.0.traflens.invalid",
+      "all_frames_decode": true,
+      "offsets": [
+        52
+      ],
+      "ids": [
+        1193050
+      ],
+      "types": [
+        "VxlanNsh"
+      ],
+      "frame_indices": [
+        245,
+        246
+      ]
+    },
+    {
+      "flavor": "nsh-md2",
+      "ip_version": 6,
+      "protocol": 20,
+      "resource": "/traflens-tunnel/tn20261026w1/nsh-md2/v6/0",
+      "all_frames_decode": true,
+      "offsets": [
+        52
+      ],
+      "ids": [
+        1193050
+      ],
+      "types": [
+        "VxlanNsh"
+      ],
+      "frame_indices": [
+        247,
+        248,
+        249,
+        250,
+        251,
+        252,
+        253,
+        254,
+        255,
+        256,
+        257
+      ]
+    },
+    {
+      "flavor": "nsh-md2",
+      "ip_version": 6,
+      "protocol": 120,
+      "resource": "tn20261026w1.nsh-md2.v6.0.traflens.invalid",
+      "all_frames_decode": true,
+      "offsets": [
+        52
+      ],
+      "ids": [
+        1193050
+      ],
+      "types": [
+        "VxlanNsh"
+      ],
+      "frame_indices": [
+        258,
+        259
+      ]
+    }
+  ]
+}

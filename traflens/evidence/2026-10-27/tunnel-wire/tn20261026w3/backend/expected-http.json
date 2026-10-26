@@ -1,0 +1,126 @@
+{
+  "marker": "tn20261026w3",
+  "protocol": 20,
+  "records": [
+    {
+      "request_resource": "/traflens-tunnel/tn20261026w3/erspan-i/v4/0",
+      "request_type": "GET",
+      "response_code": 200,
+      "response_status": 0
+    },
+    {
+      "request_resource": "/traflens-tunnel/tn20261026w3/erspan-i/v6/0",
+      "request_type": "GET",
+      "response_code": 200,
+      "response_status": 0
+    },
+    {
+      "request_resource": "/traflens-tunnel/tn20261026w3/erspan-ii/v4/0",
+      "request_type": "GET",
+      "response_code": 200,
+      "response_status": 0
+    },
+    {
+      "request_resource": "/traflens-tunnel/tn20261026w3/erspan-ii/v6/0",
+      "request_type": "GET",
+      "response_code": 200,
+      "response_status": 0
+    },
+    {
+      "request_resource": "/traflens-tunnel/tn20261026w3/erspan-iii/v4/0",
+      "request_type": "GET",
+      "response_code": 200,
+      "response_status": 0
+    },
+    {
+      "request_resource": "/traflens-tunnel/tn20261026w3/erspan-iii/v6/0",
+      "request_type": "GET",
+      "response_code": 200,
+      "response_status": 0
+    },
+    {
+      "request_resource": "/traflens-tunnel/tn20261026w3/teb/v4/0",
+      "request_type": "GET",
+      "response_code": 200,
+      "response_status": 0
+    },
+    {
+      "request_resource": "/traflens-tunnel/tn20261026w3/teb/v6/0",
+      "request_type": "GET",
+      "response_code": 200,
+      "response_status": 0
+    },
+    {
+      "request_resource": "/traflens-tunnel/tn20261026w3/tencent-v0/v4/0",
+      "request_type": "GET",
+      "response_code": 200,
+      "response_status": 0
+    },
+    {
+      "request_resource": "/traflens-tunnel/tn20261026w3/tencent-v0/v6/0",
+      "request_type": "GET",
+      "response_code": 200,
+      "response_status": 0
+    },
+    {
+      "request_resource": "/traflens-tunnel/tn20261026w3/tencent-v1/v4/0",
+      "request_type": "GET",
+      "response_code": 200,
+      "response_status": 0
+    },
+    {
+      "request_resource": "/traflens-tunnel/tn20261026w3/tencent-v1/v6/0",
+      "request_type": "GET",
+      "response_code": 200,
+      "response_status": 0
+    },
+    {
+      "request_resource": "/traflens-tunnel/tn20261026w3/gpe-ethernet/v4/0",
+      "request_type": "GET",
+      "response_code": 200,
+      "response_status": 0
+    },
+    {
+      "request_resource": "/traflens-tunnel/tn20261026w3/gpe-ethernet/v6/0",
+      "request_type": "GET",
+      "response_code": 200,
+      "response_status": 0
+    },
+    {
+      "request_resource": "/traflens-tunnel/tn20261026w3/gpe-raw-ipv4/v4/0",
+      "request_type": "GET",
+      "response_code": 200,
+      "response_status": 0
+    },
+    {
+      "request_resource": "/traflens-tunnel/tn20261026w3/gpe-raw-ipv6/v6/0",
+      "request_type": "GET",
+      "response_code": 200,
+      "response_status": 0
+    },
+    {
+      "request_resource": "/traflens-tunnel/tn20261026w3/nsh-md1/v4/0",
+      "request_type": "GET",
+      "response_code": 200,
+      "response_status": 0
+    },
+    {
+      "request_resource": "/traflens-tunnel/tn20261026w3/nsh-md1/v6/0",
+      "request_type": "GET",
+      "response_code": 200,
+      "response_status": 0
+    },
+    {
+      "request_resource": "/traflens-tunnel/tn20261026w3/nsh-md2/v4/0",
+      "request_type": "GET",
+      "response_code": 200,
+      "response_status": 0
+    },
+    {
+      "request_resource": "/traflens-tunnel/tn20261026w3/nsh-md2/v6/0",
+      "request_type": "GET",
+      "response_code": 200,
+      "response_status": 0
+    }
+  ]
+}

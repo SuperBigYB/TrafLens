@@ -1,0 +1,373 @@
+{
+  "marker": "tn20261026w2",
+  "protocol": 120,
+  "expected_rows": 20,
+  "sql": "SELECT request_resource,request_type,response_code,response_status,response_result FROM l7_flow_log WHERE request_resource LIKE '%tn20261026w2%' AND l7_protocol=120 LIMIT 1001",
+  "attempts": [
+    {
+      "at_utc": "2026-10-26T15:50:29.676046+00:00",
+      "elapsed_seconds": 0.008062,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:31.693225+00:00",
+      "elapsed_seconds": 0.01512,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:33.710470+00:00",
+      "elapsed_seconds": 0.015203,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:35.730265+00:00",
+      "elapsed_seconds": 0.017728,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:37.747707+00:00",
+      "elapsed_seconds": 0.015383,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:39.753840+00:00",
+      "elapsed_seconds": 0.004567,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:41.769534+00:00",
+      "elapsed_seconds": 0.013647,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:43.785659+00:00",
+      "elapsed_seconds": 0.014059,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:45.803716+00:00",
+      "elapsed_seconds": 0.015998,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:47.816430+00:00",
+      "elapsed_seconds": 0.010638,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:49.832763+00:00",
+      "elapsed_seconds": 0.014277,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:51.845405+00:00",
+      "elapsed_seconds": 0.010594,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:53.856461+00:00",
+      "elapsed_seconds": 0.008979,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:55.869089+00:00",
+      "elapsed_seconds": 0.011779,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:57.884067+00:00",
+      "elapsed_seconds": 0.01476,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:50:59.895732+00:00",
+      "elapsed_seconds": 0.009595,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:51:01.914153+00:00",
+      "elapsed_seconds": 0.016359,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:51:03.929923+00:00",
+      "elapsed_seconds": 0.013702,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:51:05.949217+00:00",
+      "elapsed_seconds": 0.017577,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:51:07.965673+00:00",
+      "elapsed_seconds": 0.016241,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:51:09.978063+00:00",
+      "elapsed_seconds": 0.010758,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:51:11.989784+00:00",
+      "elapsed_seconds": 0.01072,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    },
+    {
+      "at_utc": "2026-10-26T15:51:14.005489+00:00",
+      "elapsed_seconds": 0.013638,
+      "exact_match": false,
+      "queried_rows": 18,
+      "missing_rows": 2,
+      "unexpected_or_duplicate_rows": 0
+    }
+  ],
+  "passed": false,
+  "final_query": {
+    "OPT_STATUS": "SUCCESS",
+    "DESCRIPTION": "",
+    "result": {
+      "columns": [
+        "request_resource",
+        "request_type",
+        "response_code",
+        "response_status",
+        "response_result"
+      ],
+      "schemas": [
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "String"
+        },
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "LowCardinality(String)"
+        },
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "Nullable(Int32)"
+        },
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "UInt8"
+        },
+        {
+          "label_type": "",
+          "pre_as": "",
+          "type": 0,
+          "unit": "",
+          "value_type": "String"
+        }
+      ],
+      "values": [
+        [
+          "tn20261026w2.erspan-i.v4.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.2 TTL=60"
+        ],
+        [
+          "tn20261026w2.erspan-i.v6.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.4 TTL=60"
+        ],
+        [
+          "tn20261026w2.erspan-ii.v4.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.6 TTL=60"
+        ],
+        [
+          "tn20261026w2.erspan-ii.v6.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.8 TTL=60"
+        ],
+        [
+          "tn20261026w2.teb.v4.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.14 TTL=60"
+        ],
+        [
+          "tn20261026w2.teb.v6.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.16 TTL=60"
+        ],
+        [
+          "tn20261026w2.tencent-v0.v4.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.18 TTL=60"
+        ],
+        [
+          "tn20261026w2.tencent-v0.v6.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.20 TTL=60"
+        ],
+        [
+          "tn20261026w2.tencent-v1.v6.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.24 TTL=60"
+        ],
+        [
+          "tn20261026w2.tencent-v1.v4.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.22 TTL=60"
+        ],
+        [
+          "tn20261026w2.gpe-ethernet.v4.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.26 TTL=60"
+        ],
+        [
+          "tn20261026w2.gpe-ethernet.v6.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.28 TTL=60"
+        ],
+        [
+          "tn20261026w2.gpe-raw-ipv4.v4.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.30 TTL=60"
+        ],
+        [
+          "tn20261026w2.gpe-raw-ipv6.v6.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.32 TTL=60"
+        ],
+        [
+          "tn20261026w2.nsh-md1.v4.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.34 TTL=60"
+        ],
+        [
+          "tn20261026w2.nsh-md1.v6.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.36 TTL=60"
+        ],
+        [
+          "tn20261026w2.nsh-md2.v4.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.38 TTL=60"
+        ],
+        [
+          "tn20261026w2.nsh-md2.v6.0.traflens.invalid",
+          "A",
+          0,
+          0,
+          "A=198.18.2.40 TTL=60"
+        ]
+      ]
+    },
+    "debug": null
+  },
+  "scope": "Exact unique request/status acceptance; no performance-parity claim"
+}

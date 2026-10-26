@@ -1,0 +1,20 @@
+{
+  "1-tagged-flow-to-app-protocol-logs": {
+    "debug_items": 64,
+    "debug_bytes": 111603,
+    "acknowledged": true,
+    "errors": []
+  },
+  "1-tagged-flow-to-quadruple-generator": {
+    "debug_items": 135,
+    "debug_bytes": 414051,
+    "acknowledged": true,
+    "errors": []
+  },
+  "2-protolog-to-collector-sender": {
+    "debug_items": 26,
+    "debug_bytes": 42776,
+    "acknowledged": true,
+    "errors": []
+  }
+}
