@@ -45,6 +45,16 @@ jobs:
       - name: Test host preflight tooling
         run: make -C traflens test
 
+      - name: Test bounded HTTP workload with the race detector
+        working-directory: traflens/lab/http-load
+        env:
+          GOTOOLCHAIN: local
+          GOWORK: off
+        run: |
+          go test -race -count=1 -timeout=60s ./...
+          CGO_ENABLED=0 go build -trimpath -o "$RUNNER_TEMP/traflens-http-load" .
+          "$RUNNER_TEMP/traflens-http-load"
+
       - name: Test kernel namespace scope guards without attachment
         run: |
           python3 agent/src/ebpf/test/test_socket_scope.py -v

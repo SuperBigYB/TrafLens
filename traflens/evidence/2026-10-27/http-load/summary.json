@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "measured_date_utc": "2026-10-27",
+  "kind": "bounded-real-packet-agent-http-acceptance",
+  "transport": "IPv6 link-local TCP HTTP/1.1",
+  "physical_link_speed_gbps": 10,
+  "mtu": 1500,
+  "samples_per_mode_per_rate": 1,
+  "generator_limits": {
+    "cpus": 2,
+    "memory_mib": 256,
+    "pids": 64,
+    "added_capabilities": [],
+    "max_lifetime_seconds": 35
+  },
+  "agent_limits": {
+    "cpus": 2,
+    "memory_mib": 1024,
+    "pids": 384,
+    "added_capabilities": [
+      "NET_RAW",
+      "SYS_RESOURCE"
+    ],
+    "max_lifetime_seconds": 240,
+    "kill_grace_seconds": 10
+  },
+  "software": {
+    "toolchain": "go version go1.26.2 linux/amd64",
+    "generator_binary_sha256": "09db8d25df2705b06db5c38dee970dc656e34c8780edeab85464857f57a58334",
+    "generator_bytes": 9738619,
+    "source_sha256": {
+      "traflens/lab/http-load/go.mod": "a0d9823dbf09dad121c0b47cb3474521d6ec656d52ba28d034a1e022464e37dd",
+      "traflens/lab/http-load/main.go": "8b069899e9eab24b4ac44236ebab0a02da62bffe606ad1bffc039d9f0971d1d7",
+      "traflens/lab/http-load/main_test.go": "d5f121edd24ccf4c210c5e2b478241bcd2a95b6c4d47a3f9a6afe9ec707cdb0a",
+      "traflens/lab/verify-http-load.py": "4da7dd3ad55146ed7fb6990eacebd0c0ffd28e5acc3456a7fe8c80b8c0c6a45f",
+      "traflens/lab/tests/test_http_load.py": "71d61385e2b79d915b924ccc967e281ffaa94615eabd7297862c6a6e8ef30c19",
+      ".github/workflows/traflens-ci.yml": "125433946b438aceb0d48d00d5e064dd5034717f7950b3b0a58be3b1207466f7"
+    },
+    "build": "GOTOOLCHAIN=local GOWORK=off CGO_ENABLED=0 go build -trimpath",
+    "agent_source": "95f5e10dfe63c4b5920c8d7932b683fb896a1479",
+    "agent_binary_sha256": "cbee7383430743230af341a3d28118e4a78bb71f47124e1332509ddd5030ce23"
+  },
+  "measurements": [
+    {
+      "kind": "finite-http-load-acceptance",
+      "rate_rps": 40,
+      "offered_seconds": 5,
+      "scheduled": 200,
+      "completed": 200,
+      "failed": 0,
+      "skipped": 0,
+      "service_p50_ms": 1.377332,
+      "service_p99_ms": 1.850736,
+      "offered_p99_ms": 2.926317,
+      "generator_cpu_seconds": 0.34384,
+      "generator_peak_rss_kib": 10416,
+      "packet_exact_query_reads": 0,
+      "expected_captured_endpoints_per_request": 0,
+      "agent_performance_ceiling_measured": false,
+      "deepflow_performance_parity_proven": false,
+      "mode": "control_without_agent"
+    },
+    {
+      "kind": "finite-http-load-acceptance",
+      "rate_rps": 100,
+      "offered_seconds": 5,
+      "scheduled": 500,
+      "completed": 500,
+      "failed": 0,
+      "skipped": 0,
+      "service_p50_ms": 1.283602,
+      "service_p99_ms": 1.771774,
+      "offered_p99_ms": 2.663567,
+      "generator_cpu_seconds": 0.7974460000000001,
+      "generator_peak_rss_kib": 11560,
+      "packet_exact_query_reads": 0,
+      "expected_captured_endpoints_per_request": 0,
+      "agent_performance_ceiling_measured": false,
+      "deepflow_performance_parity_proven": false,
+      "mode": "control_without_agent"
+    },
+    {
+      "kind": "finite-http-load-acceptance",
+      "rate_rps": 40,
+      "offered_seconds": 5,
+      "scheduled": 200,
+      "completed": 200,
+      "failed": 0,
+      "skipped": 0,
+      "service_p50_ms": 1.404429,
+      "service_p99_ms": 2.148015,
+      "offered_p99_ms": 2.906275,
+      "generator_cpu_seconds": 0.34700200000000003,
+      "generator_peak_rss_kib": 10508,
+      "packet_exact_query_reads": 2,
+      "expected_captured_endpoints_per_request": 1,
+      "agent_performance_ceiling_measured": false,
+      "deepflow_performance_parity_proven": false,
+      "mode": "packet_agent"
+    },
+    {
+      "kind": "finite-http-load-acceptance",
+      "rate_rps": 100,
+      "offered_seconds": 5,
+      "scheduled": 500,
+      "completed": 500,
+      "failed": 0,
+      "skipped": 0,
+      "service_p50_ms": 1.334142,
+      "service_p99_ms": 1.871991,
+      "offered_p99_ms": 2.841217,
+      "generator_cpu_seconds": 0.8054220000000001,
+      "generator_peak_rss_kib": 11692,
+      "packet_exact_query_reads": 2,
+      "expected_captured_endpoints_per_request": 1,
+      "agent_performance_ceiling_measured": false,
+      "deepflow_performance_parity_proven": false,
+      "mode": "packet_agent"
+    }
+  ],
+  "tests": {
+    "go_race_top_level": 8,
+    "go_subtests": 18,
+    "python_lab": 192
+  },
+  "cleanup": {
+    "owned_agent_and_workers_removed": true,
+    "controller_exact_yaml_restored": true,
+    "bpf_tracefs_baseline_restored": true,
+    "preexisting_containers_preserved": true
+  },
+  "attempts": {
+    "runtime_agent_attempts": 2,
+    "no_traffic_readiness_failures": 1,
+    "successful_agent_attempts": 1,
+    "capability_guard_rejection_before_retry": 1,
+    "invalid_supplemental_query_retained": 1
+  },
+  "private_manifest": {
+    "entries": 164,
+    "sha256": "a6ce1988829fef02a9a6206f7fc5c2cd2d8baa967a316e700fc139d03514ce56",
+    "all_entries_verified": true,
+    "symlinks_not_followed": true
+  },
+  "limitations": [
+    "One five-second sample per rate/mode; not maximum or sustained throughput.",
+    "Client service latency is not ingestion latency; generator CPU/RSS is not Agent CPU/RSS.",
+    "No matched pinned-reference comparison, eBPF load, query-capacity or complete queue-loss accounting.",
+    "Full host metadata discovery isolation remains unproven; configuration disables unsupported inputs.",
+    "Whole-marker query issuance is recorded by the private coordinator; API row files alone do not prove selection SQL."
+  ],
+  "deepflow_functional_performance_parity_proven": false
+}

@@ -451,3 +451,16 @@ Latest completed source CI: both jobs passed for
 The final helper/documentation head's actual CI is verified separately. Exact
 native/runtime source and Server runtime source are distinct as recorded above.
 Full feature/performance parity remains ongoing.
+
+## Controlled HTTP load checkpoint - 2026-10-27
+
+The bounded Go workload and its live scope are documented in README-http-load.md
+and evidence/2026-10-27/http-load/summary.json. Both no-Agent controls and native
+packet-Agent loads completed200/500 requests at40/100RPS for5seconds. Each Agent
+load passed two strict request reads and two post-stop whole-marker reads, with
+exact single-endpoint Session counts. Native source95f5e10df is unchanged.
+The first no-traffic readiness failure and one invalid supplemental query remain
+private alongside successful corrected runs. Exact Controller YAML and BPF/tracefs
+were restored, owned workers removed, existing containers/databases retained.
+Maximum/sustained throughput, true Agent CPU/RSS/queue curves, eBPF load and
+matched pinned-reference comparison remain pending; see the guide for limits.
