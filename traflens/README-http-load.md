@@ -191,11 +191,13 @@ SQL, raw responses, input hashes and failures remain private. Malformed JSON is
 retained as bounded base64; a successful archive must pass offline replay before
 an anonymous summary is emitted. Replay requires the same reports, page size and
 receipted Agent identity and verifies exact SQL order, with no missing/extra files.
+CLI replay also checks both original report byte hashes against `inputs.json`;
+changed metrics, whitespace, Agent identity or page size are rejected.
 
-The14 new regression tests include a synthetic2000-request paired workload,
+The15 new regression tests include a synthetic2000-request paired workload,
 duplicate boundary rows, missing/clamped/unsorted data, independent second-scan
 failure, invalid metadata/counts, SQL-resource injection, archive tampering,
-absolute deadlines, offline planning and private success/failure capture. All218
+absolute deadlines, offline planning and private success/failure capture. All219
 lab tests pass locally. Six previously collected native candidate/reference
 500-request samples were rechecked through the live API: each passes two8-page
 scans at page size64, totalling96 page requests plus24 count requests. These are

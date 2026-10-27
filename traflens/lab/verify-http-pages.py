@@ -108,6 +108,17 @@ def save(path, document):
         stream.write('\n')
 
 
+def input_identity(client, server, agent_id, page_size):
+    return {'client_sha256': hashlib.sha256(Path(client).read_bytes()).hexdigest(),
+            'server_sha256': hashlib.sha256(Path(server).read_bytes()).hexdigest(),
+            'agent_id': agent_id, 'page_size': page_size}
+
+
+def check_inputs(directory, client, server, agent_id, page_size):
+    require(reports.load(Path(directory) / 'inputs.json') == input_identity(client, server, agent_id, page_size),
+            'Archived report or acceptance identity differs')
+
+
 def replay(directory, client, server, agent_id, page_size=256):
     """Recheck every archived SQL/response in exact order, without network access."""
     directory = Path(directory)
@@ -162,6 +173,7 @@ def main():
     plan = reports.verify(client, server)
     integer(args.agent_id, 1, 65535); integer(args.page_size, 64, 1000); integer(args.timeout, 10, 300)
     if args.replay:
+        check_inputs(args.replay, args.client, args.server, args.agent_id, args.page_size)
         print(json.dumps(replay(args.replay, client, server, args.agent_id, args.page_size), allow_nan=False))
         return
     if not args.execute:
@@ -173,9 +185,7 @@ def main():
     require(parent.is_dir() and parent.resolve() == parent and parent.stat().st_uid == os.getuid()
             and stat.S_IMODE(parent.stat().st_mode) & 0o077 == 0, 'Output parent must be owned, private and not symlinked')
     args.output.mkdir(mode=0o700)
-    save(args.output / 'inputs.json', {'client_sha256': hashlib.sha256(args.client.read_bytes()).hexdigest(),
-                                      'server_sha256': hashlib.sha256(args.server.read_bytes()).hexdigest(),
-                                      'agent_id': args.agent_id, 'page_size': args.page_size})
+    save(args.output / 'inputs.json', input_identity(args.client, args.server, args.agent_id, args.page_size))
     start, calls = time.monotonic(), 0
     budget = 2 * (math.ceil(plan['scheduled'] / args.page_size) + 3) + args.timeout
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
@@ -209,6 +219,7 @@ def main():
     try:
         with deadline(args.timeout):
             summary = verify(query, client, server, args.agent_id, args.page_size, await_count=await_count)
+            check_inputs(args.output, args.client, args.server, args.agent_id, args.page_size)
             require(replay(args.output, client, server, args.agent_id, args.page_size) == summary, 'Archive replay differs')
         save(args.output / 'summary.json', summary)
         print(json.dumps(summary, allow_nan=False))

@@ -491,7 +491,7 @@ pagination, validated lookahead rows, exact sequence/metadata checks, whole-mark
 counts before/after each of two full scans and strict offline archive replay.
 Linux execution has private exclusive outputs, no proxy/redirects, bounded API
 bodies/calls and a wall-clock deadline. Default execution is an offline plan.
-All218 lab tests pass, including14 new cases and a synthetic2000-request pair.
+All219 lab tests pass, including15 new cases and a synthetic2000-request pair.
 Six existing native candidate/reference500-request samples pass live API rechecks:
 96 data pages and24 count requests,3000 earlier Sessions checked twice. This
 adds no new traffic/rate or CPU/RSS measurement. See README-http-load.md and

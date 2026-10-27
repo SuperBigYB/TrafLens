@@ -160,6 +160,22 @@ class HTTPPagesTests(unittest.TestCase):
             first = json.loads(calls[0].read_text()); first['sql'] += ' LIMIT 1'; calls[0].write_text(json.dumps(first))
             with self.assertRaises(ValueError): m.replay(root, c, s, 42, 64)
 
+    def test_replay_is_bound_to_report_bytes_agent_and_page_size(self):
+        c, s = pair(80)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); cp, sp = root / 'c.json', root / 's.json'
+            m.save(cp, c); m.save(sp, s)
+            m.save(root / 'inputs.json', m.input_identity(cp, sp, 42, 64))
+            m.check_inputs(root, cp, sp, 42, 64)
+            for agent, size in ((43, 64), (42, 256)):
+                with self.subTest(agent=agent, size=size), self.assertRaises(ValueError):
+                    m.check_inputs(root, cp, sp, agent, size)
+            original = cp.read_bytes(); cp.write_bytes(original + b' ')
+            with self.assertRaises(ValueError): m.check_inputs(root, cp, sp, 42, 64)
+            cp.write_bytes(original)
+            s['process_cpu_user_seconds'] = .02; sp.write_text(json.dumps(s))
+            with self.assertRaises(ValueError): m.check_inputs(root, cp, sp, 42, 64)
+
     def test_plan_creates_no_output_and_json_rejects_coercion(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory); c, s = pair(2000)
