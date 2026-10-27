@@ -23,5 +23,21 @@
     "files": 155,
     "sha256": "eba813743413bdb6c77e20cb44de014293a97b07474ffccdd0fc8e21e5c07ba2"
   },
-  "cli_report_hash_binding_verified": true
+  "cli_report_hash_binding_verified": true,
+  "go_workload_race_tests": {
+    "top_level": 9,
+    "subtests": 18
+  },
+  "pre_cancelled_bug_reproduced": true,
+  "pre_cancelled_stress_workloads": 600,
+  "pre_cancelled_stress_slots": 6000000,
+  "pre_cancelled_stress_attempted": 0,
+  "cancellation_private_manifest": {
+    "files": 9,
+    "sha256": "3001db989098c31823469280228a88bc973dc9c1ffb1020bb69a4f47c6b0001a"
+  },
+  "go_workload_source_sha256": {
+    "main.go": "914bbf618d476a7d5ce2af5577c5a86a67337d2623ab6f6219829bca9a2090c9",
+    "main_test.go": "65f10d50b77f62f118fbb2cc6d8c6766f39f609fa7137bc99c449179c8e9f7cb"
+  }
 }

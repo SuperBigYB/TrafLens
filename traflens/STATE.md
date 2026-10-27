@@ -499,3 +499,12 @@ adds no new traffic/rate or CPU/RSS measurement. See README-http-load.md and
 acceptance and repeated matched higher-rate ramps with pinned native binaries,
 current hardware identity, resource sampling and exact cleanup. Full parity and
 capacity limits remain unproven; two scans are not a transactional snapshot.
+
+
+A follow-up CI exposed an existing due-timer/cancellation selection race in the
+HTTP client. Pre-fix reproduction fails; explicit cancellation checks before/after
+the timer and in the worker fix it. All9 top-level/18 Go subtests pass with race;
+600 pre-cancelled stress workloads/6,000,000 slots yield zero attempts. Failed CI
+and before/after inputs remain private, with a separate cancellation seal. New
+binary builds; it has not replaced the earlier live benchmark binary. Exact final
+commit CI must pass before declaring this checkpoint remotely validated.

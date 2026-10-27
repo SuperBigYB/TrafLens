@@ -208,3 +208,14 @@ Stable counts and two exact reads establish consistency during these bounded
 reads. They do not provide a transactional snapshot or prove that no future late
 write can arrive. The2000-row test is synthetic; a new real workload above1000
 requests and repeated higher-rate candidate/reference ramps remain required.
+
+
+The follow-up CI exposed an existing client cancellation race: both a due timer
+and an already cancelled context could be ready, and Go `select` may choose the
+timer. The client now checks cancellation before allocating the timer, after it
+fires and before entering the request worker. The original failing CI and a
+separate pre-fix reproduction remain private. All9 top-level/18 subtests pass
+with the race detector after the fix. Thirty repeated stress tests cover600
+pre-cancelled workloads (6,000,000 scheduled slots) with zero attempted requests.
+The failure is fixed rather than cleared by retrying CI. The workload binary
+builds; no new live traffic or performance result is claimed for that binary.

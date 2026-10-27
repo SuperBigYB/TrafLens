@@ -149,12 +149,19 @@ func runClient(ctx context.Context, c config, request requestFunc) report {
 	for seq := 0; seq < count; seq++ {
 		due := start.Add(time.Duration(seq) * interval)
 		r.Records[seq] = record{Sequence: seq, State: "cancelled", ScheduledNS: int64(time.Duration(seq) * interval)}
+		if ctx.Err() != nil {
+			continue
+		}
 		wait := time.NewTimer(time.Until(due))
 		select {
 		case <-ctx.Done():
 			wait.Stop()
 			continue
 		case <-wait.C:
+		}
+		// A ready timer does not give cancellation priority in select.
+		if ctx.Err() != nil {
+			continue
 		}
 		if time.Since(due) > interval {
 			r.Records[seq].State = "schedule_late"
@@ -167,6 +174,9 @@ func runClient(ctx context.Context, c config, request requestFunc) report {
 				defer pending.Done()
 				defer func() { <-slots }()
 				row := &r.Records[seq]
+				if ctx.Err() != nil {
+					return
+				}
 				began := time.Now()
 				row.StartedNS = began.Sub(start).Nanoseconds()
 				requestCtx, cancel := context.WithTimeout(ctx, time.Duration(c.TimeoutMS)*time.Millisecond)

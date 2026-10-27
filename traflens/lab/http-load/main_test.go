@@ -68,6 +68,22 @@ func TestClientDoesNotBurstOrHideOverload(t *testing.T) {
 	}
 }
 
+func TestPrecancelledWorkloadNeverInvokesRequest(t *testing.T) {
+	c := validConfig()
+	c.Rate = 10000
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	for i := 0; i < 20; i++ {
+		r := runClient(ctx, c, func(context.Context, int) error {
+			t.Error("pre-cancelled workload invoked request")
+			return nil
+		})
+		if r.Pass || r.Attempted != 0 || r.Skipped != r.Scheduled || r.Error == "" {
+			t.Fatalf("pass=%t scheduled=%d attempted=%d skipped=%d error=%q", r.Pass, r.Scheduled, r.Attempted, r.Skipped, r.Error)
+		}
+	}
+}
+
 func TestDeadlineAndFailuresCannotPass(t *testing.T) {
 	c := validConfig()
 	ctx, cancel := context.WithCancel(context.Background())
