@@ -1,0 +1,328 @@
+{
+  "schema_version": 1,
+  "date_utc": "2026-10-27",
+  "kind": "matched-finite-native-packet-http-observations",
+  "software": {
+    "candidate_source": "95f5e10dfe63c4b5920c8d7932b683fb896a1479",
+    "reference_source": "8741e924ff0ae3964a135985c51e5a6ce6bde397",
+    "candidate_binary_sha256": "cbee7383430743230af341a3d28118e4a78bb71f47124e1332509ddd5030ce23",
+    "reference_binary_sha256": "4bc3b1525ccc444a378552ee11f21d4156646e34f866014d2dd60e7b23e65d80",
+    "reference_libtrace_sha256": "6d744d4d149c872c68f419d3d448ee00e903721ba9667ce57b5d7ed0b20611dd",
+    "reference_build_compat_patch_sha256": "4f5262f1f32d49c7ad68d24fc92bc1bfbd9d12f73696d656d8935b21db258519",
+    "build_compat_modified_files": [
+      "agent/Cargo.lock",
+      "agent/crates/public/build.rs"
+    ],
+    "runtime_behavior_fixes_transplanted_to_reference": false,
+    "sdk_image": "ghcr.io/deepflowio/rust-build@sha256:b018b2a5970d3c8f36a95f56dec56ad780020ec782419e42c571c7be5867d310",
+    "rustc": "1.97.1",
+    "gcc": "11.2.1",
+    "measurement_sampler_sha256": "2f874a9ab303af2d594c120c21a8ccbc823ce706e1d32bb632e3600cfdb70863",
+    "public_tool_source_sha256": {
+      "traflens/lab/sample-agent-resources.py": "2f874a9ab303af2d594c120c21a8ccbc823ce706e1d32bb632e3600cfdb70863",
+      "traflens/lab/verify-agent-resources.py": "8487fc1f8bee5fa9f970489f345be0bb7570142b680e5dec2f8bcedc33d5ac92",
+      "traflens/lab/tests/test_agent_resources.py": "00c5473e67f305b0f4cd2f952d5492896b06b900e74c07cd48fcee591ed217d0",
+      "traflens/lab/tests/test_resource_acceptance.py": "68435edc8d4992fc4b8f05e546c0cf88ffc52e1f41cda366020aa8bc234f399c"
+    }
+  },
+  "profile": {
+    "same_source_host": true,
+    "same_exact_controller_yaml": true,
+    "cpus": 2,
+    "cpu_affinity": [
+      0,
+      1
+    ],
+    "memory_mib": 1024,
+    "pids": 384,
+    "added_capabilities": [
+      "NET_RAW",
+      "SYS_RESOURCE"
+    ],
+    "http_rps": 100,
+    "offered_seconds": 5,
+    "requests_per_repeat": 500,
+    "concurrency": 16,
+    "request_timeout_ms": 1000,
+    "capture_mode": "packet",
+    "ebpf_input_enabled": false,
+    "l7_export_throttle_per_second": 1000,
+    "telemetry_export_limit_mbit_per_second": 10,
+    "http_path_link_gbps": 10,
+    "mtu": 1500,
+    "telemetry_transport": "existing management network"
+  },
+  "placement": {
+    "hardware_identity_changed_since_previous_baseline": true,
+    "direct_ports_reidentified": true,
+    "prior_hardware_capacity_result_reused_as_current_capacity": false,
+    "temporary_ports_restored_initial_down": 4,
+    "management_main_ipv4_routes_unchanged": true,
+    "cross_host_wall_clock_skew_approx_seconds": 180,
+    "measurement_clocks": "single-host monotonic intervals",
+    "host_clocks_changed": false
+  },
+  "groups": [
+    {
+      "role": "reference",
+      "repeats": 3,
+      "requests_per_repeat": 500,
+      "cpu_core_seconds": {
+        "minimum": 0.052162,
+        "median": 0.055028,
+        "maximum": 0.059046
+      },
+      "sampled_agent_rss_peak_mib": {
+        "minimum": 115.33203125,
+        "median": 115.73046875,
+        "maximum": 117.1484375
+      },
+      "client_service_p99_ms": {
+        "minimum": 1.527253,
+        "median": 1.593143,
+        "maximum": 1.686841
+      },
+      "observation_seconds": {
+        "minimum": 5.497358521000024,
+        "median": 5.548980718000166,
+        "maximum": 5.576770434000537
+      }
+    },
+    {
+      "role": "candidate",
+      "repeats": 3,
+      "requests_per_repeat": 500,
+      "cpu_core_seconds": {
+        "minimum": 0.055001,
+        "median": 0.056417,
+        "maximum": 0.058348
+      },
+      "sampled_agent_rss_peak_mib": {
+        "minimum": 115.37109375,
+        "median": 115.734375,
+        "maximum": 116.05078125
+      },
+      "client_service_p99_ms": {
+        "minimum": 1.506243,
+        "median": 1.600417,
+        "maximum": 1.776224
+      },
+      "observation_seconds": {
+        "minimum": 5.534412633000102,
+        "median": 5.558567758999743,
+        "maximum": 5.562943922000159
+      }
+    }
+  ],
+  "samples": [
+    {
+      "role": "reference",
+      "repeat": 1,
+      "requests": 500,
+      "http_whole_marker_reads": 2,
+      "http_exact_match": true,
+      "client_service_p99_ms": 1.527253,
+      "client_offered_p99_ms": 2.506144,
+      "immediate_bpf_tracefs_snapshot_match": true,
+      "observation_seconds": 5.576770434000537,
+      "cpu_core_seconds": 0.055028,
+      "average_cpu_cores": 0.009867359729298605,
+      "cpu_user_seconds": 0.024461,
+      "cpu_system_seconds": 0.030568,
+      "cpu_throttled_periods": 0,
+      "cpu_throttled_seconds": 0.0,
+      "sampled_agent_rss_peak_mib": 117.1484375,
+      "sampled_cgroup_memory_max_mib": 96.27734375,
+      "kernel_cgroup_memory_peak_available": false,
+      "kernel_cgroup_memory_peak_mib": null,
+      "sample_count": 56,
+      "maximum_sample_gap_seconds": 0.10095522600022377,
+      "cpu_includes_watchdog": true,
+      "rss_owner_verified": true,
+      "rss_is_sampled_not_exact_lifetime_peak": true
+    },
+    {
+      "role": "reference",
+      "repeat": 2,
+      "requests": 500,
+      "http_whole_marker_reads": 2,
+      "http_exact_match": true,
+      "client_service_p99_ms": 1.686841,
+      "client_offered_p99_ms": 2.653867,
+      "immediate_bpf_tracefs_snapshot_match": true,
+      "observation_seconds": 5.548980718000166,
+      "cpu_core_seconds": 0.052162,
+      "average_cpu_cores": 0.009400284962388374,
+      "cpu_user_seconds": 0.022461,
+      "cpu_system_seconds": 0.029701,
+      "cpu_throttled_periods": 0,
+      "cpu_throttled_seconds": 0.0,
+      "sampled_agent_rss_peak_mib": 115.73046875,
+      "sampled_cgroup_memory_max_mib": 95.0078125,
+      "kernel_cgroup_memory_peak_available": false,
+      "kernel_cgroup_memory_peak_mib": null,
+      "sample_count": 55,
+      "maximum_sample_gap_seconds": 0.10638105900034134,
+      "cpu_includes_watchdog": true,
+      "rss_owner_verified": true,
+      "rss_is_sampled_not_exact_lifetime_peak": true
+    },
+    {
+      "role": "reference",
+      "repeat": 3,
+      "requests": 500,
+      "http_whole_marker_reads": 2,
+      "http_exact_match": true,
+      "client_service_p99_ms": 1.593143,
+      "client_offered_p99_ms": 2.472403,
+      "immediate_bpf_tracefs_snapshot_match": false,
+      "observation_seconds": 5.497358521000024,
+      "cpu_core_seconds": 0.059046,
+      "average_cpu_cores": 0.01074079483345375,
+      "cpu_user_seconds": 0.016999,
+      "cpu_system_seconds": 0.042048,
+      "cpu_throttled_periods": 0,
+      "cpu_throttled_seconds": 0.0,
+      "sampled_agent_rss_peak_mib": 115.33203125,
+      "sampled_cgroup_memory_max_mib": 95.0546875,
+      "kernel_cgroup_memory_peak_available": false,
+      "kernel_cgroup_memory_peak_mib": null,
+      "sample_count": 55,
+      "maximum_sample_gap_seconds": 0.10124380599972937,
+      "cpu_includes_watchdog": true,
+      "rss_owner_verified": true,
+      "rss_is_sampled_not_exact_lifetime_peak": true
+    },
+    {
+      "role": "candidate",
+      "repeat": 1,
+      "requests": 500,
+      "http_whole_marker_reads": 2,
+      "http_exact_match": true,
+      "client_service_p99_ms": 1.600417,
+      "client_offered_p99_ms": 2.528199,
+      "immediate_bpf_tracefs_snapshot_match": true,
+      "observation_seconds": 5.562943922000159,
+      "cpu_core_seconds": 0.055001,
+      "average_cpu_cores": 0.00988703117830898,
+      "cpu_user_seconds": 0.023426,
+      "cpu_system_seconds": 0.031575,
+      "cpu_throttled_periods": 0,
+      "cpu_throttled_seconds": 0.0,
+      "sampled_agent_rss_peak_mib": 115.734375,
+      "sampled_cgroup_memory_max_mib": 96.40234375,
+      "kernel_cgroup_memory_peak_available": false,
+      "kernel_cgroup_memory_peak_mib": null,
+      "sample_count": 56,
+      "maximum_sample_gap_seconds": 0.10117110400005913,
+      "cpu_includes_watchdog": true,
+      "rss_owner_verified": true,
+      "rss_is_sampled_not_exact_lifetime_peak": true
+    },
+    {
+      "role": "candidate",
+      "repeat": 2,
+      "requests": 500,
+      "http_whole_marker_reads": 2,
+      "http_exact_match": true,
+      "client_service_p99_ms": 1.776224,
+      "client_offered_p99_ms": 2.555157,
+      "immediate_bpf_tracefs_snapshot_match": true,
+      "observation_seconds": 5.558567758999743,
+      "cpu_core_seconds": 0.058348,
+      "average_cpu_cores": 0.010496948589954697,
+      "cpu_user_seconds": 0.032582,
+      "cpu_system_seconds": 0.025765,
+      "cpu_throttled_periods": 0,
+      "cpu_throttled_seconds": 0.0,
+      "sampled_agent_rss_peak_mib": 115.37109375,
+      "sampled_cgroup_memory_max_mib": 95.23828125,
+      "kernel_cgroup_memory_peak_available": false,
+      "kernel_cgroup_memory_peak_mib": null,
+      "sample_count": 56,
+      "maximum_sample_gap_seconds": 0.10108099300032336,
+      "cpu_includes_watchdog": true,
+      "rss_owner_verified": true,
+      "rss_is_sampled_not_exact_lifetime_peak": true
+    },
+    {
+      "role": "candidate",
+      "repeat": 3,
+      "requests": 500,
+      "http_whole_marker_reads": 2,
+      "http_exact_match": true,
+      "client_service_p99_ms": 1.506243,
+      "client_offered_p99_ms": 2.552607,
+      "immediate_bpf_tracefs_snapshot_match": true,
+      "observation_seconds": 5.534412633000102,
+      "cpu_core_seconds": 0.056417,
+      "average_cpu_cores": 0.010193855019700148,
+      "cpu_user_seconds": 0.028888,
+      "cpu_system_seconds": 0.027529,
+      "cpu_throttled_periods": 0,
+      "cpu_throttled_seconds": 0.0,
+      "sampled_agent_rss_peak_mib": 116.05078125,
+      "sampled_cgroup_memory_max_mib": 95.390625,
+      "kernel_cgroup_memory_peak_available": false,
+      "kernel_cgroup_memory_peak_mib": null,
+      "sample_count": 55,
+      "maximum_sample_gap_seconds": 0.10120754199942894,
+      "cpu_includes_watchdog": true,
+      "rss_owner_verified": true,
+      "rss_is_sampled_not_exact_lifetime_peak": true
+    }
+  ],
+  "final_qualified_requests": 3000,
+  "final_whole_marker_query_reads": 12,
+  "attempts": {
+    "total_agent_trials": 18,
+    "pretraffic_process_topology_failures": 6,
+    "http_pass_resource_unqualified_trials": 6,
+    "final_http_and_resource_qualified_trials": 6,
+    "all_failures_retained": true,
+    "selection_based_on_speed": false
+  },
+  "cleanup": {
+    "all_owned_agent_and_workload_containers_removed": true,
+    "controller_exact_yaml_restorations": 18,
+    "final_global_bpf_tracefs_exact_reads": 2,
+    "programs_manually_detached": 0,
+    "final_trial_immediate_bpf_snapshot_mismatches": 1,
+    "initial_and_later_failed_inventory_snapshots_retained": true,
+    "transient_bpf_id_attribution_proven": false
+  },
+  "reference_build": {
+    "pristine_locked_build_passed": false,
+    "disclosed_build_compat_passed": true,
+    "cpus": 2,
+    "memory_gib": 8,
+    "pids": 512,
+    "network": "none",
+    "added_capabilities": [],
+    "root_readonly": true,
+    "owned_build_container_removed": true,
+    "static_bpf_elf_headers_checked": 10,
+    "bpf_runtime_load_or_verifier_proven": false
+  },
+  "tests": {
+    "python_lab": 204,
+    "new_resource_tool_tests": 12
+  },
+  "private_manifest": {
+    "entries": 820,
+    "sha256": "1a959c5b12d1e2f4a567a8a80e563b6845c3e123adb591014812ddd872237ce8",
+    "all_entries_verified": true,
+    "symlinks_not_followed": true
+  },
+  "limitations": [
+    "Three short observations per version at 100RPS; no maximum/sustained capacity result or speedup proof.",
+    "CPU includes all container processes; host IRQ and other host CPU costs are outside this accounting.",
+    "Resource window includes client endpoint setup/cleanup; not pure per-request CPU attribution.",
+    "VmRSS is sampled from verified readiness owner; exact lifetime peak is not established.",
+    "Kernel memory.peak unavailable is null, not zero; process RSS and cgroup memory have different accounting.",
+    "Cross-host ingestion latency, full packet/queue-loss, eBPF/application/GUI and query scaling remain unqualified.",
+    "One immediate BPF cleanup snapshot differed; only later final global equality is claimed."
+  ],
+  "speedup_proven": false,
+  "deepflow_full_functional_performance_parity_proven": false
+}

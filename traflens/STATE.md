@@ -464,3 +464,20 @@ private alongside successful corrected runs. Exact Controller YAML and BPF/trace
 were restored, owned workers removed, existing containers/databases retained.
 Maximum/sustained throughput, true Agent CPU/RSS/queue curves, eBPF load and
 matched pinned-reference comparison remain pending; see the guide for limits.
+
+## Pinned native reference and resource observation checkpoint - 2026-10-27
+
+Read README-reference-compare.md and evidence/2026-10-27/reference-compare/summary.json.
+Pinned upstream8741e924f builds natively with only disclosed lock/protobuf-format
+build compatibility changes; no L7/eBPF candidate fixes were transplanted. Native
+candidate95f5e10df is unchanged. Under identical2CPU/1GiB packet profiles, each
+version completes three500-request loads at100RPS with exact full-marker readback.
+CPU/RSS medians are close at this light load; no capacity or speedup claim follows.
+Resource sampling now verifies the readiness socket owner, distinguishes watchdog
+CPU from work-process RSS, and preserves unavailable memory.peak as null. Early
+invalid sampling attempts and one immediate BPF inventory mismatch are retained;
+final BPF/tracefs baseline was verified twice, without program detachment. After
+hardware changed on recovery, direct ports were reidentified and all temporary
+link-UP changes restored to their original DOWN state. Management routes unchanged.
+Broader sustained/ramp, packet/queue-loss, eBPF/GUI and full performance parity
+remain ongoing. Current physical identity must be re-read before any future run.

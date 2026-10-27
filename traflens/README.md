@@ -84,3 +84,5 @@ synthetic HTTP capture. Full managed-Agent ingestion and performance remain pend
 The [direct 10G network baseline](README-link-baseline.md) provides finite paired TCP endpoints, offline qualification, and anonymous measured evidence. Agent workload performance remains a separate gate.
 
 The [controlled HTTP load guide](README-http-load.md) documents bounded open-loop workload generation and exact real packet-Agent ingestion at two finite offered rates.
+
+The [pinned native reference comparison](README-reference-compare.md) records repeated exact500-request packet acceptance and qualified CPU/RSS observations, including source overlays and retained invalid attempts.
