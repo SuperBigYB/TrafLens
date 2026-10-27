@@ -199,6 +199,41 @@ impl<T: std::fmt::Debug> BufferedSender<T> {
         }
     }
 }
+impl<T: std::fmt::Debug> Drop for BufferedSender<T> {
+    fn drop(&mut self) {
+        // Dispatcher joins before its consumers stop. Preserve the partial
+        // final batch instead of destroying it with the FlowMap.
+        self.flush();
+    }
+}
+
+#[cfg(test)]
+mod shutdown_buffer_tests {
+    use super::*;
+    #[test]
+    fn dispatcher_buffer_drop_preserves_partial_tail() {
+        let debugger = QueueDebugger::new();
+        let (queue, receiver, _stats) = queue::bounded_with_debug(16, "tail-test", &debugger);
+        let mut sender = BufferedSender::new(
+            queue,
+            8,
+            Arc::new(FlowMapCounter::new(L7PerfCacheCounter {
+                rrt_cache_len: Default::default(),
+                timeout_cache_len: Default::default(),
+            })),
+        );
+        for i in 0..3 {
+            sender.send(i);
+        }
+        assert!(receiver.recv(Some(Duration::ZERO)).is_err());
+        drop(sender);
+        for i in 0..3 {
+            assert_eq!(receiver.recv(Some(Duration::ZERO)).unwrap(), i);
+        }
+        assert!(receiver.recv(Some(Duration::ZERO)).is_err());
+    }
+}
+
 // not thread-safe
 pub struct FlowMap {
     // The original std HashMap uses SipHash-1-3 and is slow.

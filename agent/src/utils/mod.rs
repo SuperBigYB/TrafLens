@@ -26,6 +26,7 @@ pub(crate) mod lru;
 pub(crate) mod npb_bandwidth_watcher;
 pub(crate) mod possible_host;
 pub(crate) mod process;
+pub(crate) mod shutdown;
 pub mod stats;
 
 #[cfg(target_os = "linux")]

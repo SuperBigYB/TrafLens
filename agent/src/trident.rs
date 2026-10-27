@@ -200,11 +200,21 @@ pub struct AgentState {
     // and the main thread will try to stop other threads, in which may lock and update agent state,
     // causing a deadlock. Checking terminated state before locking inner state will avoid this deadlock.
     terminated: AtomicBool,
+    shutdown_failed: AtomicBool,
     state: Mutex<(InnerState, Option<ChangedConfig>)>,
     notifier: Condvar,
 }
 
 impl AgentState {
+    fn terminate(&self) {
+        // Do not wait for a configuration mutex in the signal path. When it
+        // can be acquired, pair with the condvar wait; otherwise its existing
+        // bounded wait will observe termination within the shutdown budget.
+        let _guard = self.state.try_lock();
+        self.terminated.store(true, Ordering::Release);
+        self.notifier.notify_one();
+    }
+
     pub fn get(&self) -> State {
         let sg = self.state.lock().unwrap();
         sg.0.into()
@@ -313,6 +323,54 @@ impl AgentState {
             });
         }
         self.notifier.notify_one();
+    }
+}
+
+#[cfg(test)]
+mod shutdown_state_tests {
+    use super::*;
+    use std::sync::mpsc;
+
+    #[test]
+    fn termination_does_not_block_on_owned_configuration_lock() {
+        let state = Arc::new(AgentState::default());
+        let guard = state.state.lock().unwrap();
+        let worker = state.clone();
+        let (done, received) = mpsc::channel();
+        let handle = thread::spawn(move || {
+            worker.terminate();
+            done.send(()).unwrap();
+        });
+        received
+            .recv_timeout(Duration::from_secs(1))
+            .expect("termination waited for configuration lock");
+        assert!(state.terminated.load(Ordering::Acquire));
+        drop(guard);
+        handle.join().unwrap();
+    }
+
+    #[test]
+    fn termination_wakes_waiter_and_blocks_later_enable() {
+        let state = Arc::new(AgentState::default());
+        let worker = state.clone();
+        let (ready, wait) = mpsc::channel();
+        let handle = thread::spawn(move || {
+            let mut guard = worker.state.lock().unwrap();
+            ready.send(()).unwrap();
+            while !worker.terminated.load(Ordering::Acquire) {
+                let result = worker
+                    .notifier
+                    .wait_timeout(guard, Duration::from_secs(2))
+                    .unwrap();
+                guard = result.0;
+                assert!(!result.1.timed_out() || worker.terminated.load(Ordering::Acquire));
+            }
+        });
+        wait.recv_timeout(Duration::from_secs(2)).unwrap();
+        state.terminate();
+        handle.join().unwrap();
+        state.enable();
+        assert!(!state.state.lock().unwrap().0.enabled);
     }
 }
 
@@ -1016,6 +1074,9 @@ impl Trident {
                 if let Some(mut c) = components {
                     main_loop_liveness.heartbeat();
                     c.stop();
+                    state
+                        .shutdown_failed
+                        .store(c.shutdown_failed(), Ordering::Release);
                     guard.stop();
                     monitor.stop();
                     domain_name_listener.stop();
@@ -1321,7 +1382,21 @@ impl Trident {
 
     pub fn stop(&mut self) {
         info!("Agent stopping");
-        crate::utils::clean_and_exit(0);
+        self.state.terminate();
+        let outcome = self.handle.take().map(|handle| {
+            crate::utils::shutdown::join_with_timeout(handle, Duration::from_secs(30))
+        });
+        let code = match outcome {
+            Some(Ok(())) if !self.state.shutdown_failed.load(Ordering::Acquire) => {
+                info!("Agent component shutdown completed; sender drain status successful");
+                0
+            }
+            other => {
+                error!("Agent shutdown incomplete or delivery uncertain: {other:?}");
+                1
+            }
+        };
+        crate::utils::clean_and_exit(code);
     }
 }
 
@@ -1825,9 +1900,9 @@ impl EbpfDispatcherComponent {
     }
 
     pub fn stop(&mut self) {
+        self.ebpf_collector.stop();
         self.session_aggregator.stop();
         self.l7_collector.stop();
-        self.ebpf_collector.notify_stop();
     }
 }
 
@@ -1895,6 +1970,7 @@ impl DispatcherComponent {
 }
 
 pub struct AgentComponents {
+    shutdown_failed: bool,
     pub config: ModuleConfig,
     pub rx_leaky_bucket: Arc<LeakyBucket>,
     pub tap_typer: Arc<CaptureNetworkTyper>,
@@ -1956,6 +2032,27 @@ pub struct AgentComponents {
 }
 
 impl AgentComponents {
+    fn senders_shutdown_failed(&self) -> bool {
+        let failed = self.shutdown_failed
+            || self.l4_flow_uniform_sender.shutdown_failed()
+            || self.metrics_uniform_sender.shutdown_failed()
+            || self.l7_flow_uniform_sender.shutdown_failed()
+            || self.otel_uniform_sender.shutdown_failed()
+            || self.compressed_otel_uniform_sender.shutdown_failed()
+            || self.prometheus_uniform_sender.shutdown_failed()
+            || self.telegraf_uniform_sender.shutdown_failed()
+            || self.profile_uniform_sender.shutdown_failed()
+            || self.packet_sequence_uniform_sender.shutdown_failed()
+            || self.application_log_uniform_sender.shutdown_failed()
+            || self.datadog_uniform_sender.shutdown_failed()
+            || self.pcap_batch_uniform_sender.shutdown_failed();
+        #[cfg(feature = "libtrace")]
+        let failed = failed || self.proc_event_uniform_sender.shutdown_failed();
+        #[cfg(feature = "enterprise-integration")]
+        let failed = failed || self.skywalking_uniform_sender.shutdown_failed();
+        failed
+    }
+
     fn get_flowgen_tolerable_delay(config: &UserConfig) -> u64 {
         // FIXME: The flow_generator and dispatcher should be decoupled, and a delay function should be provided for this purpose.
         // The components of quadruple_generator's Delay are as follows:
@@ -3304,6 +3401,7 @@ impl AgentComponents {
         );
 
         Ok(AgentComponents {
+            shutdown_failed: false,
             config: candidate_config.clone(),
             rx_leaky_bucket,
             tap_typer,
@@ -3378,6 +3476,7 @@ impl AgentComponents {
             return;
         }
         info!("Starting agent components.");
+        self.shutdown_failed = false;
         self.stats_collector.start();
 
         #[cfg(any(target_os = "linux", target_os = "android"))]
@@ -3464,6 +3563,16 @@ impl AgentComponents {
         #[cfg(target_os = "linux")]
         self.kubernetes_poller.stop();
 
+        self.debugger.stop();
+
+        #[cfg(all(unix, feature = "libtrace"))]
+        if let Some(d) = self.ebpf_dispatcher_component.as_mut() {
+            d.stop();
+        }
+
+        self.metrics_server_component.stop();
+        // All packet/eBPF/integration producers must finish before their
+        // consumers see the stop request and drain their final queues.
         if let Some(h) = self.l4_flow_uniform_sender.notify_stop() {
             join_handles.push(h);
         }
@@ -3473,15 +3582,6 @@ impl AgentComponents {
         if let Some(h) = self.l7_flow_uniform_sender.notify_stop() {
             join_handles.push(h);
         }
-
-        self.debugger.stop();
-
-        #[cfg(all(unix, feature = "libtrace"))]
-        if let Some(d) = self.ebpf_dispatcher_component.as_mut() {
-            d.stop();
-        }
-
-        self.metrics_server_component.stop();
         if let Some(h) = self.otel_uniform_sender.notify_stop() {
             join_handles.push(h);
         }
@@ -3545,7 +3645,10 @@ impl AgentComponents {
                     handle.thread().name().unwrap_or("unnamed thread")
                 );
             }
-            let _ = handle.join();
+            if handle.join().is_err() {
+                error!("Agent component panicked during shutdown");
+                self.shutdown_failed = true;
+            }
         }
 
         info!("Stopped agent components.")
@@ -3553,6 +3656,13 @@ impl AgentComponents {
 }
 
 impl Components {
+    fn shutdown_failed(&self) -> bool {
+        match self {
+            Self::Agent(a) => a.senders_shutdown_failed(),
+            _ => false,
+        }
+    }
+
     fn start(&mut self) {
         match self {
             Self::Agent(a) => a.start(),

@@ -34,3 +34,11 @@ This project requires the following dynamic libraries:
 11. **libibverbs.so.1**
 12. **libnl-route-3.so.200**
 13. **libnl-3.so.200**
+
+
+## TrafLens termination behavior
+
+The TrafLens fork coordinates queued-record shutdown with a30-second control-thread
+deadline and nonzero incomplete-shutdown outcome. Container/service termination
+grace must exceed31 seconds; the lab uses40. See
+[the shutdown guide](../traflens/README-agent-shutdown.md) for scope and validation.

@@ -17,7 +17,7 @@
 use std::fs::{create_dir_all, rename, File, OpenOptions};
 use std::io::{BufWriter, ErrorKind, Write};
 use std::marker::PhantomData;
-use std::net::{Shutdown, TcpStream};
+use std::net::{IpAddr, Shutdown, SocketAddr, TcpStream};
 use std::path::Path;
 use std::sync::Mutex;
 use std::sync::{
@@ -52,6 +52,43 @@ use public::queue::{Error, Receiver};
 
 const PRE_FILE_SUFFIX: &str = ".pre";
 const MAX_WAIT_TIMES: u32 = 100;
+
+fn write_frame(
+    buffer: &[u8],
+    timeout: Duration,
+    mut write: impl FnMut(&[u8], Duration) -> std::io::Result<usize>,
+) -> std::io::Result<()> {
+    let deadline = Instant::now() + timeout;
+    let mut offset = 0;
+    while offset < buffer.len() {
+        let remaining = deadline.saturating_duration_since(Instant::now());
+        if remaining.is_zero() {
+            return Err(std::io::Error::new(
+                ErrorKind::TimedOut,
+                "sender frame deadline exceeded",
+            ));
+        }
+        match write(&buffer[offset..], remaining) {
+            Ok(0) => {
+                return Err(std::io::Error::new(
+                    ErrorKind::WriteZero,
+                    "sender wrote zero bytes",
+                ))
+            }
+            Ok(n) => offset += n,
+            Err(e)
+                if matches!(
+                    e.kind(),
+                    ErrorKind::WouldBlock | ErrorKind::TimedOut | ErrorKind::Interrupted
+                ) =>
+            {
+                thread::yield_now()
+            }
+            Err(e) => return Err(e),
+        }
+    }
+    Ok(())
+}
 
 #[derive(Debug, Default)]
 pub struct SenderCounter {
@@ -268,6 +305,7 @@ pub struct UniformSenderThread<T> {
     thread_handle: Option<JoinHandle<()>>,
 
     running: Arc<AtomicBool>,
+    shutdown_failed: Arc<AtomicBool>,
     stats: Arc<Collector>,
     exception_handler: ExceptionHandler,
 
@@ -295,6 +333,7 @@ impl<T: Sendable> UniformSenderThread<T> {
             config,
             thread_handle: None,
             running,
+            shutdown_failed: Arc::new(AtomicBool::new(false)),
             stats,
             exception_handler,
             private_shared_conn,
@@ -324,6 +363,8 @@ impl<T: Sendable> UniformSenderThread<T> {
             self.sender_encoder,
             self.leaky_bucket.clone(),
         );
+        self.shutdown_failed.store(false, Ordering::Release);
+        uniform_sender.shutdown_failed = self.shutdown_failed.clone();
         self.thread_handle = Some(
             thread::Builder::new()
                 .name("uniform-sender".to_owned())
@@ -343,6 +384,10 @@ impl<T: Sendable> UniformSenderThread<T> {
         }
         info!("notified stopping uniform sender id: {}", self.id);
         self.thread_handle.take()
+    }
+
+    pub fn shutdown_failed(&self) -> bool {
+        self.shutdown_failed.load(Ordering::Acquire)
     }
 
     pub fn stop(&mut self) {
@@ -418,6 +463,7 @@ pub struct UniformSender<T> {
     config: SenderAccess,
 
     running: Arc<AtomicBool>,
+    shutdown_failed: Arc<AtomicBool>,
     stats: Arc<Collector>,
     stats_registered: bool,
     exception_handler: ExceptionHandler,
@@ -472,6 +518,7 @@ impl<T: Sendable> UniformSender<T> {
             last_traffic_overflow: Duration::ZERO,
 
             running,
+            shutdown_failed: Arc::new(AtomicBool::new(false)),
             stats,
             stats_registered: false,
             exception_handler,
@@ -536,24 +583,29 @@ impl<T: Sendable> UniformSender<T> {
         }
     }
 
-    fn flush_encoder(&mut self, config: &SenderConfig) {
+    fn flush_encoder(&mut self, config: &SenderConfig) -> bool {
         self.cached = true;
-        if self.encoder.buffer_len() > 0 {
-            self.counter
-                .raw_bytes
-                .fetch_add(self.encoder.buffer_len() as u64, Ordering::Relaxed);
-            if SenderEncoder::from(self.encoder.header.encoder) != SenderEncoder::Raw {
-                self.encoder.compress_buffer();
-            }
-            self.encoder.set_header_frame_size();
-            self.send_buffer(config);
-            self.encoder.reset_buffer();
+        if self.encoder.buffer_len() == 0 {
+            return true;
         }
+        self.counter
+            .raw_bytes
+            .fetch_add(self.encoder.buffer_len() as u64, Ordering::Relaxed);
+        if SenderEncoder::from(self.encoder.header.encoder) != SenderEncoder::Raw {
+            self.encoder.compress_buffer();
+        }
+        self.encoder.set_header_frame_size();
+        let delivered = self.send_buffer(config);
+        if !delivered && !self.running.load(Ordering::Relaxed) {
+            self.shutdown_failed.store(true, Ordering::Release);
+        }
+        self.encoder.reset_buffer();
+        delivered
     }
 
-    fn send_buffer(&mut self, config: &SenderConfig) {
+    fn send_buffer(&mut self, config: &SenderConfig) -> bool {
         if self.is_traffic_overflow(config) {
-            return;
+            return false;
         }
         let mut conn = match self.connection_type {
             ConnectionType::Global => self.global_shared_conn.lock().unwrap(),
@@ -564,9 +616,6 @@ impl<T: Sendable> UniformSender<T> {
         };
 
         if conn.reconnect || conn.tcp_stream.is_none() {
-            if !self.running.load(Ordering::Relaxed) {
-                return;
-            }
             if let Some(t) = conn.tcp_stream.take() {
                 if let Err(e) = t.shutdown(Shutdown::Both) {
                     debug!("{} sender tcp stream shutdown failed {}", self.name, e);
@@ -580,11 +629,20 @@ impl<T: Sendable> UniformSender<T> {
                 conn.last_reconnect = now;
             }
             if conn.last_reconnect + Duration::from_secs(conn.reconnect_interval as u64) > now {
-                return;
+                return false;
             }
 
             conn.last_reconnect = now;
-            conn.tcp_stream = TcpStream::connect((conn.dest_ip.clone(), conn.dest_port)).ok();
+            conn.tcp_stream = match conn.dest_ip.parse::<IpAddr>() {
+                Ok(ip) => TcpStream::connect_timeout(
+                    &SocketAddr::new(ip, conn.dest_port),
+                    Duration::from_secs(Self::TCP_WRITE_TIMEOUT),
+                )
+                .ok(),
+                // Preserve configured hostname support; the process shutdown
+                // deadline also bounds a resolver that does not return.
+                Err(_) => TcpStream::connect((conn.dest_ip.clone(), conn.dest_port)).ok(),
+            };
             if let Some(tcp_stream) = conn.tcp_stream.as_mut() {
                 if let Err(e) =
                     tcp_stream.set_write_timeout(Some(Duration::from_secs(Self::TCP_WRITE_TIMEOUT)))
@@ -594,7 +652,7 @@ impl<T: Sendable> UniformSender<T> {
                         self.name, e
                     );
                     conn.tcp_stream.take();
-                    return;
+                    return false;
                 }
                 info!(
                     "{} sender tcp connection to {}:{} succeed.",
@@ -623,45 +681,42 @@ impl<T: Sendable> UniformSender<T> {
                 // reconnect after waiting 10 seconds + random 5 seconds to prevent frequent reconnection
                 conn.reconnect_interval =
                     Self::DEFAULT_RECONNECT_INTERVAL + (thread_rng().next_u64() % 5) as u8;
-                return;
+                return false;
             }
         }
 
         let tcp_stream = conn.tcp_stream.as_mut().unwrap();
         let buffer = &self.encoder.get_buffer();
-        let mut write_offset = 0usize;
-        while self.running.load(Ordering::Relaxed) {
-            let result = tcp_stream.write(&buffer[write_offset..]);
-            match result {
-                Ok(size) => {
-                    write_offset += size;
-                    if write_offset == buffer.len() {
-                        self.counter.tx.fetch_add(1, Ordering::Relaxed);
-                        self.counter
-                            .tx_bytes
-                            .fetch_add(buffer.len() as u64, Ordering::Relaxed);
-                        break;
-                    }
+        match write_frame(
+            buffer,
+            Duration::from_secs(Self::TCP_WRITE_TIMEOUT),
+            |bytes, remaining| {
+                tcp_stream.set_write_timeout(Some(remaining.max(Duration::from_millis(1))))?;
+                tcp_stream.write(bytes)
+            },
+        ) {
+            Ok(()) => {
+                self.counter.tx.fetch_add(1, Ordering::Relaxed);
+                self.counter
+                    .tx_bytes
+                    .fetch_add(buffer.len() as u64, Ordering::Relaxed);
+                true
+            }
+            Err(e) => {
+                if self.counter.dropped.load(Ordering::Relaxed) == 0 {
+                    let error_msg = format!(
+                        "{} sender tcp stream write data to {}:{} failed: {}",
+                        self.name, conn.dest_ip, conn.dest_port, e
+                    );
+                    error!("{}", error_msg);
+                    self.exception_handler
+                        .set(Exception::AnalyzerSocketError, Some(error_msg));
                 }
-                Err(e) if e.kind() == ErrorKind::WouldBlock => {
-                    debug!("{} sender tcp stream write data block {}", self.name, e);
-                    continue;
-                }
-                Err(e) => {
-                    if self.counter.dropped.load(Ordering::Relaxed) == 0 {
-                        let error_msg = format!(
-                            "{} sender tcp stream write data to {}:{} failed: {}",
-                            self.name, conn.dest_ip, conn.dest_port, e
-                        );
-                        error!("{}", error_msg);
-                        self.exception_handler
-                            .set(Exception::AnalyzerSocketError, Some(error_msg));
-                    }
-                    self.counter.dropped.fetch_add(1, Ordering::Relaxed);
-                    conn.tcp_stream.take();
-                    break;
-                }
-            };
+                self.counter.dropped.fetch_add(1, Ordering::Relaxed);
+                conn.tcp_stream.take();
+                // Some prefix may have reached the peer. Never replay it.
+                false
+            }
         }
     }
 
@@ -731,7 +786,16 @@ impl<T: Sendable> UniformSender<T> {
         let mut start_cached = Instant::now();
         let mut kv_string = String::with_capacity(2048);
         let mut batch = Vec::with_capacity(QUEUE_BATCH_SIZE);
-        while self.running.load(Ordering::Relaxed) {
+        let mut drain_start = None;
+        loop {
+            let stopping = !self.running.load(Ordering::Relaxed);
+            if stopping
+                && drain_start.get_or_insert_with(Instant::now).elapsed() >= Duration::from_secs(5)
+            {
+                self.shutdown_failed.store(true, Ordering::Release);
+                error!("{} sender drain deadline exceeded", self.name);
+                break;
+            }
             let config = self.config.load();
             let socket_type = config.collector_socket_type;
             let max_throughput_mbps = config.max_throughput_to_ingester;
@@ -741,7 +805,11 @@ impl<T: Sendable> UniformSender<T> {
             }
             match self.input.recv_all(
                 &mut batch,
-                Some(Duration::from_secs(Self::QUEUE_READ_TIMEOUT)),
+                Some(if stopping {
+                    Duration::ZERO
+                } else {
+                    Duration::from_secs(Self::QUEUE_READ_TIMEOUT)
+                }),
             ) {
                 Ok(_) => {
                     // guaranteed to be sent every 10 seconds
@@ -750,9 +818,6 @@ impl<T: Sendable> UniformSender<T> {
                         self.cached = false;
                     }
                     for send_item in batch.drain(..) {
-                        if !self.running.load(Ordering::Relaxed) {
-                            break;
-                        }
                         let message_type = send_item.message_type();
                         self.counter.rx.fetch_add(1, Ordering::Relaxed);
                         debug!(
@@ -776,9 +841,13 @@ impl<T: Sendable> UniformSender<T> {
                                 let _ = self.buf_writer.take();
                             }
                             self.counter.dropped.fetch_add(1, Ordering::Relaxed);
+                            if !self.running.load(Ordering::Relaxed) {
+                                self.shutdown_failed.store(true, Ordering::Release);
+                            }
                         }
                     }
                 }
+                Err(Error::Timeout) if stopping => break,
                 Err(Error::Timeout) => match socket_type {
                     SocketType::File => self.flush_writer(),
                     _ => {
@@ -787,14 +856,26 @@ impl<T: Sendable> UniformSender<T> {
                         self.flush_encoder(&config);
                     }
                 },
-                Err(Error::Terminated(..)) => {
-                    match socket_type {
-                        SocketType::File => self.flush_writer(),
-                        _ => self.flush_encoder(&config),
-                    }
-                    break;
-                }
+                Err(Error::Terminated(..)) => break,
                 Err(Error::BatchTooLarge(_)) => unreachable!(),
+            }
+        }
+        let config = self.config.load();
+        match config.collector_socket_type {
+            SocketType::File => {
+                if let Some(writer) = self.buf_writer.as_mut() {
+                    if let Err(e) = writer.flush() {
+                        error!("{} final file flush failed: {e}", self.name);
+                        self.shutdown_failed.store(true, Ordering::Release);
+                    }
+                }
+            }
+            _ => {
+                self.update_connection(&config);
+                self.encoder.update_header(self.name, self.id, &config);
+                if !self.flush_encoder(&config) {
+                    self.shutdown_failed.store(true, Ordering::Release);
+                }
             }
         }
     }
@@ -864,5 +945,165 @@ impl<T: Sendable> UniformSender<T> {
             self.flush_encoder(config);
         }
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod shutdown_tests {
+    use super::*;
+    use crate::config::handler::ModuleConfig;
+    use arc_swap::{access::Map, ArcSwap};
+    use std::io::Read;
+    use std::net::TcpListener;
+    use std::sync::atomic::AtomicI64;
+
+    #[derive(Debug)]
+    struct Item(u32);
+    impl Sendable for Item {
+        fn encode(self, buffer: &mut Vec<u8>) -> Result<usize, prost::EncodeError> {
+            buffer.extend_from_slice(&self.0.to_le_bytes());
+            Ok(4)
+        }
+        fn message_type(&self) -> SendMessageType {
+            SendMessageType::ProtocolLog
+        }
+    }
+
+    fn sender(port: u16, count: u32) -> UniformSender<Item> {
+        let mut config = ModuleConfig::default();
+        config.sender.dest_ip = "127.0.0.1".into();
+        config.sender.dest_port = port;
+        config.sender.agent_id = 42;
+        config.sender.multiple_sockets_to_ingester = true;
+        config.sender.max_throughput_to_ingester = 0;
+        config.sender.collector_socket_type = SocketType::Tcp;
+        let access: SenderAccess = Map::new(
+            Arc::new(ArcSwap::from_pointee(config)),
+            |c: &ModuleConfig| -> &SenderConfig { &c.sender },
+        );
+        let (input, output, _stats) = public::queue::bounded(2048);
+        for n in 0..count {
+            input.send(Item(n)).unwrap();
+        }
+        let mut sender = UniformSender::new(
+            0,
+            "shutdown-test",
+            Arc::new(output),
+            access,
+            Arc::new(AtomicBool::new(false)),
+            Arc::new(Collector::new("test", Arc::new(AtomicI64::new(0)))),
+            ExceptionHandler::default(),
+            None,
+            SenderEncoder::Raw,
+            Arc::new(LeakyBucket::new(None)),
+        );
+        sender.connection_type = ConnectionType::Private;
+        sender.multiple_sockets_to_ingester = true;
+        sender.private_conn.lock().unwrap().dest_port = port;
+        sender
+    }
+
+    #[test]
+    fn stopped_sender_drains_multiple_batches_and_flushes_real_tcp_frame() {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        listener.set_nonblocking(true).unwrap();
+        let port = listener.local_addr().unwrap().port();
+        let peer = thread::spawn(move || {
+            let deadline = Instant::now() + Duration::from_secs(3);
+            let (mut stream, _) = loop {
+                match listener.accept() {
+                    Ok(pair) => break pair,
+                    Err(e) if e.kind() == ErrorKind::WouldBlock && Instant::now() < deadline => {
+                        thread::sleep(Duration::from_millis(1));
+                    }
+                    Err(e) => panic!("bounded test peer did not receive a connection: {e}"),
+                }
+            };
+            stream
+                .set_read_timeout(Some(Duration::from_secs(3)))
+                .unwrap();
+            let mut size = [0; 4];
+            stream.read_exact(&mut size).unwrap();
+            let size = u32::from_be_bytes(size) as usize;
+            assert!((Header::HEADER_LEN..=1048576).contains(&size));
+            let mut body = vec![0; size - 4];
+            stream.read_exact(&mut body).unwrap();
+            body
+        });
+        let mut sender = sender(port, 1300);
+        sender.process();
+        assert!(!sender.shutdown_failed.load(Ordering::Acquire));
+        assert_eq!(sender.counter.rx.load(Ordering::Relaxed), 1300);
+        assert_eq!(sender.counter.tx.load(Ordering::Relaxed), 1);
+        let body = peer.join().unwrap();
+        assert_eq!(body[0], u8::from(SendMessageType::ProtocolLog));
+        assert_eq!(body.len(), Header::HEADER_LEN - 4 + 1300 * 8);
+        for (n, bytes) in body[Header::HEADER_LEN - 4..].chunks_exact(8).enumerate() {
+            assert_eq!(&bytes[..4], &4u32.to_le_bytes());
+            assert_eq!(&bytes[4..], &(n as u32).to_le_bytes());
+        }
+    }
+
+    #[test]
+    fn refused_terminal_flush_is_not_success() {
+        for active in [false, true] {
+            let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+            let port = listener.local_addr().unwrap().port();
+            drop(listener);
+            let mut sender = sender(port, 1);
+            sender.running.store(active, Ordering::Release);
+            sender.process();
+            assert!(sender.shutdown_failed.load(Ordering::Acquire));
+            assert_eq!(sender.counter.tx.load(Ordering::Relaxed), 0);
+        }
+    }
+
+    #[test]
+    fn partial_interrupted_and_blocked_writes_keep_exact_prefix() {
+        let mut received = vec![];
+        let mut calls = 0;
+        write_frame(b"abcdefgh", Duration::from_secs(1), |bytes, _| {
+            calls += 1;
+            if calls == 1 {
+                return Err(std::io::Error::from(ErrorKind::Interrupted));
+            }
+            if calls == 2 {
+                return Err(std::io::Error::from(ErrorKind::WouldBlock));
+            }
+            let n = bytes.len().min(2);
+            received.extend_from_slice(&bytes[..n]);
+            Ok(n)
+        })
+        .unwrap();
+        assert_eq!(received, b"abcdefgh");
+    }
+
+    #[test]
+    fn zero_write_and_partial_failure_are_not_retried_as_complete_frames() {
+        let error = write_frame(b"abcdef", Duration::from_secs(1), |_, _| Ok(0)).unwrap_err();
+        assert_eq!(error.kind(), ErrorKind::WriteZero);
+        let mut calls = 0;
+        let error = write_frame(b"abcdef", Duration::from_secs(1), |bytes, _| {
+            calls += 1;
+            if calls == 1 {
+                assert_eq!(bytes, b"abcdef");
+                Ok(3)
+            } else {
+                assert_eq!(bytes, b"def");
+                Err(std::io::Error::from(ErrorKind::BrokenPipe))
+            }
+        })
+        .unwrap_err();
+        assert_eq!(error.kind(), ErrorKind::BrokenPipe);
+        assert_eq!(calls, 2);
+    }
+
+    #[test]
+    fn repeated_would_block_has_a_total_frame_deadline() {
+        let error = write_frame(b"a", Duration::from_millis(20), |_, _| {
+            Err(std::io::Error::from(ErrorKind::WouldBlock))
+        })
+        .unwrap_err();
+        assert_eq!(error.kind(), ErrorKind::TimedOut);
     }
 }

@@ -649,9 +649,17 @@ impl SessionAggregator {
                 // estimated lag from app proto start time to current time
                 let mut lag_second = 0i64;
 
-                while running.load(Ordering::Relaxed) {
+                loop {
+                    // stop() is called after the dispatcher has joined. Drain
+                    // its final queued batch before flushing the session cache.
+                    let stopping = !running.load(Ordering::Relaxed);
                     let mut batch_time: Option<Timestamp> = None;
-                    let result = input_queue.recv_all(&mut batch_buffer, Some(RCV_TIMEOUT));
+                    let timeout = if stopping {
+                        Duration::ZERO
+                    } else {
+                        RCV_TIMEOUT
+                    };
+                    let result = input_queue.recv_all(&mut batch_buffer, Some(timeout));
                     let config = config.load();
                     match result {
                         Ok(_) => {
@@ -666,6 +674,7 @@ impl SessionAggregator {
                                 session_queue.aggregate_session_and_send(&config, app_proto);
                             }
                         }
+                        Err(queue::Error::Timeout) if stopping => break,
                         Err(queue::Error::Timeout) => (),
                         Err(queue::Error::Terminated(..)) => break,
                         Err(queue::Error::BatchTooLarge(_)) => unreachable!(),
@@ -732,8 +741,58 @@ impl SessionAggregator {
             return;
         }
         if let Some(thread) = self.thread.lock().unwrap().take() {
-            let _ = thread.join();
+            thread
+                .join()
+                .expect("session aggregator panicked during shutdown");
         }
         info!("app protocol logs parser (id={}) stopped", self.id);
+    }
+}
+
+#[cfg(test)]
+mod shutdown_tests {
+    use super::*;
+    use crate::config::handler::ModuleConfig;
+    use arc_swap::{access::Map, ArcSwap};
+    use public::debug::QueueDebugger;
+
+    #[test]
+    fn stop_propagates_a_failed_aggregation_worker() {
+        let (_input, receiver, _stats) = queue::bounded(16);
+        let debugger = QueueDebugger::new();
+        let (output, _receiver, _stats2) =
+            queue::bounded_with_debug(16, "session-failed", &debugger);
+        let access: LogParserAccess = Map::new(
+            Arc::new(ArcSwap::from_pointee(ModuleConfig::default())),
+            |c: &ModuleConfig| -> &LogParserConfig { &c.log_parser },
+        );
+        let (aggregator, _) =
+            SessionAggregator::new(receiver, output, 0, access, Arc::new(AtomicI64::new(0)));
+        aggregator.running.store(true, Ordering::Release);
+        *aggregator.thread.lock().unwrap() =
+            Some(thread::spawn(|| panic!("synthetic aggregation failure")));
+        assert!(
+            std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| aggregator.stop())).is_err()
+        );
+    }
+
+    #[test]
+    fn stop_consumes_all_queued_batches_before_flushing_sessions() {
+        let (input, receiver, _stats) = queue::bounded(2048);
+        for n in 0..1300 {
+            input.send(AppProto::SocketClosed(n)).unwrap();
+        }
+        let debugger = QueueDebugger::new();
+        let (output, _receiver, _stats2) =
+            queue::bounded_with_debug(2048, "session-tail", &debugger);
+        let access: LogParserAccess = Map::new(
+            Arc::new(ArcSwap::from_pointee(ModuleConfig::default())),
+            |c: &ModuleConfig| -> &LogParserConfig { &c.log_parser },
+        );
+        let (aggregator, counter) =
+            SessionAggregator::new(receiver, output, 0, access, Arc::new(AtomicI64::new(0)));
+        aggregator.start();
+        aggregator.stop();
+        assert_eq!(counter.receive.load(Ordering::Relaxed), 1300);
     }
 }
