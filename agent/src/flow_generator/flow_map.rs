@@ -4005,3 +4005,7 @@ mod tests {
         }
     }
 }
+
+#[cfg(test)]
+#[path = "flow_map_first_record_tests.rs"]
+mod first_record_tests;

@@ -996,7 +996,7 @@ impl L7ProtocolParserInterface for HttpLog {
 
         // http2 有两个版本, 现在可以直接通过proto区分解析哪个版本的协议.
         match self.proto {
-            L7Protocol::Http1 => self.http1_check_protocol(payload),
+            L7Protocol::Http1 => self.http1_check_protocol(payload, param),
             L7Protocol::Http2 | L7Protocol::Grpc | L7Protocol::Triple => {
                 let Some(config) = param.parse_config else {
                     return None;
@@ -1426,18 +1426,39 @@ impl HttpLog {
         self.http2_resp_decoder = Some(Decoder::new_with_expected_headers(expected_headers_set));
     }
 
-    fn http1_check_protocol(&mut self, payload: &[u8]) -> Option<LogMessageType> {
+    fn http1_check_protocol(
+        &mut self,
+        payload: &[u8],
+        param: &ParseParam,
+    ) -> Option<LogMessageType> {
         let mut headers = parse_v1_headers(payload);
         let Some(first_line) = headers.next() else {
-            // request is not http v1 without '\r\n'
             return None;
         };
 
         if is_http_req_line(first_line) {
-            Some(LogMessageType::Request)
-        } else {
-            None
+            return Some(LogMessageType::Request);
         }
+
+        // Per-CPU syscall delivery may present a response before the first
+        // request. Keep that response available to session aggregation when
+        // eBPF supplied a known socket role and FlowLog established its
+        // response direction. The caller still enforces protocol/port policy.
+        // Packet-mode inference remains request-only.
+        if !matches!(param.ebpf_type, EbpfType::TracePoint | EbpfType::TlsUprobe)
+            || !matches!(param.socket_role, 1 | 2)
+            || param.direction != PacketDirection::ServerToClient
+        {
+            return None;
+        }
+        // get_http_resp_info validates version, ASCII and status range, but
+        // does not validate both required spaces in the status line.
+        let bytes = first_line.as_bytes();
+        if bytes.get(8) != Some(&b' ') || bytes.get(12) != Some(&b' ') {
+            return None;
+        }
+        get_http_resp_info(first_line).ok()?;
+        Some(LogMessageType::Response)
     }
 
     fn set_grpc_status(&mut self, status_code: u16, info: &mut HttpInfo) {
