@@ -147,8 +147,11 @@ the [DeepFlow SQL API](https://get.deepflow.io/docs/integration/output/query/sql
 on the receiving host's fixed loopback query port. The default is an offline
 plan: it reads only the supplied reports, without network access or output creation.
 The collector requires Linux and an explicit `--execute`; it changes no Agent,
-Controller, network, database schema or data. Stop the producer and the owned Agent
-before collection, and use a fresh marker for each workload.
+Controller, network, database schema or data. Stop the producer and use a fresh
+marker. Final acceptance collects a new archive after the owned Agent stops.
+A separate preliminary scan may coordinate ingestion drain while the Agent is
+still running; it is not stopped-system acceptance. See the two-phase procedure
+in [the real2000-request guide](README-http-ramp.md).
 
 ```sh
 # On the receiver, reports are already copied into a private directory:
@@ -206,8 +209,10 @@ The anonymous qualification is in `evidence/2026-10-27/http-pagination/summary.j
 
 Stable counts and two exact reads establish consistency during these bounded
 reads. They do not provide a transactional snapshot or prove that no future late
-write can arrive. The2000-row test is synthetic; a new real workload above1000
-requests and repeated higher-rate candidate/reference ramps remain required.
+write can arrive. The initial2000-row test was synthetic. Subsequent real2000-request loads,
+three per pinned native version at200RPS, now pass the separate two-phase gate
+in [README-http-ramp.md](README-http-ramp.md). Broader sustained capacity and
+performance parity remain unproven.
 
 
 The follow-up CI exposed an existing client cancellation race: both a due timer

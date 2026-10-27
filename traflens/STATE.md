@@ -508,3 +508,31 @@ the timer and in the worker fix it. All9 top-level/18 Go subtests pass with race
 and before/after inputs remain private, with a separate cancellation seal. New
 binary builds; it has not replaced the earlier live benchmark binary. Exact final
 commit CI must pass before declaring this checkpoint remotely validated.
+
+
+## Real2000-request native workload checkpoint - 2026-10-27
+
+Read README-http-ramp.md and evidence/2026-10-27/http-ramp/summary.json. At200RPS
+for10s, the same pinned native candidate95f5e10df and reference8741e924f each
+complete three2000-request trials under the unchanged2CPU/1GiB packet profile.
+All12000 qualified Sessions pass two exact whole-marker scans before stopping
+and two fresh scans after stopping, including complete metadata and report-byte
+identity checks. Twelve archives replay offline. Generator source d18bf64b0
+includes the cancellation fix and identical binary bits are used at both ends.
+
+The first reference attempt stopped before verifying ingestion and failed at
+1894/2000 resources, missing the final106 sequences despite successful client/
+server exchanges and exit0. It remains a failed attempt, with diagnostic evidence.
+Both pinned stop paths call a one-second sleep then process exit; the exact
+pending pipeline stage is unproven. Pre-stop drain coordination avoids this loss
+in the qualified matrix but does not fix shutdown reliability. Prioritize bounded
+pipeline drain and immediate-stop regression next. Resource windows exclude the
+subsequent ingestion drain, so do not claim full per-request CPU cost. No maximum
+or sustained capacity, complete packet/queue-drop curves or full parity is proven.
+
+All seven owned Agent/workload lifecycles restored exact Controller YAML and BPF/
+tracefs snapshots. Both link leases restored the original source-portDOWN state;
+management routes and existing container IDs were retained. Combined1289-entry
+private evidence is sealed and backed up on the peer. Publish only aggregates,
+source/software hashes and manifest fingerprint; raw identities, markers, SQL,
+reports and configuration remain private. Hourly development continues.

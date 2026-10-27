@@ -133,3 +133,14 @@ other containers preserved. The public summary contains anonymous samples,
 source/software/patch hashes and a private-manifest fingerprint. Raw programs,
 PIDs, namespaces, hardware/network identities, run markers and API responses stay
 in private sealed evidence.
+
+
+## Larger finite workload follow-up
+
+The separately qualified [200RPS/10s workload](README-http-ramp.md) uses the same
+native pins/profile and three new processes per version. All12000 qualified
+Sessions pass exact pre-stop and post-stop pagination. An earlier immediate-stop
+reference failure with106 missing tail resources remains excluded and preserved.
+The generator now uses the committed cancellation repair; both versions receive
+the same rebuilt generator bits. These are further finite workload observations,
+not a maximum-rate, full-pipeline CPU-cost or performance-superiority result.

@@ -63,3 +63,23 @@ The actual subprocess regression reaches a supplied invalid YAML file and exits1
 where the old code exited2 with an unknown-flag error. The owned Server now starts
 with explicit `-f /etc/server.yaml` and passes HTTP13/13 with both databases and
 unrelated containers retained. See the API guide and namespace checkpoint.
+
+
+## Native Agent stop and pending delivery - 2000-request follow-up
+
+A new pinned-reference200RPS/10s workload completed all2000 client/server exchanges,
+then stopped the Agent immediately. Only1894 unique request resources persisted;
+sequences1894-1999 remained absent through the bounded90s verification. NIC error/
+drop counters did not increase and the Agent exited0. The original failure is
+retained, not classified as a passing performance sample. This experiment does
+not establish the candidate's behavior under immediate stop.
+
+Both pinned native sources call `clean_and_exit(0)` in `Agent::stop`; that helper
+sleeps one second and calls `std::process::exit`, without a coordinated pipeline
+drain at this call site. The exact stage holding the missing tail is unproven.
+A later sequence proves all2000 rows while the Agent remains running, stops it,
+and rechecks the exact rows twice. All six matched runs then pass; this operating
+procedure does **not** fix shutdown delivery. A bounded producer-to-consumer drain,
+explicit failure on unfinished delivery and immediate-stop regression remain
+required before shutdown reliability or complete performance parity claims.
+See [the qualified workload guide](../README-http-ramp.md).

@@ -1,0 +1,552 @@
+{
+  "schema": "traflens.http-ramp-qualification.v1",
+  "source": {
+    "candidate_agent": "95f5e10dfe63c4b5920c8d7932b683fb896a1479",
+    "reference_agent": "8741e924ff0ae3964a135985c51e5a6ce6bde397",
+    "generator_and_oracle": "d18bf64b07a70c86f39bbba38877b37663d61f53"
+  },
+  "agent_binary_sha256": {
+    "candidate": "cbee7383430743230af341a3d28118e4a78bb71f47124e1332509ddd5030ce23",
+    "reference": "4bc3b1525ccc444a378552ee11f21d4156646e34f866014d2dd60e7b23e65d80"
+  },
+  "generator_binary_sha256": "69e0fdc43d47c88c2dc6b9f59c3aa32805bb14bf17103b7b268364f3a3aea822",
+  "same_generator_bits_on_both_hosts": true,
+  "offered_rps": 200,
+  "offered_seconds": 10,
+  "client_concurrency": 16,
+  "per_request_timeout_ms": 1000,
+  "requests_per_trial": 2000,
+  "qualified_trials_per_version": 3,
+  "qualified_trials": 6,
+  "qualified_unique_sessions": 12000,
+  "exact_scans_per_trial": 4,
+  "poststop_exact_scans_per_trial": 2,
+  "data_page_queries": 192,
+  "whole_marker_count_queries": 88,
+  "offline_replayed_archives": 12,
+  "nic_error_drop_counter_deltas_zero_windows": 12,
+  "kernel_packet_drop_accounting_complete": false,
+  "agent_queue_drop_accounting_complete": false,
+  "agent_limits": {
+    "cpus": 2,
+    "memory_mib": 1024,
+    "pids": 384,
+    "affinity": [
+      0,
+      1
+    ],
+    "l7_throttle_per_second": 1000,
+    "concurrent_flow_limit": 4096,
+    "telemetry_export_mbit_per_second": 10
+  },
+  "excluded_earlier_attempt": {
+    "role": "reference",
+    "scheduled": 2000,
+    "client_server_complete": true,
+    "unique_stored_resources": 1894,
+    "missing_resources": 106,
+    "missing_sequence_range_inclusive": [
+      1894,
+      1999
+    ],
+    "agent_exit_code": 0,
+    "prestop_ingestion_drain_required": true,
+    "shutdown_delivery_bug_fixed": false
+  },
+  "resource_window": "client endpoint setup, offered load and endpoint cleanup; startup, warmup and subsequent ingestion drain excluded",
+  "full_pipeline_cpu_cost_measured": false,
+  "telemetry_delivery_latency_measured": false,
+  "performance_ceiling_measured": false,
+  "performance_improvement_proven": false,
+  "deepflow_feature_performance_parity_proven": false,
+  "medians_and_ranges": {
+    "reference": {
+      "cpu_core_seconds": {
+        "median": 0.186364,
+        "min": 0.178084,
+        "max": 0.187084
+      },
+      "sampled_agent_rss_peak_mib": {
+        "median": 122.390625,
+        "min": 120.28125,
+        "max": 123.79296875
+      },
+      "observation_seconds": {
+        "median": 10.577829543999542,
+        "min": 10.521127830001205,
+        "max": 10.637023171999317
+      },
+      "service_p99_ms": {
+        "median": 1.430289,
+        "min": 1.40595,
+        "max": 1.444571
+      },
+      "offered_p99_ms": {
+        "median": 2.451147,
+        "min": 2.385023,
+        "max": 2.482434
+      }
+    },
+    "candidate": {
+      "cpu_core_seconds": {
+        "median": 0.18402,
+        "min": 0.179769,
+        "max": 0.190317
+      },
+      "sampled_agent_rss_peak_mib": {
+        "median": 122.91796875,
+        "min": 122.25,
+        "max": 123.125
+      },
+      "observation_seconds": {
+        "median": 10.646485011999175,
+        "min": 10.583655562000786,
+        "max": 10.702689022000413
+      },
+      "service_p99_ms": {
+        "median": 1.448969,
+        "min": 1.437607,
+        "max": 1.462636
+      },
+      "offered_p99_ms": {
+        "median": 2.431939,
+        "min": 2.428033,
+        "max": 2.446688
+      }
+    }
+  },
+  "samples": [
+    {
+      "role": "reference",
+      "repeat": 1,
+      "scheduled": 2000,
+      "completed": 2000,
+      "failed": 0,
+      "skipped": 0,
+      "resources": {
+        "observation_seconds": 10.521127830001205,
+        "cpu_core_seconds": 0.178084,
+        "average_cpu_cores": 0.016926322242011918,
+        "cpu_user_seconds": 0.055953,
+        "cpu_system_seconds": 0.12213,
+        "cpu_throttled_periods": 0,
+        "cpu_throttled_seconds": 0.0,
+        "sampled_agent_rss_peak_mib": 120.28125,
+        "sampled_cgroup_memory_max_mib": 102.53515625,
+        "kernel_cgroup_memory_peak_available": false,
+        "kernel_cgroup_memory_peak_mib": null,
+        "sample_count": 105,
+        "maximum_sample_gap_seconds": 0.10111914499793784,
+        "cpu_includes_watchdog": true,
+        "rss_owner_verified": true,
+        "rss_is_sampled_not_exact_lifetime_peak": true
+      },
+      "http": {
+        "kind": "paginated-http-packet-acceptance",
+        "rate_rps": 200,
+        "offered_seconds": 10,
+        "scheduled": 2000,
+        "completed": 2000,
+        "failed": 0,
+        "skipped": 0,
+        "service_p50_ms": 1.03516,
+        "service_p99_ms": 1.40595,
+        "offered_p99_ms": 2.385023,
+        "generator_cpu_seconds": 2.3455709999999996,
+        "generator_peak_rss_kib": 12208,
+        "packet_exact_query_reads": 2,
+        "expected_captured_endpoints_per_request": 1,
+        "agent_performance_ceiling_measured": false,
+        "deepflow_performance_parity_proven": false,
+        "page_size": 256,
+        "scans": [
+          {
+            "pages": 8,
+            "rows": 2000,
+            "count_reads": 2
+          },
+          {
+            "pages": 8,
+            "rows": 2000,
+            "count_reads": 2
+          }
+        ],
+        "transactional_snapshot_proven": false
+      },
+      "prestop_whole_marker_scans": [
+        {
+          "pages": 8,
+          "rows": 2000,
+          "count_reads": 10
+        },
+        {
+          "pages": 8,
+          "rows": 2000,
+          "count_reads": 2
+        }
+      ]
+    },
+    {
+      "role": "candidate",
+      "repeat": 1,
+      "scheduled": 2000,
+      "completed": 2000,
+      "failed": 0,
+      "skipped": 0,
+      "resources": {
+        "observation_seconds": 10.583655562000786,
+        "cpu_core_seconds": 0.18402,
+        "average_cpu_cores": 0.01738718715116726,
+        "cpu_user_seconds": 0.08636,
+        "cpu_system_seconds": 0.097659,
+        "cpu_throttled_periods": 0,
+        "cpu_throttled_seconds": 0.0,
+        "sampled_agent_rss_peak_mib": 122.91796875,
+        "sampled_cgroup_memory_max_mib": 103.46875,
+        "kernel_cgroup_memory_peak_available": false,
+        "kernel_cgroup_memory_peak_mib": null,
+        "sample_count": 105,
+        "maximum_sample_gap_seconds": 0.10431272400091984,
+        "cpu_includes_watchdog": true,
+        "rss_owner_verified": true,
+        "rss_is_sampled_not_exact_lifetime_peak": true
+      },
+      "http": {
+        "kind": "paginated-http-packet-acceptance",
+        "rate_rps": 200,
+        "offered_seconds": 10,
+        "scheduled": 2000,
+        "completed": 2000,
+        "failed": 0,
+        "skipped": 0,
+        "service_p50_ms": 1.038174,
+        "service_p99_ms": 1.462636,
+        "offered_p99_ms": 2.428033,
+        "generator_cpu_seconds": 2.361561,
+        "generator_peak_rss_kib": 12204,
+        "packet_exact_query_reads": 2,
+        "expected_captured_endpoints_per_request": 1,
+        "agent_performance_ceiling_measured": false,
+        "deepflow_performance_parity_proven": false,
+        "page_size": 256,
+        "scans": [
+          {
+            "pages": 8,
+            "rows": 2000,
+            "count_reads": 2
+          },
+          {
+            "pages": 8,
+            "rows": 2000,
+            "count_reads": 2
+          }
+        ],
+        "transactional_snapshot_proven": false
+      },
+      "prestop_whole_marker_scans": [
+        {
+          "pages": 8,
+          "rows": 2000,
+          "count_reads": 10
+        },
+        {
+          "pages": 8,
+          "rows": 2000,
+          "count_reads": 2
+        }
+      ]
+    },
+    {
+      "role": "candidate",
+      "repeat": 2,
+      "scheduled": 2000,
+      "completed": 2000,
+      "failed": 0,
+      "skipped": 0,
+      "resources": {
+        "observation_seconds": 10.646485011999175,
+        "cpu_core_seconds": 0.190317,
+        "average_cpu_cores": 0.017876040757630544,
+        "cpu_user_seconds": 0.096193,
+        "cpu_system_seconds": 0.094123,
+        "cpu_throttled_periods": 0,
+        "cpu_throttled_seconds": 0.0,
+        "sampled_agent_rss_peak_mib": 123.125,
+        "sampled_cgroup_memory_max_mib": 103.203125,
+        "kernel_cgroup_memory_peak_available": false,
+        "kernel_cgroup_memory_peak_mib": null,
+        "sample_count": 106,
+        "maximum_sample_gap_seconds": 0.10142635900047026,
+        "cpu_includes_watchdog": true,
+        "rss_owner_verified": true,
+        "rss_is_sampled_not_exact_lifetime_peak": true
+      },
+      "http": {
+        "kind": "paginated-http-packet-acceptance",
+        "rate_rps": 200,
+        "offered_seconds": 10,
+        "scheduled": 2000,
+        "completed": 2000,
+        "failed": 0,
+        "skipped": 0,
+        "service_p50_ms": 1.062097,
+        "service_p99_ms": 1.437607,
+        "offered_p99_ms": 2.431939,
+        "generator_cpu_seconds": 2.4132860000000003,
+        "generator_peak_rss_kib": 12252,
+        "packet_exact_query_reads": 2,
+        "expected_captured_endpoints_per_request": 1,
+        "agent_performance_ceiling_measured": false,
+        "deepflow_performance_parity_proven": false,
+        "page_size": 256,
+        "scans": [
+          {
+            "pages": 8,
+            "rows": 2000,
+            "count_reads": 2
+          },
+          {
+            "pages": 8,
+            "rows": 2000,
+            "count_reads": 2
+          }
+        ],
+        "transactional_snapshot_proven": false
+      },
+      "prestop_whole_marker_scans": [
+        {
+          "pages": 8,
+          "rows": 2000,
+          "count_reads": 8
+        },
+        {
+          "pages": 8,
+          "rows": 2000,
+          "count_reads": 2
+        }
+      ]
+    },
+    {
+      "role": "reference",
+      "repeat": 2,
+      "scheduled": 2000,
+      "completed": 2000,
+      "failed": 0,
+      "skipped": 0,
+      "resources": {
+        "observation_seconds": 10.577829543999542,
+        "cpu_core_seconds": 0.186364,
+        "average_cpu_cores": 0.01761835915627117,
+        "cpu_user_seconds": 0.078983,
+        "cpu_system_seconds": 0.107381,
+        "cpu_throttled_periods": 0,
+        "cpu_throttled_seconds": 0.0,
+        "sampled_agent_rss_peak_mib": 122.390625,
+        "sampled_cgroup_memory_max_mib": 103.03515625,
+        "kernel_cgroup_memory_peak_available": false,
+        "kernel_cgroup_memory_peak_mib": null,
+        "sample_count": 105,
+        "maximum_sample_gap_seconds": 0.10096464700109209,
+        "cpu_includes_watchdog": true,
+        "rss_owner_verified": true,
+        "rss_is_sampled_not_exact_lifetime_peak": true
+      },
+      "http": {
+        "kind": "paginated-http-packet-acceptance",
+        "rate_rps": 200,
+        "offered_seconds": 10,
+        "scheduled": 2000,
+        "completed": 2000,
+        "failed": 0,
+        "skipped": 0,
+        "service_p50_ms": 1.092735,
+        "service_p99_ms": 1.444571,
+        "offered_p99_ms": 2.482434,
+        "generator_cpu_seconds": 2.456496,
+        "generator_peak_rss_kib": 11892,
+        "packet_exact_query_reads": 2,
+        "expected_captured_endpoints_per_request": 1,
+        "agent_performance_ceiling_measured": false,
+        "deepflow_performance_parity_proven": false,
+        "page_size": 256,
+        "scans": [
+          {
+            "pages": 8,
+            "rows": 2000,
+            "count_reads": 2
+          },
+          {
+            "pages": 8,
+            "rows": 2000,
+            "count_reads": 2
+          }
+        ],
+        "transactional_snapshot_proven": false
+      },
+      "prestop_whole_marker_scans": [
+        {
+          "pages": 8,
+          "rows": 2000,
+          "count_reads": 9
+        },
+        {
+          "pages": 8,
+          "rows": 2000,
+          "count_reads": 2
+        }
+      ]
+    },
+    {
+      "role": "reference",
+      "repeat": 3,
+      "scheduled": 2000,
+      "completed": 2000,
+      "failed": 0,
+      "skipped": 0,
+      "resources": {
+        "observation_seconds": 10.637023171999317,
+        "cpu_core_seconds": 0.187084,
+        "average_cpu_cores": 0.01758800342679295,
+        "cpu_user_seconds": 0.082114,
+        "cpu_system_seconds": 0.104969,
+        "cpu_throttled_periods": 0,
+        "cpu_throttled_seconds": 0.0,
+        "sampled_agent_rss_peak_mib": 123.79296875,
+        "sampled_cgroup_memory_max_mib": 102.734375,
+        "kernel_cgroup_memory_peak_available": false,
+        "kernel_cgroup_memory_peak_mib": null,
+        "sample_count": 106,
+        "maximum_sample_gap_seconds": 0.10143259499818669,
+        "cpu_includes_watchdog": true,
+        "rss_owner_verified": true,
+        "rss_is_sampled_not_exact_lifetime_peak": true
+      },
+      "http": {
+        "kind": "paginated-http-packet-acceptance",
+        "rate_rps": 200,
+        "offered_seconds": 10,
+        "scheduled": 2000,
+        "completed": 2000,
+        "failed": 0,
+        "skipped": 0,
+        "service_p50_ms": 1.096044,
+        "service_p99_ms": 1.430289,
+        "offered_p99_ms": 2.451147,
+        "generator_cpu_seconds": 2.449498,
+        "generator_peak_rss_kib": 12148,
+        "packet_exact_query_reads": 2,
+        "expected_captured_endpoints_per_request": 1,
+        "agent_performance_ceiling_measured": false,
+        "deepflow_performance_parity_proven": false,
+        "page_size": 256,
+        "scans": [
+          {
+            "pages": 8,
+            "rows": 2000,
+            "count_reads": 2
+          },
+          {
+            "pages": 8,
+            "rows": 2000,
+            "count_reads": 2
+          }
+        ],
+        "transactional_snapshot_proven": false
+      },
+      "prestop_whole_marker_scans": [
+        {
+          "pages": 8,
+          "rows": 2000,
+          "count_reads": 7
+        },
+        {
+          "pages": 8,
+          "rows": 2000,
+          "count_reads": 2
+        }
+      ]
+    },
+    {
+      "role": "candidate",
+      "repeat": 3,
+      "scheduled": 2000,
+      "completed": 2000,
+      "failed": 0,
+      "skipped": 0,
+      "resources": {
+        "observation_seconds": 10.702689022000413,
+        "cpu_core_seconds": 0.179769,
+        "average_cpu_cores": 0.016796619955084878,
+        "cpu_user_seconds": 0.083031,
+        "cpu_system_seconds": 0.096738,
+        "cpu_throttled_periods": 0,
+        "cpu_throttled_seconds": 0.0,
+        "sampled_agent_rss_peak_mib": 122.25,
+        "sampled_cgroup_memory_max_mib": 102.93359375,
+        "kernel_cgroup_memory_peak_available": false,
+        "kernel_cgroup_memory_peak_mib": null,
+        "sample_count": 107,
+        "maximum_sample_gap_seconds": 0.10131417500087991,
+        "cpu_includes_watchdog": true,
+        "rss_owner_verified": true,
+        "rss_is_sampled_not_exact_lifetime_peak": true
+      },
+      "http": {
+        "kind": "paginated-http-packet-acceptance",
+        "rate_rps": 200,
+        "offered_seconds": 10,
+        "scheduled": 2000,
+        "completed": 2000,
+        "failed": 0,
+        "skipped": 0,
+        "service_p50_ms": 1.039314,
+        "service_p99_ms": 1.448969,
+        "offered_p99_ms": 2.446688,
+        "generator_cpu_seconds": 2.339617,
+        "generator_peak_rss_kib": 11964,
+        "packet_exact_query_reads": 2,
+        "expected_captured_endpoints_per_request": 1,
+        "agent_performance_ceiling_measured": false,
+        "deepflow_performance_parity_proven": false,
+        "page_size": 256,
+        "scans": [
+          {
+            "pages": 8,
+            "rows": 2000,
+            "count_reads": 2
+          },
+          {
+            "pages": 8,
+            "rows": 2000,
+            "count_reads": 2
+          }
+        ],
+        "transactional_snapshot_proven": false
+      },
+      "prestop_whole_marker_scans": [
+        {
+          "pages": 8,
+          "rows": 2000,
+          "count_reads": 8
+        },
+        {
+          "pages": 8,
+          "rows": 2000,
+          "count_reads": 2
+        }
+      ]
+    }
+  ],
+  "cleanup": {
+    "controller_yaml_exactly_restored": true,
+    "owned_agent_workload_containers_removed": true,
+    "preexisting_container_ids_preserved": true,
+    "source_bench_link_restored_down": true,
+    "management_route_unchanged": true,
+    "bpf_tracefs_baselines_restored": true
+  },
+  "private_manifest": {
+    "entries": 1289,
+    "sha256": "5e361650d98f199c874c7601e0ab018d36438ab70f20aa02a9884e744a70cc58"
+  }
+}
