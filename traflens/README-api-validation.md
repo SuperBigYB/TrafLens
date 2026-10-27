@@ -167,3 +167,17 @@ eBPF collection, payload collection/ingestion, or sustained performance. They al
 do not prove that every malformed SQL statement is panic-free, that a partially
 written HTTP response can be repaired, or that full DeepFlow functional and
 performance parity has been achieved.
+
+
+## Explicit startup path follow-up
+
+Runtime source `121bdbe26f147b96e532e702ab9819d2ad6ad353` closes the historical
+`-f` reparsing failure. The executable owns its flag parsing; Controller.Start
+uses the supplied configuration path directly. A subprocess test verifies that
+a nondefault invalid YAML path reaches configuration validation rather than an
+unknown-flag exit. The standalone controller entry point retains global parsing.
+The owned Server was rebuilt and started with explicit `-f /etc/server.yaml`;
+the same thirteen actual API cases pass, preserving both database identities,
+their start times/mounts, and unrelated containers. A full Server-log scan found
+no generated private database password. This validation is separate from the
+new standalone eBPF payload experiment; no managed Agent ran in that experiment.

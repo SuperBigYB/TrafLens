@@ -91,9 +91,9 @@ struct socket_bpf_data {
 
 	struct __tuple_t tuple;	// Socket五元组信息
 	uint64_t socket_id;	// Socket的唯一标识，从启动时的时钟开始自增1
-	uint16_t l7_protocal_hint;	// 应用数据（cap_data）的协议类型，枚举如下：1 SOCK_DATA_HTTP1, 2 SOCK_DATA_DNS, 3 ...
+	uint16_t l7_protocal_hint; // traffic_protocol hint; PROTO_HTTP1 is 20.
 	// 存在一定误判性（例如标识为A协议但实际上是未知协议，或标识为多种协议），上层应用应继续深入判断
-	uint8_t msg_type;	// 信息类型，值为MSG_UNKNOWN(0), MSG_REQUEST(1), MSG_RESPONSE(2)
+	uint8_t msg_type; // message_type hint; syscall payloads normally use MSG_COMMON.
 	bool batch_last_data;   // Indicates the last data item in the batch.
 	bool is_tls;
 
@@ -105,7 +105,7 @@ struct socket_bpf_data {
 	/* data info */
 	uint64_t timestamp;	// syscall timestamp
 	uint64_t cap_timestamp; // data capture timestamp
-	uint8_t direction;	// 数据的收发方向，枚举如下: 1 SOCK_DIR_SND, 2 SOCK_DIR_RCV
+	uint8_t direction; // traffic_direction: T_EGRESS (0), T_INGRESS (1).
 	uint64_t syscall_len;	// 本次系统调用读、写数据的总长度
 	uint32_t cap_len;	// 返回的cap_data长度
 	uint32_t reasm_bytes;	// 重组后的累计字节数

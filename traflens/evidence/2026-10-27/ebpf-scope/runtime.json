@@ -1,0 +1,221 @@
+{
+  "schema": "traflens.ebpf-netns-runtime.public.v1",
+  "pass": true,
+  "source_commit": "a0cb0fb9c111cb7b34168d459fd3e188b07826e6",
+  "software": {
+    "source_commit": "a0cb0fb9c111cb7b34168d459fd3e188b07826e6",
+    "libtrace_sha256": "8a6b36fca7e0272b925f6cee26f7a6d01b135dc018fecaa27b5dbf22ca188ae0",
+    "trace_utils_sha256": "e6d313f1d47c2b1ae29742c22f6501816ea7c9ffe5abd8a7d2ce01f7ff807bfc",
+    "selftests_pass": true,
+    "ldd_no_missing": true,
+    "gate": {
+      "sha256": "1798ea5f6dcfed32993869c31fc4db23f2ce153811d214bb232fb18382cfa31c",
+      "bytes": 54707816
+    },
+    "gate-traffic": {
+      "sha256": "1882c6fa3b5c3a18afb4b32c401044f86e750cb671870a2d81f472e8306c212f",
+      "bytes": 22984
+    },
+    "ebpf-netns-gate.c": {
+      "sha256": "a6a59e232e844677c0db701a735013da57c53779b9651193a4f1a31d8a583cb6",
+      "bytes": 39976
+    },
+    "libtrace_bytes": 46389760,
+    "trace_utils_bytes": 29521708
+  },
+  "fixture": {
+    "protocol": "synthetic HTTP/1.1 over loopback TCP",
+    "same_port": true,
+    "equal_length_positive_negative": true,
+    "normal_os_tcp_client_and_server": true,
+    "real_browser_or_external_http_service": false,
+    "positive_roundtrips_per_case": 20,
+    "negative_roundtrips_per_case": 40,
+    "negative_phases": [
+      10,
+      20,
+      10
+    ],
+    "quiet_drain_seconds": 1,
+    "quiet_negative_after_seconds": 2,
+    "suite_total_roundtrips": 180
+  },
+  "containment": {
+    "loader_pid_mode": "host",
+    "loader_network": "fresh private namespace",
+    "workload_pid_mode": "private",
+    "workload_network": "distinct fresh private namespaces",
+    "scope_identity": "current-task network namespace inode",
+    "socket_owner_filter": false,
+    "namespace_fds_pinned_through_tracer_exit": true,
+    "wrong_inode_is_owned_quiet_namespace": true,
+    "port_filter_is_exclusive": false,
+    "raw_payload_persisted": false,
+    "profiles_or_tls_uprobes_requested": false,
+    "host_network_configuration_changed": false,
+    "database_mutated": false,
+    "outside_pid_payload_read_in_userspace_callback": false,
+    "kernel_pid_acl": false
+  },
+  "resources": {
+    "tracer_cpus": 2,
+    "tracer_memory_mib": 2048,
+    "tracer_pid_limit": 256,
+    "worker_cpus": 0.25,
+    "worker_memory_mib": 64,
+    "worker_pid_limit": 8,
+    "tracer_alarm_seconds": 180,
+    "worker_alarm_seconds": 240,
+    "case_deadline_seconds": 210,
+    "privileged": false,
+    "capabilities": [
+      "SYS_ADMIN",
+      "SYS_RESOURCE",
+      "BPF",
+      "PERFMON"
+    ],
+    "default_seccomp": true,
+    "no_new_privileges": true,
+    "tracefs_btf_mounts_readonly": true
+  },
+  "cases": [
+    {
+      "mode": "legacy",
+      "pass": true,
+      "running": true,
+      "configuration_maps_verified": true,
+      "loaded_program_sections": 81,
+      "attachment_wrappers_before": 30,
+      "attachment_wrappers_after": 0,
+      "callbacks": 0,
+      "data_callbacks": 0,
+      "close_records": 0,
+      "foreign_pid_records": 0,
+      "invalid_metadata": 0,
+      "invalid_wire": 0,
+      "kern_lost": 0,
+      "user_enqueue_lost": 0,
+      "mem_alloc_failures": 0,
+      "exact_request_response_copies": null,
+      "own_program_ids_gone": true,
+      "bpf_inventory_restored": true,
+      "tracefs_unchanged": true,
+      "preexisting_containers_still_running": true,
+      "owned_resources_cleaned": true,
+      "tracer_exit_before_namespace_release": true,
+      "control_policy": "All 65536 ports bypassed, all protocols disabled; no unscoped positive-payload claim."
+    },
+    {
+      "mode": "deny",
+      "pass": true,
+      "running": true,
+      "configuration_maps_verified": true,
+      "loaded_program_sections": 81,
+      "attachment_wrappers_before": 30,
+      "attachment_wrappers_after": 0,
+      "callbacks": 0,
+      "data_callbacks": 0,
+      "close_records": 0,
+      "foreign_pid_records": 0,
+      "invalid_metadata": 0,
+      "invalid_wire": 0,
+      "kern_lost": 0,
+      "user_enqueue_lost": 0,
+      "mem_alloc_failures": 0,
+      "exact_request_response_copies": null,
+      "own_program_ids_gone": true,
+      "bpf_inventory_restored": true,
+      "tracefs_unchanged": true,
+      "preexisting_containers_still_running": true,
+      "owned_resources_cleaned": true,
+      "tracer_exit_before_namespace_release": true
+    },
+    {
+      "mode": "scoped",
+      "pass": true,
+      "running": true,
+      "configuration_maps_verified": true,
+      "loaded_program_sections": 81,
+      "attachment_wrappers_before": 30,
+      "attachment_wrappers_after": 0,
+      "callbacks": 82,
+      "data_callbacks": 80,
+      "close_records": 2,
+      "foreign_pid_records": 0,
+      "invalid_metadata": 0,
+      "invalid_wire": 0,
+      "kern_lost": 0,
+      "user_enqueue_lost": 0,
+      "mem_alloc_failures": 0,
+      "exact_request_response_copies": true,
+      "own_program_ids_gone": true,
+      "bpf_inventory_restored": true,
+      "tracefs_unchanged": true,
+      "preexisting_containers_still_running": true,
+      "owned_resources_cleaned": true,
+      "tracer_exit_before_namespace_release": true
+    }
+  ],
+  "scope_limitations": {
+    "full_agent_pipeline": false,
+    "server_or_database_ingestion": false,
+    "tls_or_profiling_capture": false,
+    "realtime_kernel_runtime_tested": false,
+    "performance_benchmark": false,
+    "cross_namespace_socket_fd_transfer_tested": false
+  },
+  "evidence": {
+    "private_file_count": 191,
+    "private_manifest_sha256": "afae099b0ca69584d54c1fac3f30c136d76aa780d8dd158f7999caba48883e32",
+    "private_archive_sha256": "d1a03c2c08b260bb37f3de0d17be00bd02e819d4664e58d596342b36fc96fa24",
+    "private_archive_bytes": 112742,
+    "prior_failed_runs_preserved": true
+  },
+  "environment": {
+    "architecture": "x86_64",
+    "kernel_family": "Linux 5.15",
+    "build_runtime_image": "ghcr.io/deepflowio/rust-build@sha256:b018b2a5970d3c8f36a95f56dec56ad780020ec782419e42c571c7be5867d310",
+    "compiler": "GCC 11.2.1 (login-shell toolchain)"
+  },
+  "harness_sources": {
+    "ebpf-netns-gate.c": {
+      "sha256": "a6a59e232e844677c0db701a735013da57c53779b9651193a4f1a31d8a583cb6",
+      "bytes": 39976
+    },
+    "runtime-netns.py": {
+      "sha256": "150b76329362b46aacaeebc5d9dc1bc95c8960025a4dad455ad8b93bc329add7",
+      "bytes": 25945
+    },
+    "test_runtime_netns.py": {
+      "sha256": "ea8c9870f82dd527296eef7e7fa6d2f6561908b19a47216af70c7b0f5dab60c0",
+      "bytes": 11389,
+      "qualification": "Prepublication sibling-layout test; published tests relocate three script references."
+    }
+  },
+  "validation": {
+    "prepublication_driver_unit_tests": 19,
+    "driver_tests_pass": true,
+    "fixed_image_selftests_pass": true,
+    "unknown_request_response_message_hints_rejected_before_payload": true,
+    "invalid_role_direction_rejected_before_payload": true,
+    "failed_load_null_object_guards_tested": true,
+    "formal_compile_flags_include": "--wrap=_ebpf_log -rdynamic",
+    "published_lab_tests": 154,
+    "published_driver_unit_tests": 19,
+    "published_stdlib_c_offline_selftest": true
+  },
+  "published_sources": {
+    "traflens/lab/ebpf-netns-gate.c": {
+      "sha256": "a6a59e232e844677c0db701a735013da57c53779b9651193a4f1a31d8a583cb6"
+    },
+    "traflens/lab/runtime-netns.py": {
+      "sha256": "150b76329362b46aacaeebc5d9dc1bc95c8960025a4dad455ad8b93bc329add7"
+    },
+    "traflens/lab/tests/test_runtime_netns.py": {
+      "sha256": "1144e38bc011e884a382a936a5c0182d424d433d57b4ccc19c42e9fd7be56b9e"
+    },
+    "traflens/lab/tests/test_ebpf_netns_traffic.py": {
+      "sha256": "15b020c58d275d6581e4f8aec95198e50ca406aa46f841d851327dc60ac9c588"
+    }
+  }
+}

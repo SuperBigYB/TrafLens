@@ -1,0 +1,99 @@
+{
+  "schema": "traflens.ebpf-scope-checkpoint.v1",
+  "objective_complete": false,
+  "native_core_source": "a0cb0fb9c111cb7b34168d459fd3e188b07826e6",
+  "core_ci_url": "https://github.com/SuperBigYB/TrafLens/actions/runs/40423638878",
+  "source_qualification": "Native/runtime bind to the exact core. Following publication adds helpers, tests, documentation and SDK comments only.",
+  "namespace_scope": {
+    "default": "off",
+    "identity": "current-task network namespace",
+    "socket_owner_acl": false,
+    "kernel_pid_acl": false,
+    "local_bootstrap_fd_pinned": true,
+    "managed_agent_ingestion_executed": false,
+    "realtime_kernel_runtime_tested": false
+  },
+  "rust": {
+    "packet_library": 392,
+    "tunnel": 28,
+    "window": 21,
+    "packet_total": 441,
+    "native_library": 403,
+    "native_total": 452,
+    "failed": 0,
+    "ignored": 0,
+    "original_2023_sdk_keeper_passed": true
+  },
+  "c_regressions": {
+    "scope_top_level": 8,
+    "scope_assertions": 274,
+    "process_event_top_level": 1,
+    "process_event_assertions": 90,
+    "total_top_level": 9,
+    "total_assertions": 364,
+    "old_poisoned_event_control_failed": true
+  },
+  "tooling": {
+    "offline_tool_tests": 31,
+    "loader_fixture_tests_included": 13,
+    "lab_tests": 154,
+    "supervisor_tests_included": 19,
+    "stdlib_c_offline_test_included": 1,
+    "native_bpf_elf_count": 10,
+    "loader_contract_passed": true,
+    "known_bad_socket_objects_rejected": 7,
+    "known_bad_profiler_objects_accepted": 3
+  },
+  "go": {
+    "owning_race_packages": 7,
+    "owning_top_level_pass_events": 92,
+    "owning_total_pass_events": 293,
+    "ckwriter_race_passed": true
+  },
+  "native_software": {
+    "binary_sha256": "7e3ecc60f8c0199e7f66ec1c64508e1f7eb13cef545944ff39783e94287630ae",
+    "binary_bytes": 79274064,
+    "libtrace_sha256": "8a6b36fca7e0272b925f6cee26f7a6d01b135dc018fecaa27b5dbf22ca188ae0",
+    "image": "ghcr.io/deepflowio/rust-build@sha256:b018b2a5970d3c8f36a95f56dec56ad780020ec782419e42c571c7be5867d310"
+  },
+  "native_dependency_qualification": "Pinned archive dependencies; inherited jattach Makefile build-only overlay.",
+  "server_runtime": {
+    "source_commit": "121bdbe26f147b96e532e702ab9819d2ad6ad353",
+    "explicit_f_path_started": true,
+    "actual_api_cases_passed": 13,
+    "database_identities_preserved": true,
+    "unrelated_containers_preserved": true,
+    "private_password_in_server_logs": false
+  },
+  "standalone_runtime": {
+    "all_modes_passed": true,
+    "cases": 3,
+    "total_roundtrips": 180,
+    "positive_per_case": 20,
+    "negative_per_case": 40,
+    "scoped_exact_data_callbacks": 80,
+    "scoped_close_records": 2,
+    "scoped_callbacks_total": 82,
+    "legacy_callbacks": 0,
+    "wrong_namespace_callbacks": 0,
+    "foreign_pid_records": 0,
+    "loaded_program_sections_per_case": 81,
+    "attachment_wrappers_before_per_case": 30,
+    "attachment_wrappers_after_per_case": 0,
+    "cleanup_and_inventory_restored": true
+  },
+  "private_runtime_evidence": {
+    "private_file_count": 191,
+    "private_manifest_sha256": "afae099b0ca69584d54c1fac3f30c136d76aa780d8dd158f7999caba48883e32",
+    "private_archive_sha256": "d1a03c2c08b260bb37f3de0d17be00bd02e819d4664e58d596342b36fc96fa24",
+    "private_archive_bytes": 112742,
+    "prior_failed_runs_preserved": true
+  },
+  "remaining": [
+    "Full managed Agent eBPF collection, transport, persistence and exact query acceptance",
+    "TLS and continuous profiling runtime validation",
+    "Pinned candidate/reference sustained workload and 10G CPU/RSS/loss/visibility comparison",
+    "Storage idempotency, first-record loss, broader protocol/application/GUI parity"
+  ],
+  "publication_policy": "Software, source hashes, aggregate counts and private manifest fingerprints only."
+}

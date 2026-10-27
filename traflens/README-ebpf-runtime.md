@@ -138,3 +138,12 @@ container identifiers, internal configuration or environment dumps. The runtime
 supervisor used in this experiment depends on prepared lab cache paths; this
 guide documents its required behavior rather than providing a general-purpose
 host tracing launcher.
+
+
+## Subsequent namespace-scoped payload gate
+
+The later [namespace guide](README-ebpf-netns-scope.md) records exact corea0cb0fb9,
+its additional loader/verifier repairs, and three actual bounded runtime modes.
+The selected namespace yields80 exact synthetic HTTP data callbacks plus2 close
+records, while both rejection controls yield0. This extends the standalone gate;
+it still does not establish managed-Agent ingestion or performance parity.

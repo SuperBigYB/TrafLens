@@ -49,6 +49,17 @@ data); standard encoding/RawMessage and UTF8 checks now close it. HTTP13/13 pass
 including exact numeric persistence, native Count(row) equivalence and cleanup.
 See [the API guide](../README-api-validation.md) and aggregate evidence.
 
-The custom startup-flag issue remains open. Generic dict/null behavior does not
+The custom startup-flag issue is resolved by the follow-up below. Generic dict/null behavior does not
 validate every Rust Agent field shape or operational range. Post-supply storage
 ambiguity, first-record loss and broad performance validation remain separate.
+
+
+## Startup flag follow-up - runtime source 121bdbe26f
+
+The startup-flag item above is historical. Controller.Start no longer reparses
+the process-global flag set after the executable has already accepted its own
+`-f` path; the standalone controller caller still parses its flags explicitly.
+The actual subprocess regression reaches a supplied invalid YAML file and exits1,
+where the old code exited2 with an unknown-flag error. The owned Server now starts
+with explicit `-f /etc/server.yaml` and passes HTTP13/13 with both databases and
+unrelated containers retained. See the API guide and namespace checkpoint.

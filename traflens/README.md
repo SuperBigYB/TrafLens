@@ -75,3 +75,8 @@ TRAFLENS_DOWNLOAD_TOOLS=1 TRAFLENS_GOPROXY=https://goproxy.cn,direct \
 Cached generator binaries are reused after checking their embedded module
 versions; the existing venv is reused when its ujson version matches. The
 wrapper neither changes global Go configuration nor uses system pip.
+
+
+The [optional socket namespace guide](README-ebpf-netns-scope.md) documents the
+local bootstrap fence, native loader/verifier regressions and actual three-mode
+synthetic HTTP capture. Full managed-Agent ingestion and performance remain pending.

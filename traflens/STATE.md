@@ -383,6 +383,38 @@ process are separate from successful collection and product parity.
  evidence/2026-10-27/api-ebpf/summary.json. Raw HTTP, configs, identifiers,
  process/container metadata and logs stay ignored locally.
 
+## Socket namespace and native verifier checkpoint - 2026-10-27
+
+- Core `a0cb0fb9c111cb7b34168d459fd3e188b07826e6` adds a disabled-by-default current-task netns socket fence,
+  immutable local managed-Agent bootstrap with a process-lifetime namespace FD,
+  and preflight rejection of unsafe capture/profiling/controller candidates.
+  It is not a socket-owner or kernel PID ACL; host hooks and some metadata
+  access remain global. Full managed-Agent payload ingestion remains pending.
+- Native stack pressure, leaked output-buffer references, outlined fork helpers
+  rejected by the map-only loader, and an uninitialized PID/thread bitfield are
+  repaired. All failed candidates/verifier/harness observations stay private.
+  Nine C tests run364 assertions, including actual-function/poisoned-stack cases;
+  the offline ELF checker rejects the real seven-object bad build and accepts
+  all ten corrected objects. Published tool/lab suites pass31/154.
+- Exact native403+28+21=452 and packet392+28+21=441 pass, no failed/ignored tests.
+  The unchanged original2023 keeper passes. Native binary SHA256 is
+  `7e3ecc60f8c0199e7f66ec1c64508e1f7eb13cef545944ff39783e94287630ae`. The inherited jattach Makefile build-only overlay
+  remains qualified. Core CI: https://github.com/SuperBigYB/TrafLens/actions/runs/40423638878 (both jobs passed; owning7 Go race packages
+  and CKwriter race also pass). Later helper/docs HEAD CI is checked separately.
+- Actual standalone libtrace runs pass all three modes: default all-bypass and
+  wrong-owned-netns controls each deliver0 callbacks; selected netns delivers
+  80 exact data+2 close callbacks. Each mode completes20 positive+40 negative
+  same-port/equal-length HTTP roundtrips (180 total). All81 loaded programs and
+  30 attachment wrappers stop/clean; full BPF/tracefs inventories and preexisting
+  containers are preserved. No Agent/Server ingestion or performance claim.
+- Server `-f` reparsing is repaired. Runtime Server source121bdbe26f starts with
+  explicit `-f /etc/server.yaml` and passes real HTTP13/13; database and unrelated
+  container/start/mount identities are retained. Current Agent inventory is0.
+- Guide: README-ebpf-netns-scope.md; aggregates:
+  evidence/2026-10-27/ebpf-scope/{summary,runtime}.json. Raw configuration,
+  namespace/process/container IDs and logs stay ignored. Runtime191-file private
+  manifest fingerprint: `afae099b0ca69584d54c1fac3f30c136d76aa780d8dd158f7999caba48883e32`.
+
 ## Remaining validation and priorities
 
 1. Design persistence/server-side idempotency for ambiguous commits and longer
@@ -396,10 +428,11 @@ process are separate from successful collection and product parity.
 3. Extend Hessian Unicode/map coverage and general TCP streams; keep current
    ASCII and adjacent-window limits explicit. The complete configuration race,
    packet/default-native library and guarded plugin-identity gates now pass.
-4. Extend the passed libtrace lifecycle/rejection gate to full Agent payload
-   acceptance with verified exclusive capture scope and ingestion, then syscall/
-   profiling and trace application/GUI. Loaded BPF is not collected-data proof.
-5. Resolve remaining CLI startup-flag and other API cases in
+4. Extend the passed standalone exclusive-netns payload gate to full managed
+   Agent collection, transport, persistence and exact queries, then TLS/profiling
+   and trace application/GUI. Respect the initial restricted profile and pin FD
+   lifetime; private-PID Agent readiness and end-to-end ingestion remain pending.
+5. Extend remaining API shape/range cases (the startup-flag issue is resolved) in
    `lab/KNOWN_LIMITATIONS.md`; compare pinned candidate/reference workloads with
    loss, CPU/RSS, flow/span rates and visibility delay before parity claims.
 
@@ -414,7 +447,7 @@ process group. Runtime secrets/logs stay ignored; sanitize evidence before commi
 Keep the hourly task active: full feature/performance parity is not achieved.
 
 Latest completed source CI: both jobs passed for
-`c91b1a3c5` in <https://github.com/SuperBigYB/TrafLens/actions/runs/40405314725>.
-Verify the final documentation head's actual CI separately. Library/build gates
-do not replace runtime or performance validation. See the configuration/plugin,
-tunnel and writer guides and their aggregate evidence.
+`a0cb0fb9c111cb7b34168d459fd3e188b07826e6` in <https://github.com/SuperBigYB/TrafLens/actions/runs/40423638878>.
+The final helper/documentation head's actual CI is verified separately. Exact
+native/runtime source and Server runtime source are distinct as recorded above.
+Full feature/performance parity remains ongoing.
