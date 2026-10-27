@@ -40,3 +40,24 @@ acceptance must still use the [strict dual-endpoint oracle](README-managed-ebpf-
 without diagnostics, prewarming or a reduced expected count. General event
 reordering, unknown-role inference, TCP stream recovery and performance parity
 remain separate work.
+
+## Initial rate-limit burst
+
+Full-suite execution also exposed an independent initialization race in the
+shared LeakyBucket. Its constructor returned with zero tokens and relied on a
+background thread to provide the first configured burst. A first packet/log
+could therefore be rejected solely because that thread had not run yet. The
+initial burst is now available before construction returns. The refill worker
+waits before its first refill instead of resetting the bucket on startup and
+granting the same initial burst twice. Zero-rate unlimited behavior and later
+rate updates retain their existing contract; refill arithmetic is bounded at
+the full UInt64 range.
+
+A no-sleep regression consumes the full first burst immediately after creation
+at small, ordinary and UInt64-limit rates. It fails on the former constructor
+and passes with synchronous initialization. Existing exhaustion/refill/update
+coverage also passes. `agent-packet.sh parser-test` includes this shared-crate
+suite, and `agent-packet.sh test-rate` runs it alone. The native Session test
+requires all 40 raw heads, 20 merges and zero throttle drops as well as 20
+complete output Sessions. Neither fix proves the arrival order or historical
+cause of the retained managed-Agent failure.

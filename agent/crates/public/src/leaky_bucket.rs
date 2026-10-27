@@ -39,8 +39,13 @@ pub struct LeakyBucket {
 impl LeakyBucket {
     pub fn new(rate: Option<u64>) -> Self {
         let running = Arc::new(AtomicBool::new(true));
-        let rate = Arc::new(AtomicU64::new(rate.unwrap_or(0)));
-        let token = Arc::new(AtomicU64::new(0));
+        let initial_rate = rate.unwrap_or(0);
+        let rate = Arc::new(AtomicU64::new(initial_rate));
+        let initial_quantity = 1.max(initial_rate / TICK_PER_SECOND);
+        let initial_full = initial_quantity * BURST_MULTIPLE;
+        // A configured first burst must not depend on the refill thread being
+        // scheduled before the first packet or log arrives.
+        let token = Arc::new(AtomicU64::new(initial_full));
 
         let t_running = running.clone();
         let t_rate = rate.clone();
@@ -48,32 +53,36 @@ impl LeakyBucket {
         let handle = thread::Builder::new()
             .name("leaky-bucket".to_owned())
             .spawn(move || {
-                let mut rate = 0;
-                let mut quantity_per_tick = 0;
-                let mut full = 0;
+                let mut rate = initial_rate;
+                let mut quantity_per_tick = initial_quantity;
+                let mut full = initial_full;
                 let token = t_token;
                 while t_running.load(Ordering::Relaxed) {
+                    // Wait for the first real refill tick. Resetting the bucket
+                    // on thread startup would grant a second initial burst.
+                    if rate == 0 {
+                        thread::park();
+                    } else {
+                        thread::park_timeout(TICK_INTERVAL);
+                    }
+                    if !t_running.load(Ordering::Relaxed) {
+                        break;
+                    }
                     let new_rate = t_rate.load(Ordering::Relaxed);
-                    if new_rate == 0 || new_rate != rate {
+                    if new_rate != rate {
                         rate = new_rate;
-                        if rate == 0 {
-                            thread::park();
-                            continue;
-                        }
                         quantity_per_tick = 1.max(rate / TICK_PER_SECOND);
                         full = quantity_per_tick * BURST_MULTIPLE;
                         token.store(full, Ordering::Release);
+                        continue;
                     }
-
+                    if rate == 0 {
+                        continue;
+                    }
                     let _ = token.fetch_update(Ordering::Release, Ordering::Relaxed, |t| {
-                        if t + quantity_per_tick > full {
-                            None
-                        } else {
-                            Some(t + quantity_per_tick)
-                        }
+                        t.checked_add(quantity_per_tick)
+                            .filter(|next| *next <= full)
                     });
-
-                    thread::park_timeout(TICK_INTERVAL);
                 }
             })
             .unwrap();
@@ -163,6 +172,17 @@ mod tests {
                 unlimited.acquire(u64::MAX),
                 "failed acquiring for unlimited rate"
             );
+        }
+    }
+
+    #[test]
+    fn limited_bucket_has_its_first_burst_before_the_refill_thread_runs() {
+        for rate in [1, 9, 10, 1_000, 10_000_000, u64::MAX] {
+            for _ in 0..16 {
+                let bucket = LeakyBucket::new(Some(rate));
+                let burst = 1.max(rate / TICK_PER_SECOND) * BURST_MULTIPLE;
+                assert!(bucket.acquire(burst), "first burst missing at rate {rate}");
+            }
         }
     }
 }

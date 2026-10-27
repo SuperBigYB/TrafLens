@@ -348,7 +348,7 @@ fn native_cold_response_first_pairs_become_twenty_complete_sessions() {
     let module = ModuleConfig::default();
     let config: LogParserAccess =
         Map::new(Arc::new(ArcSwap::from_pointee(module)), |c| &c.log_parser);
-    let (aggregator, _) =
+    let (aggregator, counter) =
         SessionAggregator::new(input_rx, output, 0, config, Arc::new(AtomicI64::new(0)));
     let mut raw_heads = 0;
     for index in 1..=20 {
@@ -375,7 +375,20 @@ fn native_cold_response_first_pairs_become_twenty_complete_sessions() {
         }
     }
     aggregator.stop();
-    assert_eq!(sessions.len(), 20);
+    let counters = counter
+        .get_counters()
+        .into_iter()
+        .map(|(name, _, value)| {
+            let CounterValue::Unsigned(value) = value else {
+                panic!("Expected unsigned Session counters");
+            };
+            (name, value)
+        })
+        .collect::<HashMap<_, _>>();
+    assert_eq!(sessions.len(), 20, "Session counters: {counters:?}");
+    assert_eq!(counters["receive"], 40);
+    assert_eq!(counters["merge"], 20);
+    assert_eq!(counters["throttle-drop"], 0);
     let mut paths = std::collections::BTreeSet::new();
     for session in sessions {
         assert_eq!(

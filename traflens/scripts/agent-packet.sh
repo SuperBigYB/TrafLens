@@ -5,7 +5,7 @@ fail() { printf 'TrafLens packet agent: %s\n' "$*" >&2; exit 1; }
 usage() {
   cat <<'USAGE'
 Usage: bash traflens/scripts/agent-packet.sh [mode]
-Modes: build (default), build-release, test-library, test-http, test-dns, test-mysql, test-labeler, test-time, test-plugin, test-tunnel, test-reassembly, test-direction, parser-test
+Modes: build (default), build-release, test-library, test-http, test-dns, test-mysql, test-labeler, test-time, test-plugin, test-tunnel, test-reassembly, test-direction, test-rate, parser-test
 
 Uses existing Rust/Cargo 1.97.1 and --locked --no-default-features.
 This builds the packet agent without eBPF, syscall tracing or profiling.
@@ -17,7 +17,7 @@ mode=${1:-build}
 if [[ "$mode" == --help || "$mode" == -h ]]; then usage; exit 0; fi
 [[ $# -le 1 ]] || { usage >&2; exit 2; }
 case "$mode" in
-  build|build-release|test-library|test-http|test-dns|test-mysql|test-labeler|test-time|test-plugin|test-tunnel|test-reassembly|test-direction|parser-test) ;;
+  build|build-release|test-library|test-http|test-dns|test-mysql|test-labeler|test-time|test-plugin|test-tunnel|test-reassembly|test-direction|test-rate|parser-test) ;;
   *) usage >&2; fail "unknown mode: $mode" ;;
 esac
 
@@ -125,6 +125,9 @@ direction_test() {
   parser_test flow_generator::service_table::tests
   parser_test flow_generator::flow_map::tests::test_handshake_retrans
 }
+rate_test() {
+  "$cargo_bin" test --locked --no-default-features --package public --lib leaky_bucket::tests -- --test-threads=1
+}
 library_test() {
   python3 resources/test/plugins/wasm-fixture/verify.py
   make -B -C resources/test/plugins
@@ -134,6 +137,7 @@ case "$mode" in
   build) exec "$cargo_bin" build --locked --no-default-features --bin deepflow-agent ;;
   build-release) exec "$cargo_bin" build --locked --no-default-features --release --bin deepflow-agent ;;
   test-library) library_test ;;
+  test-rate) rate_test ;;
   test-http) parser_test flow_generator::protocol_logs::http::tests ;;
   test-dns) parser_test flow_generator::protocol_logs::dns::tests ;;
   test-mysql) parser_test flow_generator::protocol_logs::sql::mysql::tests ;;
@@ -148,6 +152,7 @@ case "$mode" in
     parser_test plugin::shared_obj::test
     ;;
   parser-test)
+    rate_test
     library_test
     "$cargo_bin" test --locked --no-default-features --package tunnel --lib -- --test-threads=1
     "$cargo_bin" test --locked --no-default-features --package packet_segmentation_reassembly --lib -- --test-threads=1
