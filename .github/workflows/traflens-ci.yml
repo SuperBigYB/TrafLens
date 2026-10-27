@@ -46,7 +46,9 @@ jobs:
         run: make -C traflens test
 
       - name: Test kernel namespace scope guards without attachment
-        run: python3 agent/src/ebpf/test/test_socket_scope.py -v
+        run: |
+          python3 agent/src/ebpf/test/test_socket_scope.py -v
+          python3 agent/src/ebpf/test/test_process_event.py -v
 
       - name: Test lab wire fixtures, ownership and acceptance
         run: python3 -m unittest discover -s traflens/lab/tests -p 'test_*.py' -v

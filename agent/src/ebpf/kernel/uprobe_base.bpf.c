@@ -630,7 +630,7 @@ static __inline int do_process_exit(void *ctx)
 	// If is a process, clear proc_info_map element and submit event.
 	if (pid == tid) {
 		bpf_map_delete_elem(&proc_info_map, &pid);
-		struct process_event_t data;
+		struct process_event_t data = {};
 		data.pid = pid;
 		data.meta.event_type = EVENT_TYPE_PROC_EXIT;
 		bpf_get_current_comm(data.name, sizeof(data.name));
@@ -676,7 +676,7 @@ static __attribute__((always_inline)) inline int kernel_clone_exit(bool is_kprob
 	if (offset == NULL)
 		return 0;
 
-	struct process_event_t data;
+	struct process_event_t data = {};
 	data.meta.event_type = EVENT_TYPE_PROC_EXEC;
 	/*
 	 * For kprobe type, it was found that the return value is never 0, which
@@ -741,7 +741,7 @@ static __inline int __process_exec(void *ctx)
 	if (offset == NULL)
 		return 0;
 
-	struct process_event_t data;
+	struct process_event_t data = {};
 	__u64 id = bpf_get_current_pid_tgid();
 	pid_t pid = id >> 32;
 	pid_t tid = (__u32) id;
