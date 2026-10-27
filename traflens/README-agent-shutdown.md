@@ -122,7 +122,8 @@ all failed network-frame flushes set the per-run failure flag.
 This follow-up changes failure reporting; it does not add retransmission,
 server acknowledgements, recovery of lost data, or an actual-ingester outage
 qualification. The earlier immediate-stop binary and traffic results above
-remain evidence for their named revision, not for a newly built runtime binary.
+remain evidence for their named revision; the follow-up runtime attempts below
+are evaluated separately.
 
 The fixed source passes the complete default-feature native library423, tunnel28
 and window21 tests (472 total), with zero failures or ignored tests. The added
@@ -131,3 +132,37 @@ one new test fails). SDK rustfmt leaves the tested source unchanged. The known
 libtrace archive member linker warning remains; it does not fail this build.
 Anonymous results and raw-log hashes are in
 [evidence/2026-10-27/sender-failure-history/summary.json](evidence/2026-10-27/sender-failure-history/summary.json).
+
+
+## Native follow-up: runtime qualification remains open
+
+Exact committed source `3dec20af5ce6ff25c696d136b5477f5310b4962c` builds an
+optimized native Agent (79,330,512 bytes), SHA256
+`8dd5ec668a09dcdac10068727fb47f282cf8091a93a11fb71cbbc33db3853763`.
+The embedded commit and isolated build cleanup checks pass.
+[CI40529091917](https://github.com/SuperBigYB/TrafLens/actions/runs/40529091917)
+passes both Server and packet jobs, including the added regression; packet
+library411+tunnel28+window21 plus2rate tests pass.
+
+Two actual healthy-control attempts do not qualify this binary's runtime
+delivery. The first completes2000 client/server requests but stores1328 rows,
+missing the contiguous final672. The Agent exits0, but its log shows the
+Controller disabling capture before SIGTERM; the old registration is later
+absent. Its removal cause is not established, and this is not an isolated
+shutdown-drain comparison. All missing-row diagnostics are retained.
+
+After confirming an empty inventory, a fresh owned registration is created.
+That attempt exits3 during the workload after a Controller configuration
+transition changes disabled eBPF/integration options to enabled defaults,
+triggering the Agent's existing configuration-restart path. The origin of that
+configuration change is not established. The attempted unavailable-ingester
+case never starts because healthy preconditions fail. Neither attempt is a
+passing healthy or outage control, and neither is discarded or relabeled.
+
+Both attempts restore the exact Controller YAML, bench-link state, management
+route and BPF/tracefs baseline. Owned runtime workers are removed; existing
+service IDs/start times/images/mounts match before snapshots. No Server or
+database restart is performed. Next qualification must trace Controller
+profile propagation and verify stable enable/configuration state throughout
+the workload before interpreting normal-stop delivery. Anonymous observations
+are in [runtime.json](evidence/2026-10-27/sender-failure-history/runtime.json).

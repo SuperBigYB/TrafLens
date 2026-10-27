@@ -15,7 +15,7 @@
     "ignored": 0
   },
   "runtime_ingester_outage_tested": false,
-  "optimized_binary_built": false,
+  "optimized_binary_built": true,
   "known_warning": "Existing libtrace archive non-ET_REL member linker warning; build and tests succeed.",
   "artifacts": {
     "regression-before.log": "475a97ec5645490fbebf5f6559b70d0620bb6ce3cd3723c5f56e78288cc3fee8",
@@ -23,5 +23,6 @@
   },
   "tested_sender_sha256": "483b55396f9cb5966b56a91af75061212f03c24a0efc1e11d03590112d8cb88d",
   "sdk_base_revision": "938890898b2d4d502251409f25409f3acb7a74fd",
-  "sdk_source_overlay": "Only agent/src/sender/uniform_sender.rs differs from the SDK base for this test."
+  "sdk_source_overlay": "Only agent/src/sender/uniform_sender.rs differs from the SDK base for this test.",
+  "runtime_follow_up": "runtime.json"
 }

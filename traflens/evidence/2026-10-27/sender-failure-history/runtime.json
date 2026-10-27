@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "source_revision": "3dec20af5ce6ff25c696d136b5477f5310b4962c",
+  "native_binary": {
+    "sha256": "8dd5ec668a09dcdac10068727fb47f282cf8091a93a11fb71cbbc33db3853763",
+    "bytes": 79330512,
+    "optimized_build_pass": true,
+    "embedded_revision_matches": true,
+    "sdk_container_removed": true
+  },
+  "core_ci": {
+    "run_id": 40529091917,
+    "server_job": 122276640894,
+    "packet_job": 122276641253,
+    "both_success": true,
+    "packet_library_passed": 411,
+    "tunnel_passed": 28,
+    "window_passed": 21,
+    "rate_passed": 2
+  },
+  "runtime_qualified": false,
+  "healthy_attempts": [
+    {
+      "attempt": 1,
+      "scheduled": 2000,
+      "client_completed": 2000,
+      "stored": 1328,
+      "missing_suffix_count": 672,
+      "agent_exit_code": 0,
+      "controller_disabled_before_sigterm": true,
+      "old_registration_later_absent": true,
+      "registration_removal_cause": "not established",
+      "valid_healthy_control": false
+    },
+    {
+      "attempt": 2,
+      "fresh_owned_registration": true,
+      "agent_exit_code": 3,
+      "configuration_restart": true,
+      "observed_changes": [
+        "ebpf file IO collect mode",
+        "on-CPU profiling enabled",
+        "socket kprobe enabled",
+        "integration feature control enabled"
+      ],
+      "valid_healthy_control": false
+    }
+  ],
+  "unavailable_ingester_case_executed": false,
+  "unavailable_ingester_case_reason": "Both matrices stopped after failed healthy preconditions.",
+  "cleanup": {
+    "exact_controller_yaml_restored": true,
+    "all_owned_runtime_workers_removed": true,
+    "bench_link_restored": true,
+    "management_route_unchanged": true,
+    "bpf_tracefs_unchanged": true,
+    "preexisting_service_ids_started_at_images_mounts_unchanged": true
+  },
+  "next": "Trace controller profile propagation and registration state before accepting further native healthy/outage controls. No cause for the observed control-plane changes has been established."
+}

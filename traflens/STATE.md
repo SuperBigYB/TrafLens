@@ -12,8 +12,14 @@ after the encoder and periodic drop counters clear. The follow-up makes every
 failed network-frame flush sticky for the sender component run, including
 backoff and configured throughput drops; only starting a new component run
 resets it. See `README-agent-shutdown.md` for scope and unchanged runtime-binary
-qualification. Full validation and exact commit results are retained in private
-`sender-health-20261027` evidence; do not infer an ingester-outage runtime result.
+qualification. Native423+28+21 tests pass, and core `3dec20af5` passes both
+CI40529091917 jobs. Its optimized native binary is built, but two healthy
+runtime attempts remain unqualified: pre-signal Controller disable with
+1328/2000 rows, then a fresh registration's configuration-triggered exit3.
+The unavailable-ingester trial never starts. Trace profile/registration changes
+before retrying; preserve both failed attempts. Exact results are retained in
+private `sender-health-20261027` evidence and public sender-failure-history JSON.
+Both attempts restore configuration/link/BPF/service baselines.
 
 ## Checkout and source
 
