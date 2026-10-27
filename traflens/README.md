@@ -80,3 +80,5 @@ wrapper neither changes global Go configuration nor uses system pip.
 The [optional socket namespace guide](README-ebpf-netns-scope.md) documents the
 local bootstrap fence, native loader/verifier regressions and actual three-mode
 synthetic HTTP capture. Full managed-Agent ingestion and performance remain pending.
+
+The [direct 10G network baseline](README-link-baseline.md) provides finite paired TCP endpoints, offline qualification, and anonymous measured evidence. Agent workload performance remains a separate gate.
