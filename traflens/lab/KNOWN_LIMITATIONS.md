@@ -74,7 +74,7 @@ drop counters did not increase and the Agent exited0. The original failure is
 retained, not classified as a passing performance sample. This experiment does
 not establish the candidate's behavior under immediate stop.
 
-Both pinned native sources call `clean_and_exit(0)` in `Agent::stop`; that helper
+Both pinned native sources call `clean_and_exit(0)` in `Trident::stop`; that helper
 sleeps one second and calls `std::process::exit`, without a coordinated pipeline
 drain at this call site. The exact stage holding the missing tail is unproven.
 A later sequence proves all2000 rows while the Agent remains running, stops it,
