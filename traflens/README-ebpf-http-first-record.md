@@ -61,3 +61,7 @@ suite, and `agent-packet.sh test-rate` runs it alone. The native Session test
 requires all 40 raw heads, 20 merges and zero throttle drops as well as 20
 complete output Sessions. Neither fix proves the arrival order or historical
 cause of the retained managed-Agent failure.
+
+## Managed acceptance checkpoint
+
+Three independent cold starts of the fixed native core passed the unchanged 40-Session oracle without diagnostic output, prewarming or discarded transactions. Each retained 20 client and 20 server Sessions on two consecutive reads, with zero negative rows for 40 domain-external exchanges. Resources and the exact Controller configuration were restored after each run. See [aggregate evidence](evidence/2026-10-27/first-session/summary.json). These finite windows do not establish full feature or sustained 10G performance parity.

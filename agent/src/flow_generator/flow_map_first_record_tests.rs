@@ -18,10 +18,11 @@ use std::collections::HashMap;
 
 use public::bitmap::Bitmap;
 
-use super::*;
 use crate::common::l7_protocol_log::L7ParseResult;
 use crate::common::l7_protocol_log::{L7ProtocolParserInterface, ParseParam};
 use crate::flow_generator::protocol_logs::HttpLog;
+
+use super::*;
 
 const PORT: u16 = 18080;
 const PID: u32 = 1234;

@@ -1,0 +1,145 @@
+{
+  "schema": "traflens.first-session-checkpoint.v1",
+  "date_utc": "2026-10-27",
+  "objective_complete": false,
+  "native_source": "95f5e10dfe63c4b5920c8d7932b683fb896a1479",
+  "software": {
+    "deepflow-agent": {
+      "bytes": 79247568,
+      "sha256": "cbee7383430743230af341a3d28118e4a78bb71f47124e1332509ddd5030ce23"
+    },
+    "libtrace.a": {
+      "bytes": 46389760,
+      "sha256": "64495e41002a7983216c9cfb54570ad8288aa0f756e571e8c9528a69c98131fd"
+    }
+  },
+  "confirmed_fixes": [
+    "Cold response-first eBPF HTTP inference retains the first response with known role/direction and valid status line; packet-mode inference stays request-only.",
+    "Configured initial rate-limit burst is synchronous; refill startup does not grant it twice."
+  ],
+  "regression_evidence": {
+    "old_cold_http_requests": 20,
+    "old_cold_http_responses": 19,
+    "old_native_raw_heads_before_session_queue": 39,
+    "corrected_native_raw_heads": 40,
+    "corrected_native_complete_sessions": 20,
+    "corrected_native_throttle_drops": 0,
+    "old_immediate_first_burst_regression_failed": true,
+    "first_burst_test_uses_no_sleep_or_prewarm": true
+  },
+  "tests": {
+    "packet_library": 398,
+    "tunnel": 28,
+    "window": 21,
+    "packet_total": 447,
+    "native_library": 410,
+    "native_total": 459,
+    "shared_rate_tests": 2,
+    "tooling_tests": 31,
+    "native_failed": 0,
+    "native_ignored": 0,
+    "bpf_loader_objects": 10,
+    "private_workload_tests": 18,
+    "private_controller_tests": 10,
+    "private_scope_tests": 24
+  },
+  "runtime": {
+    "independent_non_diagnostic_trials": 3,
+    "trials": [
+      {
+        "case": 1,
+        "strict_pass": true,
+        "diagnostics_enabled": false,
+        "positive_roundtrips": 20,
+        "negative_roundtrips": 40,
+        "sessions": 40,
+        "observation_counts": {
+          "c-p": 20,
+          "s-p": 20
+        },
+        "distinct_socket_flow_ids": 2,
+        "consecutive_passing_reads": 2,
+        "query_attempts": 6,
+        "negative_rows_all_reads": 0,
+        "new_socket_program_sections": 81,
+        "cleanup_and_controller_restore_passed": true
+      },
+      {
+        "case": 2,
+        "strict_pass": true,
+        "diagnostics_enabled": false,
+        "positive_roundtrips": 20,
+        "negative_roundtrips": 40,
+        "sessions": 40,
+        "observation_counts": {
+          "c-p": 20,
+          "s-p": 20
+        },
+        "distinct_socket_flow_ids": 2,
+        "consecutive_passing_reads": 2,
+        "query_attempts": 5,
+        "negative_rows_all_reads": 0,
+        "new_socket_program_sections": 81,
+        "cleanup_and_controller_restore_passed": true
+      },
+      {
+        "case": 3,
+        "strict_pass": true,
+        "diagnostics_enabled": false,
+        "positive_roundtrips": 20,
+        "negative_roundtrips": 40,
+        "sessions": 40,
+        "observation_counts": {
+          "c-p": 20,
+          "s-p": 20
+        },
+        "distinct_socket_flow_ids": 2,
+        "consecutive_passing_reads": 2,
+        "query_attempts": 5,
+        "negative_rows_all_reads": 0,
+        "new_socket_program_sections": 81,
+        "cleanup_and_controller_restore_passed": true
+      }
+    ],
+    "total_positive_roundtrips": 60,
+    "total_negative_roundtrips": 120,
+    "distinct_marker_sessions": 120,
+    "pretraffic_attempts_blocked": 1,
+    "blocked_attempt_qualification": "The old logical registration was absent. No traffic was emitted; resources/configuration were restored. Only the owned registration was recreated and fresh receipt checks now precede every start.",
+    "expected_count_relaxed": false,
+    "first_transaction_prewarmed_or_discarded": false,
+    "scope": "Current-task network namespace; bounded dual-endpoint syscall HTTP only."
+  },
+  "cleanup": {
+    "all_agents_removed": true,
+    "all_owned_workers_removed": true,
+    "original_bpf_program_count": 14,
+    "original_bpf_inventory_restored": true,
+    "tracefs_restored": true,
+    "namespace_pins_released_after_agent_exit": true,
+    "controller_yaml_exactly_restored": true,
+    "databases_and_unrelated_preexisting_containers_preserved": true,
+    "sole_owned_logical_registration_retained": true
+  },
+  "native_build_qualification": "Original runner failed only at SDK old-git restore command after tests and artifact creation. Its result is retained; generated fixture restored by host Git, then source/artifact/loader proofs completed.",
+  "private_archive": {
+    "files": 96,
+    "sha256": "5cf45c1d0cab691dda5377d11a93f5efda009b02b66e939c1886ceab7d3773a5",
+    "all_entries_verified": true,
+    "raw_published": false
+  },
+  "qualification": "Two deterministic defects are fixed and three finite non-diagnostic windows pass. The historical 39/40 run had no event-arrival transcript; matching counts do not prove its exact cause. No broad kernel, protocol or performance parity claim.",
+  "remaining": [
+    "General event reordering and unknown-role inference.",
+    "TLS/profiling/file-IO runtime validation and broader application/GUI parity.",
+    "Sustained candidate/reference 10G throughput, CPU, RSS, loss and visibility comparison."
+  ],
+  "private_evidence": {
+    "file_count": 291,
+    "manifest_sha256": "b7f5892f666344f85cd61f3b6bee5ca7311b4d7eaabefd427cbc2b2dd4de7e3b",
+    "previous_319_file_checkpoint_unchanged": true,
+    "archive_verified_on_both_hosts": true,
+    "raw_published": false
+  },
+  "publication_qualification": "Native source is95f5e10df. Following publication changes only documentation, aggregates and test import order; production code is identical."
+}
