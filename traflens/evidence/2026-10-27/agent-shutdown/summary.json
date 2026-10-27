@@ -1,0 +1,249 @@
+{
+  "schema": "traflens.agent-shutdown-qualification.v1",
+  "core_source": "938890898b2d4d502251409f25409f3acb7a74fd",
+  "baseline_native_source": "95f5e10dfe63c4b5920c8d7932b683fb896a1479",
+  "generator_source": "d18bf64b07a70c86f39bbba38877b37663d61f53",
+  "software_sha256": {
+    "fixed_native": "e3f50224010982b7cc5e7cc9bb077ec93e058fabad074aee3176ba7bef4aa50f",
+    "baseline_native": "cbee7383430743230af341a3d28118e4a78bb71f47124e1332509ddd5030ce23",
+    "generator": "69e0fdc43d47c88c2dc6b9f59c3aa32805bb14bf17103b7b268364f3a3aea822"
+  },
+  "native_build": {
+    "sdk_digest": "sha256:b018b2a5970d3c8f36a95f56dec56ad780020ec782419e42c571c7be5867d310",
+    "rust": "1.97.1",
+    "gcc": "11.2.1",
+    "optimized": true,
+    "source_clean": true,
+    "rust_source_overlays": false,
+    "existing_jattach_static_makefile_overlay_retained": true,
+    "bpf_elf_header_checks": 10,
+    "bpf_kernel_load_proven": false
+  },
+  "tests": {
+    "new_regressions": 12,
+    "complete_native_library": 422,
+    "tunnel": 28,
+    "tcp_window": 21,
+    "native_total": 471,
+    "packet_library_ci": 410,
+    "packet_total_ci": 459,
+    "rate_gate_ci": 2,
+    "python_lab_ci": 219,
+    "failures": 0,
+    "ignored": 0
+  },
+  "matched_profile": {
+    "agent_cpus": 2,
+    "agent_memory_mib": 1024,
+    "agent_pids": 384,
+    "affinity": [
+      0,
+      1
+    ],
+    "l7_throttle_per_second": 1000,
+    "flow_limit": 4096,
+    "telemetry_export_mbit_per_second": 10,
+    "termination_grace_seconds_both_versions": 40,
+    "offered_rps": 200,
+    "offered_seconds": 10,
+    "requests_per_trial": 2000,
+    "concurrency": 16,
+    "request_timeout_ms": 1000
+  },
+  "no_prestop_ingestion_queries_or_wait": true,
+  "signal_after_finite_workload_wrapper_cleanup": true,
+  "trials_per_version": 3,
+  "baseline_stored": 4947,
+  "baseline_missing": 1053,
+  "baseline_exact_passes": 0,
+  "fixed_stored": 6000,
+  "fixed_missing": 0,
+  "fixed_exact_passes": 3,
+  "fixed_poststop_scans": 6,
+  "fixed_poststop_data_pages": 48,
+  "fixed_poststop_count_queries": 12,
+  "fixed_archives_replayed_offline": 3,
+  "stop_wait_seconds": {
+    "baseline_median": 1.1868176190000668,
+    "fixed_median": 11.544827550998889
+  },
+  "bounds": {
+    "control_thread_join_seconds": 30,
+    "exit_helper_delay_seconds": 1,
+    "sender_active_drain_loop_seconds": 5,
+    "sender_receive_wait_seconds": 3,
+    "tcp_frame_total_write_seconds": 3,
+    "numeric_tcp_connect_seconds": 3
+  },
+  "limits": {
+    "already_generated_queued_records_only": true,
+    "historical_runtime_drop_guarantee": false,
+    "all_active_flow_kernel_ring_state_drained": false,
+    "ebpf_tls_shutdown_runtime_validated": false,
+    "durable_server_acknowledgement": false,
+    "file_fsync_durability": false,
+    "general_exactly_once": false,
+    "full_pipeline_cpu_cost_measured": false,
+    "performance_ceiling_or_superiority_proven": false,
+    "complete_deepflow_parity": false
+  },
+  "samples": [
+    {
+      "role": "baseline",
+      "repeat": 1,
+      "scheduled": 2000,
+      "client_server_completed": 2000,
+      "generator_failed": 0,
+      "generator_skipped": 0,
+      "stored": 1611,
+      "missing": 389,
+      "missing_is_suffix": true,
+      "missing_first_sequence": 1611,
+      "agent_exit_code": 0,
+      "stop_wait_seconds": 1.2189838650010643,
+      "controller_restored": true,
+      "bpf_tracefs_restored": true,
+      "exact_query_acceptance": false
+    },
+    {
+      "role": "fixed",
+      "repeat": 1,
+      "scheduled": 2000,
+      "client_server_completed": 2000,
+      "generator_failed": 0,
+      "generator_skipped": 0,
+      "stored": 2000,
+      "missing": 0,
+      "missing_is_suffix": true,
+      "missing_first_sequence": null,
+      "agent_exit_code": 0,
+      "stop_wait_seconds": 11.244812797998748,
+      "controller_restored": true,
+      "bpf_tracefs_restored": true,
+      "exact_query_acceptance": true,
+      "successful_native_drain_receipt": true,
+      "exact_scans": [
+        {
+          "pages": 8,
+          "rows": 2000,
+          "count_reads": 2
+        },
+        {
+          "pages": 8,
+          "rows": 2000,
+          "count_reads": 2
+        }
+      ]
+    },
+    {
+      "role": "fixed",
+      "repeat": 2,
+      "scheduled": 2000,
+      "client_server_completed": 2000,
+      "generator_failed": 0,
+      "generator_skipped": 0,
+      "stored": 2000,
+      "missing": 0,
+      "missing_is_suffix": true,
+      "missing_first_sequence": null,
+      "agent_exit_code": 0,
+      "stop_wait_seconds": 12.375506544998643,
+      "controller_restored": true,
+      "bpf_tracefs_restored": true,
+      "exact_query_acceptance": true,
+      "successful_native_drain_receipt": true,
+      "exact_scans": [
+        {
+          "pages": 8,
+          "rows": 2000,
+          "count_reads": 2
+        },
+        {
+          "pages": 8,
+          "rows": 2000,
+          "count_reads": 2
+        }
+      ]
+    },
+    {
+      "role": "baseline",
+      "repeat": 2,
+      "scheduled": 2000,
+      "client_server_completed": 2000,
+      "generator_failed": 0,
+      "generator_skipped": 0,
+      "stored": 1618,
+      "missing": 382,
+      "missing_is_suffix": true,
+      "missing_first_sequence": 1618,
+      "agent_exit_code": 0,
+      "stop_wait_seconds": 1.1868176190000668,
+      "controller_restored": true,
+      "bpf_tracefs_restored": true,
+      "exact_query_acceptance": false
+    },
+    {
+      "role": "baseline",
+      "repeat": 3,
+      "scheduled": 2000,
+      "client_server_completed": 2000,
+      "generator_failed": 0,
+      "generator_skipped": 0,
+      "stored": 1718,
+      "missing": 282,
+      "missing_is_suffix": true,
+      "missing_first_sequence": 1718,
+      "agent_exit_code": 0,
+      "stop_wait_seconds": 1.1623789370023587,
+      "controller_restored": true,
+      "bpf_tracefs_restored": true,
+      "exact_query_acceptance": false
+    },
+    {
+      "role": "fixed",
+      "repeat": 3,
+      "scheduled": 2000,
+      "client_server_completed": 2000,
+      "generator_failed": 0,
+      "generator_skipped": 0,
+      "stored": 2000,
+      "missing": 0,
+      "missing_is_suffix": true,
+      "missing_first_sequence": null,
+      "agent_exit_code": 0,
+      "stop_wait_seconds": 11.544827550998889,
+      "controller_restored": true,
+      "bpf_tracefs_restored": true,
+      "exact_query_acceptance": true,
+      "successful_native_drain_receipt": true,
+      "exact_scans": [
+        {
+          "pages": 8,
+          "rows": 2000,
+          "count_reads": 2
+        },
+        {
+          "pages": 8,
+          "rows": 2000,
+          "count_reads": 2
+        }
+      ]
+    }
+  ],
+  "cleanup": {
+    "all_owned_runtime_containers_removed": true,
+    "controller_yaml_exactly_restored": true,
+    "existing_container_ids_start_times_images_mounts_preserved": true,
+    "source_link_original_down_restored": true,
+    "management_route_unchanged": true,
+    "bpf_tracefs_baselines_restored": true
+  },
+  "core_ci": {
+    "run_id": 40519977157,
+    "both_jobs_success": true
+  },
+  "private_manifest": {
+    "entries": 702,
+    "sha256": "9e7f79506df735041bd382ed0a52da5ee182300895756a6daf72513b79799ab9"
+  }
+}

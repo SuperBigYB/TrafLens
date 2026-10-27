@@ -121,3 +121,15 @@ BPF program was detached. The combined1289-entry private manifest includes the
 failed attempt and all qualified trials; its archive checksum matches on both
 machines. Future runs must re-read current hardware and inventory rather than
 reuse historical addresses, interface names or logical registrations.
+
+
+## Native queued-record shutdown follow-up
+
+The historical pinned-reference failure and the pre-stop drain procedure above
+are unchanged. A separately built [current candidate](README-agent-shutdown.md)
+now drains generated packet-log queues during bounded termination. Three old-
+candidate controls lose389/382/282 tail rows; three fixed2000-request immediate-
+stop runs preserve all6000 Sessions with no pre-stop ingestion queries/waits.
+Termination grace is40s for both controls and fixed runs; clean fixed stops take
+11.2-12.4s. This is scoped queued-record reliability evidence, not proof that all
+active/kernel/eBPF data or durable storage is covered by shutdown.

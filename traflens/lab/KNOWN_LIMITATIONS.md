@@ -83,3 +83,20 @@ procedure does **not** fix shutdown delivery. A bounded producer-to-consumer dra
 explicit failure on unfinished delivery and immediate-stop regression remain
 required before shutdown reliability or complete performance parity claims.
 See [the qualified workload guide](../README-http-ramp.md).
+
+
+## Queued packet-log stop follow-up - native source938890898
+
+The immediate-stop item above remains true for its historical native pins.
+Current candidate938890898 coordinates a bounded control-thread shutdown, flushes
+partial FlowMap buffers, drains SessionAggregator inputs and final sender queues,
+and reports known terminal failures/timeouts instead of successful completion.
+Old-candidate controls reproduce389/382/282 missing tails in three2000-request
+runs; three fixed runs preserve all6000 Sessions without a pre-stop ingestion
+query or wait. New clean stops take11.2-12.4s with40s grace; a10s supervisor grace
+is insufficient. Exact source passes471 native tests and both core CI jobs.
+
+This closes the reproduced queued complete-HTTP tail case, not all active-flow,
+unread-kernel, eBPF/TLS or outage/durable-storage behavior. Original failures and
+all limits remain preserved. See [README-agent-shutdown.md](../README-agent-shutdown.md)
+for the shutdown contract, source/binary pins and complete before/after evidence.

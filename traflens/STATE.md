@@ -536,3 +536,36 @@ management routes and existing container IDs were retained. Combined1289-entry
 private evidence is sealed and backed up on the peer. Publish only aggregates,
 source/software hashes and manifest fingerprint; raw identities, markers, SQL,
 reports and configuration remain private. Hourly development continues.
+
+
+## Bounded queued packet-log shutdown checkpoint - 2026-10-27
+
+Core938890898b2d4d502251409f25409f3acb7a74fd replaces the immediate successful
+exit with a30s bounded control-thread shutdown. Partial FlowMap batches flush on
+exit; the L7 aggregator and senders drain queued batches, and final TCP/file
+buffers flush. Zero writes, uncertain partial-frame failures, persistent stalls,
+join timeout/panic and known terminal failures cannot silently count as completed drain. Uncertain frames are
+not replayed. The existing receive wait remains bounded; see README-agent-shutdown.md
+for the precise write/connect/loop bounds and required supervisor grace.
+
+Twelve new regressions pass; exact committed source passes native422+tunnel28+
+window21=471 with no failures/ignored tests. Optimized native release, embedded
+938 revision, ldd/minimal-runtime probe,10BPF ELF headers and source-clean checks
+pass. Existing jattach static Makefile overlay is retained; no Rust source overlay.
+Core CI40519977157 passes both jobs, packet459+2rate and219lab/fullServer gates.
+
+At the same200RPS/10s and2CPU/1GiB profile, three old-candidate immediate-stop
+controls complete2000 requests but lose389/382/282 tail rows. Three fixed runs
+complete all6000 Sessions, post-stop exact scans twice each and byte-bound offline
+replay. No ingestion query/wait precedes stop. Both versions use40s termination
+grace; fixed clean stops take11.2-12.4s, so10s grace is insufficient. This is not
+faster shutdown or full-pipeline CPU cost. Fixed native SHA256 is
+`e3f50224010982b7cc5e7cc9bb077ec93e058fabad074aee3176ba7bef4aa50f`.
+
+All controls/failures and raw evidence are private and sealed; anonymous summary:
+`evidence/2026-10-27/agent-shutdown/summary.json`. Controller YAML, container IDs/
+start times/images/mounts, source link state, management route and BPF/tracefs
+baselines are restored. Next: active/incomplete flow and kernel-ring termination,
+eBPF/TLS/outage cases, full-pipeline resource windows and sustained higher rates.
+This closes the reproduced generated-log tail case; durable ACK/exactly-once,
+general shutdown reliability and full DeepFlow feature/performance parity remain open.
