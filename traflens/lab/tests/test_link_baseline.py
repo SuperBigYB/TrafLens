@@ -23,6 +23,36 @@ verify = module('verify_link', 'verify-link-baseline.py')
 
 
 class LinkEndpointTests(unittest.TestCase):
+    def test_missing_interface_retains_cleanup_receipt_and_failure_report(self):
+        with tempfile.TemporaryDirectory() as directory:
+            work = Path(directory)
+            result = dict(process_passed=True, owned_container_removed=True, error=None, cleanup_errors=[])
+            with mock.patch.object(endpoint, 'interface_snapshot', side_effect=OSError('device disappeared')), \
+                    mock.patch.object(endpoint, 'call', return_value=argparse.Namespace(stdout='existing\n')):
+                endpoint.finish_environment(argparse.Namespace(interface='ethA', bind='fe80::1', peer='fe80::2'),
+                                            {}, {'existing'}, work, result)
+            report = json.loads((work / 'result.json').read_text())
+            self.assertIs(report['pass'], False)
+            self.assertIs(report['owned_container_removed'], True)
+            self.assertIs(report['network_configuration_preserved'], False)
+            self.assertIs(report['preexisting_containers_preserved'], True)
+            self.assertIn('device disappeared', report['cleanup_errors'][0])
+
+    def test_unavailable_docker_postcheck_retains_network_proof_and_fails_closed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            work = Path(directory)
+            snapshot = dict(configuration={'mtu': 1500}, counters={'rx_bytes': 10})
+            result = dict(process_passed=True, owned_container_removed=True, error=None, cleanup_errors=[])
+            with mock.patch.object(endpoint, 'interface_snapshot', return_value=snapshot), \
+                    mock.patch.object(endpoint, 'call', side_effect=OSError('daemon unavailable')):
+                endpoint.finish_environment(argparse.Namespace(interface='ethA', bind='fe80::1', peer='fe80::2'),
+                                            snapshot, {'existing'}, work, result)
+            report = json.loads((work / 'result.json').read_text())
+            self.assertIs(report['pass'], False)
+            self.assertIs(report['network_configuration_preserved'], True)
+            self.assertIs(report['preexisting_containers_preserved'], False)
+            self.assertIn('daemon unavailable', report['cleanup_errors'][0])
+
     def test_default_plan_does_not_access_host_or_create_workers(self):
         with mock.patch('sys.argv', ['link-endpoint']), mock.patch.object(endpoint, 'call') as call, \
                 mock.patch.object(endpoint, 'interface_snapshot') as snapshot, \

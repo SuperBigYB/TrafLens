@@ -119,6 +119,14 @@ IPv6 source/route selection was checked for each endpoint. Full raw topology
 snapshots are not identical: address lease lifetimes and bridge timers change,
 and an unrelated virtual interface changed. Those raw differences are retained;
 they are not presented as an exact full-host topology match.
+After the measured matrix and its cleanup snapshot, kernel logs recorded
+i40e/VFIO driver transitions and intermittent carrier loss. Further live tests
+were stopped; two additional no-client lifecycle attempts were refused before
+resource creation. Those attempts are separate from the sealed matrix. The
+current supervisor also preserves its result and completed container-cleanup
+proof if the interface or Docker postcheck becomes unavailable during shutdown;
+regressions exercise both failures. The worker-source hash in the dated summary
+identifies the sealed measurement version, before this reporting improvement.
 Four failed preflight/readiness attempts are retained separately from the single
 successful prototype and the 24 measured cases; no failed throughput run is hidden.
 

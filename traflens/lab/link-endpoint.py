@@ -149,6 +149,28 @@ def listener(cid, args):
     return None
 
 
+def finish_environment(args, before, existing, work, result):
+    """A disappearing NIC must not discard the preceding ownership cleanup proof."""
+    result['network_configuration_preserved'] = False
+    result['preexisting_containers_preserved'] = False
+    try:
+        after = interface_snapshot(args.interface, args.bind, args.peer)
+        write(work / 'after.json', after)
+        result['network_configuration_preserved'] = before['configuration'] == after['configuration']
+        result['interface_counter_delta'] = {k: after['counters'][k] - v for k, v in before['counters'].items()}
+    except Exception as exc:
+        result['cleanup_errors'].append('Post-run interface check failed: ' + repr(exc))
+    try:
+        remaining = set(call(['docker', 'ps', '-q', '--no-trunc']).stdout.split())
+        result['preexisting_containers_preserved'] = existing <= remaining
+    except Exception as exc:
+        result['cleanup_errors'].append('Post-run container check failed: ' + repr(exc))
+    result['pass'] = bool(result['process_passed'] and result.get('owned_container_removed')
+                          and result['network_configuration_preserved'] and result['preexisting_containers_preserved']
+                          and not result['error'] and not result['cleanup_errors'])
+    write(work / 'result.json', result)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--execute', action='store_true')
@@ -251,16 +273,7 @@ def main():
                 write(work / 'exit-state.json', inspect(cid)['State'])
                 call(['docker', 'rm', cid]); result['owned_container_removed'] = inspect(cid) is None
             except BaseException as exc:result['cleanup_errors'].append(repr(exc))
-        after = interface_snapshot(args.interface, args.bind, args.peer)
-        write(work / 'after.json', after)
-        result['network_configuration_preserved'] = before['configuration'] == after['configuration']
-        result['interface_counter_delta'] = {k: after['counters'][k] - v for k, v in before['counters'].items()}
-        remaining = set(call(['docker', 'ps', '-q', '--no-trunc']).stdout.split())
-        result['preexisting_containers_preserved'] = existing <= remaining
-        result['pass'] = bool(result['process_passed'] and result.get('owned_container_removed')
-                              and result['network_configuration_preserved'] and result['preexisting_containers_preserved']
-                              and not result['error'] and not result['cleanup_errors'])
-        write(work / 'result.json', result)
+        finish_environment(args, before, existing, work, result)
     print(json.dumps({'pass': result['pass'], 'role': args.role, 'capture_enabled': False,
                       'error': result['error'], 'cleanup_errors': result['cleanup_errors']}))
     raise SystemExit(0 if result['pass'] else 1)
