@@ -5,6 +5,16 @@ performance. Read this file, `git status --short --branch`, and the latest evide
 before each hourly iteration. Source presence, a successful build and a healthy
 process are separate from successful collection and product parity.
 
+## Current follow-up: sender failure history
+
+A new loopback regression exposes a normal-operation TCP refusal being forgotten
+after the encoder and periodic drop counters clear. The follow-up makes every
+failed network-frame flush sticky for the sender component run, including
+backoff and configured throughput drops; only starting a new component run
+resets it. See `README-agent-shutdown.md` for scope and unchanged runtime-binary
+qualification. Full validation and exact commit results are retained in private
+`sender-health-20261027` evidence; do not infer an ingester-outage runtime result.
+
 ## Checkout and source
 
 - Primary: `dev-79:/root/yb/git/TrafLens`, branch `main`, tracking `github/main`.

@@ -2,7 +2,7 @@
 
 `Trident::stop` now requests termination of the control thread and waits up to30
 seconds for its component shutdown. It exits nonzero if the control thread panics,
-misses that deadline, or reports a known final sender failure. The final PID-file
+misses that deadline, or reports a known sender frame failure in that component run. The final PID-file
 cleanup/exit helper adds about one second; termination grace must exceed31 seconds.
 The controlled runtime validation uses40 seconds. No controller configuration
 field or network/resource limit is raised by this change.
@@ -20,7 +20,13 @@ An uncertain partial write is not replayed on another connection.
 
 A nonblocking termination notification avoids waiting on the configuration mutex;
 its existing bounded condition-variable wait remains a fallback. Shutdown errors
-survive periodic counter resets. L7 aggregation worker failures propagate instead
+survive periodic counter resets. Network-frame failures during normal operation
+are sticky too: clearing an encoder after a failed send must not let an empty
+final flush conceal the earlier loss. This includes frames discarded during
+reconnect backoff or configured throughput limiting. A later successful frame
+does not recover the lost frame or clear the failure; only a new component run
+resets it. Supervisors can therefore see a nonzero normal-stop result after an
+earlier transient failure even if the destination has since recovered. L7 aggregation worker failures propagate instead
 of silently becoming a successful join. Each sender's failure state resets only
 when that component starts a new run.
 
@@ -32,7 +38,8 @@ tests pass with no ignored tests in the isolated SDK. Build uses cached, pinned
 protobuf/jattach sources; the existing jattach static Makefile overlay is retained.
 
 This is a drain of already generated/queued records, not a durable acknowledgement
-from ClickHouse. Historical runtime drops, overwrite pressure, incomplete flow/
+from ClickHouse. Other historical runtime drops (including producer/queue losses), overwrite
+pressure, incomplete flow/
 stream state, unread kernel capture data and broad eBPF/runtime behavior need
 separate validation. File flush is not fsync durability. No ambiguous frame replay
 or general exactly-once claim is added. The earlier failed immediate-stop reference
@@ -100,3 +107,27 @@ reliability, maximum throughput or full DeepFlow parity.
 
 Forced SIGKILL, host failures and other direct fatal-exit paths bypass this normal
 termination coordinator and remain outside the demonstrated contract.
+
+
+## Sender failure history regression
+
+A loopback refusal while the sender is still running used to clear its frame
+without setting the sticky failure flag. After periodic counters reset, a stop
+with no queued items and an empty encoder could incorrectly appear successful.
+The regression verifies an actual refused connection, zero transmitted frames,
+cleared encoder, a nonzero drop counter followed by its reset to zero, then
+terminal processing. It fails on the previous implementation and passes when
+all failed network-frame flushes set the per-run failure flag.
+
+This follow-up changes failure reporting; it does not add retransmission,
+server acknowledgements, recovery of lost data, or an actual-ingester outage
+qualification. The earlier immediate-stop binary and traffic results above
+remain evidence for their named revision, not for a newly built runtime binary.
+
+The fixed source passes the complete default-feature native library423, tunnel28
+and window21 tests (472 total), with zero failures or ignored tests. The added
+regression fails on the previous implementation (five existing sender tests pass,
+one new test fails). SDK rustfmt leaves the tested source unchanged. The known
+libtrace archive member linker warning remains; it does not fail this build.
+Anonymous results and raw-log hashes are in
+[evidence/2026-10-27/sender-failure-history/summary.json](evidence/2026-10-27/sender-failure-history/summary.json).

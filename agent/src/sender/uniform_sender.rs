@@ -596,7 +596,9 @@ impl<T: Sendable> UniformSender<T> {
         }
         self.encoder.set_header_frame_size();
         let delivered = self.send_buffer(config);
-        if !delivered && !self.running.load(Ordering::Relaxed) {
+        if !delivered {
+            // A failed frame is discarded even while running. Preserve that loss
+            // across statistics resets and an empty final encoder flush.
             self.shutdown_failed.store(true, Ordering::Release);
         }
         self.encoder.reset_buffer();
@@ -1042,6 +1044,26 @@ mod shutdown_tests {
             assert_eq!(&bytes[..4], &4u32.to_le_bytes());
             assert_eq!(&bytes[4..], &(n as u32).to_le_bytes());
         }
+    }
+
+    #[test]
+    fn active_send_failure_survives_counter_reset_and_empty_terminal_flush() {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let port = listener.local_addr().unwrap().port();
+        drop(listener);
+        let mut sender = sender(port, 0);
+        sender.running.store(true, Ordering::Release);
+        sender.cached = false;
+        let config = sender.config.load();
+        sender.handle_target_server(Item(7), &config).unwrap();
+        assert_eq!(sender.encoder.buffer_len(), 0);
+        assert_eq!(sender.counter.tx.load(Ordering::Relaxed), 0);
+        assert!(sender.counter.dropped.load(Ordering::Relaxed) > 0);
+        let _ = sender.counter.get_counters();
+        assert_eq!(sender.counter.dropped.load(Ordering::Relaxed), 0);
+        sender.running.store(false, Ordering::Release);
+        sender.process();
+        assert!(sender.shutdown_failed.load(Ordering::Acquire));
     }
 
     #[test]
