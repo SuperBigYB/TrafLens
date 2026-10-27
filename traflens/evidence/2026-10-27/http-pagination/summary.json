@@ -1,0 +1,26 @@
+{
+  "schema": "traflens.http-pagination-qualification.v1",
+  "lab_tests": 218,
+  "new_tests": 14,
+  "synthetic_paired_requests": 2000,
+  "live_recheck_existing_runs": 6,
+  "live_requests_per_run": 500,
+  "live_unique_existing_sessions": 3000,
+  "scans_per_run": 2,
+  "page_size": 64,
+  "live_pages": 96,
+  "live_count_queries": 24,
+  "new_traffic_generated": false,
+  "real_workload_above_1000_proven": false,
+  "throughput_improvement_proven": false,
+  "transactional_snapshot_proven": false,
+  "deepflow_performance_parity_proven": false,
+  "source_sha256": {
+    "verify-http-pages.py": "e0cec825431b9828f316cfe1fb21cb5ab54553c9877d730774532b404f87736c",
+    "tests/test_http_pages.py": "69471d05c324349a33baa9c2a12df40bf5fb70bc3b37bd7c7e58416c2c479fcb"
+  },
+  "private_manifest": {
+    "files": 154,
+    "sha256": "73e555d61bfef5d443b3df93c12d4d6b1987efd545e6807a906c2b5756bf3050"
+  }
+}

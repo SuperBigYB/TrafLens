@@ -481,3 +481,21 @@ hardware changed on recovery, direct ports were reidentified and all temporary
 link-UP changes restored to their original DOWN state. Management routes unchanged.
 Broader sustained/ramp, packet/queue-loss, eBPF/GUI and full performance parity
 remain ongoing. Current physical identity must be re-read before any future run.
+
+
+## Paginated HTTP acceptance checkpoint - 2026-10-27
+
+The previous1000-row single-result oracle remains unchanged. New
+`lab/verify-http-pages.py` removes that retrieval barrier with bounded keyset
+pagination, validated lookahead rows, exact sequence/metadata checks, whole-marker
+counts before/after each of two full scans and strict offline archive replay.
+Linux execution has private exclusive outputs, no proxy/redirects, bounded API
+bodies/calls and a wall-clock deadline. Default execution is an offline plan.
+All218 lab tests pass, including14 new cases and a synthetic2000-request pair.
+Six existing native candidate/reference500-request samples pass live API rechecks:
+96 data pages and24 count requests,3000 earlier Sessions checked twice. This
+adds no new traffic/rate or CPU/RSS measurement. See README-http-load.md and
+`evidence/2026-10-27/http-pagination/summary.json`. Next: real above1000-request
+acceptance and repeated matched higher-rate ramps with pinned native binaries,
+current hardware identity, resource sampling and exact cleanup. Full parity and
+capacity limits remain unproven; two scans are not a transactional snapshot.

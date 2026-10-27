@@ -83,7 +83,8 @@ extra, duplicate, wrong-protocol/source/endpoint rows, booleans in integer field
 duplicate JSON keys and nonfinite values. The caller must collect whole-marker
 queries without protocol/Agent/source filters; report files alone cannot prove
 how a query was issued. This packet oracle is bounded to1000 unique requests per
-run (`LIMIT1001`); larger workloads need a separately qualified retrieval method.
+run (`LIMIT1001`). For larger workloads use the separately qualified keyset
+collector below; the original single-result oracle retains its bound.
 
 ```sh
 python3 traflens/lab/verify-http-load.py \
@@ -137,3 +138,71 @@ parity. Client request P99 is not ingestion latency. There is one sample per
 rate/mode, so percentile differences are not evidence of an Agent overhead
 improvement. Follow with repeated matched-load ramps and a separately pinned
 DeepFlow reference before making those claims.
+
+
+## Exact paginated packet acceptance
+
+`lab/verify-http-pages.py` validates the same paired workload reports, then uses
+the [DeepFlow SQL API](https://get.deepflow.io/docs/integration/output/query/sql/)
+on the receiving host's fixed loopback query port. The default is an offline
+plan: it reads only the supplied reports, without network access or output creation.
+The collector requires Linux and an explicit `--execute`; it changes no Agent,
+Controller, network, database schema or data. Stop the producer and the owned Agent
+before collection, and use a fresh marker for each workload.
+
+```sh
+# On the receiver, reports are already copied into a private directory:
+python3 traflens/lab/verify-http-pages.py \
+  --client "$PRIVATE_CLIENT_REPORT" --server "$PRIVATE_SERVER_REPORT" \
+  --agent-id "$RECEIPTED_AGENT_ID" --page-size 64
+
+# The output directory must be new, absolute, beneath an owned mode0700 parent:
+python3 traflens/lab/verify-http-pages.py \
+  --client "$PRIVATE_CLIENT_REPORT" --server "$PRIVATE_SERVER_REPORT" \
+  --agent-id "$RECEIPTED_AGENT_ID" --page-size 64 \
+  --timeout 120 --output "$NEW_PRIVATE_CAPTURE_DIRECTORY" --execute
+
+# Recheck the archived SQL and responses with no network access:
+python3 traflens/lab/verify-http-pages.py \
+  --client "$PRIVATE_CLIENT_REPORT" --server "$PRIVATE_SERVER_REPORT" \
+  --agent-id "$RECEIPTED_AGENT_ID" --page-size 64 \
+  --replay "$PRIVATE_CAPTURE_DIRECTORY"
+```
+
+Each scan checks the whole-marker `Count(row)` before and after reading all rows.
+The only filter is the marker and, after the first page, a strictly increasing
+canonical resource key. No protocol, Agent or endpoint filter can hide unexpected
+rows. Rows are ordered by resource string, so sequence10 precedes sequence2;
+acceptance still requires every numeric sequence exactly once. The ten original
+columns and numeric types are checked on every page. The one extra lookahead row
+is checked and re-read on the next page, exposing duplicates at page boundaries.
+A clamped/truncated page, ignored cursor, wrong schema, wrong packet metadata,
+missing/extra sequence or changing count fails acceptance. A second complete scan
+starts again from the beginning and must independently pass. Two scans are two
+exact packet reads in the summary, not two HTTP API calls.
+
+The paired-report limit remains200,000 requests, page sizes64-1000, and response
+limits are2MiB per API call. Total calls and wall time (10-300 seconds) are bounded.
+A POSIX timer bounds slow-drip reads in addition to socket inactivity timeouts.
+Only the initial underfilled count may be polled within that budget; overfilled
+counts and malformed data fail immediately. Proxy use and redirects are disabled.
+Private files are exclusively created mode0600 under a new mode0700 directory.
+SQL, raw responses, input hashes and failures remain private. Malformed JSON is
+retained as bounded base64; a successful archive must pass offline replay before
+an anonymous summary is emitted. Replay requires the same reports, page size and
+receipted Agent identity and verifies exact SQL order, with no missing/extra files.
+
+The14 new regression tests include a synthetic2000-request paired workload,
+duplicate boundary rows, missing/clamped/unsorted data, independent second-scan
+failure, invalid metadata/counts, SQL-resource injection, archive tampering,
+absolute deadlines, offline planning and private success/failure capture. All218
+lab tests pass locally. Six previously collected native candidate/reference
+500-request samples were rechecked through the live API: each passes two8-page
+scans at page size64, totalling96 page requests plus24 count requests. These are
+re-reads of the earlier3000 Sessions, not new traffic or higher measured throughput.
+The anonymous qualification is in `evidence/2026-10-27/http-pagination/summary.json`.
+
+Stable counts and two exact reads establish consistency during these bounded
+reads. They do not provide a transactional snapshot or prove that no future late
+write can arrive. The2000-row test is synthetic; a new real workload above1000
+requests and repeated higher-rate candidate/reference ramps remain required.
