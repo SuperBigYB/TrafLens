@@ -203,3 +203,7 @@ python3 traflens/lab/runtime-netns.py --execute \
 run must get a new private work directory. The driver refuses unknown ownership,
 records failures rather than deleting unrelated resources, and requires complete
 cleanup/inventory restoration to pass. Raw outputs remain private.
+
+## Managed Agent checkpoint
+
+The [strict managed oracle](README-managed-ebpf-oracle.md) now covers the complete Agent-to-ClickHouse path for this finite dual-endpoint HTTP workload. [Aggregate evidence](evidence/2026-10-27/managed-ebpf/summary.json) retains a 39/40 non-diagnostic failure and a subsequent 40/40 diagnostic pass. The first server-session loss is still unresolved; the successful diagnostic window does not establish repeatability or full feature/performance parity.

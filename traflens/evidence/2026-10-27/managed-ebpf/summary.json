@@ -1,0 +1,131 @@
+{
+  "schema": "traflens.managed-ebpf-checkpoint.v1",
+  "date_utc": "2026-10-27",
+  "objective_complete": false,
+  "source": {
+    "native_agent": "a0cb0fb9c111cb7b34168d459fd3e188b07826e6",
+    "running_server": "121bdbe26f147b96e532e702ab9819d2ad6ad353",
+    "publication_base": "c46684e192c6a6f9c7d59b18bcaa8791d5b4996b",
+    "agent_binary_sha256": "7e3ecc60f8c0199e7f66ec1c64508e1f7eb13cef545944ff39783e94287630ae",
+    "libtrace_sha256": "8a6b36fca7e0272b925f6cee26f7a6d01b135dc018fecaa27b5dbf22ca188ae0",
+    "production_code_changed_this_checkpoint": false
+  },
+  "managed_runtime": {
+    "controller_synchronized": true,
+    "native_collector_started": true,
+    "new_socket_program_sections": 81,
+    "scope_configuration_validated": true,
+    "agent_network_namespace_fd_verified": true,
+    "agent_af_packet_socket_count": 0,
+    "scope_identity": "current-task network namespace; not socket-owner/PID ACL",
+    "host_pid_and_host_network": true,
+    "docker_privileged": false,
+    "capabilities": [
+      "SYS_ADMIN",
+      "SYS_RESOURCE",
+      "BPF",
+      "PERFMON",
+      "SYS_PTRACE"
+    ],
+    "apparmor": "unconfined for the finite experiment container",
+    "resource_limits": {
+      "cpus": 2,
+      "memory_mib": 1024,
+      "pids": 384,
+      "hard_timeout_seconds": 220,
+      "kill_grace_seconds": 15
+    },
+    "official_container_context_enabled": true,
+    "disk_guard_thresholds_relaxed": false
+  },
+  "strict_oracle": {
+    "expected_sessions": 40,
+    "expected_points": {
+      "c-p": 20,
+      "s-p": 20
+    },
+    "full_precision_socket_flow_ids": 2,
+    "whole_marker_query_without_source_or_agent_filters": true,
+    "required_consecutive_passing_reads": 2,
+    "frozen_executed_helper_sha256": "a1be453217480789c33b37ee9d74bf93ce45426f701210c7b492a78eb554e040",
+    "public_helper_delta": "Explicit root/port arguments plus rejection of a missing values field. All 152 retained trial responses contain values; trial results unchanged.",
+    "missing_values_regression_old_failed": true,
+    "retained_responses_explicit_values_verified": 152
+  },
+  "retained_non_diagnostic_trial": {
+    "strict_pass": false,
+    "timeout_seconds": 150,
+    "reads": 74,
+    "positive_roundtrips": 20,
+    "negative_roundtrips": 40,
+    "actual_sessions": 39,
+    "points": {
+      "c-p": 20,
+      "s-p": 19
+    },
+    "missing_observation": "first server-side HTTP exchange",
+    "duplicate_or_unexpected_rows": 0,
+    "negative_rows_all_reads": 0,
+    "sdk_http1_records": 82,
+    "sdk_perf_events_lost_at_observation": 0,
+    "archive_sha256": "7d58a853f9ba0a870cb37fa430081a7f40c6a4fa8ea84b517c642f891d45f3d2"
+  },
+  "diagnostic_trial": {
+    "strict_pass": true,
+    "consecutive_passing_reads": 2,
+    "positive_roundtrips": 20,
+    "negative_roundtrips": 40,
+    "actual_sessions": 40,
+    "points": {
+      "c-p": 20,
+      "s-p": 20
+    },
+    "distinct_socket_flow_ids": 2,
+    "negative_rows_both_reads": 0,
+    "missing_or_unexpected_rows": 0,
+    "diagnostic_scope": "Exact owned positive synthetic process, HTTP1 and worker port; stdout only, 30-second maximum, explicitly disabled after traffic.",
+    "first_server_request_response_ordered": true,
+    "archive_sha256": "6d56b01695e24f8d04b13f8053f452051dff331cfbd90465b04d3428d6f5383c",
+    "directly_dumped_data_records": 80,
+    "directly_dumped_close_records": 0,
+    "close_qualification": "The stdout diagnostic contains data headers only; it does not directly prove close record count."
+  },
+  "qualification": "One bounded diagnostic window proves Agent -> Server -> ClickHouse -> exact query acceptance. The previous unexplained first server-session loss remains open; instrumentation changes timing. No production fix or repeatability/performance parity claim.",
+  "cleanup": {
+    "all_experiment_agents_removed": true,
+    "all_owned_workers_removed": true,
+    "original_host_bpf_inventory_restored": true,
+    "tracefs_restored": true,
+    "namespace_pins_released_after_agent_exit": true,
+    "original_controller_yaml_exact_readback": true,
+    "database_container_identities_preserved": true,
+    "unrelated_preexisting_containers_preserved": true,
+    "owned_logical_agent_record_retained": true
+  },
+  "private_runner_regressions": {
+    "workload_tests": 18,
+    "controller_guard_tests": 10,
+    "read_only_scope_reader_tests": 11,
+    "proof_and_inventory_guard_tests": 13,
+    "expired_receipt_bug_reproduced_and_fixed": true,
+    "worker_cgroup_metadata_expiry_does_not_mask_socket_program_leaks": true,
+    "earlier_failed_attempts_and_original_results_preserved": true
+  },
+  "remaining": [
+    "Reproduce and correct the unexplained first server-side loss without diagnostic timing effects.",
+    "Repeat exact acceptance with cold/warm state and explicit event-order regression coverage.",
+    "TLS, profiling, file-IO and broader protocol/application/GUI parity.",
+    "Sustained candidate/reference 10G throughput, CPU, RSS, loss and visibility comparison."
+  ],
+  "publication_policy": "Software, source hashes, aggregate counts and private fingerprints only; no raw payloads or deployment identities.",
+  "private_evidence": {
+    "file_count": 319,
+    "manifest_sha256": "b1f1fc39ea8a52c76528e7d25ebd0bfea9d83ee857e1f27a743add6970033d66",
+    "previous_failed_trials_retained": true,
+    "raw_evidence_published": false
+  },
+  "tooling": {
+    "new_public_oracle_tests": 17,
+    "complete_public_lab_tests": 171
+  }
+}
