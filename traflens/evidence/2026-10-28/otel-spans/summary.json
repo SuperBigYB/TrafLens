@@ -1,0 +1,107 @@
+{
+  "milestone": "M10",
+  "functional_gate_passed": true,
+  "closure_requires_matching_dual_main_refs": true,
+  "source": "actual OpenTelemetry Go SDK HTTP process instrumentation via native integration",
+  "normal_feature_function": 6,
+  "native_source": 4,
+  "native_record_type": 2,
+  "actual_service_processes": 2,
+  "actual_http_requests": 2,
+  "stored_observations": 8,
+  "traces": 2,
+  "nodes_per_trace": 4,
+  "recorded_edges_per_trace": 3,
+  "actual_propagation": "W3C context over actual HTTP between two independent processes in one owned private namespace; ingestion/storage on peer host",
+  "synthetic_span_json_or_sql_rows": false,
+  "headerless_or_ebpf_autotracing_claimed": false,
+  "sdk_receipts": {
+    "complete_services": 2,
+    "actual_readonly_span_jsonl": true,
+    "official_otlp_conversion_and_wire_artifact_sha": true,
+    "actual_generator_responses": true,
+    "all_process_exits_zero_no_oom": true
+  },
+  "strict_oracle": {
+    "public_entry_passed": true,
+    "two_full_marker_exact_id_and_value_reads": true,
+    "no_time_agent_source_filters_hiding_wrong_population": true,
+    "sdk_ids_parents_resources_kinds_and_ns_floor_us_match": true,
+    "source4": 8,
+    "source0": 0,
+    "source3": 0,
+    "both_actual_graphs_match": true,
+    "all_8_actual_details_match": true,
+    "wrong_agent_time_trace_empty": true,
+    "final_population_unchanged": true,
+    "elapsed_seconds": 1.333,
+    "max_native_rows": 64,
+    "max_sdk_spans": 16,
+    "max_requests": 32,
+    "total_deadline_seconds": 60
+  },
+  "graph_api": {
+    "fixed_source": 4,
+    "fixed_session": 2,
+    "max_rows": 256,
+    "sql_sentinel": 257,
+    "deadline_seconds": 12,
+    "ids_and_microseconds_precise_strings": true,
+    "duplicate_observations_retained": true,
+    "missing_ambiguous_parent_conflicts_cycles_diagnosed": true,
+    "only_recorded_unique_parents_create_edges": true,
+    "empty_distinct_from_failure": true,
+    "db_scan_or_all_driver_memory_cap_claimed": false
+  },
+  "actual_edge": {
+    "passed": true,
+    "both_trace_populations_separate": true,
+    "both_services_to_exact_detail": true,
+    "detail_navigations": 4,
+    "source4_selector_labels": true,
+    "wrong_agent_time_trace_empty": true,
+    "page_errors": 0,
+    "raw_sdk_identity_metadata_not_copied_to_workstation": true
+  },
+  "failed_preparations_retained": [
+    {
+      "stage": "live template rejected unsupported off_cpu dictionary",
+      "collector_started": false,
+      "sdk_upload_started": false,
+      "restored": true
+    },
+    {
+      "stage": "Path mount intent not JSON serializable",
+      "collector_started": false,
+      "sdk_upload_started": false,
+      "temporary_controller_lease_restored": true
+    }
+  ],
+  "qualified_fresh_execution": 3,
+  "checks": {
+    "complete_console_race": 48,
+    "real_sdk_module_race": 3,
+    "python_targeted": 33,
+    "python_new_trace_modules": 17,
+    "python_existing_cpu_lease_compatibility": 16,
+    "new_test_total_including_console_span_and_sdk": 28,
+    "read_only_independent_review": true,
+    "old_protocol_kernel_performance_249_matrix_repeated": false,
+    "remote_ci_checked": false
+  },
+  "restoration": {
+    "public_span_and_query_stops_passed": true,
+    "owned_containers_registrations_and_network_removed": true,
+    "source_and_workstation_forwards_closed": true,
+    "backend_query_console_ports_closed": true,
+    "old_server_identity_binary_config_unchanged": true,
+    "old_controller_license_yaml_route_bpf_preserved": true,
+    "unknown_bpf_programs_detached": false
+  },
+  "limits": [
+    "Explicit SDK/W3C causal slice, not headerless AutoTracing or universal asynchronous language coverage",
+    "Service labels and native IP/port mappings do not prove OS/container/physical host identity",
+    "No full feature/performance parity claim",
+    "Historical first CPU-profile writer failure remains unexplained"
+  ]
+}

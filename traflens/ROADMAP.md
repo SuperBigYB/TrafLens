@@ -25,7 +25,7 @@ requalifying it when unrelated work changes.
    query for the core HTTP/DNS/database scenarios, then extend TLS coverage.
    Acceptance: known real requests appear with the correct protocol and source
    metadata under a repeatable setup. Carry blocking collection fixes here.
-3. **Topology and request tracing (M3 relationships complete; M4 Trace ID correlation complete).** Connect resource/service identities to
+3. **Topology and request tracing (M3 relationships complete; M4 Trace ID correlation and M10 explicit SDK Span gate complete).** Connect resource/service identities to
    service relationships and per-request paths, exposed in the console.
    Acceptance: a small multi-service scenario can be followed from a service
    dependency to its requests and associated spans/records.
@@ -69,29 +69,29 @@ sealing; fine-grained CPU/RSS tuning and maximum-rate searches. Preserve existin
 failure records and revisit these systematically during reliability/performance
 work rather than letting them displace the product backbone.
 
-## Next after M9 delivery: M10 explicit cross-service Span causality
+## Next after M10 delivery: M11 finite no-header eBPF HTTP association
 
-M1-M9 now cover real request exploration, scoped eBPF HTTP, service relationships,
-explicit W3C Trace correlation, RED, packet DNS/MySQL, current Agent resources,
-trends and a finite Go self-profile product lifecycle. M9 is closed only after
-both repositories match the accepted delivery; the authoritative local plan then
-activates only M10. First inspect the existing OTLP/Span receiver/decoder and
-actual stored source, trace/span/parent fields; choose one small strictly owned
-supported path rather than assuming source presence means product support.
+M1-M10 now cover real request exploration, scoped eBPF HTTP, service relationships,
+explicit W3C Trace lookup and SDK Span parents, RED, packet DNS/MySQL, current
+Agent resources, trends and a finite self-profile lifecycle. After both main refs
+match M10, the local plan activates only M11. The next core gap is correlation
+without application Trace headers; this does not require redoing the completed
+OTLP or profiling gates.
 
-M10 should connect actual instrumented requests across two owned services into
-recorded explicit parent/child Span relationships and a bounded console view.
-Use finite real HTTP work and real measured Span boundaries, with independent
-expected IDs/parents and an unrelated Trace control. Expose only proven edges,
-including missing parents, duplicate observations and inconsistency states; time
-order or equal Trace ID does not establish causality. Do not relabel this as
-headerless AutoTracing. Keep receiver exposure isolated, restore temporary
-registrations/processes/configuration, and deliver public reproduction/stop and
-actual two-host/API/browser evidence before closing the milestone.
+M11 first inspects the native AutoTracing/query implementation, actual eBPF L7
+kernel/request/socket identifiers, supported bounded scope and API limits. Choose
+one finite owned synchronous HTTP chain without traceparent/tracestate/SDK export,
+with an independent app execution oracle and unrelated traffic control. Reuse the
+qualified native scoped HTTP runtime; keep onCPU/DWARF disabled and do not broaden
+capture to unrelated processes. Display only the associations supported by actual
+identifiers, with evidence/ambiguity/missing observations explicit. Equal URL,
+shared time or a made-up Span ID cannot prove causal association.
 
-M10-01 actual schema/source/scope -> M10-02 bounded real instrumented Span
-population -> M10-03 exact query and explicit graph -> M10-04 actual console
-navigation/positive-negative acceptance -> M10-05 public restoration/dual sync.
-More eBPF protocols, independent assets, all-language profiles, headerless tracing,
-matched peak performance and the unexplained early profile writer failure remain
-later work unless they directly block this slice. Do not rerun completed matrices.
+M11-01 actual identifiers/native engine/scope -> M11-02 finite no-header real
+capture and full source3 population -> M11-03 bounded association API/evidence ->
+M11-04 actual console/independent two-host positive-negative acceptance -> M11-05
+public lifecycle/restoration/dual sync. Qualification is this finite slice, not
+all-language asynchronous AutoTracing or full causal coverage. Larger protocol,
+asset, language, reliability and matched performance work remain future work.
+The unexplained early profile writer failure remains an explicit reliability
+follow-up. Keep the one-active-milestone/file-first half-hour workflow.

@@ -111,13 +111,13 @@ func TestOverviewUsesSameFilterAndExactTotal(t *testing.T) {
 }
 
 func TestCaptureSourceFilter(t *testing.T) {
-	for _, source := range []string{"0", "3"} {
+	for _, source := range []string{"0", "3", "4"} {
 		q, e := selection(url.Values{"source": {source}}, time.Now().Unix())
 		if e != nil || !strings.Contains(q, "signal_source = "+source) {
 			t.Fatalf("source %s lost", source)
 		}
 	}
-	for _, source := range []string{"", "-1", "4", "3 OR 1=1"} {
+	for _, source := range []string{"", "-1", "5", "3 OR 1=1"} {
 		if _, e := selection(url.Values{"source": {source}}, time.Now().Unix()); e == nil {
 			t.Error("accepted invalid source")
 		}

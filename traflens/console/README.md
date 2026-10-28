@@ -182,3 +182,13 @@ never falls back to legacy ProfileTracing. See the [bounded query contract and
 actual acceptance](../README-cpu-profiling.md#bounded-native-query-and-actual-console).
 The full finite [public integration/runtime lifecycle](../README-cpu-profile-runtime.md)
 now passes one necessary real-data trial with the original immutable profile.
+
+
+## Explicit OpenTelemetry Span relationships
+
+The independent exact-Trace Span form queries only source4 and connects recorded
+unique Span/parent IDs with missing/duplicate/conflict/cycle diagnostics. It retains
+all observations up to the fixed cap and opens exact actual record details;
+request filtering and labels also support OpenTelemetry4. See the
+[real SDK lifecycle, graph API and actual acceptance](../README-otel-spans.md).
+This is explicit SDK causality, not headerless kernel AutoTracing.

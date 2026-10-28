@@ -73,24 +73,47 @@ def verify_baseline(api, baseline):
         require(current and identity(current, AGENT_IDENTITY) == identity(old, AGENT_IDENTITY), 'Existing Agent identity/configuration changed')
     return (groups, agents)
 
+def integration_mode(value):
+    mode = value.get('integration_mode', 'profile')
+    require(mode in ('profile', 'otel_trace'), 'Unknown integration mode')
+    return mode
+
+
+def license_functions(value):
+    # Normal feature management only: TRACE_APP=6, PROFILE_INT=11.
+    return [6] if integration_mode(value) == 'otel_trace' else [11]
+
+
+def trace_only_profile(controller_ip, controller_port, ingester_port):
+    value = profile_only(Path(__file__).resolve().parent, controller_ip, controller_port, ingester_port)
+    integration = value['inputs']['integration']
+    integration['feature_control'] = {'profile_integration_disabled': True, 'trace_integration_disabled': False,
+                                      'metric_integration_disabled': True, 'log_integration_disabled': True}
+    integration['compression'] = {'trace': False, 'profile': False}
+    return value
+
+
 def validate_metadata(value):
-    require(isinstance(value, dict) and re.fullmatch('cpu-[0-9a-f]{24}', value.get('run', '')), 'Controller identity or scope mismatch')
+    require(isinstance(value, dict), 'Controller metadata must be an object')
+    trace = integration_mode(value) == 'otel_trace'
+    prefix = 'span-' if trace else 'cpu-'
+    require(re.fullmatch(prefix + '[0-9a-f]{24}', value.get('run', '')), 'Run prefix differs from integration mode')
     address = ipaddress.ip_address(value['ctrl_ip'])
     require(address.version == 4 and address.is_private and (not address.is_loopback) and (not address.is_link_local) and (not address.is_unspecified), 'Controller identity or scope mismatch')
     require(re.fullmatch('(?:[0-9a-f]{2}:){5}[0-9a-f]{2}', value['ctrl_mac']), 'Controller identity or scope mismatch')
     require(not int(value['ctrl_mac'][:2], 16) & 1 and value['ctrl_mac'] != '00:00:00:00:00:00', 'Controller identity or scope mismatch')
     require(isinstance(value['profile'], dict), 'Controller identity or scope mismatch')
-    require(value['profile'] == profile_only(Path(__file__).resolve().parent, value['controller_ip'], value['controller_port'], value['ingester_port']), 'Profile differs from the fixed profile-only configuration')
-    inputs = value['profile']['inputs']
-    require(inputs['ebpf']['disabled'] is True and inputs['proc']['enabled'] is False, 'Controller identity or scope mismatch')
-    require(inputs['integration']['enabled'] is True, 'Controller identity or scope mismatch')
-    flags = inputs['integration']['feature_control']
-    require(flags['profile_integration_disabled'] is False, 'Controller identity or scope mismatch')
-    require(all((flags[key] is True for key in ('trace_integration_disabled', 'metric_integration_disabled', 'log_integration_disabled'))), 'Controller identity or scope mismatch')
+    if trace:
+        expected = trace_only_profile(value['controller_ip'], value['controller_port'], value['ingester_port'])
+    else:
+        expected = profile_only(Path(__file__).resolve().parent, value['controller_ip'], value['controller_port'], value['ingester_port'])
+    require(value['profile'] == expected, 'Configuration differs from the fixed integration mode')
     return value
+
 
 def prepare(api, config, value):
     value = validate_metadata(value)
+    functions = license_functions(value)
     require(load('controller-baseline.json') is None, 'Prepare is one-shot; retain earlier receipts')
     (groups, agents) = (get_groups(api), get_agents(api))
     name = 'traflens-' + value['run']
@@ -114,10 +137,10 @@ def prepare(api, config, value):
     save('controller-agent-created.json', response)
     agent = response['DATA']
     require(all((agent.get(k) == v for (k, v) in agent_body.items())) and agent['LCUUID'] not in {r['LCUUID'] for r in agents}, 'Controller identity or scope mismatch')
-    mutate(api, 'license-owned-agent', '/v1/vtaps-license-type/' + agent['LCUUID'] + '/', {'LICENSE_FUNCTIONS': [11]}, 'PATCH')
+    mutate(api, 'license-owned-agent', '/v1/vtaps-license-type/' + agent['LCUUID'] + '/', {'LICENSE_FUNCTIONS': functions}, 'PATCH')
     mutate(api, 'enable-owned-agent', '/v1/vtaps/' + agent['LCUUID'] + '/', {'ENABLE': 1}, 'PATCH')
     current = next((r for r in get_agents(api) if r['LCUUID'] == agent['LCUUID']))
-    require(all((current.get(k) == v for (k, v) in agent_body.items())) and current['ENABLE'] == 1 and (current['LICENSE_FUNCTIONS'] == [11]), 'Controller identity or scope mismatch')
+    require(all((current.get(k) == v for (k, v) in agent_body.items())) and current['ENABLE'] == 1 and (current['LICENSE_FUNCTIONS'] == functions), 'Controller identity or scope mismatch')
     configs = api('/v1/agent-group-configuration/json')['DATA']
     if isinstance(configs, str):
         configs = json.loads(configs)
@@ -231,7 +254,7 @@ def dispatch(args):
         try:
             value = json.load(sys.stdin)
             if args.action == 'prepare':
-                require(re.fullmatch(r'cpu-[0-9a-f]{24}', value.get('run', '')), 'Fresh Controller run required')
+                validate_metadata(value)
                 prepare(api, config, value)
             elif load('controller-baseline.json') is None:
                 require(not load('controller-group-intent.json') and not load('controller-agent-intent.json'), 'Missing Controller baseline')

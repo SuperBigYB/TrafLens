@@ -82,8 +82,8 @@ func selection(v url.Values, now int64) (string, error) {
 		where += fmt.Sprintf(" AND l7_protocol = %d", n)
 	}
 	if v.Has("source") {
-		if v.Get("source") != "0" && v.Get("source") != "3" {
-			return "", errors.New("source must be packet (0) or eBPF (3)")
+		if v.Get("source") != "0" && v.Get("source") != "3" && v.Get("source") != "4" {
+			return "", errors.New("source must be packet (0), eBPF (3) or OpenTelemetry (4)")
 		}
 		where += " AND signal_source = " + v.Get("source")
 	}
@@ -190,6 +190,7 @@ func (c *console) handler() http.Handler {
 	mux.HandleFunc("GET /api/resources", c.resources)
 	mux.HandleFunc("GET /api/services", c.services)
 	mux.HandleFunc("GET /api/trace", c.trace)
+	mux.HandleFunc("GET /api/spans", c.spans)
 	mux.HandleFunc("GET /api/red", c.red)
 	mux.HandleFunc("GET /api/trends", c.trends)
 	mux.HandleFunc("GET /api/requests", func(w http.ResponseWriter, r *http.Request) {

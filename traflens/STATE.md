@@ -13,6 +13,31 @@ priority is a reproducible product entry point and minimal real-data console
 topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
 performance work. Review priorities after each milestone or three half-hourly runs.
 
+## M10 explicit real SDK Span functional gate complete (2026-10-28)
+
+Two owned SDK HTTP service processes and one finite generator run through a
+public isolated trace-only lifecycle with normal TRACE_APP6 and no packet,
+process/eBPF/profile/metric/log input. One main and one unrelated control request
+produce8real source4/Session2 observations. Independent original SDK/wire receipts,
+two complete whole-marker same-ID/value reads, exact parents/resource/kind/ns-to-us
+measurements and all8details pass. Each Trace has4nodes/3recorded edges; missing,
+duplicate, conflict and cycle semantics remain explicit. New fixed /api/spans
+and actual Edge graph/details/source4/empty controls pass with no page errors.
+
+The initial unsupported-template and Path-intent preparation failures are retained;
+no collector/SDK upload happened then, and all owned resources restored. A fresh
+third execution qualifies the actual population. Both public stop commands pass,
+old Server/config/registration/license/YAML/route/BPF identities remain and all
+owned forwarding/query/collector/workload resources exit. See README-otel-spans.md
+and dated otel-spans evidence. This is explicit SDK/W3C propagation, not headerless
+AutoTracing, discovered OS/container assets or performance parity.
+
+After both repository main refs match the delivery, the local plan closes M10
+and activates M11: one finite no-trace-header eBPF HTTP association product slice.
+First inspect the existing native tracing engine/fields and strict scope; require
+actual kernel/request identifiers and an independent app oracle, not time or URL
+alone. Do not rerun completed CPU/OTLP/protocol/kernel/performance matrices.
+
 ## M9 public finite CPU profile functional gate complete (2026-10-28)
 
 The public profile-only lifecycle, independent query/console runtime and strict
