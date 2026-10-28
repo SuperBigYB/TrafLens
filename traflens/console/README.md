@@ -154,3 +154,11 @@ packet-source fixture setup, whole-marker verification and real console checks.
 The selector/list/overview/relationships show protocol names; exact details retain
 domain, response result/exception and original numeric fields. DNS RCODE and
 MySQL error-code/null semantics are explained alongside the actual record.
+
+
+## Current Agent resource directory
+
+The [resource directory workflow](../README-resource-directory.md) links current
+Controller registrations to existing service/RED/request/detail filters by exact
+numeric Agent ID. Current state and UUID are visible; historical observations
+are not proof of current health or host identity across registration lifetimes.

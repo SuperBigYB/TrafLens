@@ -185,6 +185,7 @@ func writeJSON(w http.ResponseWriter, status int, v any) {
 }
 func (c *console) handler() http.Handler {
 	mux := http.NewServeMux()
+	mux.HandleFunc("GET /api/resources", c.resources)
 	mux.HandleFunc("GET /api/services", c.services)
 	mux.HandleFunc("GET /api/trace", c.trace)
 	mux.HandleFunc("GET /api/red", c.red)

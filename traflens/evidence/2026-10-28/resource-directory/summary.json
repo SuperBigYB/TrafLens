@@ -1,0 +1,81 @@
+{
+  "milestone": "M7 current Agent registration directory and observation navigation",
+  "functional_gate_passed": true,
+  "qualification": "Current numeric Agent registration resource slice; no independent host/container/Kubernetes discovery",
+  "data": {
+    "reused": "M6 qualified two-host protocol observations",
+    "new_capture_started": false,
+    "session_observation_records": 8,
+    "dns_records": 4,
+    "mysql_records": 4,
+    "service_relationships": 2,
+    "complete_same_id_reads": 2,
+    "signal_source": 0
+  },
+  "current_inventory": {
+    "projection_matches_independent_controller_response": true,
+    "registered_resources": 1,
+    "state_code": 0,
+    "enable_code": 1,
+    "historical_data_is_not_current_health": true,
+    "org_id": 1,
+    "user_id": 1,
+    "multi_tenant_authorization_implemented": false
+  },
+  "identity": "L7 joins numeric UInt16 agent_id; no stored registration UUID/generation, so historical host identity is not proven",
+  "api": {
+    "limit": 100,
+    "sort": "numeric ID",
+    "exact_lookup_before_truncation": true,
+    "unknown_id_returns_empty_list": true,
+    "projection_fields": [
+      "ID",
+      "LCUUID",
+      "NAME",
+      "CTRL_IP",
+      "TYPE",
+      "STATE",
+      "ENABLE",
+      "TEAM_ID"
+    ],
+    "bad_inputs": 400,
+    "upstream_or_inventory_failure": 502,
+    "explicit_empty_array_distinct": true
+  },
+  "browser": {
+    "pass": true,
+    "browser": "headless Microsoft Edge",
+    "page_errors": [],
+    "dataset": "M6 qualified historical two-host observations; no new capture",
+    "current_registration_projection_matches_controller": true,
+    "offline_registration_with_historical_records": true,
+    "shared_agent_scope": true,
+    "record_count": 8,
+    "exact_historical_reads": 2,
+    "service_relation_count": 2,
+    "resource_to_relation_record_detail": true,
+    "unknown_agent_empty": true,
+    "manual_agent_clears_relation": true,
+    "clear_resource_restores_scope": true,
+    "wrong_source_empty_with_registration_present": true,
+    "console_actual_exit_verified": true
+  },
+  "verification": {
+    "full_console_race_tests": 24,
+    "new_resource_tests": 5,
+    "independent_review_blocking_findings": 0,
+    "lab_tests_not_repeated": "M6 historical 249 pass; no lab source change",
+    "remote_ci": "not checked"
+  },
+  "restoration": {
+    "source_interface_and_management_route_unchanged": true,
+    "source_bpf_identity_unchanged": true,
+    "source_preexisting_containers_preserved": true,
+    "native_agent_stopped": true,
+    "peer_configuration_unchanged": true,
+    "owned_server_identity_unchanged": true,
+    "owned_console_stopped": true,
+    "controller_original_yaml_unchanged": true
+  },
+  "publication": "Anonymous aggregates and implementation only; runtime addresses/identities/query responses/screenshots remain private"
+}

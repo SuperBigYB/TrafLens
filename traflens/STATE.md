@@ -13,6 +13,37 @@ priority is a reproducible product entry point and minimal real-data console
 topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
 performance work. Review priorities after each milestone or three half-hourly runs.
 
+## M7 current Agent resources functional acceptance (2026-10-28)
+
+The new bounded resource API projects8 real current-registration fields in the
+fixed organization1/user1 lab scope. Numeric-ID ordering/truncation is explicit;
+exact-ID lookup precedes truncation. Unknown ID, genuine empty, invalid input and
+upstream/malformed inventory stay distinct. TEAM_ID is an attribute, not a new
+multi-tenant authorization implementation. L7 has only numeric Agent ID, without
+registration UUID/generation, so no historical host/container identity is inferred.
+
+The directory selects visible Agent scope shared by overview, relationships, RED
+and request/detail. Manual Agent changes clear a previous relationship; clearing
+Agent/relationship restores other filters. Actual Edge compares the directory to
+an independent Controller response and navigates current registration ->2 service
+relationships/RED ->8 historical M6 protocol observations -> exact detail. Two
+complete same-ID reads pass; unknown Agent and source3 controls are empty. Current
+registration state0(disconnected)/enable1 is preserved while historical data exists.
+24 console race tests, build and independent review pass; page errors0. No capture,
+profile, network or backend service change is needed; owned console exits and
+source/peer configuration, BPF identity and existing services are verified unchanged.
+See README-resource-directory.md and dated resource-directory evidence. Complete
+both remote synchronizations before recording M7 closure.
+
+The sole planned next milestone is M8: service observation time trends and interval
+drill-down. First verify actual bounded time-bucket query support/units, then expose
+record/error/positive-latency trends sharing resource/service scope and navigate
+an actual selected interval to requests/details. Preserve partial bucket/empty/
+failed-query semantics; do not label observation rates as deduplicated throughput.
+Use existing qualified records or one necessary finite scenario, without repeating
+old protocol/kernel/performance matrices. Full profiling, identity discovery and
+AutoTracing remain subsequent milestones.
+
 ## M6 DNS/MySQL functional acceptance (2026-10-28)
 
 The console names DNS/MySQL consistently and exposes real domain/answer/exception
