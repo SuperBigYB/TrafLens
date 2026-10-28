@@ -100,8 +100,9 @@ def start(args):
     scope=Path(lease['positive']['source'])
     if not re.fullmatch('/proc/'+str(pid)+r'/fd/[0-9]+',str(scope)):
         raise RuntimeError('Scope must be an FD held by the live lease supervisor')
-    if lease['port']!=int(profile['processors']['request_log']['filters']['port_number_prefilters']['HTTP']):
-        raise RuntimeError('Workload and HTTP profile ports differ')
+    _,selected_port=prepared_protocol(profile)
+    if lease['port']!=selected_port:
+        raise RuntimeError('Workload and restricted protocol profile ports differ')
     inode_expected=lease['positive']['inode']
     root=WORK/'agent'
     if root.exists():
@@ -214,7 +215,7 @@ def verified_preparation(path):
     path=canonical_private(path,directory=True)
     manifest=load(canonical_private(path/'manifest.json'))
     names={'group-profile.json','bootstrap.yaml'}
-    if manifest.get('schema')!='traflens.managed-http-preparation.v1' or set(manifest['files'])!=names:
+    if manifest.get('schema') not in ('traflens.managed-http-preparation.v1','traflens.managed-dns-preparation.v1') or set(manifest['files'])!=names:
         raise ValueError('Unsupported preparation manifest')
     for name in names:
         file=canonical_private(path/name)
@@ -222,11 +223,29 @@ def verified_preparation(path):
             raise ValueError('Prepared file hash/length differs')
     boot=load(path/'bootstrap.yaml');profile=load(path/'group-profile.json')
     comm=profile['global']['communication']
-    expected=preparation.documents(boot['controller-ips'][0],boot['vtap-group-id-request'],
-        boot['controller-port'],comm['ingester_ip'],comm['ingester_port'],manifest['http_port'])
+    if manifest['schema']=='traflens.managed-http-preparation.v1':
+        expected=preparation.documents(boot['controller-ips'][0],boot['vtap-group-id-request'],
+            boot['controller-port'],comm['ingester_ip'],comm['ingester_port'],manifest['http_port'])
+    else:
+        spec=importlib.util.spec_from_file_location('managed_dns_prepare',HERE/'managed-dns.py')
+        dns=importlib.util.module_from_spec(spec);spec.loader.exec_module(dns)
+        if manifest.get('protocol')!='DNS/TCP' or 'http_port' in manifest:
+            raise ValueError('DNS manifest protocol differs')
+        expected=dns.documents(boot['controller-ips'][0],boot['vtap-group-id-request'],
+            boot['controller-port'],comm['ingester_ip'],comm['ingester_port'],manifest['dns_port'])
     if (profile,boot)!=expected or manifest.get('namespace_target')!=preparation.SCOPE_TARGET:
-        raise ValueError('Only the restricted prepared HTTP profile/bootstrap is supported')
+        raise ValueError('Only the exact restricted prepared protocol profile/bootstrap is supported')
     return boot,profile
+
+
+def prepared_protocol(profile):
+    protocols=profile['processors']['request_log']['application_protocol_inference']['enabled_protocols']
+    ports=profile['processors']['request_log']['filters']['port_number_prefilters']
+    if protocols==['DNS'] and ports=={'DNS':'18080'}:
+        return 'DNS/TCP',18080
+    if protocols==['HTTP'] and set(ports)=={'HTTP'}:
+        return 'HTTP',int(ports['HTTP'])
+    raise ValueError('Unsupported restricted protocol/port selection')
 
 
 def verified_artifacts(path):

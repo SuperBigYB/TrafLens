@@ -21,7 +21,7 @@ requalifying it when unrelated work changes.
    Acceptance: a fresh bounded workload on the two hosts is visible through the
    product entry point, with usable filtering and a drill-down to real records;
    document how to start and access it. Do not substitute mock data for this gate.
-2. **Core eBPF ingestion (HTTP gate complete; protocol expansion deferred).** Complete managed eBPF capture through ingestion and
+2. **Core eBPF ingestion (HTTP and finite TCP DNS M13 gates complete; further protocols deferred).** Complete managed eBPF capture through ingestion and
    query for the core HTTP/DNS/database scenarios, then extend TLS coverage.
    Acceptance: known real requests appear with the correct protocol and source
    metadata under a repeatable setup. Carry blocking collection fixes here.
@@ -113,14 +113,14 @@ is authorized by a field name. Reuse qualified inputs where supported, keep one
 active milestone and defer old protocol/kernel/performance matrices. The local
 file becomes M12-active only after both repository refs match M11's delivery.
 
-## Next single milestone after M12 synchronization
+## Next single milestone after M13 synchronization
 
-M13 selects a finite managed eBPF DNS query/error product loop. Inspect actual
-parser/transport/FD/map namespace scope and normal license support first; use
-only owned bounded endpoints and an independent wire/application oracle. Prove
-real source3 data, whole-population positive/negative controls, exact API/detail
-and actual browser, then public stop/restoration and both repository refs. Do
-not assume UDP capture or claim all protocols/AutoTracing/performance. Keep
-other profiling/process/integration inputs disabled and reuse qualified native
-artifacts; if a necessary capability is absent, record the direct blocker rather
-than silently substituting packet input or widening collection.
+M13 completes the finite managed eBPF DNS/TCP product slice with strict raw,
+actual-browser and public-restoration gates; UDP/encrypted/general DNS remain
+unqualified. M14 selects managed eBPF MySQL request/error navigation: inspect
+actual native parser/handshake/cache/port support and exact scope first, then
+finite real owned wire execution with independent oracle, complete source3
+population, existing API/detail/error navigation, public stop and both refs.
+Do not treat M6's packet MySQL fixture or source availability as eBPF acceptance.
+No Controller database or unrelated service is a workload target. Preserve one
+active milestone and defer nonblocking compatibility/performance matrices.

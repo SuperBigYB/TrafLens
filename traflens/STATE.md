@@ -13,6 +13,43 @@ priority is a reproducible product entry point and minimal real-data console
 topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
 performance work. Review priorities after each milestone or three half-hourly runs.
 
+## M13 scoped eBPF DNS/TCP product gate complete (2026-10-29)
+
+Public managed-DNS preparation, normal kernel2/4/5 Controller mode and an explicit
+strict DNS branch in the shared launcher pass a fresh finite lifecycle. Existing
+namespace FD/inode/map/no-AF_PACKET scope and native3dec20af5 are reused. Four
+owned limited C workers execute three DNS/TCP queries in each of two namespaces
+on the same18080 port. The positive scope yields6 source3 Sessions (4 successes,
+2 NXDOMAIN/RCODE3/native ClientError4); negative marker has0, source0/4 have0.
+This is3positive business queries observed at client/server, not6queries.
+
+Independent framed-wire/SHA/tuple/PID/TID/Docker/map proof, two complete whole-
+marker original-ID/field populations and6 precise API details pass in20requests.
+RRT is native microseconds checked against actual per-observer calls, not the
+identity pause. Real Edge6details/protocol/source/error/empty controls pass with
+no page errors. Existing generic DNS UI is reused; native DNS transaction IDs
+are not newly displayed or treated as globally unique causal identities.
+
+The first run failed before DNS client execution because a generic artifact
+path helper rejected intentional /proc/PID/exe. The dedicated bounded stable-
+PID/executable SHA fix keeps generic symlink rejection intact; original failed
+result is unchanged and a fresh second run passes.74 targeted tests (31DNS and
+43shared regressions), static C build and independent review pass. Console64
+is an unchanged historical baseline; no old matrices or remote CI were repeated.
+
+Agent/workers exit0, public/idempotent stop and exact BPF/tracefs/pins/Controller
+0/1/YAML restore pass; old Server identity/network and historical M9 config SHA,
+physical device/interface/route remain. Query/console/owned forwards are gone.
+See [public workflow](README-ebpf-dns.md) and
+[anonymous evidence](evidence/2026-10-29/ebpf-dns/README.md).
+This small TCP/single-frame slice does not qualify UDP/DoT/DoH, arbitrary stream
+segmentation, recursive DNS, general AutoTracing or physical10G performance.
+
+After both main refs match, close M13 and select M14: a finite managed eBPF
+MySQL request/error product loop. First inspect actual parser, handshake/state,
+normal permissions and the same strict scope; reuse the existing packet wire
+fixture only as protocol knowledge, never as evidence of source3 qualification.
+
 ## M12 finite TCP connection product gate complete (2026-10-29)
 
 The public finite packet lifecycle, strict independent oracle and real Edge

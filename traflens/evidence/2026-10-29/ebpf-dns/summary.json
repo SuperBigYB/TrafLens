@@ -1,0 +1,133 @@
+{
+  "milestone": "M13",
+  "functional_gate": true,
+  "complete_deepflow_parity": false,
+  "native_core": "3dec20af5ce6ff25c696d136b5477f5310b4962c",
+  "source": "native eBPF DNS/TCP source3; not packet fallback",
+  "pipeline": "two owned namespaces on dev-79 to existing Server on dev-240",
+  "physical_10g_or_performance_qualified": false,
+  "capture": {
+    "pass_execution": true,
+    "positive_queries": 3,
+    "negative_queries": 3,
+    "cleaned": true,
+    "collector_stopped": true,
+    "lease_restored": true,
+    "controller_cleaned": true
+  },
+  "strict_oracle": {
+    "actual_dns_wire_fields_verified": true,
+    "actual_host_pid_tid_tuple_verified": true,
+    "actual_raw_scope_map_verified": true,
+    "actual_wire_sha256": {
+      "negative-client": "754a2276f62d2403ede26e34e683979eb89ebc2d09b1a3e6c9df781cc4620f3b",
+      "negative-server": "33d2ebfdf802d5011e0f604b224d555cf963623884c9d631db30abf24fc9320f",
+      "positive-client": "1a370bfdba0680cf1cc6a92355b79672b3dd7bd3563d3610dad5682970e0e850",
+      "positive-server": "5ca38bd8bff4a101484810c8a1981f8155fecf76ad55ae8a31e621b0d74f5f23"
+    },
+    "actual_worker_runtime_receipts_passed": true,
+    "application_negative_queries": 3,
+    "application_positive_queries": 3,
+    "elapsed_seconds": 0.312,
+    "exact_detail_reads": 6,
+    "limitations": "Finite observed DNS/TCP Sessions, not six business queries, complete DNS compatibility, UDP/encrypted DNS, causal tracing or performance parity.",
+    "negative_queries": 3,
+    "negative_stored_records": 0,
+    "new_capture": false,
+    "new_ingestion": false,
+    "observations": 6,
+    "original_projection_sha256": "a9f02b8af245a19cae3a91318351be929bc7e5f20e81ef9350012d03c4b62fab",
+    "original_runtime_sha256": {
+      "coordinator-scope-proof.json": "d348a28a4a7e9c08ba8a9e572e7de4a017f2653c2dfac27b51b86b8a95fee748",
+      "scope-map.json": "952f6334d4cba2181fdd5a7d3cb680f70edfb25d42144f1bda7c6ffa38b5ed24",
+      "scope-runtime.json": "50bb4d564239cd36774a98f74ff359d7eed423d235371d64090b38bf79865bd7"
+    },
+    "passed": true,
+    "positive_queries": 3,
+    "request_count": 20,
+    "rrt_scope": "native microseconds; <=actual per-observer monotonic C call interval, event-floor difference<=1us; not a performance benchmark",
+    "scope_receipt_passed": true,
+    "source": "native eBPF DNS/TCP source3",
+    "source_counts": {
+      "0": 0,
+      "3": 6,
+      "4": 0
+    },
+    "storage_acceptance_passed": true,
+    "whole_marker_reads": 2
+  },
+  "browser": {
+    "pass": true,
+    "browser": "headless Microsoft Edge",
+    "page_errors": [],
+    "full_capture_metadata_copied_locally": false,
+    "actual_source3_dns_tcp_sessions": 6,
+    "successful_observations": 4,
+    "nxdomain_observations": 2,
+    "resources": 3,
+    "exact_details": 6,
+    "existing_protocol_source_and_error_controls": true,
+    "rcode_and_answers_preserved": true,
+    "wrong_source_agent_time_id_empty": true
+  },
+  "restoration": {
+    "query_containers_absent": true,
+    "query_loopback_ports_released": true,
+    "old_server_id_image_network_unchanged": true,
+    "old_server_config_matches_historical_M9_round14_sha": true,
+    "controller_shared_verify_baseline": true,
+    "controller_exact_baseline_inventory": true,
+    "controller_agent_count": 0,
+    "controller_group_count": 1,
+    "original_default_group_identity_membership_yaml_preserved": true,
+    "capture_public_stop_cleaned": true,
+    "original_runtime_results_unchanged": true,
+    "actual_agent_exit_zero_no_oom": true,
+    "all_four_actual_worker_exits_zero_no_oom": true,
+    "source_agent_workers_holders_absent": true,
+    "source_original_bpf_inventory_exact": true,
+    "source_original_tracefs_exact": true,
+    "namespace_pins_released": true
+  },
+  "hardware": {
+    "physical_device_matches": true,
+    "interface_identity_matches": true,
+    "management_route_matches": true
+  },
+  "source_forwards": {
+    "forward_exact_identity_verified": true,
+    "forward_stopped": true,
+    "port_20819_closed": true,
+    "port_20820_closed": true,
+    "port_24017_closed": true
+  },
+  "workstation_22880_closed": true,
+  "checks": {
+    "targeted_tests": 74,
+    "new_dns_tests": 31,
+    "shared_launcher_controller_regressions": 43,
+    "c_fixture_static_build": true,
+    "independent_review": true,
+    "remote_ci_checked": false,
+    "unchanged_console_64_tests_historical_not_repeated": true,
+    "c_line_endings_only_normalized": true,
+    "preprocessed_and_runtime_static_binary_exact_bytes_equal": true
+  },
+  "failed_attempt_preserved": {
+    "runtime1_pass": false,
+    "dns_queries_executed": 0,
+    "cleaned": true,
+    "reason": "generic canonical artifact helper rejected intentional /proc/PID/exe handle before first client",
+    "fix": "dedicated read-only PID/startticks/inode/size/mtime-stable bounded executable SHA; generic symlink rejection unchanged",
+    "fresh_runtime2": true,
+    "original_results_unchanged": true
+  },
+  "limitations": [
+    "TCP small one-frame syscall slice; no UDP/DoT/DoH or general DNS reassembly/resolver compatibility",
+    "three positive queries have six process observations; not six business queries",
+    "native NXDOMAIN ClientError classification is not a health or root-cause verdict",
+    "identity pause may affect RRT; no latency/throughput claim",
+    "DNS16bit transaction ID is scoped to flow/exchange; no global identity or causal parent",
+    "generic UI projection is reused; DNS transaction ID is independently verified in native data, not newly displayed"
+  ]
+}

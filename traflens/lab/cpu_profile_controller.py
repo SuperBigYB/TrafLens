@@ -79,13 +79,14 @@ def verify_baseline(api, baseline):
 
 def integration_mode(value):
     mode = value.get('integration_mode', 'profile')
-    require(mode in ('profile', 'otel_trace', 'kernel_http', 'packet_tcp'), 'Unknown integration mode')
+    require(mode in ('profile', 'otel_trace', 'kernel_http', 'packet_tcp', 'kernel_dns'), 'Unknown integration mode')
     return mode
 
 
 def license_functions(value):
     # Normal feature management only; callers cannot supply license overrides.
-    return {'profile': [11], 'otel_trace': [6], 'kernel_http': [2, 4, 5], 'packet_tcp': [2, 4, 5]}[integration_mode(value)]
+    return {'profile': [11], 'otel_trace': [6], 'kernel_http': [2, 4, 5], 'packet_tcp': [2, 4, 5],
+            'kernel_dns': [2, 4, 5]}[integration_mode(value)]
 
 
 def kernel_http_profile(controller_ip, controller_port, ingester_port):
@@ -131,6 +132,16 @@ def packet_tcp_profile(controller_ip, controller_port, ingester_port):
     return value
 
 
+def kernel_dns_profile(controller_ip, controller_port, ingester_port):
+    value = kernel_http_profile(controller_ip, controller_port, ingester_port)
+    requests = value['processors']['request_log']
+    requests['application_protocol_inference']['enabled_protocols'] = ['DNS']
+    requests['filters']['port_number_prefilters'] = {'DNS': '18080'}
+    requests['filters']['tag_filters'] = {'DNS': []}
+    requests['filters']['cbpf_disabled'] = True
+    return value
+
+
 def trace_only_profile(controller_ip, controller_port, ingester_port):
     value = profile_only(Path(__file__).resolve().parent, controller_ip, controller_port, ingester_port)
     integration = value['inputs']['integration']
@@ -143,9 +154,10 @@ def trace_only_profile(controller_ip, controller_port, ingester_port):
 def validate_metadata(value):
     require(isinstance(value, dict), 'Controller metadata must be an object')
     mode = integration_mode(value)
-    prefix = {'profile': 'cpu-', 'otel_trace': 'span-', 'kernel_http': 'nh-', 'packet_tcp': 'tcp-'}[mode]
+    prefix = {'profile': 'cpu-', 'otel_trace': 'span-', 'kernel_http': 'nh-', 'packet_tcp': 'tcp-',
+              'kernel_dns': 'dns-'}[mode]
     require(re.fullmatch(prefix + '[0-9a-f]{24}', value.get('run', '')), 'Run prefix differs from integration mode')
-    if mode in ('kernel_http', 'packet_tcp'):
+    if mode in ('kernel_http', 'packet_tcp', 'kernel_dns'):
         require(not any('license' in str(key).lower() for key in value), 'Packet/kernel modes use only fixed normal feature functions')
     address = ipaddress.ip_address(value['ctrl_ip'])
     require(address.version == 4 and address.is_private and (not address.is_loopback) and (not address.is_link_local) and (not address.is_unspecified), 'Controller identity or scope mismatch')
@@ -158,6 +170,8 @@ def validate_metadata(value):
         expected = kernel_http_profile(value['controller_ip'], value['controller_port'], value['ingester_port'])
     elif mode == 'packet_tcp':
         expected = packet_tcp_profile(value['controller_ip'], value['controller_port'], value['ingester_port'])
+    elif mode == 'kernel_dns':
+        expected = kernel_dns_profile(value['controller_ip'], value['controller_port'], value['ingester_port'])
     else:
         expected = profile_only(Path(__file__).resolve().parent, value['controller_ip'], value['controller_port'], value['ingester_port'])
     require(value['profile'] == expected, 'Configuration differs from the fixed integration mode')
