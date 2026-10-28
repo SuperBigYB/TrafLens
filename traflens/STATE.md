@@ -13,6 +13,24 @@ priority is a reproducible product entry point and minimal real-data console
 topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
 performance work. Review priorities after each milestone or three hourly runs.
 
+## M1 functional acceptance: real-data console (2026-10-28)
+
+The minimal console now includes real request list/detail, time/resource and
+protocol filters, exact total/protocol overview with drill-down, and Controller
+Agent inventory. `scripts/console.sh` builds/starts the embedded single binary;
+`console/README.md` integrates existing lab startup, SSH access and stopping.
+
+A fresh two-host2000-request workload passes exact storage scans twice. Actual
+headless Edge interactions verify100 rows, total2000, matching detail ID, protocol
+drill-down and empty/error states. Module race tests/build/startup build pass.
+Visual review and failed attempts remain private. Owned workers/console/forwarding
+stop; YAML, persistent service identities and link/route/BPF checks pass.
+Independent background-job changes are recorded. See the dated console-product
+evidence. Next after delivery sync: M2 managed eBPF capture-to-query, starting
+with a small real HTTP path. The local plan holds exact synchronization/status.
+This is a minimal local product, not a public authenticated deployment or full
+DeepFlow parity. Earlier narrow validation records below remain historical.
+
 ## M1 first slice: minimal real-data console (2026-10-28)
 
 M1-01 reuse decision: keep the working Server/Agent/lab and reuse query/Controller

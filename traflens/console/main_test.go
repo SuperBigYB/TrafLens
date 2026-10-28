@@ -78,3 +78,34 @@ func TestCanceledBackendRequest(t *testing.T) {
 		t.Fatal("canceled query accepted")
 	}
 }
+
+func TestOverviewUsesSameFilterAndExactTotal(t *testing.T) {
+	var queries []string
+	b := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		r.ParseForm()
+		q := r.Form.Get("sql")
+		queries = append(queries, q)
+		if !strings.Contains(q, "l7_protocol = 20") || !strings.Contains(q, "request_resource LIKE '%/orders%'") {
+			t.Error("overview lost filters")
+		}
+		if strings.Contains(q, "GROUP BY") {
+			w.Write([]byte(`{"OPT_STATUS":"SUCCESS","result":{"columns":["l7_protocol","requests"],"values":[[20,2000]]}}`))
+		} else {
+			w.Write([]byte(`{"OPT_STATUS":"SUCCESS","result":{"columns":["requests"],"values":[[2000]]}}`))
+		}
+	}))
+	defer b.Close()
+	c := console{b.URL, b.URL, b.Client()}
+	rr := httptest.NewRecorder()
+	c.handler().ServeHTTP(rr, httptest.NewRequest("GET", "/api/overview?q=%2Forders&proto=20", nil))
+	if rr.Code != 200 || len(queries) != 2 || !strings.Contains(rr.Body.String(), "2000") {
+		t.Fatalf("overview: %d %s", rr.Code, rr.Body.String())
+	}
+	for _, query := range []string{"id=1", "limit=10", "proto=invalid", "proto=0"} {
+		rr = httptest.NewRecorder()
+		c.handler().ServeHTTP(rr, httptest.NewRequest("GET", "/api/overview?"+query, nil))
+		if rr.Code != 400 {
+			t.Error("accepted invalid overview filter")
+		}
+	}
+}

@@ -1,0 +1,48 @@
+{
+  "pass": true,
+  "browser": "headless Microsoft Edge",
+  "page_errors": [],
+  "new_workload_requests": 2000,
+  "visible_list_rows": 100,
+  "overview_total": 2000,
+  "detail_id_exact": true,
+  "protocol_drilldown": true,
+  "empty_and_error_states": true,
+  "agent_inventory_visible": true,
+  "stop_requested": true,
+  "cleanup": {
+    "controller_yaml_restored": true,
+    "console_and_agent_stopped": true,
+    "link_route_bpf_restored": true,
+    "persistent_service_identities_unchanged": true
+  },
+  "concurrent_jobs_observed": true,
+  "workload": {
+    "requests": 2000,
+    "rate": 200,
+    "seconds": 10,
+    "fresh_two_host_traffic": true,
+    "stored_rows": 2000,
+    "exact_scans": 2,
+    "agent_source": "3dec20af5ce6ff25c696d136b5477f5310b4962c"
+  },
+  "checks": {
+    "module_race_tests": true,
+    "module_build": true,
+    "startup_script_build": true,
+    "screenshot_review": true
+  },
+  "limitations": [
+    "Local organization1 console, no public multi-user authentication.",
+    "Latest100 list, top32 protocol groups, separate nontransactional aggregate queries.",
+    "First workload attempt used a missing old image; a transient preexisting BPF ID disappeared. No unknown program was detached; failed receipts retained.",
+    "Initial browser harness metadata transport failed; direct private input used for qualified run.",
+    "Peer background test containers changed independently; retained service identities match; no matched-performance claim."
+  ],
+  "source_files_sha256": {
+    "traflens/console/main.go": "f79966b7af5e56313318d737b4cf4135912fc76713784cfd62a477e7ff16031a",
+    "traflens/console/index.html": "28d44f04a15dc3aecf3f6b11703d7b424c2867a85881411da1c4ba261725445a",
+    "traflens/console/main_test.go": "20943a752a6cc5109cf15936909e2d537398ef86c800c60483fb78def636c089",
+    "traflens/scripts/console.sh": "98c30dab2ec8543a03ea6c4465d732a5747cafe638cbc7f1670f04448ae8f858"
+  }
+}

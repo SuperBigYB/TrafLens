@@ -4,7 +4,7 @@ This first product slice reuses the existing query and Controller APIs and
 ships as one standard-library Go executable with embedded HTML. No separate
 frontend dependency installation is required. It provides a real request list,
 time/resource filters, exact string-ID detail lookup, empty/loading/error states,
-and a reduced Agent inventory. A traffic overview is still pending.
+a reduced Agent inventory, and a total/protocol overview with drill-down.
 
 Build and test from this module with Go1.26.2:
 
@@ -37,9 +37,56 @@ arbitrary SQL or choose an upstream destination. Backend requests have a10s
 timeout and4MiB response limit; redirects/proxies are disabled. Backend errors
 are shown distinctly from successful empty queries.
 
-Validation so far: race-enabled module tests, optimized-path normal build, and
-live list/detail/inventory API checks against the existing lab data. The live
-check reads5 historical rows and verifies exact ID lookup, then removes its
-owned process. Browser interaction, a newly generated workload through the UI,
-overview and unified deployment remain explicit M1 gates. See the local project
-execution plan and `../STATE.md`; this slice does not close milestone M1.
+## Real product acceptance (2026-10-28)
+
+Race-enabled module tests, build and startup script build pass. A new two-host
+200RPS/10s workload completes2000 requests;2000 stored records pass two exact
+API scans. Headless Microsoft Edge actually queries the new marker, displays
+100 rows and total2000, opens a matching exact string-ID detail, and drills down
+through the HTTP protocol group. Empty/rejected-filter states and Agent inventory
+are checked; zero page errors. Screenshots are visually reviewed privately.
+
+Controller YAML, link/route/BPF baselines and persistent service identities are
+preserved. Owned console/Agent/generators/forwarding stop after validation.
+Unrelated background test containers change independently; that activity is
+recorded. The first attempt uses a no-longer-cached image and is retained as
+failed; a transient preexisting BPF ID disappears then, without any unknown
+program detachment. A fresh attempt records the current cached image and passes
+restoration checks. This is functional acceptance, not matched performance.
+Anonymous results: [summary.json](../evidence/2026-10-28/console-product/summary.json).
+
+## Product start and access workflow
+
+1. Prepare/start the community Server, Controller, MySQL and ClickHouse with the
+   existing [lab workflow](../lab/README.md). Reuse an already-running owned lab;
+   do not recreate its containers or data to start the console. Confirm the query
+   and Controller APIs use the local endpoints selected for this environment.
+2. From a checkout on that backend host, start the product entry point:
+
+   ```sh
+   TRAFLENS_GO=/path/to/go1.26.2 bash traflens/scripts/console.sh
+   # Optional explicit backend configuration:
+   TRAFLENS_GO=/path/to/go1.26.2 bash traflens/scripts/console.sh \
+     -query http://127.0.0.1:20416 -controller http://127.0.0.1:20417
+   ```
+
+   The script builds into ignored `.traflens/bin/` and runs in the foreground.
+   `bash traflens/scripts/console.sh build` only builds. It does not download a
+   toolchain or restart existing services. A wrong Go version fails clearly.
+3. From the workstation, use `ssh -N -L 20880:127.0.0.1:20880 <backend-host>`,
+   then open `http://127.0.0.1:20880`. Keep the forwarding session open.
+4. Generate traffic using the configured Agent and documented workload workflow.
+   Adjust the time range and resource filter; the overview and list share these
+   filters. Select a protocol group to drill down, then open request details.
+   Total count covers all matching records; protocol groups show the top32 and
+   the list the latest100. This is a record overview, not distinct transactions
+   or a request-rate measurement.
+5. Stop the console foreground process and SSH forwarding with Ctrl-C. Stop
+   backend services only through their separate owned-lab workflow when desired.
+
+The overview route is `GET /api/overview` with the same `from`, `to`, `q`, `proto`
+filters as the list. It rejects detail/pagination arguments. Two bounded queries
+return the exact total and protocol counts; the backend does not provide a
+transactional snapshot across these requests. Empty and unavailable states are
+shown separately. The console remains a loopback, organization1 development
+entry point, not an authenticated public deployment.

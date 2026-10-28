@@ -42,7 +42,7 @@ type envelope struct {
 
 func selection(v url.Values, now int64) (string, error) {
 	for k, values := range v {
-		if k != "from" && k != "to" && k != "q" && k != "limit" && k != "id" {
+		if k != "from" && k != "to" && k != "q" && k != "limit" && k != "id" && k != "proto" {
 			return "", errors.New("unknown filter")
 		}
 		if len(values) != 1 {
@@ -73,6 +73,13 @@ func selection(v url.Values, now int64) (string, error) {
 			return "", errors.New("invalid request id")
 		}
 		where += fmt.Sprintf(" AND _id = %d", n)
+	}
+	if v.Get("proto") != "" {
+		n, e := strconv.ParseUint(v.Get("proto"), 10, 16)
+		if e != nil || n == 0 {
+			return "", errors.New("invalid application protocol")
+		}
+		where += fmt.Sprintf(" AND l7_protocol = %d", n)
 	}
 	q := v.Get("q")
 	if !resourceFilter.MatchString(q) {
@@ -151,6 +158,38 @@ func (c *console) handler() http.Handler {
 			d.Result.Values = [][]json.RawMessage{}
 		}
 		writeJSON(w, 200, d.Result)
+	})
+	mux.HandleFunc("GET /api/overview", func(w http.ResponseWriter, r *http.Request) {
+		v := r.URL.Query()
+		if v.Has("id") || v.Has("limit") {
+			writeJSON(w, 400, map[string]string{"error": "overview does not accept id or limit"})
+			return
+		}
+		sql, err := selection(v, time.Now().Unix())
+		if err != nil {
+			writeJSON(w, 400, map[string]string{"error": err.Error()})
+			return
+		}
+		where := strings.TrimPrefix(sql, "SELECT "+fields+" FROM l7_flow_log WHERE ")
+		where = where[:strings.LastIndex(where, " ORDER BY time DESC LIMIT ")]
+		ctx, cancel := context.WithTimeout(r.Context(), 12*time.Second)
+		defer cancel()
+		results := make([]*result, 0, 2)
+		for _, query := range []string{"SELECT Count(row) AS requests FROM l7_flow_log WHERE " + where, "SELECT l7_protocol, Count(row) AS requests FROM l7_flow_log WHERE " + where + " GROUP BY l7_protocol ORDER BY requests DESC LIMIT 32"} {
+			d, e := c.upstream(ctx, c.query+"/v1/query/", "POST", url.Values{"db": {"flow_log"}, "sql": {query}}, false)
+			if e != nil {
+				writeJSON(w, 502, map[string]string{"error": e.Error()})
+				return
+			}
+			if d.Result == nil {
+				d.Result = &result{Columns: []string{}, Values: [][]json.RawMessage{}}
+			}
+			if d.Result.Values == nil {
+				d.Result.Values = [][]json.RawMessage{}
+			}
+			results = append(results, d.Result)
+		}
+		writeJSON(w, 200, map[string]any{"total": results[0], "protocols": results[1]})
 	})
 	mux.HandleFunc("GET /api/agents", func(w http.ResponseWriter, r *http.Request) {
 		d, err := c.upstream(r.Context(), c.controller+"/v1/vtaps/", "GET", nil, true)
