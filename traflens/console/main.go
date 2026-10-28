@@ -63,7 +63,7 @@ func selection(v url.Values, now int64) (string, error) {
 			return "", errors.New("invalid end time")
 		}
 	}
-	if from < 0 || to <= from || to-from > 31*86400 || to > now+300 {
+	if from < 0 || to < from || to-from > 31*86400 || to > now+300 {
 		return "", errors.New("time range must be positive and at most 31 days")
 	}
 	where := fmt.Sprintf("time >= %d AND time <= %d", from, to)
@@ -189,6 +189,7 @@ func (c *console) handler() http.Handler {
 	mux.HandleFunc("GET /api/services", c.services)
 	mux.HandleFunc("GET /api/trace", c.trace)
 	mux.HandleFunc("GET /api/red", c.red)
+	mux.HandleFunc("GET /api/trends", c.trends)
 	mux.HandleFunc("GET /api/requests", func(w http.ResponseWriter, r *http.Request) {
 		sql, err := selection(r.URL.Query(), time.Now().Unix())
 		if err != nil {

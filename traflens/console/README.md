@@ -162,3 +162,11 @@ The [resource directory workflow](../README-resource-directory.md) links current
 Controller registrations to existing service/RED/request/detail filters by exact
 numeric Agent ID. Current state and UUID are visible; historical observations
 are not proof of current health or host identity across registration lifetimes.
+
+
+## Observation time trends
+
+The [service trend workflow](../README-service-trends.md) adds fixed bounded
+Session time buckets with clipped coverage, errors and positive latency. Select
+an interval to retain Agent/service filters and open exact Session details; the
+return action restores the previous time/record range. Seconds are preserved.

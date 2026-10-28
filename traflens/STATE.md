@@ -13,6 +13,39 @@ priority is a reproducible product entry point and minimal real-data console
 topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
 performance work. Review priorities after each milestone or three half-hourly runs.
 
+## M8 observation time trends functional acceptance (2026-10-28)
+
+The console adds a fixed two-query Session trend API and actual chart/table
+interval navigation. Steps60/300/900/3600/14400 are bounded to240 aligned buckets,
+with native integer-Epoch alignment verified on the qualified UTC+8 backend.
+Time is end_time floored to seconds; inclusive clipped intervals and one-second
+ranges retain exact request/RED scope. Rates use actual covered seconds. Counts
+and maxima retain UInt64 strings; no positive samples means null latency.
+Missing result/schema is502; complete-schema empty values may fill zero counts.
+Two reads are non-atomic and contradictory snapshots never become partial health.
+
+No new capture is needed:24 M4/M5 two-host HTTP Sessions produce two12-record
+periods on a36-bucket60s grid, with53/50-second clipped edges and34 empty buckets.
+All fields match independent raw recomputation, including4 client/2 server errors,
+positive means1113.8333333333333/64101.5us and maxima3330/503264us. Actual Edge
+verifies both interval->exact-detail paths, shared Agent/protocol/source/resource
+scope, explicit Session selection and restore, empty/source3 controls and bounded
+resolution rejection. Page errors0;32 full module race tests/build pass. Review
+corrected missing-result zero fill and implicit all-record drill-down before the
+successful browser gate. Owned console exits; profiles/network/BPF/services stay
+unchanged. See README-service-trends.md and dated service-trends evidence.
+Complete both remote synchronizations before recording M8 closure.
+
+The sole planned next milestone is M9: one owned process's real CPU profiling
+signal through ingestion/query to console inspection. First examine existing
+native profiling, profile schemas/query APIs and qualified lab paths. Prefer a
+supported native on-CPU path; an existing profiling integration must be labeled
+with its actual source. Use one bounded owned workload and exact process/cgroup
+scope, keep unrelated workloads out, verify actual stack/sample units and known
+hot function, and restore all owned collector state. Do not insert synthetic
+profile rows or infer CPU percentage from request latency. Broader profiling,
+full identity discovery, AutoTracing and maximum performance remain later work.
+
 ## M7 current Agent resources functional acceptance (2026-10-28)
 
 The new bounded resource API projects8 real current-registration fields in the

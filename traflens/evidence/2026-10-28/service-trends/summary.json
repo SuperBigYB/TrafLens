@@ -1,0 +1,107 @@
+{
+  "milestone": "M8 service observation time trends and interval navigation",
+  "functional_gate_passed": true,
+  "data": {
+    "reused": "M4/M5 qualified two-host HTTP observations",
+    "new_capture_started": false,
+    "session_records": 24,
+    "same_exact_id_complete_reads": 2,
+    "step_seconds": 60,
+    "buckets": 36,
+    "nonempty_buckets": 2,
+    "empty_buckets": 34,
+    "partial_bucket_coverage_seconds": [
+      53,
+      50
+    ],
+    "records_per_nonempty_bucket": [
+      12,
+      12
+    ],
+    "client_errors": 4,
+    "server_errors": 2,
+    "positive_means_us": [
+      1113.8333333333333,
+      64101.5
+    ],
+    "positive_maxima_us": [
+      3330,
+      503264
+    ]
+  },
+  "native_contract": {
+    "count_and_positive_latency_queries_verified": true,
+    "raw_recomputation_verified": true,
+    "time_basis": "end_time floored to integer Epoch seconds",
+    "qualified_timezone": "Asia/Shanghai",
+    "allowed_steps_seconds": [
+      60,
+      300,
+      900,
+      3600,
+      14400
+    ],
+    "step_14400_epoch_alignment_verified": true,
+    "actual_empty_shape": "complete result columns and values:null",
+    "exclusive_boundary_control": "advancing lower bound past earlier period removes its12 same-second observations"
+  },
+  "api": {
+    "max_buckets": 240,
+    "shared_context_seconds": 12,
+    "fixed_query_limit": 241,
+    "atomic": false,
+    "inclusive_single_second_range_supported": true,
+    "bad_inputs": 400,
+    "missing_result_or_invalid_statistics": 502,
+    "zero_counts_are_not_health": true
+  },
+  "browser": {
+    "pass": true,
+    "browser": "headless Microsoft Edge",
+    "page_errors": [],
+    "dataset": "M4/M5 qualified historical two-host observations; no new capture",
+    "actual_raw_records": 24,
+    "buckets": 36,
+    "nonempty_intervals": 2,
+    "empty_intervals": 34,
+    "partial_coverage_seconds": [
+      53,
+      50
+    ],
+    "all_metrics_recomputed_from_raw": true,
+    "classified_errors": {
+      "client": 4,
+      "server": 2
+    },
+    "interval_to_exact_detail": true,
+    "agent_protocol_source_resource_scope_preserved": true,
+    "session_scope_explicit_and_restored": true,
+    "same_exact_ids_read_twice": true,
+    "empty_interval_and_wrong_source_null_latency": true,
+    "unsupported_resolution_and_excess_bucket_count_rejected": true,
+    "console_actual_exit_verified": true
+  },
+  "verification": {
+    "full_module_race_tests": 32,
+    "new_trend_tests": 7,
+    "shared_single_second_regression": 1,
+    "independent_review_pre_acceptance_corrections": [
+      "missing aggregate is not successful zero fill",
+      "bar drill-down explicitly selects Session and restores prior range"
+    ],
+    "remote_ci": "not checked",
+    "lab_tests": "unchanged M6 historical 249 pass; not repeated"
+  },
+  "restoration": {
+    "source_interface_and_management_route_unchanged": true,
+    "source_bpf_identity_unchanged": true,
+    "source_preexisting_containers_preserved": true,
+    "native_agent_stopped": true,
+    "peer_configuration_unchanged": true,
+    "owned_server_identity_unchanged": true,
+    "owned_console_stopped": true,
+    "controller_original_yaml_unchanged": true
+  },
+  "scope": "Finite real-data functional trends; no new throughput, identity, health or full parity qualification",
+  "publication": "Implementation, synthetic module tests and anonymous aggregates only; exact runtime identities/timestamps/responses/screenshots remain private"
+}
