@@ -29,7 +29,7 @@ requalifying it when unrelated work changes.
    service relationships and per-request paths, exposed in the console.
    Acceptance: a small multi-service scenario can be followed from a service
    dependency to its requests and associated spans/records.
-4. **Metrics, profiles and resource correlation (M5 service RED slice complete; M7 current Agent resource slice complete; M8 time trends complete; M9 CPU artifact/ingestion and bounded query/console qualified; public lifecycle pending).** Add useful metric views,
+4. **Metrics, profiles and resource correlation (M5 service RED slice complete; M7 current Agent resource slice complete; M8 time trends complete; M9 finite self-profile lifecycle/query/console functional gate complete).** Add useful metric views,
    continuous-profile entry points and host/container/Kubernetes associations.
    Acceptance: each implemented signal can be queried and navigated from the
    relevant service or resource in an actual scenario.
@@ -69,24 +69,29 @@ sealing; fine-grained CPU/RSS tuning and maximum-rate searches. Preserve existin
 failure records and revisit these systematically during reliability/performance
 work rather than letting them displace the product backbone.
 
-## Next milestone after M5 delivery: M6 DNS/MySQL product slice
+## Next after M9 delivery: M10 explicit cross-service Span causality
 
-M1-M5 functional gates pass through the real-data console, managed eBPF HTTP,
-service relationships, header-based Trace correlation and service RED/error/slow
-navigation. M5 has a bounded12-record known-outcome sample, independent repeated
-storage acceptance, stored-duration recomputation and real Edge navigation.
-Complete both remote synchronizations before recording M5 closure in the local
-execution plan. See README-service-red.md.
+M1-M9 now cover real request exploration, scoped eBPF HTTP, service relationships,
+explicit W3C Trace correlation, RED, packet DNS/MySQL, current Agent resources,
+trends and a finite Go self-profile product lifecycle. M9 is closed only after
+both repositories match the accepted delivery; the authoritative local plan then
+activates only M10. First inspect the existing OTLP/Span receiver/decoder and
+actual stored source, trace/span/parent fields; choose one small strictly owned
+supported path rather than assuming source presence means product support.
 
-Then activate only M6: real DNS/MySQL requests through the existing collector,
-storage/query and console. First inspect existing protocol fixtures, previous
-acceptance and native capabilities. Reuse verified work; produce one necessary
-finite two-host positive/negative scenario per protocol, confirm actual protocol,
-resource/status/source semantics and expose readable protocol navigation/details.
-Do not repurpose the Controller's production database or unrelated services for
-the workload. Use only owned bounded fixtures and restore owned configuration.
+M10 should connect actual instrumented requests across two owned services into
+recorded explicit parent/child Span relationships and a bounded console view.
+Use finite real HTTP work and real measured Span boundaries, with independent
+expected IDs/parents and an unrelated Trace control. Expose only proven edges,
+including missing parents, duplicate observations and inconsistency states; time
+order or equal Trace ID does not establish causality. Do not relabel this as
+headerless AutoTracing. Keep receiver exposure isolated, restore temporary
+registrations/processes/configuration, and deliver public reproduction/stop and
+actual two-host/API/browser evidence before closing the milestone.
 
-This expands the usable protocol backbone. Full automatic Span assembly, global
-resource identities, continuous profiles and sustained performance remain later
-work. The authoritative local file controls the single active milestone and
-its dependent tasks; do not repeatedly requalify the completed HTTP matrices.
+M10-01 actual schema/source/scope -> M10-02 bounded real instrumented Span
+population -> M10-03 exact query and explicit graph -> M10-04 actual console
+navigation/positive-negative acceptance -> M10-05 public restoration/dual sync.
+More eBPF protocols, independent assets, all-language profiles, headerless tracing,
+matched peak performance and the unexplained early profile writer failure remain
+later work unless they directly block this slice. Do not rerun completed matrices.

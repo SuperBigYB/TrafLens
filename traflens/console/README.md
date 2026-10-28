@@ -180,4 +180,5 @@ actual stack paths; weights remain precise sample counts, with OS identity
 explicitly unproven. The console requires the distinct native bounded route and
 never falls back to legacy ProfileTracing. See the [bounded query contract and
 actual acceptance](../README-cpu-profiling.md#bounded-native-query-and-actual-console).
-The full public integration/runtime lifecycle remains M9 work.
+The full finite [public integration/runtime lifecycle](../README-cpu-profile-runtime.md)
+now passes one necessary real-data trial with the original immutable profile.

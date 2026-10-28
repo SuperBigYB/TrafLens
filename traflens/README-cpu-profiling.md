@@ -1,9 +1,9 @@
 # CPU profiling checkpoint: real stored samples, bounded query and console
 
-M9 is in progress. Real finite self CPU sampling and an isolated native
+The M9 finite functional gate is qualified. Real finite self CPU sampling and an isolated native
 integration now pass actual storage and independent stack verification. Bounded
-product queries and console navigation now pass the real-data gate; the public
-integration/query lifecycle remains unfinished. The earlier zero-row failure is preserved and is not explained or
+product queries, console navigation and the public integration/query lifecycle
+now pass the real-data gate. The earlier zero-row failure is preserved and is not explained or
 repaired merely by the later successful attempt.
 
 ## Why this sampling path
@@ -151,8 +151,10 @@ modified or restarted: the native test runs a separate finite Querier container
 on the owned lab network with a credential-free allowlisted config, read-only
 root and binary, no capabilities and loopback-only publication. The candidate
 and console are stopped/removed afterwards; original Server identity/config and
-stored rows remain unchanged. This private runtime is not yet a public reusable
-launcher. Full prepare/start/verify/stop delivery is the remaining M9-05 task.
+stored rows remain unchanged. The historical private runtime is now superseded by the public
+[prepare/start/verify/stop workflow](README-cpu-profile-runtime.md), exercised
+with one necessary fresh application/transport identity and the unchanged original
+profile/time. Both public stop entries and restoration pass.
 Anonymous acceptance: `evidence/2026-10-28/cpu-profile-console/summary.json`.
 
 All attempts remove only their owned Agent registrations/groups, containers
@@ -160,6 +162,6 @@ and networks, preserving the old identities, memberships, license settings,
 YAML, management route and BPF identities. Detailed artifacts/addresses/run
 labels remain private. Anonymous status is in
 `evidence/2026-10-28/cpu-profile-ingestion/summary.json`, alongside the earlier
-failed checkpoint. Public reusable integration
-startup/stop and the complete product workflow remain M9 work, not completed
-features in this partial checkpoint.
+failed checkpoint. The new public lifecycle acceptance is recorded separately in
+`evidence/2026-10-28/cpu-profile-runtime/summary.json`; it retains the original
+failed-write history and does not claim an explanation or reliability fix.

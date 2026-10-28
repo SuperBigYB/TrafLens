@@ -1,0 +1,100 @@
+{
+  "milestone": "M9",
+  "functional_gate_passed": true,
+  "final_closure_requires_matching_dual_main_refs": true,
+  "public_entries": [
+    "traflens/lab/cpu-profile.py",
+    "traflens/lab/profile-query-runtime.py",
+    "traflens/lab/verify-cpu-profile.py"
+  ],
+  "source": "real Go runtime current-process self profile through native integration; not eBPF",
+  "new_cpu_sampling": false,
+  "unchanged_original_profile_bytes": 799,
+  "fresh_integration_trial": 1,
+  "http_acknowledgement_not_treated_as_storage": true,
+  "actual_namespace_listener_and_owned_log_checked": true,
+  "normal_profile_int_function_11": true,
+  "profile_only_flags_read_back": true,
+  "agent_exit_code": 0,
+  "agent_oom": false,
+  "stored_rows": 2,
+  "samples": 800,
+  "sample_unit": "samples",
+  "functions": 9,
+  "nodes": 9,
+  "hot_loop": {
+    "self": 797,
+    "cumulative": 800
+  },
+  "async_preempt_self": 3,
+  "sampling_and_transport_identities_separate": true,
+  "oracle": {
+    "public_entry_passed": true,
+    "independent_go_raw_redecode_exact": true,
+    "consecutive_complete_same_id_projection_reads": 2,
+    "metadata_and_weight_fingerprint_stable": true,
+    "compressed_bytes_fingerprint_claimed": false,
+    "count_sum_matches": true,
+    "n_minus_one_rejected": true,
+    "n_complete_exact_stacks": true,
+    "wrong_agent_and_time_empty": true,
+    "different_language_empty": true,
+    "legacy_fallback": false,
+    "elapsed_seconds": 1.166
+  },
+  "actual_edge": {
+    "passed": true,
+    "real_function_to_ancestor_stack_navigation": true,
+    "wrong_agent_app_time_empty": true,
+    "page_errors": 0,
+    "only_redacted_screenshots_and_anonymous_aggregates_retained_locally": true
+  },
+  "runtime": {
+    "query_initial_readiness_was_empty_protocol_only": true,
+    "actual_fresh_samples_verified_after_start": true,
+    "old_server_binary_not_replaced_or_restarted": true,
+    "minimal_password_free_query_config": true,
+    "existing_group_yaml_hashed_not_copied": true,
+    "both_public_stop_entries_passed": true,
+    "owned_controller_registrations_containers_network_removed": true,
+    "query_console_and_forward_ports_closed": true,
+    "old_server_identity_configuration_preserved": true,
+    "old_registrations_license_yaml_route_bpf_preserved": true
+  },
+  "review_fixes": [
+    "Docker errors cannot prove collector absence",
+    "Original sampling identity is separate from fresh transport app",
+    "Reject credential-bearing Controller URL before writing execution receipt",
+    "Controller loopback endpoint must match owned Server publication"
+  ],
+  "checks": {
+    "targeted_new_lifecycle_and_oracle_tests": 32,
+    "uploader_from_public_source_built_and_actually_used": true,
+    "existing_native_10_console_40_cpu_fixture_3_and_tools_249_repeated": false,
+    "remote_ci_checked": false,
+    "targeted_modules": [
+      {
+        "module": "test_cpu_profile.py",
+        "passed": true,
+        "count": 16
+      },
+      {
+        "module": "test_cpu_profile_acceptance.py",
+        "passed": true,
+        "count": 8
+      },
+      {
+        "module": "test_profile_query_runtime.py",
+        "passed": true,
+        "count": 8
+      }
+    ],
+    "actual_owned_controller_endpoint_guard_readonly_passed": true
+  },
+  "limits": [
+    "First historical generic writer pre-input failure cause unresolved; not claimed fixed",
+    "Finite Golang sample slice, not eBPF CPU/OS PID/container correlation/multi-language continuous profiling",
+    "Row/decode budgets do not cap all database scan or pre-return driver memory",
+    "No complete flamegraph, headerless AutoTracing or performance parity claim"
+  ]
+}

@@ -13,6 +13,35 @@ priority is a reproducible product entry point and minimal real-data console
 topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
 performance work. Review priorities after each milestone or three half-hourly runs.
 
+## M9 public finite CPU profile functional gate complete (2026-10-28)
+
+The public profile-only lifecycle, independent query/console runtime and strict
+verifier now pass one complete real two-host trial. A fresh application/Agent
+reuses the original799-byte self profile and its original sampling time, without
+rerunning CPU capture. Actual namespace LISTEN/readiness, HTTP acknowledgement,
+Agent exit0/drain and exact Controller/container/network restoration pass. The
+public bounded oracle independently reruns Go raw decoding and verifies two
+complete same-ID/metadata/weight reads, two stored rows/800samples, N-1 refusal,
+N-complete9function/9node tree, exact collapsed stack weights and empty controls.
+The real Edge form/detail/function-to-ancestor-stack navigation passes with no
+page errors; HotLoop797self/800cumulative and asyncPreempt3 remain exact.
+
+Both public stop commands pass. The old running Server binary/configuration,
+network, old registration/license/YAML identities, management route and BPF
+baseline remain unchanged, and temporary query/console/tunnel endpoints close.
+Public code writes only a minimal password-free Querier config; existing group
+YAML is hashed, not copied. Inspection failure cannot prove a collector absent.
+This is a finite Go self/integration profile gate, not eBPF CPU, OS PID/container
+correlation, multi-language continuous profiling or performance parity. The first
+generic-writer failure remains unexplained. See README-cpu-profile-runtime.md
+and dated cpu-profile-runtime evidence.
+
+The local plan closes M9 only after both main refs match this delivery, then
+activates M10: real explicit cross-service Span causality and bounded navigation.
+First verify actual OTLP/Span receiver, stored source/IDs/parent semantics and an
+isolated supported path. Header Trace correlation alone is not a causal tree.
+No more profile/kernel/protocol/performance matrices are needed for that task.
+
 ## M9 bounded profile queries and real console accepted (2026-10-28)
 
 M9-03a/b/c and M9-04 now pass on the accepted two-row/800sample dataset, without
