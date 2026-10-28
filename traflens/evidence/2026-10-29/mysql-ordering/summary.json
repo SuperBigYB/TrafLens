@@ -1,0 +1,119 @@
+{
+  "schema": "traflens.mysql-ordering.source-tests.v1",
+  "milestone": "M15 active; M15-03a source/replay gate delivered only",
+  "source_test_base_commit": "4a72ddb77a6fe626ee8dc4ac860c1173ad8f3532",
+  "candidate_code_sha256": {
+    "agent/plugins/reorder/src/lib.rs": "f6c1afaf184f0555a2a3f77f6f20d441bdf4d8b970c5cddc61d1b4d18b4e6c0b",
+    "agent/plugins/reorder/tests/fast_mysql_replay.rs": "a3c80744e0657cebccdf57ecfae001ed3c993dbbf67e0c73e4f56ffde220c6c3",
+    "agent/plugins/reorder/README.md": "7f873558174902f247fa7ecd5a8c192e67d5b6de1f17d4f82ad5023e3152a4ef",
+    "agent/src/common/meta_packet.rs": "57da127bd4a09e8abf7e293a4ec1bf51aed5f574bb9bccbe77611bb02a4bd95f",
+    "agent/src/ebpf_dispatcher.rs": "bf4d7d2bf52135482c08fa3f4cd20ad1d0bc735bab0c4829f8d6475ec7cb1906",
+    "agent/src/config/config.rs": "fa915559679b0cd2392ffb8edd596baa8c46cc9b1c39aa17d88f10108df7f77a"
+  },
+  "mechanism": "full socket UID plus source-domain, inclusive cap ranges, expect0 and emit only contiguous data/CLOSE before stateful parsing",
+  "replayed_prior_capture_headers": 42,
+  "replayed_data_headers": 36,
+  "replayed_close_headers": 6,
+  "problem_order": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    0,
+    1
+  ],
+  "problem_close_sequence": 6,
+  "ordered_result": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "data_origin": "R22 existing anonymous headers; no new capture or event upload",
+  "native_default_protocols": [
+    "MySQL"
+  ],
+  "explicit_empty_protocols_opt_out_tested": true,
+  "controller_template_or_license_or_capture_scope_changed": false,
+  "reported_FlowID_format_changed": false,
+  "cache_limits": {
+    "global_items_configured_default": 256,
+    "global_items_hard_max": 65536,
+    "per_flow_pending_items": 256,
+    "per_flow_accounted_bytes": 1048576,
+    "global_accounted_bytes": 67108864,
+    "states_including_tombstones": 16384,
+    "gap_timeout_default_ms": 100,
+    "gap_timeout_clamp_ms": [
+      1,
+      30000
+    ],
+    "closed_failed_retention_ms": 60000,
+    "normal_open_idle_checkpoint_expires": false,
+    "exact_RSS_limit_claimed": false
+  },
+  "gap_or_budget_or_shutdown_strategy": "explicitly discard unresolved ownership; never emit buffered CLOSE across a gap; reason counters; eviction ends retained generation knowledge",
+  "bypass_scope": [
+    "disabled protocol",
+    "UID0",
+    "untracked Unknown CLOSE"
+  ],
+  "clock": "nondecreasing event/flush watermark; original packet timestamps retained",
+  "shutdown_scope": "close socket Rust callback admission, wait admitted callbacks and drain at most fixed Rust ring capacity; C detach remains asynchronous and unproved complete",
+  "tests": {
+    "library": 7,
+    "independent_real_order_replay": 11,
+    "native_MetaPacket_config_dispatcher": 7,
+    "existing_merged_range_regression": 1,
+    "additional_existing_config_scope_compatibility": 17
+  },
+  "distinct_passed_tests": 43,
+  "real_default_libtrace_native_test_linkage": true,
+  "test_log_sha256": "c2ba9524aee9173287b9c09d1fbbbae26e139c34a97d95f18cf9f4e743e658f6",
+  "native_result_sha256": "0a0f67ba7177fe555ec26a34bdf25fad0abaf2d33ec91aaf9d8d5f1b33768890",
+  "build_image": "sha256:b018b2a5970d3c8f36a95f56dec56ad780020ec782419e42c571c7be5867d310",
+  "build_limits": {
+    "network": "none",
+    "read_only_rootfs": true,
+    "cap_drop": [
+      "ALL"
+    ],
+    "cpus": 2,
+    "memory_gib": 12,
+    "pids_limit": 512
+  },
+  "build_exit": 0,
+  "build_oom": false,
+  "build_container_removed": true,
+  "old_server_identity_image_running_unchanged": true,
+  "old_qualified_agent_sha256": "8dd5ec668a09dcdac10068727fb47f282cf8091a93a11fb71cbbc33db3853763",
+  "old_qualified_agent_bytes_unchanged": true,
+  "old_failed_captures_rewritten": false,
+  "new_collector_started": false,
+  "new_L7_population_or_API_or_browser_verified": false,
+  "new_kernel_ABI_FD_map_qualified": false,
+  "production_Agent_ELF_qualification": false,
+  "jattach_tree_current_git_pin_verified": false,
+  "source_preparation_failures_preserved": [
+    "host linker expected devtoolset11 absent; use cached native image",
+    "first native build snapshot accidentally omitted tracked relative kernel/config.h symlink; restore exact Git topology, no C macro edits",
+    "configuration suite initially lacked the Git-tracked public schema fixture; fixed source fixture without copying live Server config"
+  ],
+  "linker_warning": "libtrace.a includes deepflow_ebpfctl_bin.c source member, ignored as non-object; tests link and pass; no deployment ELF qualification inferred",
+  "remote_CI_checked": false,
+  "next": "M15-03b build a real release Agent from the new committed source and bind version/binary/image/three-library hashes; actual strict scope gates then a fresh unpaced18Session/marker12/query6/QUIT6/negative0/API/Edge test, no fabricated pacing receipts",
+  "limitations": [
+    "Tests compile the full default-feature Rust/C stack and exercise typed MetaPacket/config/helper/admission paths, but do not run a live collector or assert actual FlowMap\u2192parser\u2192session\u2192storage results.",
+    "Original R21/R22 incomplete captures remain failures; this source repair is not a proven explanation for all old omissions.",
+    "Accounted cache budgets are not process RSS limits; gaps, pressure and eviction can intentionally drop records with counters.",
+    "No new C-side complete drain, TLS/source relation, performance or DeepFlow parity was qualified."
+  ],
+  "config_compatibility_last_run_total": 18,
+  "one_config_test_overlap_excluded_from_distinct_total": 1,
+  "config_compatibility_result_sha256": "235cb66aea9ca113333ecb4015fc6f52960e6b5e3a9f7d91ec284248fb434eba",
+  "config_compatibility_log_sha256": "a1773705fbe06ef2ff46ea00696a3a8610a846fc385288bbd695c93bc8f58d2f"
+}

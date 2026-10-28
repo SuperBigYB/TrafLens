@@ -13,6 +13,32 @@ priority is a reproducible product entry point and minimal real-data console
 topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
 performance work. Review priorities after each milestone or three half-hourly runs.
 
+## M15-03a bounded ordering code/replay gate (2026-10-29)
+
+The no-op Reorder now holds missing capture sequences by full socket UID/source
+and emits only contiguous ranges, including CLOSE. Default native preprocess
+selects MySQL; explicit [] still opts out, while the Controller template and
+capture/license scope remain unchanged. Fixed item/state/accounted-byte/time
+bounds, drop reasons, ordinary idle checkpoints and reconfiguration/stop handling
+are implemented. Segmentation no longer uses the masked FlowID as its identity.
+
+Forty-three distinct tests pass:7 library+11 independent42-header replay,7 native
+MetaPacket/config/dispatcher helper/admission checks,1 merged-range regression
+and17 additional existing config/scope checks (18 in that run,1 overlap).
+The actual default-libtrace native test build rebuilt C and linked the full Rust
+test executable under a limited offline, unprivileged, networknone container.
+No collector, new L7 capture, parser/store/API/browser or performance gate ran.
+Both original failed R22 captures remain failed and the old qualified3dec Agent
+bytes are unchanged. No deployment Agent ELF has been qualified.
+
+Next is M15-03b: produce a real release Agent from the new committed source,
+prove version/artifact/image/library identity and actual ABI/FD/map/noAF_PACKET
+qualification; then a fresh complete fast18Session/API/Edge gate with an explicit
+unpaced receipt/oracle contract. Do not present the existing paced oracle as
+fast qualification or use the unit-test executable as a deployment Agent.
+See [source/test evidence](evidence/2026-10-29/mysql-ordering/README.md) and
+[the native contract](../agent/plugins/reorder/README.md). M15 remains active.
+
 ## M15 fast MySQL ordering diagnosis (2026-10-29, active)
 
 A separate default-offline unpaced diagnostic entry adds nonce-bound before/after

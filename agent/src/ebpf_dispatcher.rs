@@ -44,7 +44,7 @@ use std::ffi::{CStr, CString};
 use std::ptr::{self, null_mut};
 use std::slice;
 use std::sync::atomic::{AtomicBool, AtomicI64, AtomicU64, Ordering};
-use std::sync::Arc;
+use std::sync::{Arc, RwLock, RwLockReadGuard};
 use std::thread::{self, JoinHandle};
 use std::time::Duration;
 
@@ -92,7 +92,7 @@ use public::{
     queue::{bounded_with_debug, DebugSender, Receiver},
     utils::bitmap::parse_u16_range_list_to_bitmap,
 };
-use reorder::{Reorder, ReorderCounter, StatsReorderCounter};
+use reorder::{CacheItem, Reorder, ReorderCounter, StatsReorderCounter};
 
 #[derive(Clone, Copy, Default, PartialEq, Eq)]
 struct HookedSocketSyscallBitmap(c_ulonglong);
@@ -369,6 +369,8 @@ struct EbpfDispatcher {
     time_diff: Arc<AtomicI64>,
 
     receiver: Arc<Receiver<Box<MetaPacket<'static>>>>,
+    // The ingress ring rounds its configured size to a power of two.
+    queue_capacity: usize,
 
     pause: Arc<AtomicBool>,
 
@@ -402,9 +404,10 @@ impl EbpfDispatcher {
                 continue;
             };
 
-            if last.generate_ebpf_flow_id() == p.generate_ebpf_flow_id()
+            if last.socket_id == p.socket_id
+                && last.ebpf_type == p.ebpf_type
                 && last.segment_flags == SegmentFlags::Start
-                && last.cap_end_seq + 1 == p.cap_start_seq
+                && last.cap_end_seq.checked_add(1) == Some(p.cap_start_seq)
             {
                 last.merge(&mut p);
             } else {
@@ -421,18 +424,25 @@ impl EbpfDispatcher {
         config: &Config,
         reorder: &mut Reorder,
     ) {
-        let mut packets = reorder.flush(timestamp.as_millis() as u64);
-        let mut packets = packets
-            .drain(..)
-            .map(|x| x.into_any().downcast::<MetaPacket>().unwrap())
-            .collect::<Vec<Box<MetaPacket>>>();
-        let packets = Self::segmentation_reassembly(&mut packets);
+        let packets = reorder.flush(timestamp.as_millis() as u64);
         let need_flush = packets.is_empty();
-        for mut packet in packets {
-            flow_map.inject_meta_packet(&config, &mut packet);
-        }
+        Self::inject_reordered_packets(packets, flow_map, config);
         if need_flush {
             flow_map.inject_flush_ticker(config, timestamp);
+        }
+    }
+
+    fn inject_reordered_packets(
+        packets: Vec<Box<dyn CacheItem>>,
+        flow_map: &mut FlowMap,
+        config: &Config,
+    ) {
+        let mut packets = packets
+            .into_iter()
+            .map(|p| p.into_any().downcast::<MetaPacket>().unwrap())
+            .collect::<Vec<_>>();
+        for mut packet in Self::segmentation_reassembly(&mut packets) {
+            flow_map.inject_meta_packet(config, &mut packet);
         }
     }
 
@@ -442,21 +452,14 @@ impl EbpfDispatcher {
         config: &Config,
         reorder: &mut Reorder,
     ) {
-        let mut packets = match packet.ebpf_type {
+        let packets = match packet.ebpf_type {
             EbpfType::GoHttp2Uprobe | EbpfType::GoHttp2UprobeData => {
                 flow_map.inject_meta_packet(config, &mut packet);
                 reorder.flush(packet.lookup_key.timestamp.as_millis() as u64)
             }
             _ => reorder.inject_item(packet),
         };
-        let mut packets = packets
-            .drain(..)
-            .map(|x| x.into_any().downcast::<MetaPacket>().unwrap())
-            .collect::<Vec<Box<MetaPacket>>>();
-        let packets = Self::segmentation_reassembly(&mut packets);
-        for mut packet in packets {
-            flow_map.inject_meta_packet(config, &mut packet);
-        }
+        Self::inject_reordered_packets(packets, flow_map, config);
     }
 
     fn run(
@@ -515,13 +518,36 @@ impl EbpfDispatcher {
         let mut ebpf_config = self.config.load().clone();
         let mut last_packet_timestamp = 0;
 
-        while unsafe { SWITCH } {
+        let mut stop_remaining = self.queue_capacity;
+        loop {
+            let running = CALLBACK_ADMISSION.is_running();
+            if !running && stop_remaining == 0 {
+                break;
+            }
             if need_reload_config.swap(false, Ordering::Relaxed) {
                 info!("ebpf dispatcher reload config");
                 flow_config = self.flow_map_config.load().clone();
                 log_parser_config = self.log_parser_config.load().clone();
                 collector_config = self.collector_config.load().clone();
-                ebpf_config = self.config.load().clone();
+                let next_ebpf_config = self.config.load().clone();
+                let next = &next_ebpf_config.ebpf.socket.preprocess;
+                if ebpf_config.ebpf.socket.preprocess != *next {
+                    let packets = reorder.reconfigure(
+                        Box::new(L7ProtocolBitmap::from(
+                            next.out_of_order_reassembly_protocols.as_slice(),
+                        )),
+                        next.out_of_order_reassembly_cache_size,
+                        next.out_of_order_reassembly_timeout,
+                    );
+                    let config = Config {
+                        flow: &flow_config,
+                        log_parser: &log_parser_config,
+                        collector: &collector_config,
+                        ebpf: Some(&ebpf_config),
+                    };
+                    Self::inject_reordered_packets(packets, &mut flow_map, &config);
+                }
+                ebpf_config = next_ebpf_config;
             }
             let config = Config {
                 flow: &flow_config,
@@ -530,11 +556,24 @@ impl EbpfDispatcher {
                 ebpf: Some(&ebpf_config),
             };
 
+            let receive_timeout = if running {
+                ebpf_config
+                    .ebpf
+                    .socket
+                    .preprocess
+                    .out_of_order_reassembly_timeout
+                    .clamp(Duration::from_millis(1), Duration::from_secs(1))
+            } else {
+                Duration::ZERO
+            };
             if self
                 .receiver
-                .recv_all(&mut batch, Some(Duration::from_secs(1)))
+                .recv_all(&mut batch, Some(receive_timeout))
                 .is_err()
             {
+                if !running {
+                    break;
+                }
                 Self::inject_flush_ticker(
                     get_timestamp(self.time_diff.load(Ordering::Relaxed)),
                     &mut flow_map,
@@ -542,6 +581,12 @@ impl EbpfDispatcher {
                     &mut reorder,
                 );
                 continue;
+            }
+
+            if !running {
+                // Admission is closed and all admitted callbacks have returned.
+                // At most one fixed-capacity ring remains; never wait for new input.
+                stop_remaining = stop_remaining.saturating_sub(batch.len());
             }
 
             if self.pause.load(Ordering::Relaxed) {
@@ -555,7 +600,8 @@ impl EbpfDispatcher {
                         Ordering::Relaxed,
                     );
                 }
-                last_packet_timestamp = packet.lookup_key.timestamp.as_nanos();
+                last_packet_timestamp =
+                    last_packet_timestamp.max(packet.lookup_key.timestamp.as_nanos());
 
                 if !leaky_bucket.acquire(1) {
                     counter.get_token_failed.fetch_add(1, Ordering::Relaxed);
@@ -569,6 +615,16 @@ impl EbpfDispatcher {
                 Self::inject_meta_packet(packet, &mut flow_map, &config, &mut reorder);
             }
         }
+
+        let config = Config {
+            flow: &flow_config,
+            log_parser: &log_parser_config,
+            collector: &collector_config,
+            ebpf: Some(&ebpf_config),
+        };
+        // Only contiguous ranges are returned. The reorder layer accounts for
+        // unresolved gaps rather than forwarding a close ahead of missing data.
+        Self::inject_reordered_packets(reorder.flush_all(), &mut flow_map, &config);
     }
 }
 
@@ -620,8 +676,154 @@ pub struct EbpfCollector {
 
 const BATCH_SIZE: usize = 64;
 
-#[allow(static_mut_refs)]
-static mut SWITCH: bool = false;
+struct CallbackAdmission {
+    running: AtomicBool,
+    gate: RwLock<()>,
+}
+
+impl CallbackAdmission {
+    const fn new() -> Self {
+        Self {
+            running: AtomicBool::new(false),
+            gate: RwLock::new(()),
+        }
+    }
+
+    fn is_running(&self) -> bool {
+        self.running.load(Ordering::Acquire)
+    }
+
+    fn open(&self) {
+        let _guard = self.gate.write().unwrap();
+        self.running.store(true, Ordering::Release);
+    }
+
+    fn enter(&self) -> Option<RwLockReadGuard<'_, ()>> {
+        let guard = self.gate.read().unwrap();
+        self.is_running().then_some(guard)
+    }
+
+    fn close(&self) {
+        let _guard = self.gate.write().unwrap();
+        self.running.store(false, Ordering::Release);
+    }
+}
+
+static CALLBACK_ADMISSION: CallbackAdmission = CallbackAdmission::new();
+
+#[cfg(test)]
+mod reorder_integration_tests {
+    use super::*;
+
+    fn mysql_packet(seq: u64, close: bool) -> Box<MetaPacket<'static>> {
+        let mut packet = MetaPacket::default();
+        packet.socket_id = 0x1201_0000_0000_0001;
+        packet.ebpf_type = EbpfType::TracePoint;
+        packet.cap_start_seq = seq;
+        packet.cap_end_seq = seq;
+        packet.lookup_key.timestamp = crate::common::Timestamp::from_nanos(10_000_000_000 + seq);
+        packet.l7_protocol_from_ebpf = if close {
+            L7Protocol::Unknown
+        } else {
+            L7Protocol::MySQL
+        };
+        packet.is_socket_closed = close;
+        Box::new(packet)
+    }
+
+    #[test]
+    fn mysql_real_meta_packet_close_follows_earlier_capture_sequences() {
+        let mut reorder = Reorder::new(
+            Box::new(L7ProtocolBitmap::from(["MySQL"].as_slice())),
+            Arc::new(ReorderCounter::default()),
+            256,
+            Duration::from_millis(100),
+        );
+        let mut ready = vec![];
+        for seq in [2, 3, 4, 5, 6, 0, 1] {
+            ready.extend(reorder.inject_item(mysql_packet(seq, seq == 6)));
+        }
+        ready.extend(reorder.flush_all());
+        let packets = ready
+            .into_iter()
+            .map(|p| p.into_any().downcast::<MetaPacket>().unwrap())
+            .collect::<Vec<_>>();
+        assert_eq!(
+            packets.iter().map(|p| p.cap_start_seq).collect::<Vec<_>>(),
+            [0, 1, 2, 3, 4, 5, 6]
+        );
+        assert!(packets.last().unwrap().is_socket_closed);
+        assert!(packets[..6].iter().all(|p| !p.is_socket_closed));
+        assert_eq!(
+            packets.last().unwrap().l7_protocol_from_ebpf,
+            L7Protocol::Unknown
+        );
+    }
+
+    #[test]
+    fn mysql_reconfigure_explicit_empty_bitmap_preserves_direct_pass_through() {
+        let mut reorder = Reorder::new(
+            Box::new(L7ProtocolBitmap::from(["MySQL"].as_slice())),
+            Arc::new(ReorderCounter::default()),
+            256,
+            Duration::from_millis(100),
+        );
+        assert!(reorder.inject_item(mysql_packet(2, false)).is_empty());
+        // A gap on configuration change is accounted for, never emitted out of order.
+        assert!(reorder
+            .reconfigure(
+                Box::new(L7ProtocolBitmap::from(Vec::<String>::new().as_slice())),
+                256,
+                Duration::from_millis(100),
+            )
+            .is_empty());
+        let ready = reorder.inject_item(mysql_packet(9, false));
+        assert_eq!(ready.len(), 1);
+        assert_eq!(ready[0].get_seq(), 9);
+    }
+
+    #[test]
+    fn segmentation_does_not_merge_distinct_socket_generations() {
+        let mut start = mysql_packet(0, false);
+        start.segment_flags = SegmentFlags::Start;
+        let mut segment = mysql_packet(1, false);
+        segment.segment_flags = SegmentFlags::Seg;
+        segment.socket_id ^= 1 << 48;
+        // The older FlowMap ID deliberately overwrites this UID byte.
+        assert_eq!(
+            start.generate_ebpf_flow_id(),
+            segment.generate_ebpf_flow_id()
+        );
+        let mut packets = vec![start, segment];
+        assert_eq!(
+            EbpfDispatcher::segmentation_reassembly(&mut packets).len(),
+            2
+        );
+    }
+
+    #[test]
+    fn callback_shutdown_waits_for_admitted_packet_and_closes_new_admission() {
+        let admission = Arc::new(CallbackAdmission::new());
+        admission.open();
+        let admitted = admission.enter().unwrap();
+        let closing = admission.clone();
+        let (started_tx, started_rx) = std::sync::mpsc::channel();
+        let (closed_tx, closed_rx) = std::sync::mpsc::channel();
+        let thread = thread::spawn(move || {
+            started_tx.send(()).unwrap();
+            closing.close();
+            closed_tx.send(()).unwrap();
+        });
+        started_rx.recv().unwrap();
+        assert!(closed_rx.recv_timeout(Duration::from_millis(20)).is_err());
+        drop(admitted);
+        closed_rx.recv_timeout(Duration::from_secs(1)).unwrap();
+        thread.join().unwrap();
+        assert!(!admission.is_running());
+        assert!(admission.enter().is_none());
+    }
+}
+
 #[allow(static_mut_refs)]
 static mut SENDER: Option<DebugSender<Box<MetaPacket>>> = None;
 #[allow(static_mut_refs)]
@@ -653,9 +855,12 @@ impl EbpfCollector {
         #[allow(unused)] queue_id: c_int,
         sd: *mut ebpf::SK_BPF_DATA,
     ) -> c_int {
+        let Some(_admitted) = CALLBACK_ADMISSION.enter() else {
+            return 0;
+        };
         #[allow(static_mut_refs)]
         unsafe {
-            if !SWITCH || SENDER.is_none() {
+            if SENDER.is_none() {
                 return 0;
             }
 
@@ -746,7 +951,7 @@ impl EbpfCollector {
     ) -> c_int {
         #[allow(static_mut_refs)]
         unsafe {
-            if !SWITCH || EBPF_PROFILE_SENDER.is_none() {
+            if !CALLBACK_ADMISSION.is_running() || EBPF_PROFILE_SENDER.is_none() {
                 return 0;
             }
 
@@ -841,7 +1046,7 @@ impl EbpfCollector {
                 stats_collector,
             );
             // initialize communication between core and ebpf collector
-            SWITCH = false;
+            CALLBACK_ADMISSION.close();
             SENDER = Some(sender);
             DPDK_SENDERS = Some(dpdk_senders);
             DPDK_SENDER_BUFFERS = Vec::with_capacity(dpdk_sender_count);
@@ -1569,6 +1774,7 @@ impl EbpfCollector {
                 dispatcher_id,
                 time_diff,
                 receiver: Arc::new(receiver),
+                queue_capacity: ebpf_config.queue_size.next_power_of_two(),
                 policy_getter,
                 config,
                 log_parser_config,
@@ -1713,13 +1919,11 @@ impl EbpfCollector {
     }
 
     pub fn start(&mut self) {
-        unsafe {
-            if SWITCH {
-                info!("ebpf collector started");
-                return;
-            }
-            SWITCH = true;
+        if CALLBACK_ADMISSION.is_running() {
+            info!("ebpf collector started");
+            return;
         }
+        CALLBACK_ADMISSION.open();
 
         let sync_counter = self.counter.clone();
         let exception_handler = self.exception_handler.clone();
@@ -1741,13 +1945,11 @@ impl EbpfCollector {
     }
 
     pub fn notify_stop(&mut self) -> Option<JoinHandle<()>> {
-        unsafe {
-            if !SWITCH {
-                info!("ebpf collector stopped.");
-                return None;
-            }
-            SWITCH = false;
+        if !CALLBACK_ADMISSION.is_running() {
+            info!("ebpf collector stopped.");
+            return None;
         }
+        CALLBACK_ADMISSION.close();
         Self::ebpf_stop();
 
         #[cfg(feature = "extended_observability")]
@@ -1758,13 +1960,11 @@ impl EbpfCollector {
     }
 
     pub fn stop(&mut self) {
-        unsafe {
-            if !SWITCH {
-                info!("ebpf collector stopped.");
-                return;
-            }
-            SWITCH = false;
+        if !CALLBACK_ADMISSION.is_running() {
+            info!("ebpf collector stopped.");
+            return;
         }
+        CALLBACK_ADMISSION.close();
         Self::ebpf_stop();
 
         #[cfg(feature = "extended_observability")]

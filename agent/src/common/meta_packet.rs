@@ -1110,7 +1110,7 @@ impl<'a> MetaPacket<'a> {
         self.packet_len += packet.packet_len - 54;
         self.payload_len += packet.payload_len;
         self.l4_payload_len += packet.l4_payload_len;
-        self.cap_end_seq = packet.cap_start_seq;
+        self.cap_end_seq = packet.cap_end_seq;
         // eBPF reassembly: propagate the latest cumulative reassembly bytes.
         // `reasm_bytes` reflects the total bytes reassembled in the kernel for
         // this flow. When we merge multiple MSG_REASM_* segments, we must keep
@@ -1432,11 +1432,40 @@ impl Downcast for MetaPacket<'static> {
 #[cfg(any(target_os = "linux", target_os = "android"))]
 impl CacheItem for MetaPacket<'static> {
     fn get_id(&self) -> u64 {
-        self.generate_ebpf_flow_id()
+        // Keep the complete kernel socket UID, including its generation bits.
+        // The FlowMap ID reserves a byte for the source and is not lossless.
+        self.socket_id
+    }
+
+    fn get_source(&self) -> u8 {
+        self.ebpf_type.into()
     }
 
     fn get_seq(&self) -> u64 {
         self.cap_start_seq
+    }
+
+    fn get_end_seq(&self) -> u64 {
+        self.cap_end_seq
+    }
+
+    fn get_size(&self) -> usize {
+        std::mem::size_of::<Self>()
+            .saturating_add(self.raw_from_ebpf.capacity())
+            .saturating_add(
+                self.sub_packets
+                    .capacity()
+                    .saturating_mul(std::mem::size_of::<SubPacket>()),
+            )
+            .saturating_add(match &self.raw {
+                Some(RawPacket::OwnedVec(raw)) => raw.capacity(),
+                Some(raw) => raw.len(),
+                None => 0,
+            })
+    }
+
+    fn is_socket_closed(&self) -> bool {
+        self.is_socket_closed
     }
 
     fn get_timestmap(&self) -> u64 {
@@ -1666,6 +1695,55 @@ impl<'a> TryFrom<PcapData<'a>> for MetaPacket<'a> {
 mod tests {
     use super::*;
 
+    #[cfg(any(target_os = "linux", target_os = "android"))]
+    #[test]
+    fn reorder_metadata_preserves_socket_generation_source_and_range() {
+        let mut first = MetaPacket::default();
+        first.socket_id = 0x1201_0000_0000_0001;
+        first.ebpf_type = EbpfType::TracePoint;
+        first.cap_start_seq = 0;
+        first.cap_end_seq = 2;
+        first.lookup_key.timestamp = Timestamp::from_nanos(123_456_789);
+        assert_eq!(CacheItem::get_id(&first), first.socket_id);
+        assert_eq!(CacheItem::get_source(&first), 0);
+        assert_eq!(CacheItem::get_seq(&first), 0);
+        assert_eq!(CacheItem::get_end_seq(&first), 2);
+        assert_eq!(CacheItem::get_timestmap(&first), 123);
+
+        let mut next_generation = first.clone();
+        next_generation.socket_id ^= 1 << 48;
+        assert_eq!(
+            first.generate_ebpf_flow_id(),
+            next_generation.generate_ebpf_flow_id()
+        );
+        assert_ne!(
+            CacheItem::get_id(&first),
+            CacheItem::get_id(&next_generation)
+        );
+
+        let mut tls = first.clone();
+        tls.ebpf_type = EbpfType::TlsUprobe;
+        assert_eq!(CacheItem::get_id(&first), CacheItem::get_id(&tls));
+        assert_ne!(CacheItem::get_source(&first), CacheItem::get_source(&tls));
+        first.is_socket_closed = true;
+        first.l7_protocol_from_ebpf = L7Protocol::Unknown;
+        assert!(CacheItem::is_socket_closed(&first));
+    }
+
+    #[cfg(any(target_os = "linux", target_os = "android"))]
+    #[test]
+    fn reorder_memory_budget_counts_owned_capacity() {
+        let mut packet = MetaPacket::default();
+        let baseline = CacheItem::get_size(&packet);
+        packet.raw_from_ebpf = Vec::with_capacity(4096);
+        packet.sub_packets = Vec::with_capacity(4);
+        packet.raw = Some(RawPacket::OwnedVec(Vec::with_capacity(2048)));
+        assert_eq!(
+            CacheItem::get_size(&packet),
+            baseline + 4096 + 4 * std::mem::size_of::<SubPacket>() + 2048
+        );
+    }
+
     #[test]
     fn get_pkt_size() {
         let pkt = MetaPacket {
@@ -1739,13 +1817,14 @@ mod tests {
         seg.payload_len = 16_384;
         seg.packet_len = 16_384 + 54;
         seg.cap_start_seq = 11;
-        seg.cap_end_seq = 11;
+        seg.cap_end_seq = 13;
 
         start.merge(&mut seg);
 
         assert_eq!(start.l4_payload_len, 32_768);
         assert_eq!(start.reasm_bytes, 32_768);
         assert_eq!(start.get_captured_byte(), 32_768);
+        assert_eq!(CacheItem::get_end_seq(&start), 13);
     }
 }
 

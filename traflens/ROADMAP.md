@@ -46,14 +46,15 @@ qualification distinct. Preserve upstream licensing and attribution.
 
 ## Active M15: fast MySQL completeness
 
-M15-01 observability and the necessary M15-02 fresh diagnosis now have real
-wire/callback/period-counter/storage evidence. The actual control/client socket
-arrives2,3,4,5,6(CLOSE),0,1; all36IO are present but one Login remains an orphan.
-Next implement bounded per-socket/cap-sequence ordering and meaningful gap,
-close, timeout and memory regressions; qualify a new native artifact before
-fast18complete-session/API/browser acceptance. Keep M15 active. Do not expand
-protocols, add wire sleeps, hide orphan/QUIT records, or repeat old matrices.
-Live observer failures and subsequent same-data offline recovery remain distinct.
+M15-01/02 real diagnosis and M15-03a bounded source/replay/native-unit tests are
+delivered. Sorting uses full UID/source and cap ranges, preserves normal idle
+checkpoints and orders CLOSE behind gaps, with explicit bounds/drop counters.
+The native MySQL default is tested without expanding Controller/capture scope.
+Next qualify a real production Agent ELF from the new commit and actual scope
+ABI/FD/map, then prove fast18complete-Session/marker12/query6/QUIT6/negative0
+API/browser acceptance with a truly unpaced oracle. Keep M15 active. Do not
+substitute test binaries, pacing receipts or old qualification labels, add wire
+sleeps, hide orphan/QUIT records, or repeat old matrices.
 
 ## Recurring execution policy
 

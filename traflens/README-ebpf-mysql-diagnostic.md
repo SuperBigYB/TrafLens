@@ -124,3 +124,12 @@ R21 sample. See the anonymous evidence under `evidence/2026-10-29/fast-mysql/`.
 The original fast failure and paced success remain immutable; a successful
 observer is not a native fix or a maximum-performance result.
 
+
+
+The subsequent M15-03a source change replaces the native no-op ordering module
+and wires the native MySQL default, exact UID/source/range and owned-memory
+accounting, idle/configuration/stop handling. It keeps the Controller template,
+normal license and capture scope unchanged. See the [native ordering
+contract](../agent/plugins/reorder/README.md). The original R22 failures are not
+reclassified by these source changes. New artifact qualification and a fresh
+complete fast gate remain necessary before M15 can close.

@@ -1533,7 +1533,7 @@ impl Default for EbpfSocketPreprocess {
     fn default() -> Self {
         Self {
             out_of_order_reassembly_cache_size: 256,
-            out_of_order_reassembly_protocols: vec![],
+            out_of_order_reassembly_protocols: vec!["MySQL".to_owned()],
             out_of_order_reassembly_timeout: Duration::from_millis(100),
             segmentation_reassembly_protocols: vec![],
         }
@@ -4195,6 +4195,40 @@ mod tests {
     use super::*;
 
     use std::fs;
+
+    #[test]
+    fn ebpf_mysql_reorder_defaults_and_explicit_opt_out() {
+        let native = EbpfSocketPreprocess::default();
+        let missing: EbpfSocketPreprocess = serde_yaml::from_str("{}").unwrap();
+        assert_eq!(missing, native);
+        assert_eq!(native.out_of_order_reassembly_protocols, ["MySQL"]);
+        assert_eq!(native.out_of_order_reassembly_cache_size, 256);
+        assert_eq!(
+            native.out_of_order_reassembly_timeout,
+            Duration::from_millis(100)
+        );
+        assert!(native.segmentation_reassembly_protocols.is_empty());
+
+        let disabled: EbpfSocketPreprocess =
+            serde_yaml::from_str("out_of_order_reassembly_protocols: []").unwrap();
+        assert!(disabled.out_of_order_reassembly_protocols.is_empty());
+        assert_eq!(disabled.out_of_order_reassembly_cache_size, 256);
+        assert_eq!(
+            disabled.out_of_order_reassembly_timeout,
+            Duration::from_millis(100)
+        );
+
+        let explicit: EbpfSocketPreprocess = serde_yaml::from_str(
+            "out_of_order_reassembly_protocols: [DNS]\nout_of_order_reassembly_cache_size: 32\nout_of_order_reassembly_timeout: 250ms",
+        )
+        .unwrap();
+        assert_eq!(explicit.out_of_order_reassembly_protocols, ["DNS"]);
+        assert_eq!(explicit.out_of_order_reassembly_cache_size, 32);
+        assert_eq!(
+            explicit.out_of_order_reassembly_timeout,
+            Duration::from_millis(250)
+        );
+    }
 
     fn process_data_for_cmdline(cmdline: &str) -> ProcessData {
         ProcessData {
