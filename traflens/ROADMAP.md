@@ -15,13 +15,13 @@ requalifying it when unrelated work changes.
 
 ## Milestones in priority order
 
-1. **Usable minimum product (next).** Provide a reproducible deployment/start
+1. **Usable minimum product (completed functional gate, 2026-10-28).** Provide a reproducible deployment/start
    entry point and a minimal real-data console: Agent status, traffic/service
    overview, request list and request detail. Reuse the existing APIs and lab.
    Acceptance: a fresh bounded workload on the two hosts is visible through the
    product entry point, with usable filtering and a drill-down to real records;
    document how to start and access it. Do not substitute mock data for this gate.
-2. **Core eBPF ingestion.** Complete managed eBPF capture through ingestion and
+2. **Core eBPF ingestion (active phase).** Complete managed eBPF capture through ingestion and
    query for the core HTTP/DNS/database scenarios, then extend TLS coverage.
    Acceptance: known real requests appear with the correct protocol and source
    metadata under a repeatable setup. Carry blocking collection fixes here.
@@ -69,9 +69,15 @@ sealing; fine-grained CPU/RSS tuning and maximum-rate searches. Preserve existin
 failure records and revisit these systematically during reliability/performance
 work rather than letting them displace the product backbone.
 
-## Next iteration
+## Current milestone after M1 delivery
 
-Inspect the existing UI/integration and deployment options, reuse suitable
-components, and begin the minimum real-data console with Agent status and a
-request list/detail path against the working backend. Prefer a small working
-entry point over an extensive design document or another harness-only change.
+M1 functional acceptance and both remote synchronizations pass at `4c16f7cce`.
+The local execution plan now activates only M2: managed eBPF HTTP capture through
+ingestion/query to console detail. First reuse the existing managed-eBPF evidence
+and identify the minimum scoped setup; then produce a real request, verify its
+eBPF source metadata and make it visible through the product entry point.
+Extend DNS/database protocols in subsequent milestones after this path works.
+
+Do not reopen M1 to chase nonblocking styling, maximum-rate or rare teardown
+cases. Its local single-organization scope, top100 list and separate aggregate
+queries remain documented. Public multi-user deployment is a later milestone.

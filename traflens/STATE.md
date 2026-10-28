@@ -26,8 +26,9 @@ drill-down and empty/error states. Module race tests/build/startup build pass.
 Visual review and failed attempts remain private. Owned workers/console/forwarding
 stop; YAML, persistent service identities and link/route/BPF checks pass.
 Independent background-job changes are recorded. See the dated console-product
-evidence. Next after delivery sync: M2 managed eBPF capture-to-query, starting
-with a small real HTTP path. The local plan holds exact synchronization/status.
+evidence. M1 code `4c16f7cce` is synchronized to both repositories. The active milestone
+is now M2: managed eBPF HTTP capture-to-query-to-console. The local plan holds
+task decomposition, exact synchronization and subsequent milestone transitions.
 This is a minimal local product, not a public authenticated deployment or full
 DeepFlow parity. Earlier narrow validation records below remain historical.
 
