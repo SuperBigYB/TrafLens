@@ -1,10 +1,10 @@
-# CPU profiling checkpoint: real self samples, product gate still open
+# CPU profiling checkpoint: verified self samples and ingestion, product gate still open
 
-M9 is in progress. A finite owned Go process now produces a verified real CPU
-profile. The first isolated native integration acknowledges upload, but the
-whole-marker storage oracle still returns no rows. Ingestion, query/navigation
-and the console gate are **not qualified** by this checkpoint. Retain the actual
-artifact and failure evidence; do not generate or insert replacement samples.
+M9 is in progress. Real finite self CPU sampling and an isolated native
+integration now pass actual storage and independent stack verification. Bounded
+product queries, console navigation and the public integration lifecycle remain
+unqualified. The earlier zero-row failure is preserved and is not explained or
+repaired merely by the later successful attempt.
 
 ## Why this sampling path
 
@@ -39,7 +39,7 @@ remains unchanged; a separate verification record establishes decoded content.
 Three module race tests cover the offline default and input/private-output
 boundaries. Existing HTTP/kernel/protocol matrices are not repeated.
 
-## Native integration discovery and current failure
+## Integration history and actual storage acceptance
 
 The existing Agent route is `POST /api/v1/profile/ingest` with pprof format,
 gospy spy name, fresh application label and actual from/until times. Raw gzip
@@ -62,16 +62,48 @@ An initial wrong-function/readiness attempt fails before upload and restores all
 owned resources. A fresh isolated attempt with actual listener readiness and
 function11 returns200; Agent exits0, no OOM, and sender drain reports success.
 The immutable profile is uploaded once in that successful HTTP attempt.
-Nevertheless, the90-second exact whole-marker oracle repeatedly returns zero;
-diagnostic same-Agent and unique-marker queries without a time predicate also
-find zero. Do not widen a filter or repeat uploads to declare success. The next
-task is to diagnose receiver/profile ingestion and effective routing/configuration,
-then verify actual decoded samples, bounded queries and console navigation.
+That first HTTP-success attempt's90-second exact whole-marker oracle still
+returns zero; same-Agent and no-time diagnostics also find zero. The original
+failure remains in the earlier `cpu-profiling/summary.json` checkpoint.
 
-Both attempts remove only their owned Agent registrations/groups, containers
+Read-only diagnosis in the actual Server network namespace proves receiver13
+accepted the frame, the Go profile decoder parsed it into two rows, and generic
+CKWriter dropped both before input. Its success/uncertain/retry/invalid-org counts
+are zero;72h TTL and current ClickHouse time exclude the proposed expiry issue.
+ProfileWriter's own write_err counter is not updated and cannot prove storage.
+The concrete generic error is unavailable because its WARNING is masked by the
+active ckwriter ERROR level. Offline parsing of the real artifact with the exact
+native library independently produces two stacks totaling800 samples.
+
+For one bounded diagnostic attempt, only that logger is temporarily opened to
+WARNING, with exact Server identity and read-back/restore receipts. A fresh
+application/transport identity reuses the unchanged actual799-byte artifact and
+its original sample time; no CPU workload is rerun. This attempt actually writes
+successfully, so it produces no new write-failure warning. The logger is restored
+to ERROR. This observation is **not a code fix or explanation** for the previous
+pre-input failure, which remains a reliability follow-up.
+
+The new whole-marker oracle passes two complete same-ID/fingerprint reads:
+two stored Golang/cpu/samples rows, total800, from the expected temporary Agent.
+No Agent/event/unit/language predicate hides incorrect rows. The native readable
+tree has9 functions/9 nodes, root/self-sum800; an independent collapse of the
+original pprof matches both root-to-leaf stacks exactly. HotLoop self weight797,
+cumulative800, and asyncPreempt self3 agree with the actual sample data. The tree
+read is followed by another unchanged record fingerprint. These are sample
+weights, not absolute CPU percentages or a database-proven OS PID association.
+
+The private oracle checks row/sample population before calling the existing tree
+API and bounds its returned data. That is appropriate to this stopped-producer
+fixture, but the legacy ProfileTracing route still has no request-level query
+limit. The next product task is a distinct strict bounded route (old servers must
+fail closed rather than silently ignore an unknown max_rows field), then the
+actual console and public lifecycle. No complete M9 product gate is claimed.
+
+All attempts remove only their owned Agent registrations/groups, containers
 and networks, preserving the old identities, memberships, license settings,
 YAML, management route and BPF identities. Detailed artifacts/addresses/run
 labels remain private. Anonymous status is in
-`evidence/2026-10-28/cpu-profiling/summary.json`. Public reusable integration
+`evidence/2026-10-28/cpu-profile-ingestion/summary.json`, alongside the earlier
+failed checkpoint. Public reusable integration
 startup/stop and the complete product workflow remain M9 work, not completed
 features in this partial checkpoint.

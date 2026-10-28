@@ -1,0 +1,74 @@
+{
+  "milestone": "M9 CPU profiling ingestion slice",
+  "milestone_complete": false,
+  "completed_gate": "M9-02c finite real artifact ingestion and independent stored-stack verification",
+  "sampling_reused": true,
+  "new_cpu_workload_started": false,
+  "new_input_is_original_pprof_artifact": true,
+  "storage": {
+    "rows": 2,
+    "samples": 800,
+    "complete_same_id_fingerprint_reads": 2,
+    "expected_agent_metadata_matches": true,
+    "language": "Golang",
+    "event": "cpu",
+    "unit": "samples",
+    "readable_functions": 9,
+    "tree_nodes": 9,
+    "collapsed_stack_weights_exact": true,
+    "hot_function": "main.traflensCPUHotLoop",
+    "hot_self_samples": 797,
+    "hot_total_samples": 800,
+    "native_tree_root_self_sum": 800,
+    "fingerprint_after_tree_unchanged": true
+  },
+  "independent_native_parse": {
+    "real_input_bytes": 799,
+    "events": 1,
+    "collapsed_stacks": 2,
+    "samples": 800,
+    "hot_function_present": true,
+    "no_database_or_network_in_offline_parser": true
+  },
+  "original_failure": {
+    "still_preserved": true,
+    "receiver_decode_proven": true,
+    "decoded_rows": 2,
+    "generic_writer_pre_input_failed_rows": 2,
+    "success_uncertain_retry_orginvalid": 0,
+    "concrete_error_unavailable": true,
+    "generic_warning_masked_by_error_level": true,
+    "ttl72hours_and_current_clock_verified": true,
+    "no_exact_root_cause_or_code_fix_claimed": true
+  },
+  "diagnostic_attempt": {
+    "fresh_application_transport_identity": true,
+    "same_original_artifact_hash_and_sample_times": true,
+    "single_profile_upload": true,
+    "supported_registration_function": 11,
+    "profile_only_private_namespace_no_published_ports": true,
+    "no_host_kernel_profile": true,
+    "agent_exit_code": 0,
+    "sampler_not_reexecuted": true
+  },
+  "temporary_logging": {
+    "only_ckwriter_error_to_warning": true,
+    "restore_error_readback_verified": true,
+    "same_owned_server_identity_verified": true
+  },
+  "restoration": {
+    "owned_agent_registrations_groups_containers_networks_removed": true,
+    "old_identities_membership_license_yaml_preserved": true,
+    "old_management_route_bpf_and_runtime_resources_preserved": true,
+    "unknown_bpf_not_detached": true
+  },
+  "remaining": [
+    "unexplained original first-write failure reliability follow-up",
+    "strict native bounded profile query API",
+    "actual console profile inspection",
+    "public integration lifecycle and complete M9 acceptance"
+  ],
+  "existing_tests": "CPU fixture3, console32, lab249 are previous baselines; no corresponding source changed this slice",
+  "remote_ci": "not checked",
+  "publication": "Anonymous aggregates and methodology only; raw profile/IDs/addresses/timestamps/queries/logger lease remain private"
+}

@@ -13,6 +13,32 @@ priority is a reproducible product entry point and minimal real-data console
 topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
 performance work. Review priorities after each milestone or three half-hourly runs.
 
+## M9 real profile ingestion accepted; bounded product API next (2026-10-28)
+
+The original zero-row path is now located after PROFILE receiver and Go decode:
+actual counters prove two generic writer pre-input failures, not merely a pending
+queue or72h TTL. Current library offline decoding of the same799-byte artifact
+independently returns two stacks/800samples. A single diagnostic transport identity
+reuses that original profile under a reversible ckwriter warning lease, and this
+attempt actually stores two rows. No code fix or cause for the original failure
+is claimed; it remains an explicit reliability follow-up with all failed evidence.
+
+M9-02c passes two whole-marker complete same-ID/fingerprint/Count+Sum reads, actual
+Agent/Golang/cpu/samples semantics and exact raw-profile collapsed-stack weights.
+The readable tree has9functions/9nodes, root/self total800, HotLoop self797/cum800
+and asyncPreempt self3; post-tree fingerprint is unchanged. The logger restores
+ERROR, and only owned temporary registration/group/container/network resources
+are removed; old configuration/identities/routes/BPF remain. No CPU recapture,
+synthetic database rows or unrelated workload sampling is performed.
+
+M9 remains the sole active milestone. Next M9-03 needs a genuinely bounded native
+profile route, then the console/public lifecycle and actual browser gate. Existing
+ProfileTracing has no request-level limit; preflight Count alone is not a hard
+query bound. Prefer a separate strict bounded route so old servers404 instead of
+silently ignoring an added JSON field. Preserve old behavior for existing clients.
+See README-cpu-profiling.md and dated cpu-profile-ingestion evidence. Do not rerun
+the old packet/kernel/CPU artifact qualification or erase the first-write failure.
+
 ## M9 CPU profiling partial checkpoint (2026-10-28)
 
 M9 remains the sole active milestone. Native on-CPU capture is system-wide before
