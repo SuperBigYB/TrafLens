@@ -75,13 +75,29 @@ def verify_baseline(api, baseline):
 
 def integration_mode(value):
     mode = value.get('integration_mode', 'profile')
-    require(mode in ('profile', 'otel_trace'), 'Unknown integration mode')
+    require(mode in ('profile', 'otel_trace', 'kernel_http'), 'Unknown integration mode')
     return mode
 
 
 def license_functions(value):
-    # Normal feature management only: TRACE_APP=6, PROFILE_INT=11.
-    return [6] if integration_mode(value) == 'otel_trace' else [11]
+    # Normal feature management only; callers cannot supply license overrides.
+    return {'profile': [11], 'otel_trace': [6], 'kernel_http': [2, 4, 5]}[integration_mode(value)]
+
+
+def kernel_http_profile(controller_ip, controller_port, ingester_port):
+    address = ipaddress.ip_address(controller_ip)
+    require(address.version == 4 and not address.is_unspecified and not address.is_multicast,
+            'Kernel HTTP Controller must be an explicit IPv4 endpoint')
+    require(type(controller_port) is int and 1 <= controller_port <= 65535
+            and type(ingester_port) is int and 1 <= ingester_port <= 65535,
+            'Kernel HTTP communication ports must be1..65535')
+    # Reuse the qualified18080 profile verbatim except for actual communication.
+    # Namespace FD/map/collector/no-AF_PACKET qualification belongs to the scoped
+    # managed Agent launcher and is required before any traffic, not proven here.
+    value = json.loads(Path(__file__).with_name('managed-http-profile.json').read_text())
+    value['global']['communication'].update(proxy_controller_ip=str(address), proxy_controller_port=controller_port,
+                                            ingester_ip=str(address), ingester_port=ingester_port)
+    return value
 
 
 def trace_only_profile(controller_ip, controller_port, ingester_port):
@@ -95,16 +111,20 @@ def trace_only_profile(controller_ip, controller_port, ingester_port):
 
 def validate_metadata(value):
     require(isinstance(value, dict), 'Controller metadata must be an object')
-    trace = integration_mode(value) == 'otel_trace'
-    prefix = 'span-' if trace else 'cpu-'
+    mode = integration_mode(value)
+    prefix = {'profile': 'cpu-', 'otel_trace': 'span-', 'kernel_http': 'nh-'}[mode]
     require(re.fullmatch(prefix + '[0-9a-f]{24}', value.get('run', '')), 'Run prefix differs from integration mode')
+    if mode == 'kernel_http':
+        require(not any('license' in str(key).lower() for key in value), 'Kernel HTTP uses only fixed normal feature functions')
     address = ipaddress.ip_address(value['ctrl_ip'])
     require(address.version == 4 and address.is_private and (not address.is_loopback) and (not address.is_link_local) and (not address.is_unspecified), 'Controller identity or scope mismatch')
     require(re.fullmatch('(?:[0-9a-f]{2}:){5}[0-9a-f]{2}', value['ctrl_mac']), 'Controller identity or scope mismatch')
     require(not int(value['ctrl_mac'][:2], 16) & 1 and value['ctrl_mac'] != '00:00:00:00:00:00', 'Controller identity or scope mismatch')
     require(isinstance(value['profile'], dict), 'Controller identity or scope mismatch')
-    if trace:
+    if mode == 'otel_trace':
         expected = trace_only_profile(value['controller_ip'], value['controller_port'], value['ingester_port'])
+    elif mode == 'kernel_http':
+        expected = kernel_http_profile(value['controller_ip'], value['controller_port'], value['ingester_port'])
     else:
         expected = profile_only(Path(__file__).resolve().parent, value['controller_ip'], value['controller_port'], value['ingester_port'])
     require(value['profile'] == expected, 'Configuration differs from the fixed integration mode')

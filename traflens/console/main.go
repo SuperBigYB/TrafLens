@@ -191,6 +191,7 @@ func (c *console) handler() http.Handler {
 	mux.HandleFunc("GET /api/services", c.services)
 	mux.HandleFunc("GET /api/trace", c.trace)
 	mux.HandleFunc("GET /api/spans", c.spans)
+	mux.HandleFunc("GET /api/associations", c.associations)
 	mux.HandleFunc("GET /api/red", c.red)
 	mux.HandleFunc("GET /api/trends", c.trends)
 	mux.HandleFunc("GET /api/requests", func(w http.ResponseWriter, r *http.Request) {

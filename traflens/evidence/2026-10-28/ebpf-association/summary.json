@@ -1,0 +1,96 @@
+{
+  "schema": "traflens.ebpf-association.functional-slice.v1",
+  "milestone": "M11",
+  "milestone_complete": false,
+  "accepted_tasks": [
+    "M11-01",
+    "M11-02",
+    "M11-03",
+    "M11-04"
+  ],
+  "pending": "M11-05 public full capture lifecycle and one bounded execution through it",
+  "native_core": "3dec20af5",
+  "source": "native eBPF signal_source3",
+  "sdk": false,
+  "tracing_or_custom_headers": false,
+  "pipeline": "two-host Agent to Server; owned application services share one isolated source namespace",
+  "application": {
+    "root_requests": 2,
+    "http_exchanges": 4,
+    "independent_main_control": true,
+    "actual_wire_hashes_and_process_socket_receipts_verified": true
+  },
+  "storage": {
+    "whole_marker_complete_reads": 2,
+    "observations": 8,
+    "source3": 8,
+    "source0": 0,
+    "source4": 0,
+    "trace_span_parent_empty": true,
+    "same_original_ids_and_all_projection_values": true,
+    "zero_request_syscall_ids_preserved": 1,
+    "separate_queries_not_atomic": true
+  },
+  "associations": {
+    "seeds_checked": 8,
+    "nodes_per_component": 4,
+    "network_pairs_per_component": 2,
+    "syscall_handoffs_per_component": 1,
+    "main_control_disjoint": true,
+    "exact_details_checked": 8,
+    "negative_scopes": 3,
+    "url_or_time_used_to_create_edges": false
+  },
+  "browser": {
+    "actual": "Microsoft Edge",
+    "pass": true,
+    "independent_components": 2,
+    "both_services_exact_details": true,
+    "details_checked": 4,
+    "wrong_agent_time_seed_empty": true,
+    "oversized_window_distinct_error": true,
+    "page_errors": 0,
+    "screenshots_redacted": true
+  },
+  "budgets": {
+    "inclusive_seconds": 60,
+    "row_limit": 64,
+    "sentinel_limit": 65,
+    "upstream_timeout_seconds": 12,
+    "response_bytes": 4194304,
+    "scan_or_driver_total_memory_limit": false
+  },
+  "checks": {
+    "console_race_tests": 56,
+    "console_build": true,
+    "focused_python_tests": 59,
+    "c_fixture_static_build": true,
+    "independent_read_only_review": "no remaining blocker after default window/doc fixes",
+    "remote_ci_checked": false
+  },
+  "failures_retained": [
+    {
+      "stage": "first preparation",
+      "cause": "valid mixed-case Controller group SHORT_UUID rejected by lowercase-only validation",
+      "agent_or_workload_started": false,
+      "restored": true,
+      "fix": "preserve exact alphanumeric case; reject separators; focused regression"
+    }
+  ],
+  "restoration": {
+    "collector_stopped_before_namespace_release": true,
+    "owned_workers_group_agent_namespace_removed": true,
+    "bpf_tracefs_inventory_restored": true,
+    "old_server_network_unchanged": true,
+    "query_console_removed": true,
+    "source_and_workstation_forwards_closed": true,
+    "physical_nic_or_route_changed": false
+  },
+  "limitations": [
+    "Finite synchronous observed evidence graph, not full AutoTracing or SDK parent tree",
+    "PID lifetime proved for fixture; generic L7 has no process-generation identity",
+    "Cycles are not separately detected or downgraded in typed graph",
+    "No new outside-namespace workload emitted by silent lease; previously qualified strict scope is reused",
+    "Full capture coordinator still private; M11 stays active"
+  ]
+}

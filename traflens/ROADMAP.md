@@ -25,7 +25,7 @@ requalifying it when unrelated work changes.
    query for the core HTTP/DNS/database scenarios, then extend TLS coverage.
    Acceptance: known real requests appear with the correct protocol and source
    metadata under a repeatable setup. Carry blocking collection fixes here.
-3. **Topology and request tracing (M3 relationships complete; M4 Trace ID correlation and M10 explicit SDK Span gate complete).** Connect resource/service identities to
+3. **Topology and request tracing (M3 relationships complete; M4 Trace ID correlation and M10 explicit SDK Span gate complete; M11 finite no-Header evidence API/UI accepted, public capture lifecycle pending).** Connect resource/service identities to
    service relationships and per-request paths, exposed in the console.
    Acceptance: a small multi-service scenario can be followed from a service
    dependency to its requests and associated spans/records.
@@ -95,3 +95,12 @@ all-language asynchronous AutoTracing or full causal coverage. Larger protocol,
 asset, language, reliability and matched performance work remain future work.
 The unexplained early profile writer failure remains an explicit reliability
 follow-up. Keep the one-active-milestone/file-first half-hour workflow.
+
+## Current single active milestone: M11
+
+The real finite source3 headerless HTTP population and bounded typed-evidence
+navigation have passed (M11-01..04). Complete M11-05 by publishing and exercising
+the full bounded capture lifecycle, including exact stop/recovery. Do not repeat
+old protocol/profile/performance matrices or claim general AutoTracing from the
+finite synchronous association slice. Only activate the next milestone after
+this public lifecycle gate is met.

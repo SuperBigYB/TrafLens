@@ -13,6 +13,44 @@ priority is a reproducible product entry point and minimal real-data console
 topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
 performance work. Review priorities after each milestone or three half-hourly runs.
 
+## M11 finite headerless kernel association slice accepted; lifecycle open (2026-10-28)
+
+M11-01..04 pass one actual finite source3 capture, a bounded evidence API and the
+real Edge path. Two plain synchronous C services and a generator send no tracing
+or custom headers and no SDK Spans. Two independent root requests generate4HTTP
+exchanges and8Session observations. Actual app wire hashes, process/thread and
+socket records match two complete whole-marker same-ID/all-column reads; source3
+is8, source0/4 are0 and all trace/span/parent IDs are empty. One actual root-end
+request syscall ID is zero and remains visible; both frontend handoffs have the
+complete nonzero request/response syscall/thread evidence.
+
+The fixed /api/associations query accepts an exact seed, historical Agent and at
+most60inclusive seconds, forces source3/Session2/HTTP20/TCP6, uses65sentinel rows
+for a64row cap,12s and4MiB. Each of8seeds returns its4node component with2network
+pairs and1same-process syscall handoff. Main/control are disjoint,8exact details
+and3empty negative scopes pass. URL/time never create an edge. UInt64 identifiers
+remain strings. The typed evidence graph is not an SDK parent tree and currently
+does not separately diagnose cycles or generic PID-generation reuse.
+
+Actual Edge verifies both components, both services'4exact detail navigations,
+empty scopes and over-budget errors with0page errors.56full console race tests,
+59focused Python checks, C static build and console build pass. Review corrected
+the default window to59seconds difference (60inclusive seconds) and narrowed
+source/documentation claims. The first mixed-case group UUID preparation failure
+occurred before collection and is retained; exact case validation now passes.
+
+All owned workers/collector/Controller group+Agent/namespace/query/console and
+forwards stop; BPF/tracefs baseline and old Server/network are preserved, without
+physical interface/route changes. No previous profile/OTLP/protocol/kernel/perf
+matrices were rerun. Remote CI was not checked.
+
+M11 remains the only active milestone: M11-05 must publish the still-private
+capture coordinator as a bounded prepare/run/verify/stop lifecycle and execute it
+once before closure. Reuse public silent scope lease, normal kernel license2/4/5,
+qualified native core, strict verifier and query runtime; do not mistake these
+pieces for a completed public full lifecycle. See README-ebpf-association.md and
+evidence/2026-10-28/ebpf-association/summary.json.
+
 ## M10 explicit real SDK Span functional gate complete (2026-10-28)
 
 Two owned SDK HTTP service processes and one finite generator run through a

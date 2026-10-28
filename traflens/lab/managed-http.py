@@ -26,7 +26,7 @@ def documents(controller_ip, group_id, controller_port=30035, ingester_ip=None,
         raise ValueError('Controller/ingester addresses must be IP strings')
     controller_ip = str(ipaddress.ip_address(controller_ip))
     ingester_ip = str(ipaddress.ip_address(ingester_ip or controller_ip))
-    if not isinstance(group_id, str) or not re.fullmatch(r'g-[a-z0-9]{1,64}', group_id):
+    if not isinstance(group_id, str) or not re.fullmatch(r'g-[A-Za-z0-9]{1,64}', group_id):
         raise ValueError('Expected a Controller group SHORT_UUID (g-...)')
     controller_port, ingester_port, http_port = map(port, (controller_port, ingester_port, http_port))
     profile = deepcopy(json.loads((HERE / 'managed-http-profile.json').read_text()))

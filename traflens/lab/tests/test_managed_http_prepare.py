@@ -53,6 +53,14 @@ class ManagedHTTPPrepareTests(unittest.TestCase):
         default, _ = prepare.documents(**self.options())
         self.assertEqual(default['processors']['request_log']['filters']['port_number_prefilters'], {'HTTP': '18080'})
 
+    def test_controller_generated_mixed_case_group_identity_is_preserved(self):
+        profile, boot = prepare.documents('203.0.113.1', 'g-aB9Z0CdEf1')
+        self.assertEqual(boot['vtap-group-id-request'], 'g-aB9Z0CdEf1')
+        self.assertEqual(profile['processors']['request_log']['filters']['port_number_prefilters'], {'HTTP': '18080'})
+        for value in ['g-../other', 'g-abc/def', 'g-ab c', 'g-abc\nXYZ']:
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                prepare.documents('203.0.113.1', value)
+
     def test_invalid_parameters_do_not_create_output(self):
         with tempfile.TemporaryDirectory() as root:
             target = Path(root) / 'new'
