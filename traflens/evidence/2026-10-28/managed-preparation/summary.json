@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "scope": "M2-05a portable file preparation only",
+  "tests": {
+    "lab_total": 228,
+    "new_preparation_tests": 8,
+    "failed": 0,
+    "ignored": 0
+  },
+  "generated_profile_matches_qualified_runtime_profile": true,
+  "live_controller_template_check": true,
+  "controller_writes": false,
+  "agent_started": false,
+  "namespace_created": false,
+  "bpf_attached": false,
+  "runtime_qualification_added": false,
+  "old_preparation_evidence_preserved": true,
+  "milestone_complete": false,
+  "next": "M2-05b/c bounded scoped startup/stop and one entry-point verification"
+}

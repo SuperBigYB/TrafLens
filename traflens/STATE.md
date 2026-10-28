@@ -13,6 +13,19 @@ priority is a reproducible product entry point and minimal real-data console
 topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
 performance work. Review priorities after each milestone or three hourly runs.
 
+## M2 portable preparation delivered (2026-10-28)
+
+`lab/managed-http.py` and its identity-free profile template provide public
+profile/bootstrap preparation. Literal endpoints, ports and group are explicit;
+output is a fresh private directory with hashed files. The default is a read-only
+plan and no command starts capture or changes Controller.228 lab tests pass.
+Generated output equals the previously qualified managed HTTP profile and
+passes a live community template check without writes or another capture run.
+
+M2-05a is complete. Next is M2-05b/c: portable scoped startup/stop, then one
+necessary verification through that entry point. The native/console runtime
+gates below remain valid; file generation alone does not close M2.
+
 ## M2 collection-to-console slice (2026-10-28)
 
 Native `3dec20af5` passes the existing namespace-scoped managed eBPF HTTP oracle:

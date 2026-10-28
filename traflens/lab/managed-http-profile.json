@@ -1,0 +1,194 @@
+{
+  "global": {
+    "limits": {
+      "max_millicpus": 2000,
+      "max_memory": 1024,
+      "max_local_log_file_size": 20,
+      "local_log_retention": "1d"
+    },
+    "communication": {
+      "proactive_request_interval": "10s",
+      "proxy_controller_ip": "127.0.0.1",
+      "proxy_controller_port": 30035,
+      "ingester_ip": "127.0.0.1",
+      "ingester_port": 30033,
+      "max_throughput_to_ingester": 10
+    },
+    "self_monitoring": {
+      "log": {
+        "log_level": "INFO",
+        "log_file": "/var/log/traflens/deepflow-agent.log",
+        "log_backhaul_enabled": false
+      },
+      "debug": {
+        "enabled": false
+      },
+      "profile": {
+        "enabled": false
+      }
+    }
+  },
+  "inputs": {
+    "proc": {
+      "enabled": false,
+      "symbol_table": {
+        "golang_specific": {
+          "enabled": false
+        }
+      }
+    },
+    "cbpf": {
+      "common": {
+        "capture_mode": 0
+      },
+      "af_packet": {
+        "interface_regex": "",
+        "inner_interface_capture_enabled": false,
+        "extra_bpf_filter": "tcp port 18080",
+        "tunning": {
+          "ring_blocks_enabled": true,
+          "ring_blocks": 8,
+          "packet_fanout_count": 1,
+          "interface_promisc_enabled": false
+        },
+        "bond_interfaces": [],
+        "src_interfaces": []
+      }
+    },
+    "ebpf": {
+      "disabled": false,
+      "socket": {
+        "uprobe": {
+          "golang": {
+            "enabled": false,
+            "tracing_timeout": "0ns"
+          },
+          "tls": {
+            "enabled": false
+          }
+        },
+        "kprobe": {
+          "disabled": false,
+          "enable_unix_socket": false,
+          "blacklist": {
+            "ports": ""
+          },
+          "whitelist": {
+            "ports": ""
+          }
+        },
+        "sock_ops": {
+          "tcp_option_trace": {
+            "enabled": false
+          }
+        }
+      },
+      "file": {
+        "io_event": {
+          "collect_mode": 0,
+          "enable_virtual_file_collect": false
+        }
+      },
+      "profile": {
+        "unwinding": {
+          "dwarf_disabled": true,
+          "dwarf_regex": ""
+        },
+        "on_cpu": {
+          "disabled": true
+        },
+        "languages": {
+          "python_disabled": true,
+          "php_disabled": true,
+          "nodejs_disabled": true,
+          "lua_disabled": true
+        }
+      },
+      "tunning": {
+        "collector_queue_size": 4096,
+        "userspace_worker_threads": 1,
+        "kick_kern_nice": 0,
+        "perf_pages_count": 32,
+        "kernel_ring_size": 8192,
+        "max_socket_entries": 10000,
+        "socket_map_reclaim_threshold": 8000,
+        "max_trace_entries": 10000
+      }
+    },
+    "integration": {
+      "enabled": false,
+      "feature_control": {
+        "profile_integration_disabled": true,
+        "trace_integration_disabled": true,
+        "metric_integration_disabled": true,
+        "log_integration_disabled": true
+      }
+    }
+  },
+  "processors": {
+    "request_log": {
+      "application_protocol_inference": {
+        "enabled_protocols": [
+          "HTTP"
+        ]
+      },
+      "filters": {
+        "port_number_prefilters": {
+          "HTTP": "18080"
+        },
+        "cbpf_disabled": false,
+        "tag_filters": {
+          "HTTP": []
+        }
+      },
+      "timeouts": {
+        "session_aggregate_window_duration": "20s"
+      }
+    },
+    "flow_log": {
+      "tunning": {
+        "flow_map_hash_slots": 1024,
+        "concurrent_flow_limit": 4096,
+        "rrt_cache_capacity": 1024,
+        "memory_pool_size": 4096,
+        "max_batched_buffer_size": 4096,
+        "flow_aggregator_queue_size": 65536,
+        "flow_generator_queue_size": 65536,
+        "quadruple_generator_queue_size": 262144
+      }
+    }
+  },
+  "outputs": {
+    "socket": {
+      "data_socket_type": "TCP"
+    },
+    "flow_log": {
+      "filters": {
+        "l4_capture_network_types": [
+          0
+        ],
+        "l7_capture_network_types": [
+          0
+        ],
+        "l4_ignored_observation_points": [],
+        "l7_ignored_observation_points": []
+      },
+      "throttles": {
+        "l4_throttle": 1000,
+        "l7_throttle": 1000
+      },
+      "tunning": {
+        "collector_queue_size": 65536
+      }
+    },
+    "flow_metrics": {
+      "enabled": true,
+      "filters": {
+        "apm_metrics": true
+      },
+      "tunning": {
+        "sender_queue_size": 65536
+      }
+    }
+  }
+}

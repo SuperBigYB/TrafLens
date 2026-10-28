@@ -33,10 +33,58 @@ finite result. Raw markers, process IDs, namespace identities, maps and queries
 stay private. This does not qualify arbitrary processes, TLS, profiling, other
 kernels or maximum performance.
 
+## Portable profile/bootstrap preparation
+
+`lab/managed-http.py` now replaces the private configuration-generation step.
+It has no Controller write, Docker, namespace or BPF action. With no arguments
+it prints a read-only plan. Preparation takes explicit literal IPs and a
+Controller group SHORT_UUID; it does not embed a development-machine identity
+or reuse a historical registration receipt.
+
+```sh
+python3 traflens/lab/managed-http.py
+install -d -m 700 .traflens/work/managed-http
+python3 traflens/lab/managed-http.py prepare \
+  --output "$(pwd)/.traflens/work/managed-http/prepared" \
+  --controller-ip "$CONTROLLER_IP" --controller-port "$CONTROLLER_PORT" \
+  --ingester-ip "$INGESTER_IP" --ingester-port "$INGESTER_PORT" \
+  --group-id "$GROUP_SHORT_UUID" --http-port 18080
+```
+
+The POSIX output parent must be private and owned. The new output directory
+is mode0700; its files are mode0600 and are never overwritten:
+
+- `group-profile.json`: HTTP-only inference; AF_PACKET interface empty; eBPF
+  socket kprobe enabled; process collection, Go/TLS uprobes, IO events, profiling
+  and integration disabled. Integration leaves remain explicit across license
+  allocation. Resource/queue settings match the previously qualified trial.
+- `bootstrap.yaml`: JSON-valid YAML with chosen Controller/group, bounded worker
+  count, fixed container log/state paths and mandatory namespace scope target
+  `/run/traflens/target.netns`. It contains no host-specific namespace path.
+- `manifest.json`: hashes/lengths and outstanding startup requirements. Its
+  `runtime_qualified` flag is false; preparation never means capture is running.
+
+Default Controller/data ports are30035/30033; supply the actual environment's
+ports. Omitted ingester IP follows the Controller IP. A custom HTTP port updates
+both the inference prefilter and otherwise-disabled packet filter. IPv6 literal
+serialization is tested; it is not a new IPv6 runtime qualification. Files are
+JSON-encoded, so address/group values cannot add YAML directives.
+
+The full lab suite passes228 tests (eight new preparation cases). Actual
+prepared output equals the profile of the qualified managed trial and passes
+the running community Controller's template check without modifying it. No
+Agent, workload or backend was restarted for this preparation-only validation.
+See [preparation evidence](evidence/2026-10-28/managed-preparation/summary.json).
+
 ## Remaining M2 delivery gate
 
-The established coordinator is still a private prepared workflow. M2 is not
-closed by this runtime success alone. The next step is a reusable scoped
-managed-Agent startup/stop entry point and complete reproduction instructions,
-reusing the current contracts instead of constructing another kernel test
-matrix. Then verify that entry point, record delivery and close M2.
+M2-05a is delivered. The next step is M2-05b: package the bounded scoped
+managed-Agent startup/stop interface with the existing namespace lease,
+actual collector/FD/map proof before traffic, and precise cleanup. The profile
+needs operator-controlled application/readback on the owned stopped group;
+this preparation command does not perform that action. Keep the namespace
+lease pinned until Agent exit and restore owned configuration after stopping.
+
+Do not launch an unscoped tracer from these files or treat them as a complete
+deployment entry point. M2 remains open until the startup/stop entry point is
+verified once and synchronized; this does not require another kernel matrix.
