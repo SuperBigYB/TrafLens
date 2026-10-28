@@ -1,0 +1,113 @@
+{
+  "schema": "traflens.ebpf-association.public-lifecycle.v1",
+  "milestone": "M11",
+  "functional_gate_complete": true,
+  "dual_sync_required_before_plan_closure": true,
+  "entrypoints": [
+    "lab/ebpf-association.py plan/run/stop",
+    "lab/verify-ebpf-association.py",
+    "lab/profile-query-runtime.py run/stop"
+  ],
+  "public_preparation_inside_run": true,
+  "private_previous_capture_required": false,
+  "native_core": "3dec20af5",
+  "workload": {
+    "owned_root_requests": 2,
+    "http_exchanges": 4,
+    "sdk": false,
+    "trace_or_custom_headers": false,
+    "services_in_one_isolated_source_namespace": true,
+    "agent_to_server_crosses_hosts": true,
+    "physical_application_hop_qualified": false
+  },
+  "runtime": {
+    "actual_docker_running_inspect_receipts": 3,
+    "actual_create_argv_sha_bound": true,
+    "exact_pid_startticks_namespace_held_fd_and_wire_match": true,
+    "mode": "recorded_actual_docker_inspect",
+    "inactive_selinux_normalizations": 3,
+    "raw_security_options_and_conditions_retained": true,
+    "worker_exit_codes": [
+      0,
+      0,
+      0
+    ],
+    "agent_exit_code": 0,
+    "oom": false,
+    "pause_gate_seconds": 0.435,
+    "performance_measurement": false
+  },
+  "oracle": {
+    "passed": true,
+    "requests": 26,
+    "elapsed_seconds": 0.493,
+    "whole_marker_complete_same_id_projection_reads": 2,
+    "observations": 8,
+    "source3": 8,
+    "source0": 0,
+    "source4": 0,
+    "trace_span_parent_empty": true,
+    "exact_seeds": 8,
+    "nodes_per_component": 4,
+    "network_pairs_per_component": 2,
+    "syscall_handoffs_per_component": 1,
+    "exact_details": 8,
+    "negative_scopes": 3,
+    "main_control_disjoint": true,
+    "zero_request_syscall_ids_preserved": 1,
+    "non_atomic_queries": true
+  },
+  "edge": {
+    "passed": true,
+    "components": 2,
+    "both_services_exact_details": 4,
+    "default_inclusive_window_verified": true,
+    "empty_negative_controls": true,
+    "over_budget_window_distinct_failure": true,
+    "page_errors": 0,
+    "screenshots_redacted": true
+  },
+  "failures_retained": [
+    {
+      "stage": "before first worker start",
+      "cause": "Docker appended label=disable to hostPID worker; original exact-options check rejected it",
+      "original_result_changed": false,
+      "normalization_requires": "exact two raw options; daemon SecurityOptions has no SELinux; both host SELinux interfaces absent",
+      "unknown_or_duplicate_options_rejected": true
+    },
+    {
+      "stage": "first public stop",
+      "cause": "lease release acknowledgement timed out during automatic cleanup",
+      "retry_same_stop_used_actual_final_restoration_proof": true,
+      "failed_capture_promoted": false
+    }
+  ],
+  "restoration": {
+    "failed_and_healthy_capture_public_stop_passed": true,
+    "query_public_stop_passed": true,
+    "owned_resources_removed": true,
+    "bpf_tracefs_restored": true,
+    "old_server_id_config_sha_network_unchanged": true,
+    "controller_identity_yaml_baseline_preserved": true,
+    "baseline_agents": 0,
+    "baseline_groups": 1,
+    "physical_interfaces_routes_unchanged": true,
+    "source_and_workstation_forwards_closed": true
+  },
+  "checks": {
+    "targeted_lifecycle_tests": 10,
+    "targeted_verifier_tests": 13,
+    "total": 23,
+    "actual_sources_match_recorded_sha": true,
+    "independent_read_only_review": "no blocker",
+    "earlier_console56_and_tools59": "historical, not repeated",
+    "remote_ci_checked": false
+  },
+  "limitations": [
+    "Finite synchronous kernel evidence graph, not full AutoTracing or SDK parent tree",
+    "Generic L7 has no process-generation identity; typed graph does not separately diagnose cycles",
+    "No NAT/proxy/async/cross-language or physical-host application-hop qualification",
+    "Row/response/deadline budgets are not database scan or driver total-memory caps",
+    "Original profile generic-writer first-write root cause remains unresolved"
+  ]
+}

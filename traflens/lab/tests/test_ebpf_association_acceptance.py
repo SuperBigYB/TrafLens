@@ -46,6 +46,33 @@ def example():
     return expected, rows, document, count
 
 
+def runtime_example(folder=Path('/private/capture'), role='frontend', pid=102, worker_id='d'*64):
+    process = dict(pid=pid, start_ticks='4242', netns='net:[123]', pidns='pid:[456]')
+    scope = dict(agent_container_id='a'*64, positive={'container_id':'b'*64})
+    image = 'sha256:'+'c'*64
+    labels = {'io.traflens.purpose':'traflens.no-header-http', 'io.traflens.run':RUN,
+              'io.traflens.role':role, 'io.traflens.output':str(folder)}
+    command = ['--execute','--role',role,'--run',RUN,'--output','/output','--seconds','90','--requests','2']
+    mounts = [['/private/no-header-http','/workload',False],[str(folder/role),'/output',True]]
+    normalized = dict(image=image,pid_mode='host',network_mode='container:'+'b'*64,read_only=True,
+        cap_drop=['ALL'],nano_cpus=500000000,memory_bytes=67108864,memory_swap_bytes=67108864,pids_limit=16,
+        labels=labels,entrypoint=['/workload'],command=command,mounts=mounts,privileged=False,
+        cap_add=[],port_bindings={},publish_all_ports=False,security_opt=['no-new-privileges'],restart_policy='no')
+    argv = ['docker','create','--pid','host','--network',normalized['network_mode'],'--read-only',
+        '--cpus','0.5','--memory','67108864','--memory-swap','67108864','--pids-limit','16','--cap-drop','ALL',
+        '--security-opt','no-new-privileges','--entrypoint','/workload']
+    for key,value in labels.items():
+        argv.extend(['--label',key+'='+value])
+    argv.extend([image,*command])
+    actual = dict(normalized, **process, id=worker_id,running=True,started_at='2026-10-28T08:00:00Z',
+                  security_opt_raw=['no-new-privileges:true'])
+    document = dict(schema='traflens.ebpf-association.worker-runtime.v1',role=role,run=RUN,
+        scope_receipt='scope-runtime.json',agent_container_id=scope['agent_container_id'],
+        create={'argv':argv,'argv_sha256':v.digest(v.canonical(argv)),'normalized':normalized},inspect=actual)
+    created = dict(id=worker_id,command=command,mounts=mounts)
+    return document,created,process,folder,scope
+
+
 class AcceptanceTests(unittest.TestCase):
     def test_default_plan_has_no_file_or_network_side_effect(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -152,6 +179,111 @@ class AcceptanceTests(unittest.TestCase):
                       'http://127.0.0.1:20819/other', 'http://user@127.0.0.1:20819']:
             with self.assertRaises(ValueError):
                 v.loopback(value)
+
+    def test_recorded_docker_identity_matches_create_proc_and_owned_scope(self):
+        document,created,process,folder,scope = runtime_example()
+        result = v.worker_runtime_receipt(document,created,process,RUN,'frontend',folder,scope)
+        self.assertEqual(result['container_id'],created['id'])
+        self.assertEqual(result['argv_sha256'],document['create']['argv_sha256'])
+        for field,value in [('pid',999),('start_ticks','4243'),('netns','net:[124]'),('pid_mode','private'),
+                            ('network_mode','host'),('running',False),('memory_bytes',134217728),
+                            ('cap_add',['SYS_ADMIN']),('privileged',True),('port_bindings',{'80/tcp':[]})]:
+            mutated = copy.deepcopy(document)
+            mutated['inspect'][field] = value
+            with self.subTest(field=field),self.assertRaises(ValueError):
+                v.worker_runtime_receipt(mutated,created,process,RUN,'frontend',folder,scope)
+
+    def test_create_argv_hash_does_not_replace_real_safety_and_identity_checks(self):
+        document,created,process,folder,scope = runtime_example()
+        for change in ('hash','pid','network','duplicate','port','label','command','image'):
+            mutated = copy.deepcopy(document)
+            argv = mutated['create']['argv']
+            if change == 'hash':
+                mutated['create']['argv_sha256'] = '0'*64
+            elif change == 'pid':
+                argv[argv.index('--pid')+1] = 'private'
+            elif change == 'network':
+                argv[argv.index('--network')+1] = 'host'
+            elif change == 'duplicate':
+                argv[2:2] = ['--pid','private']
+            elif change == 'port':
+                argv[2:2] = ['--publish','18080:18080']
+            elif change == 'label':
+                argv[argv.index('--label')+1] = 'io.traflens.purpose=other'
+            elif change == 'command':
+                argv[-1] = '4'
+            else:
+                argv[argv.index('sha256:'+'c'*64)] = 'mutable:latest'
+            if change != 'hash':
+                mutated['create']['argv_sha256'] = v.digest(v.canonical(argv))
+            with self.subTest(change=change),self.assertRaises(ValueError):
+                v.worker_runtime_receipt(mutated,created,process,RUN,'frontend',folder,scope)
+
+    def test_only_proven_selinux_unavailable_daemon_label_option_is_normalized(self):
+        normalization = dict(selinux_enabled=False,host_selinux_fs_present=False,host_selinux_enforce_present=False,
+            daemon_security_options=['name=seccomp,profile=builtin','name=cgroupns'],
+            ignored_daemon_options=['label=disable'],reason='SELinux unavailable; Docker hostPID label disable')
+        actual = dict(security_opt_raw=['no-new-privileges','label=disable'],security_opt_normalization=normalization)
+        self.assertTrue(v.security_option_receipt(actual))
+        self.assertTrue(v.security_option_receipt(dict(actual,security_opt_raw=['label=disable','no-new-privileges:true'])))
+        self.assertFalse(v.security_option_receipt({'security_opt_raw':['no-new-privileges']}))
+        for field,value in [('selinux_enabled',True),('host_selinux_fs_present',True),('host_selinux_enforce_present',True),
+                            ('daemon_security_options',['name=selinux']),('daemon_security_options',[]),
+                            ('ignored_daemon_options',[]),('reason','unknown')]:
+            bad = copy.deepcopy(actual)
+            bad['security_opt_normalization'][field] = value
+            with self.subTest(field=field,value=value),self.assertRaises(ValueError):
+                v.security_option_receipt(bad)
+        for raw in [['label=disable'],['no-new-privileges','label=disable','seccomp=unconfined'],
+                    ['no-new-privileges','label=disable','label=disable'],['no-new-privileges','label=other']]:
+            with self.subTest(raw=raw),self.assertRaises(ValueError):
+                v.security_option_receipt(dict(actual,security_opt_raw=raw))
+        with self.assertRaises(ValueError):
+            v.security_option_receipt({'security_opt_raw':['no-new-privileges','label=disable']})
+
+    def test_legacy_receipts_are_explicit_retrospective_and_new_receipts_cannot_fall_back(self):
+        processes = dict.fromkeys(('frontend','backend','generate'),{})
+        with tempfile.TemporaryDirectory() as directory:
+            folder,report = Path(directory),{}
+            v.runtime_receipts(folder,{'integration_mode':'kernel_http'},RUN,processes,{},report)
+            self.assertFalse(report['docker_runtime_receipts_passed'])
+            self.assertEqual(report['runtime_receipt_mode'],'legacy_retrospective')
+            for metadata in [dict(schema='traflens.ebpf-association.capture.v1',runtime_receipts_required=True),
+                             dict(schema='traflens.ebpf-association.capture.v1'),dict(runtime_receipts_required=False)]:
+                with self.assertRaises(ValueError):
+                    v.runtime_receipts(folder,metadata,RUN,processes,{}, {})
+            (folder/'frontend-runtime.json').write_text('{}')
+            with self.assertRaises(ValueError):
+                v.runtime_receipts(folder,{'integration_mode':'kernel_http'},RUN,processes,{}, {})
+
+    def test_complete_new_runtime_scope_binds_all_three_real_identity_receipts(self):
+        with tempfile.TemporaryDirectory() as directory:
+            folder = Path(directory)
+            (folder/'agent').mkdir()
+            scope = dict(schema='traflens.ebpf-association.scope.v1',lease_path=str(folder/'lease'),
+                supervisor_pid=20,supervisor_start_ticks='200',agent_container_id='a'*64,
+                positive=dict(container_id='b'*64,pid=21,start_ticks='210',inode=123,netns='net:[123]',pidns='pid:[789]',source='/proc/20/fd/10'),
+                negative=dict(container_id='e'*64,pid=22,start_ticks='220',inode=124,netns='net:[124]',pidns='pid:[790]',source='/proc/20/fd/11'))
+            (folder/'scope-runtime.json').write_text(json.dumps(scope))
+            (folder/'agent/current.json').write_text(json.dumps({'id':'a'*64,'lease_path':str(folder/'lease')}))
+            processes = {}
+            for index,role in enumerate(('frontend','backend','generate')):
+                document,created,process,_,_ = runtime_example(folder,role,102+index,('d','f','1')[index]*64)
+                (folder/(role+'-runtime.json')).write_text(json.dumps(document))
+                (folder/(role+'-created.json')).write_text(json.dumps(created))
+                processes[role] = process
+            proof = {'agent_container_id':'a'*64,'scope_map':{'netns_id':123}}
+            metadata = {'schema':'traflens.ebpf-association.capture.v1','runtime_receipts_required':True}
+            report = {}
+            v.runtime_receipts(folder,metadata,RUN,processes,proof,report)
+            self.assertTrue(report['docker_runtime_receipts_passed'])
+            self.assertEqual(report['runtime_receipt_mode'],'recorded_actual_docker_inspect')
+            self.assertEqual(len(report['actual_runtime_receipt_sha256']),4)
+            scope['negative']['inode'] = 123
+            scope['negative']['netns'] = 'net:[123]'
+            (folder/'scope-runtime.json').write_text(json.dumps(scope))
+            with self.assertRaises(ValueError):
+                v.runtime_receipts(folder,metadata,RUN,processes,proof,{})
 
 
 if __name__ == '__main__':

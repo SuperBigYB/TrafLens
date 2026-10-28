@@ -13,7 +13,47 @@ priority is a reproducible product entry point and minimal real-data console
 topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
 performance work. Review priorities after each milestone or three half-hourly runs.
 
-## M11 finite headerless kernel association slice accepted; lifecycle open (2026-10-28)
+## M11 public headerless association lifecycle functional gate complete (2026-10-28)
+
+The public plan/run/stop capture coordinator and strict independent verifier now
+pass a fresh two-host pipeline. Preparation uses only its normal temporary
+kernel2/4/5 group/Agent, silent namespace lease and qualified socket core. Three
+actual running-inspect receipts bind complete Docker intent, resource limits,
+host PID/startticks/namespaces and original C wire execution; old retrospective
+capture evidence cannot substitute for these receipts in the new schema.
+
+Two root requests generate4HTTP exchanges and8real source3 Sessions. The public
+oracle verifies two whole-marker identical complete populations, every8seed and
+exact detail,3negative scopes, empty trace context and separate main/control
+components (each4nodes/2network pairs/1dual-phase handoff). One endpoint's zero
+request syscall ID remains visible. Real Edge verifies both services'4details,
+negative scopes, over-budget failure and default60-inclusive-second window.
+
+The first attempt failed before worker execution because Docker appended an
+inactive SELinux label option. The narrow fix accepts it only with actual daemon
+and host evidence that SELinux is absent, retaining raw options. Original failure
+is unchanged. An initial release-ack timeout during automatic cleanup is retained;
+unchanged public stop resumed from concrete final restoration proof. Fresh second
+run and idempotent stop both pass; Agent/workers exit0 without OOM. The0.435second
+identity gate is not a performance benchmark.23targeted lifecycle/verifier checks
+and final independent review pass; existing56console/59tool baselines were not
+repeated, remote CI was not checked.
+
+All owned groups/Agents/workers/collector/namespace/query/console/forwards are
+removed; old Server ID/config SHA/network, Controller baseline0Agents/1default
+group/YAML, BPF/tracefs, actual interfaces/routes and preexisting services remain.
+This is a finite synchronous evidence graph, not complete AutoTracing, generic
+PID-generation proof, acyclic SDK parentage or physical cross-host application
+correlation. See README-ebpf-association.md and the new ebpf-association-runtime
+evidence. Earlier partial-slice evidence below remains historical.
+
+After both main refs match this delivery, the local plan closes M11 and activates
+M12: TCP connection observation and network-problem navigation. Inspect actual
+L4 flow/metric input, schema, units and safe minimal owned scope before choosing
+a supported bounded path; do not presume packet and eBPF IDs are interchangeable
+or broaden collection to the management network. Do not repeat completed matrices.
+
+## Earlier M11 partial slice (round17; historical)
 
 M11-01..04 pass one actual finite source3 capture, a bounded evidence API and the
 real Edge path. Two plain synchronous C services and a generator send no tracing

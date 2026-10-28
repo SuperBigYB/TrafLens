@@ -1,8 +1,8 @@
 # Headerless eBPF observation association contract
 
-M11 starts with bounded evidence associations between real HTTP observations.
-This source contract is not an acceptance result, a complete causal Span tree,
-or a claim of full DeepFlow AutoTracing parity. SDK/OTel source4 and fabricated
+M11 provides bounded evidence associations between real HTTP observations and a
+public finite capture/verify/stop lifecycle. The accepted slice is not a complete
+causal Span tree or a claim of full DeepFlow AutoTracing parity. SDK/OTel source4 and fabricated
 Trace/Span IDs cannot substitute for the required native eBPF source3 records.
 
 ## Actual native execution path
@@ -63,8 +63,8 @@ asserting a verified process generation, SDK parentage or complete AutoTracing.
 The finite real-data acceptance covers two complete identical window reads,
 all eight seeds and their eight exact record-detail paths, and actual browser
 component/detail navigation with negative scope controls. It establishes this
-slice's API behavior. Public end-to-end orchestration and its recovery workflow
-remain a separate M11-05 delivery; no such completion is claimed here.
+slice's API behavior. The public end-to-end lifecycle and its independent
+acceptance now also pass; see the reproduction and acceptance sections below.
 
 Source: [association API](console/associations.go) and
 [console panel](console/index.html).
@@ -188,9 +188,145 @@ source namespace, with the Agent sending to the other host's Server. It does
 not qualify an application hop crossing physical hosts, NAT/proxy translation,
 coroutine/asynchronous handoffs or a complete distributed causal tree.
 
-Public pieces now include the default-offline C fixture, silent namespace lease,
-normal kernel Controller mode, bounded query/UI and strict independent verifier.
-The coordinator that assembled the accepted capture is still a private lab
-script. M11-05 remains open until a public prepare/run/stop orchestrator is
-executed and verified once with exact recovery. Do not present the private
-capture script or this document as that missing entry point.
+The public coordinator [ebpf-association.py](lab/ebpf-association.py) performs
+preparation inside its bounded run, then exact cleanup; plan/run/stop are the
+operator actions. It reuses the silent namespace lease, normal kernel Controller
+mode, bounded query/UI and strict independent verifier. Its original private
+predecessor remains historical evidence, not a runtime dependency.
+
+## Reproduce the finite public lifecycle
+
+The following entry points default to an offline plan. Execute only against an
+owned isolated lab whose Controller loopback publication and image/artifact
+identities have been checked. Keep normal kernel functions2/4/5 and the qualified
+native socket core; no trace/profile integration is used. The base native
+artifact manifest and namespace/Agent requirements are documented in
+[managed HTTP runtime](README-managed-http-runtime.md#prerequisites-and-configuration).
+Reuse verified artifacts rather than rebuilding a kernel matrix.
+
+Use canonical absolute paths under private mode0700 parents. CAPTURE and
+BACKEND_WORK must be fresh, not existing run directories. BACKEND_CODE is an
+already prepared private directory on BACKEND_HOST. Deploy the public helper
+files there from this checkout: cpu-profile.py, cpu_profile_controller.py,
+cpu_profile_common.py, configure-agent.py, lab.py, agent-smoke.json,
+managed-http-profile.json and managed-http.py. The capture preflight compares
+all eight source/peer file hashes before Controller mutation. SSH uses the
+operator's existing authentication. Controller URLs must be credential-free
+numeric loopback origins and match the owned Server's actual port publication.
+
+Build the bounded fixture and inspect the offline entry first:
+
+```sh
+cc -static -O2 -Wall -Wextra -Werror -o "$WORKLOAD_BIN" \
+  traflens/lab/no-header-http.c
+WORKLOAD_SHA=$(sha256sum "$WORKLOAD_BIN" | cut -d' ' -f1)
+python3 traflens/lab/ebpf-association.py
+python3 traflens/lab/verify-ebpf-association.py
+```
+
+Run one finite capture:
+
+```sh
+python3 traflens/lab/ebpf-association.py run --execute \
+  --work "$CAPTURE" --backend-host "$BACKEND_HOST" \
+  --backend-root "$BACKEND_ROOT" --backend-work "$BACKEND_WORK" \
+  --backend-code "$BACKEND_CODE" --server-container "$SERVER_NAME" \
+  --controller-url "$CONTROLLER_LOOPBACK" \
+  --controller-ip "$CONTROLLER_DATA_IP" --controller-port 20035 \
+  --ingester-port 20033 --ctrl-ip "$HOST_CTRL_IP" --ctrl-mac "$HOST_CTRL_MAC" \
+  --image "$IMAGE_ID" --artifacts "$RUNTIME/prepared.json" \
+  --workload-bin "$WORKLOAD_BIN" --workload-sha256 "$WORKLOAD_SHA" \
+  --forward-port 24017
+```
+
+The command prepares a dedicated temporary Controller group/Agent and a silent
+namespace lease, verifies the actual scoped collector/policy/FD/map readiness,
+then starts only the two owned synchronous services and the generator. It emits
+two root requests, one main and one independent control, making four actual HTTP
+exchanges. Worker runtime receipts retain actual inspect PID/network modes,
+resource/capability envelope, exact identity, PID/startticks and namespaces;
+application wire receipts retain independently observed execution/socket data.
+The URL is a population marker and does not create an evidence edge.
+The frontend is briefly paused only while recording the generator's actual
+process identity, with a5second gate and unconditional unpause/cleanup. This
+run is not a latency or throughput benchmark. Raw security options are retained;
+Docker's additional label=disable is accepted only when both the actual daemon
+SecurityOptions and absent host SELinux interfaces prove SELinux is inactive.
+Unknown or repeated options remain rejected.
+
+Capture execution/restoration success is separate from storage acceptance. Use
+an independent bounded query/console runtime from
+[the public query lifecycle](README-cpu-profile-runtime.md), with only the minimal
+password-free connection configuration. Do not stop or replace the old Server.
+Forward its published loopback query/console endpoints through SSH, then select
+an explicit at-most60-inclusive-second interval covering the actual application
+wire timestamps (started_unix_ns/finished_unix_ns). Do not rewrite those times.
+
+```sh
+python3 traflens/lab/verify-ebpf-association.py --execute \
+  --capture-dir "$CAPTURE" --query-base "$QUERY_LOOPBACK" \
+  --console-base "$CONSOLE_LOOPBACK" --from "$FROM" --to "$TO" \
+  --output "$FRESH_ORACLE_DIR"
+```
+
+The verifier requires the scope/readiness receipts and original application
+wire hashes. New capture-schema input also requires all three original runtime
+inspect receipts; missing or partial receipts cannot fall back to the old
+retrospective mode. It checks two complete whole-marker populations without hiding
+Agent/time/source mismatches, all eight exact details and seed components,
+main/control separation and three empty negative scopes. A zero kernel identifier
+is retained; incomplete evidence does not create a handoff. HTTP ACK, exit0 or
+an initial empty query-runtime readiness response is not this acceptance.
+In the actual console's kernel-evidence form, use the same time/Agent plus a
+real seed ID, inspect typed evidence and navigate to the original request. Repeat
+with the independent control seed and wrong Agent/seed/time scopes.
+
+Always stop/recover after success, interruption or failure:
+
+```sh
+python3 traflens/lab/ebpf-association.py stop --execute --work "$CAPTURE"
+# Also stop the independent public query runtime and the exact owned SSH forwards.
+```
+
+Cleanup removes only exact owned workers, stops/removes the managed Agent and
+checks BPF/tracefs restoration before releasing namespace pins, then unregisters
+only its temporary group/Agent and ends its forward. A Docker inspect error is
+not proof of disappearance. Preserve failed execution and separate restoration
+receipts; successful stop cannot turn a failed workload into accepted data.
+Do not delete a run directory before its stop/restoration proof is complete.
+
+## Accepted public lifecycle (2026-10-28)
+
+One fresh public run passed with real recorded Docker running-inspect receipts
+for all three workers, original create-argv hashes, exact host PID/startticks,
+namespace/held-FD and application wire identity. A short0.435second frontend
+pause established the generator's real running identity; this was not a
+performance measurement. All three workers and the Agent exited0 without OOM.
+The public strict oracle took26requests and0.493seconds: two complete same-ID
+whole-marker reads,8source3 Sessions, source0/4 zero, empty trace/span/parent,
+all8seeds/exact details, separate main/control components and3negative scopes.
+Each component has4nodes,2network pairs and1dual-phase syscall handoff. The
+actual zero request syscall ID on one endpoint remains visible.
+
+Actual Edge passed both components and both services'4exact detail navigations,
+empty controls, over-wide-window failure and the default60-inclusive-second form
+window, with0page errors. Both public stop interfaces pass, including an extra
+idempotent capture stop. Old Server ID/config SHA, Controller identity/YAML,
+BPF/tracefs, routes/interfaces and preexisting services remain; all owned
+collector/worker/namespace/query/console/forward resources are removed.
+
+The first public attempt failed before any worker execution because Docker added
+label=disable to the host-PID worker's security options. It retained the owned
+resources rather than assuming they were safe to remove. The narrow inactive-
+SELinux normalization above resolved the actual mismatch; the original failed
+result remains unchanged. Its first public stop encountered an acknowledgement
+timeout while the lease was automatically cleaning up. A second unchanged stop
+read the actual final pin/BPF/tracefs restoration proof and completed Controller
+cleanup. That recovery does not turn the failed capture into accepted data.
+A new directory and fresh identity then produced the accepted population.
+
+23targeted lifecycle/verifier tests and a final independent read-only review pass.
+The earlier56console race tests and59tool checks are historical baselines, not
+repeated by this lifecycle-only change. Remote CI was not checked. Anonymous
+acceptance evidence is in
+[evidence/2026-10-28/ebpf-association-runtime/summary.json](evidence/2026-10-28/ebpf-association-runtime/summary.json).

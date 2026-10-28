@@ -131,6 +131,168 @@ def socket_tuple(event, side):
     return client['ip'], client['port'], server['ip'], server['port']
 
 
+def namespace(value, kind):
+    """Normalize only the actual numeric/readlink encodings of a namespace."""
+    if type(value) is int or isinstance(value, str) and value.isdecimal():
+        return '%s:[%d]' % (kind, number(value, 1))
+    require(isinstance(value, str) and re.fullmatch(kind+r':\[[1-9][0-9]*\]', value),
+            'Invalid recorded actual namespace identity')
+    return value
+
+
+def docker_create_options(argv, command, image):
+    require(isinstance(argv, list) and all(isinstance(v, str) for v in argv) and argv[:2] == ['docker', 'create']
+            and isinstance(command, list) and command and argv[-len(command)-1:] == [image]+command,
+            'Actual Docker create argv/image/worker tail differs')
+    values, switches = {}, []
+    tokens, index = argv[2:-len(command)-1], 0
+    standalone = {'--read-only', '--privileged', '--publish-all'}
+    while index < len(tokens):
+        token = tokens[index]
+        require(token.startswith('--'), 'Unexpected actual Docker positional create argument')
+        if '=' in token:
+            key, value = token.split('=', 1)
+        elif token in standalone:
+            switches.append(token)
+            index += 1
+            continue
+        else:
+            require(index+1 < len(tokens) and not tokens[index+1].startswith('--'), 'Missing Docker create flag value')
+            key, value = token, tokens[index+1]
+            index += 1
+        values.setdefault(key, []).append(value)
+        index += 1
+    require('--privileged' not in switches and '--publish-all' not in switches
+            and not any(k in values for k in ('--publish', '--publish-all', '--privileged', '--cap-add', '-p', '-P')),
+            'Actual Docker create argv broadens process privileges or publishes ports')
+    require(switches == ['--read-only'], 'Exactly one actual read-only flag required')
+    return values
+
+
+def security_option_receipt(actual):
+    """Accept only the recorded, independently gated Docker host-PID addition."""
+    raw = actual.get('security_opt_raw')
+    normalization = actual.get('security_opt_normalization')
+    if raw in (['no-new-privileges'], ['no-new-privileges:true']):
+        require(normalization is None, 'Unexpected normalization for a single actual no-new-privileges option')
+        return False
+    require(isinstance(raw, list) and len(raw) == 2 and len(set(raw)) == 2
+            and 'label=disable' in raw
+            and ('no-new-privileges' in raw or 'no-new-privileges:true' in raw),
+            'Actual Docker security options contain an unapproved addition or duplicate')
+    require(isinstance(normalization, dict) and normalization.get('selinux_enabled') is False
+            and normalization.get('host_selinux_fs_present') is False
+            and normalization.get('host_selinux_enforce_present') is False
+            and normalization.get('ignored_daemon_options') == ['label=disable']
+            and normalization.get('reason') == 'SELinux unavailable; Docker hostPID label disable',
+            'Actual daemon/host SELinux conditions do not prove the narrow label-disable normalization')
+    daemon = normalization.get('daemon_security_options')
+    require(isinstance(daemon, list) and 1 <= len(daemon) <= 16
+            and all(isinstance(option, str) and 0 < len(option) <= 512 and 'selinux' not in option.lower() for option in daemon),
+            'Original Docker daemon SecurityOptions are missing or indicate SELinux')
+    return True
+
+
+def worker_runtime_receipt(document, created, process, run, role, folder, scope):
+    """Check recorded real Docker/proc evidence, without inspecting a new process."""
+    require(document.get('schema') == 'traflens.ebpf-association.worker-runtime.v1'
+            and document.get('role') == role and document.get('run') == run
+            and document.get('scope_receipt') == 'scope-runtime.json'
+            and document.get('agent_container_id') == scope['agent_container_id'], 'Worker runtime receipt identity differs')
+    create, actual = document.get('create', {}), document.get('inspect', {})
+    normalized = create.get('normalized', {})
+    image = normalized.get('image')
+    require(isinstance(image, str) and re.fullmatch(r'sha256:[0-9a-f]{64}', image), 'Immutable actual worker image required')
+    labels = {'io.traflens.purpose': 'traflens.no-header-http', 'io.traflens.run': run,
+              'io.traflens.role': role, 'io.traflens.output': str(folder)}
+    network = 'container:'+scope['positive']['container_id']
+    fixed = {'image': image, 'pid_mode': 'host', 'network_mode': network, 'read_only': True,
+             'cap_drop': ['ALL'], 'nano_cpus': 500000000, 'memory_bytes': 67108864,
+             'memory_swap_bytes': 67108864, 'pids_limit': 16, 'labels': labels, 'entrypoint': ['/workload'],
+             'privileged': False, 'cap_add': [], 'port_bindings': {}, 'publish_all_ports': False,
+             'security_opt': ['no-new-privileges'], 'restart_policy': 'no'}
+    for key, expected in fixed.items():
+        require(type(normalized.get(key)) is type(expected) and normalized.get(key) == expected
+                and type(actual.get(key)) is type(expected) and actual.get(key) == expected,
+                'Recorded Docker create/inspect safety identity differs: '+key)
+    normalized_daemon_option = security_option_receipt(actual)
+    command, mounts = normalized.get('command'), normalized.get('mounts')
+    require(isinstance(command, list) and command and actual.get('command') == command and created.get('command') == command,
+            'Actual inspected worker command differs from creation receipt')
+    require(isinstance(mounts, list) and len(mounts) == 2 and actual.get('mounts') == mounts and created.get('mounts') == mounts,
+            'Actual read-only binary/private output mounts differ')
+    by_target = {m[1]: m for m in mounts if isinstance(m, list) and len(m) == 3}
+    require(set(by_target) == {'/workload', '/output'} and by_target['/workload'][2] is False
+            and by_target['/output'] == [str(folder/role), '/output', True]
+            and isinstance(by_target['/workload'][0], str) and Path(by_target['/workload'][0]).is_absolute(),
+            'Actual Docker mounts escape the owned worker/output contract')
+    argv = create.get('argv')
+    require(isinstance(create.get('argv_sha256'), str) and create['argv_sha256'] == digest(canonical(argv)),
+            'Actual Docker create argv SHA256 differs')
+    flags = docker_create_options(argv, command, image)
+    expected_flags = {'--pid': ['host'], '--network': [network], '--cpus': ['0.5'], '--memory': ['67108864'],
+                      '--memory-swap': ['67108864'], '--pids-limit': ['16'], '--cap-drop': ['ALL'], '--entrypoint': ['/workload']}
+    for key, expected in expected_flags.items():
+        require(flags.get(key) == expected, 'Actual Docker argv safety flag differs: '+key)
+    require(flags.get('--security-opt') in (['no-new-privileges'], ['no-new-privileges:true'])
+            and flags.get('--restart', ['no']) == ['no'], 'Actual Docker argv privilege/restart guard differs')
+    require(sorted(flags.get('--label', [])) == sorted(k+'='+v for k, v in labels.items()),
+            'Actual Docker create argv labels differ from running inspect')
+    require(actual.get('running') is True and isinstance(actual.get('id'), str)
+            and re.fullmatch(r'[0-9a-f]{64}', actual['id']) and actual['id'] == created.get('id')
+            and actual.get('pid') == process['pid'] and str(actual.get('start_ticks')) == process['start_ticks']
+            and namespace(actual.get('netns'), 'net') == process['netns']
+            and namespace(actual.get('pidns'), 'pid') == process['pidns']
+            and isinstance(actual.get('started_at'), str) and actual['started_at'].startswith('20'),
+            'Actual running container/proc identity differs from complete C process and wire evidence')
+    return {'image': image, 'container_id': actual['id'], 'argv_sha256': create['argv_sha256'],
+            'recorded_daemon_label_disable_normalized': normalized_daemon_option}
+
+
+def runtime_receipts(folder, meta, run, processes, proof, report):
+    paths = {role: folder/(role+'-runtime.json') for role in processes}
+    present = [path.exists() for path in paths.values()]
+    declared = meta.get('runtime_receipts_required')
+    if not any(present) and declared is None and 'schema' not in meta and meta.get('integration_mode') == 'kernel_http':
+        require(not (folder/'scope-runtime.json').exists(), 'Partial new scope receipt cannot use historical compatibility')
+        report.update(docker_runtime_receipts_passed=False, runtime_receipt_mode='legacy_retrospective',
+            host_pid_proof='Historical recorded self PID namespace plus exact stored local PID/TID; current-host namespace comparison is retrospective. Historical Docker inspect/create argv was not recorded and is not claimed.')
+        return
+    require(meta.get('schema') == 'traflens.ebpf-association.capture.v1' and declared is True and all(present),
+            'New capture requires all three actual Docker runtime receipts; partial receipts cannot fall back to history')
+    scope = read_json(folder/'scope-runtime.json')
+    current = read_json(folder/'agent/current.json')
+    require(scope.get('schema') == 'traflens.ebpf-association.scope.v1'
+            and isinstance(scope.get('agent_container_id'), str) and re.fullmatch(r'[0-9a-f]{64}', scope['agent_container_id'])
+            and scope['agent_container_id'] == proof.get('agent_container_id') == current.get('id')
+            and scope.get('lease_path') == current.get('lease_path'), 'Actual scope/Agent/lease identity differs')
+    supervisor = number(scope.get('supervisor_pid'), 1)
+    require(re.fullmatch(r'[1-9][0-9]*', str(scope.get('supervisor_start_ticks'))), 'Actual held-namespace supervisor identity missing')
+    for kind in ('positive', 'negative'):
+        anchor = scope.get(kind, {})
+        require(isinstance(anchor.get('container_id'), str) and re.fullmatch(r'[0-9a-f]{64}', anchor['container_id'])
+                and number(anchor.get('pid'), 1) and re.fullmatch(r'[1-9][0-9]*', str(anchor.get('start_ticks')))
+                and namespace(anchor.get('netns'), 'net') == namespace(anchor.get('inode'), 'net')
+                and namespace(anchor.get('pidns'), 'pid')
+                and isinstance(anchor.get('source'), str)
+                and re.fullmatch(r'/proc/%d/fd/[0-9]+' % supervisor, anchor['source']),
+                'Actual held '+kind+' namespace anchor identity missing')
+    require(scope['positive']['container_id'] != scope['negative']['container_id']
+            and namespace(scope['positive']['inode'], 'net') != namespace(scope['negative']['inode'], 'net')
+            and namespace(scope['positive']['inode'], 'net') == namespace(proof['scope_map']['netns_id'], 'net')
+            and all(p['netns'] == namespace(scope['positive']['inode'], 'net') for p in processes.values()),
+            'Actual positive/negative namespace scope differs from kernel/C evidence')
+    verified = [worker_runtime_receipt(read_json(paths[role]), read_json(folder/(role+'-created.json')),
+                process, run, role, folder, scope) for role, process in processes.items()]
+    require(len({v['container_id'] for v in verified}) == 3 and len({v['image'] for v in verified}) == 1,
+            'Three independent actual workers with one immutable image required')
+    report.update(docker_runtime_receipts_passed=True, runtime_receipt_mode='recorded_actual_docker_inspect',
+        actual_runtime_receipt_sha256={path.name: digest(read_file(path)) for path in [folder/'scope-runtime.json', *paths.values()]},
+        actual_create_argv_sha256=[v['argv_sha256'] for v in verified],
+        recorded_daemon_label_disable_normalizations=sum(v['recorded_daemon_label_disable_normalized'] for v in verified),
+        host_pid_proof='Recorded actual Docker host PID/create argv and running inspect/proc PID/startticks/namespaces match every C process and wire identity; current-host namespace comparison is additional retrospective evidence.')
+
+
 def application_oracle(folder, report):
     meta, result = read_json(folder / 'ingestion-metadata.json'), read_json(folder / 'result.json')
     run = meta.get('run')
@@ -203,6 +365,7 @@ def application_oracle(folder, report):
     require(len({p['pid'] for p in processes.values()}) == 3, 'Three independent actual processes required')
     require(all(p['pidns'] == os.readlink('/proc/1/ns/pid') for p in processes.values()),
             'Recorded worker PID namespaces differ from this verifier host PID namespace')
+    runtime_receipts(folder, meta, run, processes, proof, report)
     for chain in ('main', 'control'):
         for a, b in [(('generate', 'root-request'), ('frontend', 'incoming-request')),
                      (('frontend', 'outgoing-request'), ('backend', 'incoming-request')),
@@ -229,8 +392,7 @@ def application_oracle(folder, report):
     report.update(scope_receipt_passed=True, readiness_receipt_passed=True, application_receipts_passed=True,
                   original_wire_sha256=file_hashes, application_root_requests=2, actual_http_exchanges=4,
                   scope_proof_is_not_application_or_storage_acceptance=True,
-                  recorded_pid_namespace_matches_current_verifier_host=True,
-                  host_pid_proof='Recorded self PID namespace plus exact stored local PID/TID; current-host namespace comparison is retrospective, not a historical Docker inspect.')
+                  recorded_pid_namespace_matches_current_verifier_host=True)
     return run, agent, expected
 
 

@@ -25,7 +25,7 @@ requalifying it when unrelated work changes.
    query for the core HTTP/DNS/database scenarios, then extend TLS coverage.
    Acceptance: known real requests appear with the correct protocol and source
    metadata under a repeatable setup. Carry blocking collection fixes here.
-3. **Topology and request tracing (M3 relationships complete; M4 Trace ID correlation and M10 explicit SDK Span gate complete; M11 finite no-Header evidence API/UI accepted, public capture lifecycle pending).** Connect resource/service identities to
+3. **Topology and request tracing (M3 relationships complete; M4 Trace ID correlation and M10 explicit SDK Span gate complete; M11 finite no-Header evidence lifecycle gate complete).** Connect resource/service identities to
    service relationships and per-request paths, exposed in the console.
    Acceptance: a small multi-service scenario can be followed from a service
    dependency to its requests and associated spans/records.
@@ -69,7 +69,7 @@ sealing; fine-grained CPU/RSS tuning and maximum-rate searches. Preserve existin
 failure records and revisit these systematically during reliability/performance
 work rather than letting them displace the product backbone.
 
-## Next after M10 delivery: M11 finite no-header eBPF HTTP association
+## Historical selection after M10: M11 finite no-header eBPF HTTP association
 
 M1-M10 now cover real request exploration, scoped eBPF HTTP, service relationships,
 explicit W3C Trace lookup and SDK Span parents, RED, packet DNS/MySQL, current
@@ -96,11 +96,18 @@ asset, language, reliability and matched performance work remain future work.
 The unexplained early profile writer failure remains an explicit reliability
 follow-up. Keep the one-active-milestone/file-first half-hour workflow.
 
-## Current single active milestone: M11
+## Next single milestone after M11 dual-sync: M12
 
-The real finite source3 headerless HTTP population and bounded typed-evidence
-navigation have passed (M11-01..04). Complete M11-05 by publishing and exercising
-the full bounded capture lifecycle, including exact stop/recovery. Do not repeat
-old protocol/profile/performance matrices or claim general AutoTracing from the
-finite synchronous association slice. Only activate the next milestone after
-this public lifecycle gate is met.
+M11's public finite source3 headerless capture/verify/stop gate is complete. The
+next product backbone slice is TCP connection observation and network-problem
+navigation, using actual L4 flow/metric records and known units/counting scope.
+First verify existing native input/schema/safe collection and choose one bounded
+owned scenario. Then implement fixed bounded connection/API/detail views and
+only supported request links; prove normal/failing cases against independent
+socket/application evidence in the two-host pipeline, actual browser and public
+recovery. Missing records, unsupported metrics and upstream failure stay distinct.
+
+No unproven L4/source/flow-ID equivalence or broad management-interface collection
+is authorized by a field name. Reuse qualified inputs where supported, keep one
+active milestone and defer old protocol/kernel/performance matrices. The local
+file becomes M12-active only after both repository refs match M11's delivery.
