@@ -1,0 +1,79 @@
+{
+  "milestone": "M2",
+  "scope": "Bounded managed eBPF HTTP product delivery",
+  "native_source": "3dec20af5ce6ff25c696d136b5477f5310b4962c",
+  "native_sha256": "8dd5ec668a09dcdac10068727fb47f282cf8091a93a11fb71cbbc33db3853763",
+  "lab_tests": {
+    "passed": 236,
+    "failed": 0,
+    "ignored": 0,
+    "new_runtime_cases": 8
+  },
+  "public_runtime": {
+    "default_read_only": true,
+    "explicit_execute": true,
+    "private_paths_not_required": true,
+    "live_controller_readback": true,
+    "namespace_lease": true,
+    "hard_timeout_seconds": 180,
+    "kill_grace_seconds": 40,
+    "actual_collector_and_policy_ready": true,
+    "agent_scope_fd_verified": true,
+    "owned_scope_map_verified": true,
+    "agent_af_packet_sockets": 0,
+    "diagnostics": false
+  },
+  "real_trial": {
+    "positive_roundtrips": 20,
+    "sessions": 40,
+    "source": 3,
+    "client_process_observations": 20,
+    "server_process_observations": 20,
+    "negative_roundtrips": 40,
+    "negative_rows_every_read": 0,
+    "consecutive_passing_reads": 2,
+    "whole_marker_oracle": true,
+    "agent_exit_code": 0,
+    "agent_oom_killed": false
+  },
+  "actual_edge": {
+    "passed": true,
+    "list_rows": 40,
+    "overview_total": 40,
+    "exact_detail": true,
+    "packet_source_rows": 0,
+    "protocol_drilldown": true,
+    "empty_and_error_states": true,
+    "page_errors": 0
+  },
+  "restoration": {
+    "agent_removed": true,
+    "worker_cleanup": true,
+    "agent_exit_before_pin_release": true,
+    "namespace_pins_released": true,
+    "bpf_inventory": true,
+    "tracefs": true,
+    "controller_yaml_byte_exact": true,
+    "existing_lab_services_preserved": true,
+    "console_stopped": true,
+    "owned_forwards_stopped": true,
+    "physical_link_changed": false
+  },
+  "retained_failures": [
+    "Private coordinator inherited an old path; apply rejected before capture",
+    "Existing artifact manifest permissions rejected before Agent creation; profile and workers restored"
+  ],
+  "limitations": [
+    "Finite private loopback HTTP scenario on the previously qualified x86_64 kernel",
+    "Controller registration/application/restoration remain explicit operator actions using documented API",
+    "No new DNS/database/TLS, multi-tenant authentication, kernel matrix or performance parity qualification"
+  ],
+  "source_files_sha256": {
+    "traflens/lab/managed-http-agent.py": "a17e0eb7c419db5e623e60ea907d7ffbdabe0fe113eea481cf536686befd2474",
+    "traflens/lab/managed_http_workload.py": "537d7ded77c8d07a752680b426d6d2d60f9f39736ec35b6b54a35b7b836f2357",
+    "traflens/lab/managed_http_scope.py": "1cc545150feb44d599a388f40b880ad2339f0f9383b77f64a730cc6d6eab638c",
+    "traflens/lab/managed_http_scope_validation.py": "a9cee43c3e2f1f50960bab9f7550aa465d28fe16d633e63b9b986b76adb0a414",
+    "traflens/lab/managed-http-scope-abi.json": "08a0df062f5b1d56259643b08baa1ccfeeca9ecd494a44f4cdb8a0ba0cb5222c",
+    "traflens/lab/tests/test_managed_http_runtime.py": "36cf6dff2009f1da8fc5f2691da575826b73cb8d22103fc83d06314f4934fbca"
+  }
+}

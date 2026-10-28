@@ -1,0 +1,100 @@
+{
+  "syscall": 321,
+  "cmd_info": 15,
+  "cmd_fd": 14,
+  "cmd_lookup": 1,
+  "readonly": 8,
+  "array": 2,
+  "ns_get_nstype": 46851,
+  "clone_newnet": 1073741824,
+  "offset_max": 65535,
+  "attr": {
+    "size": 128,
+    "map_id": {
+      "offset": 0,
+      "size": 4
+    },
+    "open_flags": {
+      "offset": 8,
+      "size": 4
+    },
+    "map_fd": {
+      "offset": 0,
+      "size": 4
+    },
+    "key": {
+      "offset": 8,
+      "size": 8
+    },
+    "value": {
+      "offset": 16,
+      "size": 8
+    },
+    "info.bpf_fd": {
+      "offset": 0,
+      "size": 4
+    },
+    "info.info_len": {
+      "offset": 4,
+      "size": 4
+    },
+    "info.info": {
+      "offset": 8,
+      "size": 8
+    }
+  },
+  "map_info": {
+    "size": 80,
+    "type": {
+      "offset": 0,
+      "size": 4
+    },
+    "id": {
+      "offset": 4,
+      "size": 4
+    },
+    "key_size": {
+      "offset": 8,
+      "size": 4
+    },
+    "value_size": {
+      "offset": 12,
+      "size": 4
+    },
+    "max_entries": {
+      "offset": 16,
+      "size": 4
+    },
+    "name": {
+      "offset": 24,
+      "size": 16
+    }
+  },
+  "scope": {
+    "size": 24,
+    "netns_id": {
+      "offset": 0,
+      "size": 4
+    },
+    "validated": {
+      "offset": 4,
+      "size": 4
+    },
+    "task_nsproxy_offset": {
+      "offset": 8,
+      "size": 4
+    },
+    "nsproxy_net_offset": {
+      "offset": 12,
+      "size": 4
+    },
+    "net_ns_offset": {
+      "offset": 16,
+      "size": 4
+    },
+    "ns_inum_offset": {
+      "offset": 20,
+      "size": 4
+    }
+  }
+}

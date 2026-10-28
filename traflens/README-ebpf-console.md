@@ -76,15 +76,21 @@ the running community Controller's template check without modifying it. No
 Agent, workload or backend was restarted for this preparation-only validation.
 See [preparation evidence](evidence/2026-10-28/managed-preparation/summary.json).
 
-## Remaining M2 delivery gate
+## Portable runtime delivery
 
-M2-05a is delivered. The next step is M2-05b: package the bounded scoped
-managed-Agent startup/stop interface with the existing namespace lease,
-actual collector/FD/map proof before traffic, and precise cleanup. The profile
-needs operator-controlled application/readback on the owned stopped group;
-this preparation command does not perform that action. Keep the namespace
-lease pinned until Agent exit and restore owned configuration after stopping.
+M2-05b/c now provide the public [bounded runtime entry](README-managed-http-runtime.md):
+explicit artifacts and Controller readback, a held namespace lease, start,
+actual collector/FD/map readiness, finite HTTP phases and exact stop/release.
+No historical private startup script or namespace-probe receipt is required.
 
-Do not launch an unscoped tracer from these files or treat them as a complete
-deployment entry point. M2 remains open until the startup/stop entry point is
-verified once and synchronized; this does not require another kernel matrix.
+One necessary fresh two-host trial through these public tools passes the same
+20-positive/40-negative contract:40 source3 Sessions, two strict whole-marker
+reads, no negative rows, real Edge list/overview/details and no packet-source
+rows. The Agent exits0; namespace pins release only after Agent/BPF restoration,
+Controller YAML restores exactly, and console/forwarding stop.236 lab tests pass.
+See [runtime evidence](evidence/2026-10-28/managed-runtime/summary.json).
+
+This closes the finite scoped HTTP product delivery gate. DNS/database/TLS,
+other kernels and performance parity remain future work. The next product
+milestone is real service relationships and request drill-down, as described
+in [ROADMAP.md](ROADMAP.md).

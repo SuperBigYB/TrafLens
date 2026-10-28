@@ -9,8 +9,8 @@ This roadmap takes precedence over next-step suggestions in historical evidence.
 Native Agent and community Server build; the owned two-machine lab validates
 packet HTTP collection, storage and exact queries. The latest stable profile
 passes a healthy2000-request trial and an unavailable-data-port failure control.
-This is a working backend foundation, not a complete user-facing product or
-validated full DeepFlow parity. Retain the recorded evidence without repeatedly
+M1 and the finite scoped HTTP slice of M2 now provide a working product
+foundation; full DeepFlow parity is not validated. Retain the recorded evidence without repeatedly
 requalifying it when unrelated work changes.
 
 ## Milestones in priority order
@@ -21,11 +21,11 @@ requalifying it when unrelated work changes.
    Acceptance: a fresh bounded workload on the two hosts is visible through the
    product entry point, with usable filtering and a drill-down to real records;
    document how to start and access it. Do not substitute mock data for this gate.
-2. **Core eBPF ingestion (active phase).** Complete managed eBPF capture through ingestion and
+2. **Core eBPF ingestion (HTTP gate complete; protocol expansion deferred).** Complete managed eBPF capture through ingestion and
    query for the core HTTP/DNS/database scenarios, then extend TLS coverage.
    Acceptance: known real requests appear with the correct protocol and source
    metadata under a repeatable setup. Carry blocking collection fixes here.
-3. **Topology and request tracing.** Connect resource/service identities to
+3. **Topology and request tracing (M3 service relationship slice next).** Connect resource/service identities to
    service relationships and per-request paths, exposed in the console.
    Acceptance: a small multi-service scenario can be followed from a service
    dependency to its requests and associated spans/records.
@@ -45,7 +45,7 @@ qualification distinct. Preserve upstream licensing and attribution.
 
 ## Recurring execution policy
 
-- Run hourly in the existing task; inspect current repository state before work.
+- Run every30 minutes in the existing task; inspect current repository state before work.
 - Select one concrete unfinished acceptance point from the active milestone.
   Implement, perform checks proportionate to the change, commit and sync both
   repositories. Avoid multiple unrelated microtasks in one iteration.
@@ -69,15 +69,21 @@ sealing; fine-grained CPU/RSS tuning and maximum-rate searches. Preserve existin
 failure records and revisit these systematically during reliability/performance
 work rather than letting them displace the product backbone.
 
-## Current milestone after M1 delivery
+## Next milestone after M2 delivery: M3 service relationships
 
-M1 functional acceptance and both remote synchronizations pass at `4c16f7cce`.
-The local execution plan now activates only M2: managed eBPF HTTP capture through
-ingestion/query to console detail. First reuse the existing managed-eBPF evidence
-and identify the minimum scoped setup; then produce a real request, verify its
-eBPF source metadata and make it visible through the product entry point.
-Extend DNS/database protocols in subsequent milestones after this path works.
+M1 and M2 functional gates pass: real-data console plus publicly repeatable,
+bounded namespace-scoped eBPF HTTP startup/readiness/ingestion/UI/cleanup. See
+README-managed-http-runtime.md and the dated managed-runtime evidence. Complete
+both remote synchronizations before closing M2 in the authoritative local plan.
 
-Do not reopen M1 to chase nonblocking styling, maximum-rate or rare teardown
-cases. Its local single-organization scope, top100 list and separate aggregate
-queries remain documented. Public multi-user deployment is a later milestone.
+Then activate only M3: real service relationships and request drill-down. Reuse
+stored L7 data and the console. First confirm available client/server/resource
+fields and counting semantics; provide a fixed aggregate API and service view;
+click a real service relationship to open requests with the same filters and
+exact-ID details. Verify a small two-host scenario with at least two identifiable
+service endpoints. Clearly label observation records; do not infer unrecorded
+spans or claim complete distributed tracing from a topology view.
+
+DNS/database/TLS eBPF expansion and sustained performance remain subsequent
+work. Do not reopen completed milestones for styling or repeat their full
+kernel/benchmark matrices. The local execution file controls task breakdown.

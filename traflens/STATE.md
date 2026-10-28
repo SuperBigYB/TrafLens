@@ -2,7 +2,7 @@
 
 The objective remains ongoing: validate and extend DeepFlow functionality and
 performance. Read this file, `git status --short --branch`, and the latest evidence
-before each hourly iteration. Source presence, a successful build and a healthy
+before each half-hourly iteration. Source presence, a successful build and a healthy
 process are separate from successful collection and product parity.
 
 ## User priority: mainline product first (2026-10-28)
@@ -11,9 +11,35 @@ Follow [ROADMAP.md](ROADMAP.md) before historical next-step suggestions. The nex
 priority is a reproducible product entry point and minimal real-data console
 (Agent status, overview, request list/detail), then managed eBPF ingestion,
 topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
-performance work. Review priorities after each milestone or three hourly runs.
+performance work. Review priorities after each milestone or three half-hourly runs.
 
-## M2 portable preparation delivered (2026-10-28)
+## M2 portable runtime functional acceptance (2026-10-28)
+
+The public bounded runtime in `lab/managed-http-agent.py` and
+`lab/managed_http_workload.py` replaces private startup/stop preparation. Explicit
+prepared configuration and artifact hashes, live Controller group/profile
+readback, exact held namespace FD and a finite lifetime are required. Readiness
+checks actual collector/policy, Agent pin, zero AF_PACKET sockets and the owned
+scope ARRAY before allowing phases. Stop verifies exact resource identity and
+restoration; no unknown BPF program is detached. See README-managed-http-runtime.md.
+
+A fresh trial through these entries passes20 positive roundtrips ->40 Sessions
+(source3,20client+20server),40 negative roundtrips ->zero records and two strict
+whole-marker reads. Real Edge sees the new40 records, exact details and protocol
+aggregation; same-marker packet source is empty. Agent exit0, worker/pin cleanup,
+BPF/tracefs, exact Controller YAML, existing lab services and owned console/SSH
+forward cleanup pass.236 lab tests pass, including eight new runtime guards.
+Initial coordinator-path and input-mode failures remain private; neither started
+an Agent, and the second restored the temporarily applied profile and workers.
+
+M2 functional acceptance is complete; synchronize this delivery to both remotes
+before recording milestone closure. The sole next milestone is M3: real service
+relationships in the console, with shared filters and request drill-down. Start
+by checking available real query fields, then deliver the API/UI and a bounded
+multi-service acceptance. Do not expand protocol/kernel/performance matrices
+inside this product milestone. Full DeepFlow parity remains unproven.
+
+## M2 preparation checkpoint (historical, 2026-10-28)
 
 `lab/managed-http.py` and its identity-free profile template provide public
 profile/bootstrap preparation. Literal endpoints, ports and group are explicit;
@@ -22,9 +48,9 @@ plan and no command starts capture or changes Controller.228 lab tests pass.
 Generated output equals the previously qualified managed HTTP profile and
 passes a live community template check without writes or another capture run.
 
-M2-05a is complete. Next is M2-05b/c: portable scoped startup/stop, then one
-necessary verification through that entry point. The native/console runtime
-gates below remain valid; file generation alone does not close M2.
+At that checkpoint only M2-05a was complete; startup/stop and its runtime
+verification were pending. Those remaining gates are delivered above. File
+generation by itself did not close M2.
 
 ## M2 collection-to-console slice (2026-10-28)
 
@@ -37,9 +63,8 @@ verified; no diagnostics or prewarming. Worker/Agent/BPF/tracefs/YAML cleanup pa
 The console now filters and labels packet/eBPF source consistently in lists and
 overview. Real Edge sees40 new source3 rows, correct detail and zero source0
 rows for the same marker. Module race/build checks pass. M2-01 through M2-04
-functional gates pass; M2-05 remains open: package portable scoped startup/stop
-from the existing private preparation. See README-ebpf-console.md and dated
-ebpf-console evidence. Do not close M2 or activate a new milestone yet.
+functional gates pass; M2-05 is delivered by the public runtime entry above. See README-ebpf-console.md and dated
+ebpf-console evidence. This section records the earlier collection/UI checkpoint; the runtime delivery above completes its remaining gate.
 
 ## M1 functional acceptance: real-data console (2026-10-28)
 
