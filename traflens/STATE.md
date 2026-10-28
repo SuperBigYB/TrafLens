@@ -13,6 +13,35 @@ priority is a reproducible product entry point and minimal real-data console
 topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
 performance work. Review priorities after each milestone or three half-hourly runs.
 
+## M4 exact HTTP Trace functional acceptance (2026-10-28)
+
+A new public finite HTTP fixture sends client -> frontend -> backend across the
+two hosts with explicit W3C context propagation and an unrelated-Trace control.
+The unchanged qualified native parser stores all12 HTTP Session records:10 target
+Trace observations across two endpoints and2 control records. A new independent
+whole-marker oracle recomputes the wire contract and requires two exact reads;
+source/protocol/Trace/status mismatches cannot hide behind query predicates.
+
+The console adds exact Trace filtering and a bounded cross-endpoint Trace dialog.
+A relationship's Trace jump retains time/source and removes narrow endpoint,
+resource/protocol restrictions for that view. Exact ID details retain Trace scope;
+Span/ParentSpan fields remain raw. Real Edge verifies10 linked records,5 under
+one relationship,2 for the control, zero missing/wrong-source, exact detail and
+error/empty distinction; no page errors. ParentSpan is empty, not inferred.
+
+14 module race tests/build and243 lab tests pass. Agent exit0, original YAML,
+link/route/BPF/tracefs and owned fixture processes restore. Initial workstation
+console-stop fails; a follow-up via the authorized host confirms actual owned
+console exit. No kernel/native rebuild or repeated M2 matrix is needed. See
+README-http-trace.md and dated http-trace evidence.
+
+M4 functional acceptance is complete; synchronize both remotes before recording
+closure. The sole next milestone is M5: service RED metrics and error/slow-record
+navigation. Confirm actual duration units, error definitions and supported
+aggregations first, then expose real metrics with observation semantics and a
+controlled error/delay scenario. Full AutoTracing/causal Span assembly remains
+future work, separate from this verified header-based correlation slice.
+
 ## M3 service relationship functional acceptance (2026-10-28)
 
 The console aggregates real L7 records into scoped client -> service endpoint

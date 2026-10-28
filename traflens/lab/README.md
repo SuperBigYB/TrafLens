@@ -294,3 +294,11 @@ and Agent logs across at least one allocation tick. A change in effective
 configuration, capture disable, or configuration-restart exit invalidates a
 healthy control. Restore the exact previous YAML after removing the owned Agent.
 The profile's resource, queue and export limits are unchanged.
+
+
+## Finite HTTP Trace correlation
+
+The optional `http-trace.py` fixture defaults to an offline plan and explicitly
+propagates W3C context across two real HTTP legs. `verify-http-trace.py` independently
+checks the owned lab's whole-marker records. Neither starts capture or changes
+Controller configuration. See [operator workflow](../README-http-trace.md).

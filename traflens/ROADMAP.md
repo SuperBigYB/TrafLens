@@ -25,11 +25,11 @@ requalifying it when unrelated work changes.
    query for the core HTTP/DNS/database scenarios, then extend TLS coverage.
    Acceptance: known real requests appear with the correct protocol and source
    metadata under a repeatable setup. Carry blocking collection fixes here.
-3. **Topology and request tracing (M3 relationships complete; M4 Trace ID correlation next).** Connect resource/service identities to
+3. **Topology and request tracing (M3 relationships complete; M4 Trace ID correlation complete).** Connect resource/service identities to
    service relationships and per-request paths, exposed in the console.
    Acceptance: a small multi-service scenario can be followed from a service
    dependency to its requests and associated spans/records.
-4. **Metrics, profiles and resource correlation.** Add useful metric views,
+4. **Metrics, profiles and resource correlation (M5 service RED slice next).** Add useful metric views,
    continuous-profile entry points and host/container/Kubernetes associations.
    Acceptance: each implemented signal can be queried and navigated from the
    relevant service or resource in an actual scenario.
@@ -69,23 +69,26 @@ sealing; fine-grained CPU/RSS tuning and maximum-rate searches. Preserve existin
 failure records and revisit these systematically during reliability/performance
 work rather than letting them displace the product backbone.
 
-## Next milestone after M3 delivery: M4 Trace ID correlation
+## Next milestone after M4 delivery: M5 service RED metrics
 
-M1/M2 and the M3 service relationship functional gate pass. M3 has real two-host
-400-record acceptance, scoped relationship-to-list/detail navigation and precise
-restoration. Complete both remote synchronizations before recording M3 closure
-in the authoritative local plan. See README-service-relations.md.
+M1-M4 functional gates pass through the real-data console, managed eBPF HTTP,
+scoped service relationships and exact header-based cross-service Trace lookup.
+M4 has a finite real two-hop HTTP scenario, independent10+2 record acceptance,
+actual Edge navigation and restored resources. Complete both remote
+synchronizations before recording M4 closure in the authoritative local plan.
+See README-http-trace.md. No complete causal tree or zero-header AutoTracing is
+claimed from shared Trace membership.
 
-Then activate only M4: correlate real requests across service endpoints by
-Trace ID. First confirm actual trace/span fields, HTTP propagation and parser
-configuration. Reuse the existing collector and lab to generate a bounded
-multi-service scenario with explicit trace context; implement safe exact trace
-lookup and console navigation. Acceptance requires related real endpoint records
-with the intended Trace ID, an unrelated-trace negative control and browser
-navigation to exact details. Show only recorded parent/span relationships;
-Trace ID membership alone does not prove a complete causal call tree.
+Then activate only M5: service RED metrics and error/slow-observation drill-down.
+First verify real duration units, response-status meanings and supported query
+aggregations. Reuse the existing console/scopes to expose counts or rates,
+errors and duration metrics with explicit observation-point semantics. Generate
+a bounded scenario with known successes/errors/delays and verify API/UI metrics
+against the actual stored records, then navigate to the corresponding requests.
+Avoid summing repeated observations as distinct transactions. Document null/empty,
+partial/truncated and query-window semantics rather than inventing precision.
 
-Zero-header AutoTracing, broader protocols/resource identities, metrics/profiling
-and sustained performance remain later work. Preserve completed evidence and
-avoid repeating full M2 kernel or performance matrices. The local execution
-file controls current task breakdown and the single active milestone.
+Full automatic trace assembly, broader protocols/resource identities, continuous
+profiles and sustained performance remain later work. The local execution file
+controls the single active milestone and task breakdown. Do not re-run completed
+M2 kernel or throughput matrices for these console changes.

@@ -1,0 +1,71 @@
+{
+  "milestone": "M4",
+  "native_source": "3dec20af5ce6ff25c696d136b5477f5310b4962c",
+  "checks": {
+    "console_race_tests": 14,
+    "new_console_tests": 4,
+    "lab_tests": 243,
+    "new_fixture_oracle_tests": 7,
+    "console_build": true
+  },
+  "real_http_chain": {
+    "hosts": 2,
+    "legs_per_root_exchange": 2,
+    "primary_exchanges": 5,
+    "unrelated_exchanges": 1,
+    "total_records": 12,
+    "primary_trace_records": 10,
+    "unrelated_trace_records": 2,
+    "distinct_primary_wire_span_values": 10,
+    "stored_parent_span_values_empty": true,
+    "synthetic_database_events": false
+  },
+  "oracle": {
+    "whole_marker_without_hiding_filters": true,
+    "independently_recomputed_expected_context": true,
+    "complete_passing_reads": 2,
+    "same_exact_record_identities": true,
+    "metadata_verified": true
+  },
+  "actual_edge": {
+    "passed": true,
+    "cross_endpoint_records": 10,
+    "selected_relationship_records": 5,
+    "control_trace_records": 2,
+    "exact_trace_detail": true,
+    "time_source_retained": true,
+    "narrow_filters_removed_for_trace_jump": true,
+    "shared_trace_filter": true,
+    "missing_wrong_source_empty": true,
+    "error_empty_distinct": true,
+    "causal_parent_not_invented": true,
+    "page_errors": 0
+  },
+  "restoration": {
+    "agent_exit_code": 0,
+    "agent_and_fixture_processes_exited": true,
+    "controller_yaml_exact": true,
+    "test_link_and_management_route": true,
+    "bpf_tracefs": true,
+    "existing_services": true,
+    "console_actual_exit_verified": true,
+    "workstation_initial_stop_failed": true,
+    "authorized_host_cleanup_followup_passed": true
+  },
+  "limitations": [
+    "Explicit HTTP traceparent propagation, not zero-header AutoTracing",
+    "Recorded span values and time ordering do not prove a complete causal tree",
+    "W3C lowercase32-hex nonzero lookup subset, at most500 observations",
+    "Finite functional sample, not TLS/other-kernel/performance parity qualification"
+  ],
+  "source_files_sha256": {
+    "traflens/console/main.go": "5d72198d570740d5a5683d718c888f6d9dea96cbc0c39dab046d6e9d9563b7f5",
+    "traflens/console/index.html": "f07facf8700e9d1efe7343987c8c9d73680cc294568e5f6ee9afd9ea84e7e1f0",
+    "traflens/console/traces.go": "d7e8579be4b55edd3ef04ee2c6f6c5d0db9712841794df7ed37abef6045b5d45",
+    "traflens/console/traces_test.go": "82cbccd00a9b8fa3c12288f14a461d15afcf25049e8ac6704ac2d1406634bfe1",
+    "traflens/lab/http-trace.py": "8c0956b4c3fd94dcb4383360e2a7c1e155a3064c722351460932c3e46aa913d1",
+    "traflens/lab/verify-http-trace.py": "3eec297fa21d61e8c52d4db0e7b91e459531fb2dfba1370a7fc8114a05591dfd",
+    "traflens/lab/tests/test_http_trace.py": "aa788d7e7adb2eb9e57f7db3e7a34a44cedb8449b1773bfa2364be9340f2cc65",
+    "traflens/lab/tests/test_http_trace_oracle.py": "d4eccfc949a4a5564eac0b075999acbe7da9cc28de75e018cb0f2443c95538b9"
+  }
+}

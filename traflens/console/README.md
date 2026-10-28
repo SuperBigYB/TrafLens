@@ -125,3 +125,13 @@ Agent/EPC/IP/port/transport/protocol/source/observation context stays explicit.
 Groups are observation records, not unique transactions; top100 truncation is
 shown. UInt64 relation counts and request IDs remain strings. See the full
 [service relationship API and acceptance](../README-service-relations.md).
+
+
+## Exact cross-service Trace lookup
+
+Requests now expose raw trace/span fields. The exact W3C Trace input filters
+requests/overview/services; a supported record's Trace button opens a bounded
+cross-endpoint view while preserving time/source and removing the selected
+relationship/resource/protocol restrictions for that view. Detail navigation
+keeps the exact Trace context. Empty parent-span values stay unrecorded; order
+is not a causal tree. See [HTTP Trace workflow and API](../README-http-trace.md).

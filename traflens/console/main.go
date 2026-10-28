@@ -21,7 +21,7 @@ import (
 //go:embed index.html
 var assets embed.FS
 
-const fields = "toString(_id) AS id,time,request_resource,request_type,response_code,response_duration,l7_protocol,agent_id,protocol,type,signal_source,tap_side,response_status,l3_epc_id_0,l3_epc_id_1,ip_0,ip_1,server_port,observation_point"
+const fields = "toString(_id) AS id,time,request_resource,request_type,response_code,response_duration,l7_protocol,agent_id,protocol,type,signal_source,tap_side,response_status,l3_epc_id_0,l3_epc_id_1,ip_0,ip_1,server_port,observation_point,trace_id,span_id,parent_span_id"
 
 var resourceFilter = regexp.MustCompile(`^[A-Za-z0-9/_:.?=&%+ -]{0,200}$`)
 
@@ -42,7 +42,7 @@ type envelope struct {
 
 func selection(v url.Values, now int64) (string, error) {
 	for k, values := range v {
-		if k != "from" && k != "to" && k != "q" && k != "limit" && k != "id" && k != "proto" && k != "source" && !isRelationshipFilter(k) {
+		if k != "from" && k != "to" && k != "q" && k != "limit" && k != "id" && k != "proto" && k != "source" && k != "trace" && !isRelationshipFilter(k) {
 			return "", errors.New("unknown filter")
 		}
 		if len(values) != 1 {
@@ -86,6 +86,12 @@ func selection(v url.Values, now int64) (string, error) {
 			return "", errors.New("source must be packet (0) or eBPF (3)")
 		}
 		where += " AND signal_source = " + v.Get("source")
+	}
+	if v.Has("trace") {
+		if !validTraceID(v.Get("trace")) {
+			return "", errors.New("trace must be a nonzero lowercase32-hex W3C ID")
+		}
+		where += " AND trace_id = '" + v.Get("trace") + "'"
 	}
 	q := v.Get("q")
 	if !resourceFilter.MatchString(q) {
@@ -155,6 +161,7 @@ func writeJSON(w http.ResponseWriter, status int, v any) {
 func (c *console) handler() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/services", c.services)
+	mux.HandleFunc("GET /api/trace", c.trace)
 	mux.HandleFunc("GET /api/requests", func(w http.ResponseWriter, r *http.Request) {
 		sql, err := selection(r.URL.Query(), time.Now().Unix())
 		if err != nil {
