@@ -170,3 +170,14 @@ The [service trend workflow](../README-service-trends.md) adds fixed bounded
 Session time buckets with clipped coverage, errors and positive latency. Select
 an interval to retain Agent/service filters and open exact Session details; the
 return action restores the previous time/record range. Seconds are preserved.
+
+
+## Real CPU profiles
+
+The independent CPU form queries stored Golang/cpu/samples applications by time
+and optional exact app/historical Agent. Open hotspot details and a function's
+actual stack paths; weights remain precise sample counts, with OS identity
+explicitly unproven. The console requires the distinct native bounded route and
+never falls back to legacy ProfileTracing. See the [bounded query contract and
+actual acceptance](../README-cpu-profiling.md#bounded-native-query-and-actual-console).
+The full public integration/runtime lifecycle remains M9 work.

@@ -82,6 +82,9 @@ func GetAppService(args model.Profile, where string, debugs model.ProfileDebug) 
 }
 
 func Profile(args model.Profile, cfg *config.QuerierConfig) (model.ProfileTree, interface{}, error) {
+	if args.MaxRows != nil {
+		return BoundedProfile(args, cfg)
+	}
 	whereSlice := []string{}
 	whereSlice = append(whereSlice, fmt.Sprintf(" time>=%d", args.TimeStart))
 	whereSlice = append(whereSlice, fmt.Sprintf(" time<=%d", args.TimeEnd))
@@ -111,6 +114,9 @@ func Profile(args model.Profile, cfg *config.QuerierConfig) (model.ProfileTree, 
 }
 
 func GenerateProfile(args model.Profile, cfg *config.QuerierConfig, where string, debugs model.ProfileDebug) (result model.ProfileTree, debug interface{}, err error) {
+	if args.MaxRows != nil {
+		return BoundedProfile(args, cfg)
+	}
 	limitSql := cfg.Profile.FlameQueryLimit
 	sql := fmt.Sprintf(
 		"SELECT %s, %s FROM %s WHERE %s LIMIT %d",

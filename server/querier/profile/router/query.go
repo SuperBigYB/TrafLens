@@ -31,10 +31,15 @@ import (
 
 func ProfileRouter(e *gin.Engine, cfg *config.QuerierConfig) {
 	e.POST("/v1/profile/ProfileTracing", profile(cfg))
+	e.POST("/v1/profile/ProfileTracingBounded", profileWithBounds(cfg, true))
 	e.POST("/v1/profile/ProfileGrafana", profileGrafana(cfg))
 }
 
 func profile(cfg *config.QuerierConfig) gin.HandlerFunc {
+	return profileWithBounds(cfg, false)
+}
+
+func profileWithBounds(cfg *config.QuerierConfig, bounded bool) gin.HandlerFunc {
 	return gin.HandlerFunc(func(c *gin.Context) {
 		var args model.Profile
 
@@ -42,6 +47,10 @@ func profile(cfg *config.QuerierConfig) gin.HandlerFunc {
 		err := c.ShouldBindBodyWith(&args, binding.JSON)
 		if err != nil {
 			router.BadRequestResponse(c, common.INVALID_POST_DATA, err.Error())
+			return
+		}
+		if bounded && args.MaxRows == nil {
+			router.BadRequestResponse(c, common.INVALID_POST_DATA, "max_rows is required for bounded profiles")
 			return
 		}
 		args.Context = c.Request.Context()

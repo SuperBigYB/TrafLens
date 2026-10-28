@@ -13,6 +13,30 @@ priority is a reproducible product entry point and minimal real-data console
 topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
 performance work. Review priorities after each milestone or three half-hourly runs.
 
+## M9 bounded profile queries and real console accepted (2026-10-28)
+
+M9-03a/b/c and M9-04 now pass on the accepted two-row/800sample dataset, without
+new capture or uploads. A separate native bounded route requires MaxRows, SQL
+N+1 rejection before decompression and explicit stack/byte/depth/node budgets.
+The fixed console API and actual Edge form/detail navigate9functions/9nodes and
+real ancestor stacks; HotLoop797self/800cumulative and asyncPreempt3 match the
+independent original pprof. Wrong app/Agent/time are empty and unknown source
+fails. Two complete candidate raw reads and an original-Server read match all
+previous row IDs/columns/values.10native and40console race tests/builds pass.
+
+The original image-embedded read-only Server stays running and unchanged. A
+finite independent native Querier with credential-free allowlisted config proves
+the new route; temporary query/console containers/processes/forwarding exit and
+the original Server/config/network persist. Bounds constrain returned rows and
+subsequent decoding, not ClickHouse scan work or all pre-return driver memory.
+
+M9 remains the sole active milestone. Next M9-05 must turn the existing private
+profile-only preparation/integration and new query runtime into a public reusable
+prepare/start/verify/stop workflow, then do one necessary replay through that
+entry. Do not repeat old CPU/kernel/protocol matrices. The first ingestion writer
+failure remains unexplained and is not repaired by successful later data reads.
+See README-cpu-profiling.md and dated cpu-profile-console evidence. No M10 yet.
+
 ## M9 real profile ingestion accepted; bounded product API next (2026-10-28)
 
 The original zero-row path is now located after PROFILE receiver and Go decode:

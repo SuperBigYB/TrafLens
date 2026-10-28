@@ -1,9 +1,9 @@
-# CPU profiling checkpoint: verified self samples and ingestion, product gate still open
+# CPU profiling checkpoint: real stored samples, bounded query and console
 
 M9 is in progress. Real finite self CPU sampling and an isolated native
 integration now pass actual storage and independent stack verification. Bounded
-product queries, console navigation and the public integration lifecycle remain
-unqualified. The earlier zero-row failure is preserved and is not explained or
+product queries and console navigation now pass the real-data gate; the public
+integration/query lifecycle remains unfinished. The earlier zero-row failure is preserved and is not explained or
 repaired merely by the later successful attempt.
 
 ## Why this sampling path
@@ -92,12 +92,68 @@ cumulative800, and asyncPreempt self3 agree with the actual sample data. The tre
 read is followed by another unchanged record fingerprint. These are sample
 weights, not absolute CPU percentages or a database-proven OS PID association.
 
-The private oracle checks row/sample population before calling the existing tree
-API and bounds its returned data. That is appropriate to this stopped-producer
-fixture, but the legacy ProfileTracing route still has no request-level query
-limit. The next product task is a distinct strict bounded route (old servers must
-fail closed rather than silently ignore an unknown max_rows field), then the
-actual console and public lifecycle. No complete M9 product gate is claimed.
+## Bounded native query and actual console
+
+A distinct `POST /v1/profile/ProfileTracingBounded` requires an integer
+`max_rows` from1 through `min(4096, FlameQueryLimit-1)`. It accepts a safe exact
+application, Golang/cpu, inclusive positive time range up to31days and an exact
+samples-unit filter with optional UInt16 Agent ID. The SQL selects only stack
+and weight, uses `LIMIT max_rows+1`, and rejects the sentinel before any Zstd or
+tree allocation. The legacy route without MaxRows retains its old behavior.
+Old backends without the new route return404; the console never falls back to
+the unbounded route.
+
+The bounded formatter limits compressed input to4MiB, a decoded stack/window
+to1MiB, total decoded stack bytes to8MiB, depth to512 and nodes to8192. Corrupt
+stacks, invalid columns/UTF-8, negative/noninteger weights and aggregate overflow
+fail without returning a partial tree. These limits govern returned rows and
+subsequent decoding/tree construction. They do **not** cap ClickHouse scan work
+or all driver allocation before rows are returned. Row limits alone are not a
+complete database memory limit.
+
+The console adds an independent CPU form and two fixed endpoints:
+
+- `GET /api/profiles?from=<epoch>&to=<epoch>&agent=<id>&app=<exact-name>`
+  lists Golang/cpu/samples application/Agent groups, at most100 plus a truncation
+  sentinel. `agent` and `app` are optional for this directory.
+- `GET /api/profile?from=<epoch>&to=<epoch>&agent=<id>&app=<exact-name>`
+  requires the application and calls only the new native route, fixed256rows,
+  a12s deadline and4MiB response ceiling. Unknown/duplicate filters fail.
+
+Both routes remain loopback development tools using the existing fixed org/user1
+scope, not a new public authorization mechanism. Counts/weights are decimal
+strings. A successful empty query is distinct from unsupported backend501,
+native budget413 and malformed/upstream502. The detail verifies native bounds
+metadata and function/node/root weights before exposing data. The directory and
+detail are separate reads, not an atomic snapshot.
+
+Start the existing console entry with `-query <bounded-querier-base-url>`, open
+the CPU form, select actual sample time and optional historical Agent/application,
+and click Query. Open the stored application's hotspot detail and select a
+function to inspect its actual ancestor paths. The aggregation root is labeled
+as a summary node. This is a hotspot table with actual stack paths, not a claimed
+full flamegraph. It exposes sample weights and unknown OS identity, not CPU
+percentages, a process PID join or eBPF provenance inferred from language/name.
+
+The2026-10-28 trial reuses the accepted stored two-row/800sample dataset, without
+new sampling or uploads. Actual native max_rows1 returns400 RESOURCE_NUM_EXCEEDED;
+max_rows2 returns the complete9function/9node tree. Missing/null/zero/fractional
+limits fail, and a valid absent application returns explicit empty bounds.
+Two candidate raw reads and one original-Server read exactly match the previous
+whole-marker columns, IDs and values. Real Edge exercises the directory, detail,
+HotLoop797self/800cumulative, asyncPreempt3self and actual ancestor navigation.
+Wrong Agent, application and time are empty; a fake L7 source argument fails.
+Ten native and40 complete console race tests, both builds and read-only review
+pass. Earlier CPU fixture/tool matrices are retained, not repeated.
+
+The existing Server has an image-embedded binary and read-only root. It was not
+modified or restarted: the native test runs a separate finite Querier container
+on the owned lab network with a credential-free allowlisted config, read-only
+root and binary, no capabilities and loopback-only publication. The candidate
+and console are stopped/removed afterwards; original Server identity/config and
+stored rows remain unchanged. This private runtime is not yet a public reusable
+launcher. Full prepare/start/verify/stop delivery is the remaining M9-05 task.
+Anonymous acceptance: `evidence/2026-10-28/cpu-profile-console/summary.json`.
 
 All attempts remove only their owned Agent registrations/groups, containers
 and networks, preserving the old identities, memberships, license settings,

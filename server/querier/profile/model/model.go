@@ -19,6 +19,7 @@ package model
 import "context"
 
 type Profile struct {
+	MaxRows             *int   `json:"max_rows,omitempty"`
 	AppService          string `json:"app_service"`
 	ProfileEventType    string `json:"profile_event_type" binding:"required"`
 	ProfileLanguageType string `json:"profile_language_type" binding:"required"`
@@ -59,11 +60,23 @@ type ProfileDebug struct {
 	FormatTime   string  `json:"format_time"`
 }
 
+type ProfileBudgets struct {
+	CompressedBytes        int `json:"compressed_bytes"`
+	DecodedStackBytes      int `json:"decoded_stack_bytes"`
+	TotalDecodedStackBytes int `json:"total_decoded_stack_bytes"`
+	Nodes                  int `json:"nodes"`
+	StackDepth             int `json:"stack_depth"`
+}
+
 type ProfileTree struct {
-	Functions      []string `json:"functions"`
-	FunctionTypes  []string `json:"function_types"`
-	FunctionValues Value    `json:"function_values"`
-	NodeValues     Value    `json:"node_values"`
+	BoundsApplied  bool            `json:"bounds_applied,omitempty"`
+	MaxRows        int             `json:"max_rows,omitempty"`
+	InputRows      *int            `json:"input_rows,omitempty"`
+	Budgets        *ProfileBudgets `json:"budgets,omitempty"`
+	Functions      []string        `json:"functions"`
+	FunctionTypes  []string        `json:"function_types"`
+	FunctionValues Value           `json:"function_values"`
+	NodeValues     Value           `json:"node_values"`
 }
 
 type Value struct {

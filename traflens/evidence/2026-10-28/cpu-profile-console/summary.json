@@ -1,0 +1,79 @@
+{
+  "milestone": "M9",
+  "closed": false,
+  "completed_tasks": [
+    "M9-03a",
+    "M9-03b",
+    "M9-03c",
+    "M9-04"
+  ],
+  "next_task": "M9-05 public prepare/start/verify/stop lifecycle",
+  "new_sampling": false,
+  "new_ingestion": false,
+  "data_source": "accepted real Go runtime self profile via native integration; not eBPF",
+  "real_stored_rows": 2,
+  "sample_unit": "samples",
+  "sample_weight": 800,
+  "functions": 9,
+  "nodes": 9,
+  "hot_loop": {
+    "self": 797,
+    "cumulative": 800
+  },
+  "async_preempt_self": 3,
+  "native_bounded": {
+    "distinct_route": true,
+    "sql_n_plus_one": true,
+    "limit_1_rejected": true,
+    "limit_2_complete": true,
+    "max_rows_hard_cap": 4096,
+    "compressed_bytes": 4194304,
+    "per_stack_decoded_bytes": 1048576,
+    "total_decoded_stack_bytes": 8388608,
+    "depth": 512,
+    "nodes": 8192,
+    "pre_return_driver_or_database_scan_memory_capped": false
+  },
+  "console": {
+    "native_rows": 256,
+    "list_groups": 100,
+    "response_bytes": 4194304,
+    "timeout_seconds": 12,
+    "legacy_fallback": false,
+    "real_edge": true,
+    "wrong_app_agent_time_empty": true,
+    "actual_stack_navigation": true,
+    "page_errors": 0,
+    "os_identity": "not_proven",
+    "absolute_cpu_percent_claimed": false
+  },
+  "raw_crosscheck": {
+    "candidate_exact_complete_reads": 2,
+    "original_server_exact_read": 1,
+    "previous_ids_and_values_unchanged": true
+  },
+  "checks": {
+    "native_profile_race_tests": 10,
+    "complete_console_race_tests": 40,
+    "native_querier_build": true,
+    "console_build": true,
+    "independent_read_only_review": true,
+    "remote_ci_checked": false,
+    "previous_cpu_fixture_3_and_tools_249_repeated": false
+  },
+  "runtime": {
+    "temporary_separate_querier": true,
+    "original_server_updated_or_restarted": false,
+    "credential_free_allowlisted_query_config": true,
+    "candidate_removed": true,
+    "temporary_console_and_forward_exit_verified": true,
+    "original_server_identity_and_config_unchanged": true,
+    "agent_bpf_network_configuration_changed": false,
+    "shared_lab_network_retained": true
+  },
+  "open_limits": [
+    "Public repeatable integration/query lifecycle still private; M9 not closed",
+    "Original earlier generic-writer pre-input failure cause unresolved",
+    "No eBPF CPU, OS PID/container join, CPU percent, complete flamegraph or performance parity claimed"
+  ]
+}
