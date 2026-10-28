@@ -55,6 +55,15 @@ jobs:
           CGO_ENABLED=0 go build -trimpath -o "$RUNNER_TEMP/traflens-http-load" .
           "$RUNNER_TEMP/traflens-http-load"
 
+      - name: Test and build the minimal real-data console
+        working-directory: traflens/console
+        env:
+          GOTOOLCHAIN: local
+          GOWORK: off
+        run: |
+          go test -race -count=1 -timeout=60s ./...
+          go build -trimpath -o "$RUNNER_TEMP/traflens-console" .
+
       - name: Test kernel namespace scope guards without attachment
         run: |
           python3 agent/src/ebpf/test/test_socket_scope.py -v

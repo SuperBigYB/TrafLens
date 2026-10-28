@@ -1,0 +1,13 @@
+{
+  "pass": true,
+  "source_binary_sha256": "a135f5aeeae273c6ee99ea6e48f602b7a1ca939043af682def7f1a43dddc23b4",
+  "list_rows": 5,
+  "detail_id_matches": true,
+  "agent_inventory_read": true,
+  "browser_verified": false,
+  "new_workload_verified": false,
+  "owned_process_stopped": true,
+  "module_tests": "go test -race -count=1 -timeout=60s ./...",
+  "module_test_pass": true,
+  "milestone_complete": false
+}

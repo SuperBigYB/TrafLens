@@ -13,6 +13,21 @@ priority is a reproducible product entry point and minimal real-data console
 topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
 performance work. Review priorities after each milestone or three hourly runs.
 
+## M1 first slice: minimal real-data console (2026-10-28)
+
+M1-01 reuse decision: keep the working Server/Agent/lab and reuse query/Controller
+APIs; this checkout has no shipped frontend application. `console/` adds an
+independent standard-library Go module and embedded HTML with a loopback-only
+entry point. Requests can be filtered by time/resource and loaded by exact
+string ID; a reduced Agent inventory is exposed. Module race tests/build pass.
+A temporary peer process queries5 real historical rows, verifies exact detail
+ID and reads inventory, then stops cleanly. No backend service restart occurs.
+
+M1-02 remains partial: browser interactions and new workload/UI acceptance are
+not yet qualified. M1-03 overview and M1-04 unified deployment remain pending.
+Next: verify the UI against actual data, then add the overview and reproducible
+product launch workflow. M1 is not complete. See `console/README.md`.
+
 ## Current checkpoint: stable packet profile (2026-10-28)
 
 Community license allocation periodically restores all functions; the former
