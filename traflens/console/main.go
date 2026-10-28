@@ -42,7 +42,7 @@ type envelope struct {
 
 func selection(v url.Values, now int64) (string, error) {
 	for k, values := range v {
-		if k != "from" && k != "to" && k != "q" && k != "limit" && k != "id" && k != "proto" {
+		if k != "from" && k != "to" && k != "q" && k != "limit" && k != "id" && k != "proto" && k != "source" {
 			return "", errors.New("unknown filter")
 		}
 		if len(values) != 1 {
@@ -80,6 +80,12 @@ func selection(v url.Values, now int64) (string, error) {
 			return "", errors.New("invalid application protocol")
 		}
 		where += fmt.Sprintf(" AND l7_protocol = %d", n)
+	}
+	if v.Has("source") {
+		if v.Get("source") != "0" && v.Get("source") != "3" {
+			return "", errors.New("source must be packet (0) or eBPF (3)")
+		}
+		where += " AND signal_source = " + v.Get("source")
 	}
 	q := v.Get("q")
 	if !resourceFilter.MatchString(q) {

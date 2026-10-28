@@ -90,3 +90,27 @@ return the exact total and protocol counts; the backend does not provide a
 transactional snapshot across these requests. Empty and unavailable states are
 shown separately. The console remains a loopback, organization1 development
 entry point, not an authenticated public deployment.
+
+
+## Capture-source exploration
+
+The source selector filters both list and overview: `source=0` means packet
+capture, `source=3` means eBPF, and omitting it shows both. Invalid source values
+fail rather than widening the query. The list labels capture source and the
+detail retains raw `signal_source` plus process observation side. A client and
+server observation of one HTTP exchange are separate records; totals count
+records, not deduplicated exchanges.
+
+A finite managed eBPF trial on the pinned native binary completes20 positive
+HTTP exchanges and40 out-of-scope negative exchanges. The unchanged strict
+oracle requires40 positive Sessions (20c-p+20s-p) on two reads, source3 and
+correct process/socket identity, with zero negative rows. The Agent holds the
+positive namespace FD, its scope configuration map matches, and it owns no
+AF_PACKET socket. Actual headless Edge selects source3 and displays40 rows,
+total40 and correct source3 detail; source0 for the same marker returns zero.
+Source-filter/race tests pass. See
+[ebpf-console/summary.json](../evidence/2026-10-28/ebpf-console/summary.json).
+
+This validates collection-to-console, but M2 remains open until a reusable
+scoped managed startup/stop workflow is packaged. Current preparation is private
+and must not be presented as a portable deployment entry point.

@@ -13,6 +13,21 @@ priority is a reproducible product entry point and minimal real-data console
 topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
 performance work. Review priorities after each milestone or three hourly runs.
 
+## M2 collection-to-console slice (2026-10-28)
+
+Native `3dec20af5` passes the existing namespace-scoped managed eBPF HTTP oracle:
+20 exchanges yield40 Sessions (20c-p+20s-p), two passing reads, source3 with
+correct socket/process identity, and zero negative rows for40 out-of-scope
+exchanges. Actual collector readiness, scope map/FD and no AF_PACKET socket are
+verified; no diagnostics or prewarming. Worker/Agent/BPF/tracefs/YAML cleanup pass.
+
+The console now filters and labels packet/eBPF source consistently in lists and
+overview. Real Edge sees40 new source3 rows, correct detail and zero source0
+rows for the same marker. Module race/build checks pass. M2-01 through M2-04
+functional gates pass; M2-05 remains open: package portable scoped startup/stop
+from the existing private preparation. See README-ebpf-console.md and dated
+ebpf-console evidence. Do not close M2 or activate a new milestone yet.
+
 ## M1 functional acceptance: real-data console (2026-10-28)
 
 The minimal console now includes real request list/detail, time/resource and

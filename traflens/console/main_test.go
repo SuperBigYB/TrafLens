@@ -85,7 +85,7 @@ func TestOverviewUsesSameFilterAndExactTotal(t *testing.T) {
 		r.ParseForm()
 		q := r.Form.Get("sql")
 		queries = append(queries, q)
-		if !strings.Contains(q, "l7_protocol = 20") || !strings.Contains(q, "request_resource LIKE '%/orders%'") {
+		if !strings.Contains(q, "signal_source = 3") || !strings.Contains(q, "l7_protocol = 20") || !strings.Contains(q, "request_resource LIKE '%/orders%'") {
 			t.Error("overview lost filters")
 		}
 		if strings.Contains(q, "GROUP BY") {
@@ -97,7 +97,7 @@ func TestOverviewUsesSameFilterAndExactTotal(t *testing.T) {
 	defer b.Close()
 	c := console{b.URL, b.URL, b.Client()}
 	rr := httptest.NewRecorder()
-	c.handler().ServeHTTP(rr, httptest.NewRequest("GET", "/api/overview?q=%2Forders&proto=20", nil))
+	c.handler().ServeHTTP(rr, httptest.NewRequest("GET", "/api/overview?q=%2Forders&proto=20&source=3", nil))
 	if rr.Code != 200 || len(queries) != 2 || !strings.Contains(rr.Body.String(), "2000") {
 		t.Fatalf("overview: %d %s", rr.Code, rr.Body.String())
 	}
@@ -106,6 +106,20 @@ func TestOverviewUsesSameFilterAndExactTotal(t *testing.T) {
 		c.handler().ServeHTTP(rr, httptest.NewRequest("GET", "/api/overview?"+query, nil))
 		if rr.Code != 400 {
 			t.Error("accepted invalid overview filter")
+		}
+	}
+}
+
+func TestCaptureSourceFilter(t *testing.T) {
+	for _, source := range []string{"0", "3"} {
+		q, e := selection(url.Values{"source": {source}}, time.Now().Unix())
+		if e != nil || !strings.Contains(q, "signal_source = "+source) {
+			t.Fatalf("source %s lost", source)
+		}
+	}
+	for _, source := range []string{"", "-1", "4", "3 OR 1=1"} {
+		if _, e := selection(url.Values{"source": {source}}, time.Now().Unix()); e == nil {
+			t.Error("accepted invalid source")
 		}
 	}
 }

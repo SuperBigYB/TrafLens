@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "native_source": "3dec20af5ce6ff25c696d136b5477f5310b4962c",
+  "native_sha256": "8dd5ec668a09dcdac10068727fb47f282cf8091a93a11fb71cbbc33db3853763",
+  "positive_roundtrips": 20,
+  "negative_roundtrips": 40,
+  "sessions": 40,
+  "signal_source": 3,
+  "points": {
+    "c-p": 20,
+    "s-p": 20
+  },
+  "distinct_socket_flows": 2,
+  "strict_consecutive_reads": 2,
+  "negative_rows_all_reads": 0,
+  "diagnostics": false,
+  "packet_dispatcher_enabled": false,
+  "scope_map_and_agent_namespace_fd_verified": true,
+  "af_packet_socket_count": 0,
+  "trial_pass": true,
+  "browser": {
+    "pass": true,
+    "browser": "headless Microsoft Edge",
+    "page_errors": [],
+    "new_workload_requests": 20,
+    "expected_observation_records": 40,
+    "visible_list_rows": 40,
+    "overview_total": 40,
+    "capture_source_ebpf": true,
+    "packet_source_zero": true,
+    "detail_id_exact": true,
+    "protocol_drilldown": true,
+    "empty_and_error_states": true,
+    "agent_inventory_visible": true,
+    "stop_requested": true
+  },
+  "module_race_tests_pass": true,
+  "module_build_pass": true,
+  "cleanup": {
+    "agent_and_workers_removed": true,
+    "bpf_tracefs_restored": true,
+    "controller_yaml_exactly_restored": true,
+    "console_and_forwarding_stopped": true,
+    "lab_container_identities_preserved": true
+  },
+  "milestone_complete": false,
+  "remaining": "Package a portable scoped managed-Agent startup and stop workflow; current coordinator preparation remains private.",
+  "qualification": "Finite isolated C syscall HTTP, not arbitrary process isolation, TLS, general kernels or performance parity."
+}
