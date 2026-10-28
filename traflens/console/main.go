@@ -21,7 +21,7 @@ import (
 //go:embed index.html
 var assets embed.FS
 
-const fields = "toString(_id) AS id,time,request_resource,request_type,response_code,response_duration,l7_protocol,agent_id,protocol,type,signal_source,tap_side,response_status,l3_epc_id_0,l3_epc_id_1,ip_0,ip_1,server_port,observation_point,trace_id,span_id,parent_span_id"
+const fields = "toString(_id) AS id,time,request_resource,request_type,response_code,response_result,response_exception,request_domain,response_duration,l7_protocol,agent_id,protocol,type,signal_source,tap_side,response_status,l3_epc_id_0,l3_epc_id_1,ip_0,ip_1,server_port,observation_point,trace_id,span_id,parent_span_id"
 
 var resourceFilter = regexp.MustCompile(`^[A-Za-z0-9/_:.?=&%+ -]{0,200}$`)
 

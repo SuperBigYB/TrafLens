@@ -13,6 +13,32 @@ priority is a reproducible product entry point and minimal real-data console
 topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
 performance work. Review priorities after each milestone or three half-hourly runs.
 
+## M6 DNS/MySQL functional acceptance (2026-10-28)
+
+The console names DNS/MySQL consistently and exposes real domain/answer/exception
+fields with protocol-specific response-code guidance. Reused finite fixtures send
+4 DNS A and4 MySQL read-only wire-protocol queries over the two hosts;2 more of
+each protocol on excluded ports complete but produce no marked storage rows.
+MySQL uses a protocol fixture, not the Controller database or SQL execution.
+The new independent whole-marker oracle verifies8 unique source0 Sessions twice,
+without protocol/source/status filters concealing mismatches. Actual Edge passes
+protocol selection, overview/relationship scope, exact ID details, DNS answer and
+MySQL null-code interpretation, excluded-marker/source3 controls; page errors0.
+19 console race tests and249 lab tests pass. Native core is unchanged.
+
+Agent exit0, exact YAML, test interface/management route, BPF/tracefs, fixture
+processes and owned console restore; pre-existing services remain. Preparation
+and browser-fixture failures are retained, followed by the qualified fresh
+attempt. See README-protocol-product.md and dated protocol-product evidence.
+Complete both remote synchronizations before recording M6 closure.
+
+The sole planned next milestone is M7: host/Agent resource directory linked to
+actual service observations and request details. Start by checking real Controller
+inventory fields and tenant/scope semantics, then implement a bounded exact-ID
+resource-to-services/RED/requests navigation slice. Do not invent container or
+Kubernetes associations from an Agent name; full AutoTracing, profiling and
+maximum-performance work remain subsequent slices.
+
 ## M5 service RED functional acceptance (2026-10-28)
 
 The console now shows Session observation volume/window rate, client/server

@@ -10,7 +10,7 @@ Native Agent and community Server build; the owned two-machine lab validates
 packet HTTP collection, storage and exact queries. The latest stable profile
 passes a healthy2000-request trial and an unavailable-data-port failure control.
 M1 and the finite scoped HTTP slice of M2 now provide a working product
-foundation; full DeepFlow parity is not validated. Retain the recorded evidence without repeatedly
+foundation; M6 adds the finite packet DNS/MySQL product gate; full DeepFlow parity is not validated. Retain the recorded evidence without repeatedly
 requalifying it when unrelated work changes.
 
 ## Milestones in priority order
@@ -29,7 +29,7 @@ requalifying it when unrelated work changes.
    service relationships and per-request paths, exposed in the console.
    Acceptance: a small multi-service scenario can be followed from a service
    dependency to its requests and associated spans/records.
-4. **Metrics, profiles and resource correlation (M5 service RED slice complete).** Add useful metric views,
+4. **Metrics, profiles and resource correlation (M5 service RED slice complete; M7 host/Agent resource association next).** Add useful metric views,
    continuous-profile entry points and host/container/Kubernetes associations.
    Acceptance: each implemented signal can be queried and navigated from the
    relevant service or resource in an actual scenario.

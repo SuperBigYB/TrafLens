@@ -1,0 +1,61 @@
+{
+  "milestone": "M6 DNS/MySQL real packet product gate",
+  "functional_gate_passed": true,
+  "native_source": "3dec20af5ce6ff25c696d136b5477f5310b4962c",
+  "native_sha256": "8dd5ec668a09dcdac10068727fb47f282cf8091a93a11fb71cbbc33db3853763",
+  "positive_wire_exchanges": {
+    "dns": 4,
+    "mysql": 4
+  },
+  "excluded_wire_exchanges": {
+    "dns": 2,
+    "mysql": 2
+  },
+  "stored_session_observation_records": {
+    "dns": 4,
+    "mysql": 4
+  },
+  "negative_control_records": 0,
+  "signal_source": 0,
+  "whole_marker_exact_reads": 2,
+  "oracle_filters": [
+    "fresh resource marker only"
+  ],
+  "mysql_workload": "Real protocol 4.1 handshake, plaintext read-only COM_QUERY/result/EOF/QUIT fixture; no SQL database execution",
+  "dns_workload": "Real UDP IN A question and exact answer/RCODE/TTL",
+  "browser": {
+    "actual_edge_passed": true,
+    "page_errors": 0,
+    "protocol_names": true,
+    "overview_and_relationship_scope": true,
+    "exact_id_detail": true,
+    "dns_answer_and_mysql_null_code_semantics": true,
+    "excluded_markers_and_ebpf_source_empty": true,
+    "owned_console_exit_verified": true
+  },
+  "tests": {
+    "console_race_tests": 19,
+    "lab_tests": 249
+  },
+  "restoration": {
+    "pass": true,
+    "error": null,
+    "cleanup_error": null,
+    "matrix_exit_code": 0,
+    "bench_link_restored": true,
+    "management_route_unchanged": true,
+    "bpf_tracefs_restored": true,
+    "preexisting_containers_preserved": true,
+    "agent_stopped": true
+  },
+  "native_agent_exit_code": 0,
+  "controller_exact_yaml_restored": true,
+  "prior_attempts_preserved": [
+    "private evidence path preparation failure",
+    "missing trials parent; outer profile restore passed",
+    "browser duplicate q fixture failure; console exited",
+    "TIME_WAIT preflight rejected before process creation; no listener remained"
+  ],
+  "scope": "Finite packet-source DNS/MySQL functional slice; not live eBPF protocol qualification, arbitrary MySQL compatibility, throughput or complete DeepFlow parity",
+  "publication": "Code, synthetic unit fixtures and anonymous aggregates; raw runtime metadata and screenshots remain private"
+}
