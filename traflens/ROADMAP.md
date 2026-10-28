@@ -44,6 +44,16 @@ product slice or remove a direct blocker to the active milestone. Existing
 upstream source alone is not completion. Keep source/build/runtime/benchmark
 qualification distinct. Preserve upstream licensing and attribution.
 
+## Active M16 checkpoint
+
+M16-01's native/source audit and minimum single-peer scenario are prepared.
+The new typed UDP entry, real C fixture and public execution/restore pass;
+74targeted/offline checks support this software checkpoint. M16-02..05 remain
+open until actual complete raw/API and browser results are reviewed. The private
+same-capture verification result is retained pending specific permission to
+return test data/results to the workstation. Do not repeat capture or bypass
+that boundary. Preserve the pre-query oracle bug/source and its explicit repair.
+
 ## M15 finite fast MySQL gate complete; next single M16 after dual sync
 
 The real new Agent e1daf16b1/0544bd9c passes actual scope/merged configuration,

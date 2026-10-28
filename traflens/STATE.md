@@ -13,6 +13,32 @@ priority is a reproducible product entry point and minimal real-data console
 topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
 performance work. Review priorities after each milestone or three half-hourly runs.
 
+## Active M16 UDP DNS preparation/execution checkpoint (2026-10-29)
+
+The existing native UDP sendto/recvfrom/inference/Rust DNS path is audited. No
+native change/rebuild is needed for the selected single-peer scenario. Separate
+UDP prepare/run/stop and independent oracle schemas preserve DNS/TCP/MySQL
+defaults and normal kernel licensing/scope. A real bounded C datagram fixture,
+74distinct targeted/offline checks and the actual public scoped worker/Agent
+execution/cleanup pass. Both roles own one explicitly bound socket; the client
+connects while the server uses recvfrom/sendto. This is not three connections.
+
+Store/API/browser acceptance remains **unqualified**. The first planned oracle
+failed before queries due to missing immutable worker declarations. The corrected
+oracle has direct regressions and an explicit read-only planned-source archive
+bridge; original source/result/capture stay unchanged, with all ten producer/
+runtime/C/scope hashes still exact. Same-capture private validation runs on the
+owned development host, but its result has not been read back while specific
+result-return authorization is pending. Do not recapture, hide records or claim
+source3 UDP ingestion from successful execution/restore.
+
+Only M16 remains active. Resume with authorized read-only result/API/browser
+verification of the same finite data; if no authorization, retain the checkpoint
+and avoid repeated outbound attempts/notifications. Same-server-FD multi-peer
+identity is only a source-derived risk and is not validated here. See
+[public UDP entry](UDP_DNS.md) and
+[anonymous partial checkpoint](evidence/2026-10-29/udp-dns-preparation/README.md).
+
 ## M15 finite unpaced product gate complete (2026-10-29)
 
 A real default-libtrace release Agent from e1daf16b1 (SHA0544bd9c5dc10bf8f75e9495086922a6b018ee0cee3b06d03cbf3b629a31b8de)

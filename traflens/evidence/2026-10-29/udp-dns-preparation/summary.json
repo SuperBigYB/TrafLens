@@ -1,0 +1,49 @@
+{
+  "schema": "traflens.udp-dns-preparation.v1",
+  "milestone": "M16",
+  "milestone_closed": false,
+  "native_changed": false,
+  "native_source": "e1daf16b1dceb2d38ee1ad90de34e4a380111e74",
+  "native_binary_sha256": "0544bd9c5dc10bf8f75e9495086922a6b018ee0cee3b06d03cbf3b629a31b8de",
+  "fixture_source_sha256": "dd82818b93477b7b2276dca1b3459b4651e4c8f81e35d70f88a0c6dfb11c391e",
+  "fixture_binary_sha256": "8858c47a1546427f563dafeeef2a10e237441290ae8c0d893d86db1cc0807ee8",
+  "fixture_bytes": 946824,
+  "application_scope": {
+    "positive_exchanges": 3,
+    "outside_exchanges": 3,
+    "sockets_per_role": 1,
+    "distinct_txids": 3,
+    "single_peer_only": true,
+    "tcp_framing": false,
+    "datagram_flags": 0,
+    "max_dns_bytes": 512
+  },
+  "offline_checks": {
+    "new_runtime": 7,
+    "fixture": 9,
+    "oracle_including_repair": 27,
+    "existing_dns_fast_and_agent": 31,
+    "total_distinct": 74
+  },
+  "execution": {
+    "public_capture_completed": true,
+    "actual_scoped_agent_and_worker_readiness": true,
+    "four_workers_clean_exit": true,
+    "exact_capture_restoration": true,
+    "all_capture_query_forward_resources_restored": true
+  },
+  "ingestion_api_browser_qualified": false,
+  "verification_checkpoint": {
+    "first_oracle_failed_before_queries": true,
+    "missing_worker_contract_fixed": true,
+    "old_planned_source_and_failure_preserved": true,
+    "same_capture_private_verification_result_not_read_back": true,
+    "explicit_result_return_authorization_pending": true
+  },
+  "limitations": [
+    "Actual store/API/browser results are not claimed; process execution is not source3 UDP acceptance.",
+    "One fixed peer and two sockets; same-server-FD multi-peer risk is source-derived and untested.",
+    "No phase sleeps or synthetic ingestion; no maximum performance or complete DNS claim.",
+    "Prototype bound0 count is retained historically; corrected fixture reports actual bound1 at both roles."
+  ]
+}

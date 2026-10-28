@@ -53,14 +53,19 @@ class ProtocolContract(NamedTuple):
     preflight_validator: object = None
     observer_gate: object = None
     fast: bool = False
+    udp: bool = False
 
     @property
     def stem(self):
-        return self.name + ('-fast' if self.fast else '-diagnostic' if self.diagnostic else '')
+        return self.name + ('-udp' if self.udp else '-fast' if self.fast else '-diagnostic' if self.diagnostic else '')
 
     @property
     def label(self):
-        return {'dns': 'DNS/TCP', 'mysql': 'MySQL/TCP'}[self.name]
+        return 'DNS/UDP' if self.udp else {'dns': 'DNS/TCP', 'mysql': 'MySQL/TCP'}[self.name]
+
+    @property
+    def transport(self):
+        return 'udp' if self.udp else 'tcp'
 
     @property
     def schema(self):
@@ -86,13 +91,30 @@ def validate_contract(contract):
     require(isinstance(contract, ProtocolContract)
             and (contract.name, contract.prefix, contract.integration_mode, contract.protocol_id, contract.prepare_file)
                 in (('dns', 'dns-', 'kernel_dns', 120, 'managed-dns.py'),
+                    ('dns', 'dns-', 'kernel_dns', 120, 'managed-dns-udp.py'),
                     ('mysql', 'my-', 'kernel_mysql', 60, 'managed-mysql.py')),
             'Unsupported fixed scoped protocol contract')
+    require(type(contract.udp) is bool and (not contract.udp or contract.name == 'dns' and not contract.diagnostic and not contract.fast
+            and contract.prepare_file == 'managed-dns-udp.py' and callable(contract.receipt_validator))
+            and (contract.udp or contract.prepare_file != 'managed-dns-udp.py'),
+            'UDP requires its explicit DNS preparation/receipt contract')
     require(type(contract.diagnostic) is bool and (not contract.diagnostic or
             (contract.name == 'mysql' and callable(contract.preflight_validator) and callable(contract.observer_gate))),
             'Diagnostic contract requires explicit fixed preflight and observer gates')
     require(type(contract.fast) is bool and (not contract.fast or contract.name == 'mysql' and contract.diagnostic),
             'Fast contract requires explicit MySQL observer gates')
+
+
+def capture_source_files(contract):
+    validate_contract(contract)
+    names = (contract.script, contract.prepare_file, 'ebpf-dns.py', 'managed-http-agent.py', 'association-lease.py',
+             'ebpf-association.py', 'managed_http_scope.py', 'managed_http_scope_validation.py', 'managed-http-scope-abi.json')
+    if contract.fast:
+        names += ('ebpf-mysql-diagnostic.py', 'ebpf-mysql.py', 'verify-ebpf-mysql-fast.py', 'verify-ebpf-mysql.py',
+                  'native-mysql-observer.py', 'ebpf-mysql-fast-observed.py')
+    if contract.udp:
+        names += ('verify-ebpf-dns-udp.py', 'ebpf-dns-udp.c')
+    return tuple(dict.fromkeys(names))
 
 
 def worker_selection(state, role):
@@ -265,7 +287,7 @@ def run_phase(work, state, phase, contract=DNS_CONTRACT):
         _, worker_role, run = worker_selection(state, role)
         validator = contract.receipt_validator or validate_receipt
         validator(receipt, run, worker_role)
-    CORE.event(work, phase + '-completed', {'queries': 3, 'transport': 'tcp', 'port': 18080, 'protocol': contract.label})
+    CORE.event(work, phase + '-completed', {'queries': 3, 'transport': contract.transport, 'port': 18080, 'protocol': contract.label})
 
 
 def cleanup(work, state):
@@ -342,11 +364,7 @@ def execute(args, contract=DNS_CONTRACT):
         require(state['run'] != state['negative_run'], 'Positive/negative DNS nonces must differ')
         CORE.persist(work, state)
         CORE.write(work / 'helper-code-sha256.json', hashes)
-        CORE.write(work / 'capture-source-sha256.json', {name: CORE.file_hash(HERE / name) for name in
-                   dict.fromkeys((contract.script, contract.prepare_file, 'ebpf-dns.py', 'managed-http-agent.py', 'association-lease.py',
-                    'ebpf-association.py', 'managed_http_scope.py', 'managed_http_scope_validation.py', 'managed-http-scope-abi.json')
-                    + (('ebpf-mysql-diagnostic.py', 'ebpf-mysql.py', 'verify-ebpf-mysql-fast.py', 'verify-ebpf-mysql.py',
-                        'native-mysql-observer.py', 'ebpf-mysql-fast-observed.py') if contract.fast else ()))})
+        CORE.write(work / 'capture-source-sha256.json', {name: CORE.file_hash(HERE / name) for name in capture_source_files(contract)})
         CORE.write(work / 'supervisor.json', dict(CORE.proc_identity(os.getpid()), argv=sys.argv))
         result = {'schema': contract.schema, 'run': state['run'], 'negative_run': state['negative_run'], 'pass': False,
                   'storage_verified': False, 'runtime_receipts_required': True, 'performance_measurement': False}
@@ -366,7 +384,7 @@ def execute(args, contract=DNS_CONTRACT):
                             'negative_run': state['negative_run'], 'integration_mode': contract.integration_mode,
                             'controller_ip': args.controller_ip, 'controller_port': args.controller_port,
                             'ingester_port': args.ingester_port, 'ctrl_ip': args.ctrl_ip, 'ctrl_mac': args.ctrl_mac,
-                            'profile': profile, 'signal_source': 3, 'l7_protocol': contract.protocol_id, 'transport': 'tcp', 'port': 18080}
+                            'profile': profile, 'signal_source': 3, 'l7_protocol': contract.protocol_id, 'transport': contract.transport, 'port': 18080}
                 if contract.diagnostic:
                     metadata.update(diagnostic_only=True, integrity_qualified=False, pacing_only_qualification=False,
                                     observer_gates_required=True, observer_timeout_seconds=args.observer_timeout_seconds,
@@ -380,7 +398,7 @@ def execute(args, contract=DNS_CONTRACT):
                 context = CORE.backend(state, 'prepare', metadata)
                 metadata['agent_id'] = context['agent_id']
                 CORE.write(work / 'ingestion-metadata.json', metadata)
-                preparation = PREPARE if contract.name == 'dns' else module('mysql_scoped_preparation', contract.prepare_file)
+                preparation = PREPARE if contract.name == 'dns' and not contract.udp else module('mysql_scoped_preparation', contract.prepare_file)
                 preparation.prepare(work / 'prepared', controller_ip=args.controller_ip, group_id=context['group_short_uuid'],
                                 controller_port=args.controller_port, ingester_port=args.ingester_port)
                 require(CORE.read(work / 'prepared/group-profile.json') == profile, 'DNS preparation differs from Controller profile')

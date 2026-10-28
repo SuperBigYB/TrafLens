@@ -215,7 +215,7 @@ def verified_preparation(path):
     path=canonical_private(path,directory=True)
     manifest=load(canonical_private(path/'manifest.json'))
     names={'group-profile.json','bootstrap.yaml'}
-    if manifest.get('schema') not in ('traflens.managed-http-preparation.v1','traflens.managed-dns-preparation.v1','traflens.managed-mysql-preparation.v1') or set(manifest['files'])!=names:
+    if manifest.get('schema') not in ('traflens.managed-http-preparation.v1','traflens.managed-dns-preparation.v1','traflens.managed-dns-udp-preparation.v1','traflens.managed-mysql-preparation.v1') or set(manifest['files'])!=names:
         raise ValueError('Unsupported preparation manifest')
     for name in names:
         file=canonical_private(path/name)
@@ -226,10 +226,12 @@ def verified_preparation(path):
     if manifest['schema']=='traflens.managed-http-preparation.v1':
         expected=preparation.documents(boot['controller-ips'][0],boot['vtap-group-id-request'],
             boot['controller-port'],comm['ingester_ip'],comm['ingester_port'],manifest['http_port'])
-    elif manifest['schema']=='traflens.managed-dns-preparation.v1':
-        spec=importlib.util.spec_from_file_location('managed_dns_prepare',HERE/'managed-dns.py')
+    elif manifest['schema'] in ('traflens.managed-dns-preparation.v1','traflens.managed-dns-udp-preparation.v1'):
+        udp=manifest['schema']=='traflens.managed-dns-udp-preparation.v1'
+        spec=importlib.util.spec_from_file_location('managed_dns_prepare',HERE/('managed-dns-udp.py' if udp else 'managed-dns.py'))
         dns=importlib.util.module_from_spec(spec);spec.loader.exec_module(dns)
-        if manifest.get('protocol')!='DNS/TCP' or 'http_port' in manifest:
+        if (manifest.get('protocol')!=('DNS/UDP' if udp else 'DNS/TCP') or 'http_port' in manifest
+                or udp and manifest.get('transport')!='udp'):
             raise ValueError('DNS manifest protocol differs')
         expected=dns.documents(boot['controller-ips'][0],boot['vtap-group-id-request'],
             boot['controller-port'],comm['ingester_ip'],comm['ingester_port'],manifest['dns_port'])
