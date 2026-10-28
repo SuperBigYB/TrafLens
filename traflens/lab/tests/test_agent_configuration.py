@@ -72,7 +72,8 @@ class PacketProfileTests(unittest.TestCase):
         self.assertEqual(tunnels['global']['limits']['max_millicpus'], 2000)
         self.assertEqual(tunnels['global']['limits']['max_memory'], 1024)
         inputs = tunnels['inputs']
-        self.assertEqual(inputs['ebpf'], {'disabled': True})
+        self.assertEqual(inputs['ebpf'], baseline['inputs']['ebpf'])
+        self.assertIs(inputs['ebpf']['disabled'], True)
         self.assertEqual(inputs['proc'], {'enabled': False})
         self.assertEqual(inputs['cbpf']['af_packet']['interface_regex'], '^enp1s0f0$')
         self.assertEqual(inputs['cbpf']['af_packet']['tunning'], baseline['inputs']['cbpf']['af_packet']['tunning'])
@@ -115,6 +116,32 @@ class PacketProfileTests(unittest.TestCase):
         for profile in ('http', 'protocols', 'tunnels'):
             self.assertNotIn('packet_segmentation_reassembly',
                              configure.profile_config(profile)['inputs']['cbpf'].get('preprocess', {}))
+
+    def test_packet_profiles_explicitly_disable_license_sensitive_inputs(self):
+        # Community allocation periodically restores all license functions. These
+        # restart-sensitive leaves must stay disabled without a license mask.
+        leaves = {
+            'ebpf.disabled': True,
+            'ebpf.socket.kprobe.disabled': True,
+            'ebpf.socket.uprobe.golang.enabled': False,
+            'ebpf.socket.uprobe.tls.enabled': False,
+            'ebpf.file.io_event.collect_mode': 0,
+            'ebpf.profile.on_cpu.disabled': True,
+            'integration.enabled': False,
+            'integration.feature_control.profile_integration_disabled': True,
+            'integration.feature_control.trace_integration_disabled': True,
+            'integration.feature_control.metric_integration_disabled': True,
+            'integration.feature_control.log_integration_disabled': True,
+        }
+        for profile in ('http', 'protocols', 'tunnels', 'segmentation'):
+            for path, expected in leaves.items():
+                with self.subTest(profile=profile, path=path):
+                    actual = configure.profile_config(profile)['inputs']
+                    for key in path.split('.'):
+                        self.assertIn(key, actual, 'Missing explicit packet-only switch')
+                        actual = actual[key]
+                    self.assertIs(type(actual), type(expected))
+                    self.assertEqual(actual, expected)
 
     def test_unknown_profile_rejected(self):
         with self.assertRaises(ValueError):

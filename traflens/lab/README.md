@@ -270,3 +270,27 @@ expected failed contracts as failed results. The supported Count(row) control
 must equal the native ClickHouse count immediately before and after it.
 The checker performs no Server/database replacement or packet capture.
 See [API validation](../README-api-validation.md) for exact scope and results.
+
+
+## Stable packet-only profiles across community license allocation
+
+The community Controller's `monitor/license/pseudo_license.go` periodically
+restores all license functions (default interval60s). A temporary restricted
+license list is not a stable way to disable collection features. The feature
+controller in `trisolaris/vtap/vtap_cache.go` overlays fine-grained switches
+when a license function is absent. When that mask disappears, unset leaves
+return to defaults and can trigger the Agent's configuration-restart path
+even when their parent input is disabled. Stored group YAML need not change.
+
+`agent-smoke.json` therefore explicitly disables socket kprobe, Go/TLS uprobes,
+IO-event collection, on-CPU profiling and all four integration feature-control
+leaves, in addition to the eBPF/integration parent switches. All four packet
+profiles inherit these settings. Community-hidden off-CPU/memory profile fields
+are left at their disabled defaults; unsupported fields are not sent to the
+community configuration API. Template validation remains required before apply.
+
+For runtime acceptance, retain Controller inventory/configuration observations
+and Agent logs across at least one allocation tick. A change in effective
+configuration, capture disable, or configuration-restart exit invalidates a
+healthy control. Restore the exact previous YAML after removing the owned Agent.
+The profile's resource, queue and export limits are unchanged.

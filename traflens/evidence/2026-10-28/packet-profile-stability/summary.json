@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "change_scope": "Explicit packet-only laboratory configuration; no Controller or Agent production code changes.",
+  "cause": {
+    "community_license_interval_default_seconds": 60,
+    "initial_mask": [
+      2,
+      4
+    ],
+    "periodic_mask": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "stored_group_configuration_unchanged_during_license_transition": true,
+    "effective_configuration_changed_without_explicit_leaves": true,
+    "prior_restart_exit": 3,
+    "source_paths": [
+      "server/controller/monitor/license/pseudo_license.go",
+      "server/controller/trisolaris/vtap/vtap_cache.go",
+      "agent/src/config/handler.rs"
+    ]
+  },
+  "tests": {
+    "before": "New explicit-switch regression fails with the old profile.",
+    "after_lab_suite": 220,
+    "failures": 0,
+    "ignored": 0,
+    "community_template_validation": true,
+    "hidden_off_cpu_memory_fields": "Rejected in an initial preparation attempt, removed; disabled community defaults retained."
+  },
+  "native_binary": {
+    "source": "3dec20af5ce6ff25c696d136b5477f5310b4962c",
+    "sha256": "8dd5ec668a09dcdac10068727fb47f282cf8091a93a11fb71cbbc33db3853763",
+    "bytes": 79330512
+  },
+  "trials": [
+    {
+      "role": "healthy",
+      "scheduled": 2000,
+      "client_completed": 2000,
+      "server_completed": 2000,
+      "rate_rps": 200,
+      "seconds": 10,
+      "preload_dwell_seconds": 70,
+      "license_restoration_observed": true,
+      "config_restart_or_disable": false,
+      "agent_exit_code": 0,
+      "stop_wait_seconds": 12.999726737994934,
+      "stored_rows": 2000,
+      "exact_full_scans": 2,
+      "poststop_zero_count_reads": 0
+    },
+    {
+      "role": "fault",
+      "scheduled": 2000,
+      "client_completed": 2000,
+      "server_completed": 2000,
+      "rate_rps": 200,
+      "seconds": 10,
+      "preload_dwell_seconds": 70,
+      "license_restoration_observed": true,
+      "config_restart_or_disable": false,
+      "agent_exit_code": 1,
+      "stop_wait_seconds": 11.606928601002437,
+      "stored_rows": 0,
+      "exact_full_scans": 0,
+      "poststop_zero_count_reads": 2
+    }
+  ],
+  "cleanup": {
+    "healthy_lifecycle": true,
+    "healthy_exact_rows": 2000,
+    "healthy_exact_scans": 2,
+    "healthy_replay": true,
+    "fault_lifecycle": true,
+    "fault_exit_code": 1,
+    "fault_zero_counts": [
+      0,
+      0
+    ],
+    "controller_license_transitions_observed": true,
+    "no_agent_config_restart_or_disable": true,
+    "exact_controller_yaml_restored": true,
+    "service_ids_started_at_images_mounts_unchanged": true,
+    "lease_cleanup_complete": true,
+    "original_matrix_exit": 1,
+    "original_matrix_failure": "Private full-row diagnostic rejected columnless zero-row response; independent zero-count acceptance follows.",
+    "complete": true
+  },
+  "limitations": [
+    "One healthy and one unavailable-data-port trial; no throughput ceiling or full DeepFlow parity.",
+    "An older sample with pre-signal disable and later absent registration retains an unproven cause.",
+    "Two zero counts do not prove no arbitrary future late writes.",
+    "The original matrix failure and follow-up zero-count acceptance are both retained."
+  ],
+  "public_profile_sha256": "be885e6d09f8923b6c06abc30cb935c127fbf4e347b58302d43834eabbb03ef9"
+}

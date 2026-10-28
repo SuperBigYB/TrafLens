@@ -166,3 +166,45 @@ database restart is performed. Next qualification must trace Controller
 profile propagation and verify stable enable/configuration state throughout
 the workload before interpreting normal-stop delivery. Anonymous observations
 are in [runtime.json](evidence/2026-10-27/sender-failure-history/runtime.json).
+
+
+## Stable packet profile and completed sender fault control (2026-10-28)
+
+The configuration-restart failure above is traced to community license
+allocation: the mask changes from `[2,4]` to all functions while stored group
+configuration stays unchanged. Fine-grained leaves supplied by license filtering
+then disappear, exposing restart-sensitive defaults. Packet smoke profiles now
+explicitly disable those leaves; the Controller's community allocation policy
+and production Agent code are unchanged. See `lab/README.md`. The older
+pre-signal-disable/absent-registration sample still has no established cause.
+
+The same exact native `3dec20af5` binary is tested with the repaired profile.
+Each role dwells70s after readiness to span license allocation, then generates
+2000 fresh-TCP HTTP requests at200RPS for10s. Both client/server pairs complete
+all2000 without failures/skips. Both observed license lists restore to all
+functions without Agent restart or Running-to-Disabled transition. Resource,
+queue, export limits and40s stop grace remain the same as earlier tests.
+
+Healthy: no ingestion query precedes SIGTERM after workload-wrapper cleanup.
+Exit0 takes13.000s;2000 rows pass two full metadata scans after removal,
+16 data pages and4 count reads, independently replayed from raw receipts.
+Fault: only this Agent's ingestion data port is changed to a verified unbound
+peer port; control service remains available. A12s post-load quiet window
+allows active-operation flushes before stop. Exit1 takes11.607s, with real
+connection-failure logs and two independent post-stop whole-marker counts of0.
+This validates failure reporting, not recovery, retransmission or durable ACKs.
+
+The private full-row diagnostic rejects a columnless zero-row response, so the
+original matrix ends1 despite both lifecycle receipts passing. That failure is
+retained. A separate bounded count-only negative oracle verifies paired reports
+and two exact zero counts; it does not weaken or relabel the healthy full-row
+oracle. Unsupported hidden profile fields also caused an earlier preparation
+rejection and were removed before these traffic trials.
+
+Exact Controller YAML, bench state, route and BPF/tracefs baselines are restored;
+owned workers are removed and preexisting service IDs/start times/images/mounts
+match before snapshots. No Server/database restart occurs. The complete lab
+suite passes220 tests, including a regression that fails on the old profile.
+Anonymous results are in
+[evidence/2026-10-28/packet-profile-stability/summary.json](evidence/2026-10-28/packet-profile-stability/summary.json).
+These two cases do not establish maximum performance or complete DeepFlow parity.

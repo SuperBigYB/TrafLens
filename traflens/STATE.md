@@ -5,21 +5,26 @@ performance. Read this file, `git status --short --branch`, and the latest evide
 before each hourly iteration. Source presence, a successful build and a healthy
 process are separate from successful collection and product parity.
 
-## Current follow-up: sender failure history
+## Current checkpoint: stable packet profile (2026-10-28)
 
-A new loopback regression exposes a normal-operation TCP refusal being forgotten
-after the encoder and periodic drop counters clear. The follow-up makes every
-failed network-frame flush sticky for the sender component run, including
-backoff and configured throughput drops; only starting a new component run
-resets it. See `README-agent-shutdown.md` for scope and unchanged runtime-binary
-qualification. Native423+28+21 tests pass, and core `3dec20af5` passes both
-CI40529091917 jobs. Its optimized native binary is built, but two healthy
-runtime attempts remain unqualified: pre-signal Controller disable with
-1328/2000 rows, then a fresh registration's configuration-triggered exit3.
-The unavailable-ingester trial never starts. Trace profile/registration changes
-before retrying; preserve both failed attempts. Exact results are retained in
-private `sender-health-20261027` evidence and public sender-failure-history JSON.
-Both attempts restore configuration/link/BPF/service baselines.
+Community license allocation periodically restores all functions; the former
+packet profile relied on the restricted license mask to set fine-grained input
+switches. Its stored YAML stayed unchanged while effective defaults changed
+and triggered exit3. Explicit packet-only switches repair this test configuration.
+All220 lab tests pass; the new regression fails on the old profile. No production
+Controller or Agent source changes are needed for this profile correction.
+
+Native `3dec20af5` now completes both two-machine controls across observed license
+restoration: healthy2000/2000 exact rows (two scans), exit0; unbound data port
+with healthy control channel,2000 completed exchanges, two zero counts, exit1.
+Both use2CPU/1GiB,200RPS10s,70s pre-load stability dwell and40s stop grace.
+Healthy stop13.000s; fault stop11.607s. All owned runtime workers are removed;
+Controller YAML/link/route/BPF and existing service identities restore exactly.
+The original zero-row diagnostic failure and its independent count-only follow-up
+are retained. See `README-agent-shutdown.md` and the dated evidence JSON.
+The older pre-signal disable/absent-registration cause remains unproven.
+Next gates include active/incomplete flow shutdown, more protocols and sustained
+load; these results are not a maximum-throughput or full-parity claim.
 
 ## Checkout and source
 
