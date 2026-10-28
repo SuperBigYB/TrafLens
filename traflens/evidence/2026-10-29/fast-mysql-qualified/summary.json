@@ -1,0 +1,149 @@
+{
+  "schema": "traflens.mysql-fast-product.qualification.v1",
+  "date": "2026-10-29",
+  "milestone": "M15",
+  "finite_gate_passed": true,
+  "native": {
+    "source": "e1daf16b1dceb2d38ee1ad90de34e4a380111e74",
+    "binary_sha256": "0544bd9c5dc10bf8f75e9495086922a6b018ee0cee3b06d03cbf3b629a31b8de",
+    "bytes": 79424416,
+    "default_libtrace_release": true,
+    "version_verified_in_isolated_runtime": true,
+    "build_seconds": 637,
+    "old_qualified_artifact_unchanged": true
+  },
+  "actual_scope": {
+    "new_socket_programs": 81,
+    "map_type": 2,
+    "map_key_bytes": 4,
+    "map_value_bytes": 24,
+    "map_entries": 1,
+    "allowlisted_map_lookups": 1,
+    "payload_or_cache_maps_read": false,
+    "af_packet_sockets": 0,
+    "normal_license_functions": [
+      2,
+      4,
+      5
+    ],
+    "merged_preprocess": {
+      "protocols": [
+        "MySQL"
+      ],
+      "cache": 256,
+      "timeout_ms": 100,
+      "segmentation_protocols": []
+    },
+    "before_after_gate_passed": true
+  },
+  "application": {
+    "positive_conversations": 3,
+    "negative_conversations": 3,
+    "workers": 4,
+    "per_worker_data_io": 18,
+    "per_worker_eof_io": 3,
+    "per_worker_classic_packets": 26,
+    "sql_executed": false,
+    "phase_wait_ms": 0,
+    "fixture_source_sha256": "d097917c05cfb5de5e8a0f5fe91cfc4181ae7653e4b3c11b4488333dab17c06f",
+    "fixture_binary_sha256": "1c17c2cec2808c20c220e64e483a4ce5e213c1b2f37959b4dd6c42e0f7163136"
+  },
+  "metadata": {
+    "data_callbacks": 36,
+    "close_callbacks": 6,
+    "socket_count": 6,
+    "all_live_sequences": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "live_callback_disorder_observed": false,
+    "actual_cpu_available": false,
+    "actual_queue_order_available": false,
+    "observer_metadata_only": true,
+    "private_native_console_may_include_owned_fixture_payload": true,
+    "independent_wire_data_matches": 36,
+    "independent_socket_close_matches": 6
+  },
+  "storage": {
+    "whole_marker_reads": 2,
+    "whole_agent_window_reads": 2,
+    "all_observations": 18,
+    "marked_observations": 12,
+    "query_observations": 6,
+    "login_observations": 6,
+    "standalone_quit_observations": 6,
+    "negative_stored_records": 0,
+    "source_counts": {
+      "0": 0,
+      "3": 12,
+      "4": 0
+    },
+    "exact_detail_reads": 18,
+    "original_projection_sha256": "8cccb5c2b2c4ff770da531cc483785fdf586f0de7252e904cb27b618a3b42a6b",
+    "request_count": 38,
+    "elapsed_seconds": 0.48
+  },
+  "browser": {
+    "pass": true,
+    "browser": "headless Microsoft Edge",
+    "unpaced_native_candidate": true,
+    "page_errors": [],
+    "full_capture_metadata_copied_locally": false,
+    "sql_executed": false,
+    "actual_source3_mysql_sessions": 18,
+    "marked_login_and_query_observations": 12,
+    "query_observations": 6,
+    "query_resources": 3,
+    "successful_query_observations": 4,
+    "error1064_observations": 2,
+    "all_phases_exact_details": 18,
+    "all_login_query_quit_population_shown": true,
+    "existing_protocol_source_and_error_controls": true,
+    "normal_null_and_native_error_semantics_preserved": true,
+    "wrong_source_agent_time_id_empty": true
+  },
+  "tests": {
+    "targeted_fast_and_compatibility": 73,
+    "public_observer": 12,
+    "offline_scope_guards": 16,
+    "total_distinct_this_round": 101,
+    "prior_native_tests": 43,
+    "prior_native_tests_repeated": false,
+    "console_64_historical_not_repeated": true,
+    "remote_ci_checked": false
+  },
+  "restoration": {
+    "capture_public_stop_passed": true,
+    "query_public_stop_passed": true,
+    "all_owned_temporary_resources_exited": true,
+    "controller_original_inventory_and_yaml": true,
+    "old_server_identity_image_network_and_config": true,
+    "physical_device_interfaces_and_routes": true,
+    "bpf_tracefs_pins_and_namespace_fds": true
+  },
+  "limitations": [
+    "One finite unpaced classic wire fixture, not executed SQL, real database authentication, full MySQL compatibility, maximum throughput or loss-free generality.",
+    "R24 C callbacks were already ordered. R22 actual disorder is preserved and R23 actual MetaPacket/replay proves the bounded ordering logic; this run does not demonstrate live correction of disordered callbacks.",
+    "R21 Query/QUIT loss is not exclusively attributed to the R22 disorder; all failed/paced results remain unchanged.",
+    "Native C stop remains asynchronous. Accounted cache budgets do not bound RSS. Actual CPU/queue and whole-lifetime post/drop counts remain unproven.",
+    "jattach public input SHA lineage is recorded; its historical Git pin remains unverified."
+  ],
+  "private_evidence_hashes": {
+    "production-candidate-result.json": "e6d7ede15fa3bd2bf04da484b665635a17fac6cd4a886ee67e30aa656cc79380",
+    "artifact-public-gate.json": "0a7aab43b030ca61d05cec4eae55187a8d8153bdb1c14e7ddc224eeab554c0b8",
+    "artifact-mirror-validation.json": "b375904235b1abe037e6275fe686a9600bfe322f974ab213c02e7c7cd06e0e3a",
+    "offline-scope-qualification-gates.json": "8e7246eab2a776e22f667ea2d5c115177484de579338ffe941fa30dd68015fa5",
+    "final-public-code-sha256.json": "396c627051f22f06236f849941009931c03090ae424f03b53ba3c12079f4eef8",
+    "runtime-1/result.json": "9c24f32b9306545fedb8a2631c39947c62dfe7284ff82630638c4f9970ab1b98",
+    "observer-attempt-1/observer-supervisor-result.json": "1a4cab392bc52aa57bdf8f124259f14a3b5e44d11eacb885001e6300a396e845",
+    "acceptance-1/result.json": "a39f881e7f8cc8614a7a569f09ddae25b86d23132bdb627be8bf739a55cfa149",
+    "browser-result-1.json": "74a008ff94e76e9fdf33fb53e7074affa6a4760a26310f17477fa94de9774944",
+    "final-all-resources-proof.json": "339f22e1ee45fd850205a78ca44370f2747bee3e4ccf5e139557fe28737b9756",
+    "event-wire-reconciliation.json": "4f02cd357258eb4622a4790b1e6c39bdbbb3c41528db49138fdbe84d421184b0"
+  }
+}

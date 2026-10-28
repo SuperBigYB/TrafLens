@@ -52,10 +52,11 @@ class ProtocolContract(NamedTuple):
     diagnostic: bool = False
     preflight_validator: object = None
     observer_gate: object = None
+    fast: bool = False
 
     @property
     def stem(self):
-        return self.name + ('-diagnostic' if self.diagnostic else '')
+        return self.name + ('-fast' if self.fast else '-diagnostic' if self.diagnostic else '')
 
     @property
     def label(self):
@@ -90,6 +91,8 @@ def validate_contract(contract):
     require(type(contract.diagnostic) is bool and (not contract.diagnostic or
             (contract.name == 'mysql' and callable(contract.preflight_validator) and callable(contract.observer_gate))),
             'Diagnostic contract requires explicit fixed preflight and observer gates')
+    require(type(contract.fast) is bool and (not contract.fast or contract.name == 'mysql' and contract.diagnostic),
+            'Fast contract requires explicit MySQL observer gates')
 
 
 def worker_selection(state, role):
@@ -341,13 +344,17 @@ def execute(args, contract=DNS_CONTRACT):
         CORE.write(work / 'helper-code-sha256.json', hashes)
         CORE.write(work / 'capture-source-sha256.json', {name: CORE.file_hash(HERE / name) for name in
                    dict.fromkeys((contract.script, contract.prepare_file, 'ebpf-dns.py', 'managed-http-agent.py', 'association-lease.py',
-                    'ebpf-association.py', 'managed_http_scope.py', 'managed_http_scope_validation.py', 'managed-http-scope-abi.json'))})
+                    'ebpf-association.py', 'managed_http_scope.py', 'managed_http_scope_validation.py', 'managed-http-scope-abi.json')
+                    + (('ebpf-mysql-diagnostic.py', 'ebpf-mysql.py', 'verify-ebpf-mysql-fast.py', 'verify-ebpf-mysql.py',
+                        'native-mysql-observer.py', 'ebpf-mysql-fast-observed.py') if contract.fast else ()))})
         CORE.write(work / 'supervisor.json', dict(CORE.proc_identity(os.getpid()), argv=sys.argv))
         result = {'schema': contract.schema, 'run': state['run'], 'negative_run': state['negative_run'], 'pass': False,
                   'storage_verified': False, 'runtime_receipts_required': True, 'performance_measurement': False}
         if contract.diagnostic:
             result.update(diagnostic_only=True, integrity_qualified=False, pacing_only_qualification=False,
                           unpaced_completeness_proven=False, native_fix_claimed=False)
+        if contract.fast:
+            result.update(unpaced_fast_candidate=True, performance_measurement=False)
         def interrupted(*_):
             raise InterruptedError('Owned DNS capture interrupted; public stop can resume')
         signal.signal(signal.SIGTERM, interrupted)
@@ -364,6 +371,9 @@ def execute(args, contract=DNS_CONTRACT):
                     metadata.update(diagnostic_only=True, integrity_qualified=False, pacing_only_qualification=False,
                                     observer_gates_required=True, observer_timeout_seconds=args.observer_timeout_seconds,
                                     archived_workload_source_sha256=CORE.file_hash(args.workload_source))
+                if contract.fast:
+                    metadata.update(unpaced_fast_candidate=True, pacing_only_qualification=False,
+                                    archived_workload_binary_sha256=args.workload_sha256)
                 CORE.write(work / 'metadata.json', metadata)
                 state['controller_attempted'] = True
                 CORE.persist(work, state)
@@ -483,6 +493,9 @@ def main(argv=None, contract=DNS_CONTRACT):
                           'scope': 'exact positive namespace FD/inode/map', 'source': 3, 'storage_verified': False}
         if contract.diagnostic:
             plan.update(diagnostic_only=True, integrity_qualified=False, observer_gates_required=True)
+        if contract.fast:
+            plan.update(schema=contract.schema, unpaced_fast_candidate=True, pacing_only_qualification=False,
+                        unpaced_completeness_proven=False, performance_measurement=False)
         print(json.dumps(plan))
         return 0
     os.umask(0o077)

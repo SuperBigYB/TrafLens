@@ -21,7 +21,7 @@ requalifying it when unrelated work changes.
    Acceptance: a fresh bounded workload on the two hosts is visible through the
    product entry point, with usable filtering and a drill-down to real records;
    document how to start and access it. Do not substitute mock data for this gate.
-2. **Core eBPF ingestion (HTTP, finite TCP DNS M13 and paced MySQL M14 slices complete; fast-MySQL completeness open).** Complete managed eBPF capture through ingestion and
+2. **Core eBPF ingestion (HTTP, finite TCP DNS M13 and finite paced/unpaced MySQL M14/M15 slices complete).** Complete managed eBPF capture through ingestion and
    query for the core HTTP/DNS/database scenarios, then extend TLS coverage.
    Acceptance: known real requests appear with the correct protocol and source
    metadata under a repeatable setup. Carry blocking collection fixes here.
@@ -44,17 +44,40 @@ product slice or remove a direct blocker to the active milestone. Existing
 upstream source alone is not completion. Keep source/build/runtime/benchmark
 qualification distinct. Preserve upstream licensing and attribution.
 
-## Active M15: fast MySQL completeness
+## M15 finite fast MySQL gate complete; next single M16 after dual sync
 
-M15-01/02 real diagnosis and M15-03a bounded source/replay/native-unit tests are
-delivered. Sorting uses full UID/source and cap ranges, preserves normal idle
-checkpoints and orders CLOSE behind gaps, with explicit bounds/drop counters.
-The native MySQL default is tested without expanding Controller/capture scope.
-Next qualify a real production Agent ELF from the new commit and actual scope
-ABI/FD/map, then prove fast18complete-Session/marker12/query6/QUIT6/negative0
-API/browser acceptance with a truly unpaced oracle. Keep M15 active. Do not
-substitute test binaries, pacing receipts or old qualification labels, add wire
-sleeps, hide orphan/QUIT records, or repeat old matrices.
+The real new Agent e1daf16b1/0544bd9c passes actual scope/merged configuration,
+public unpaced lifecycle, independent complete18Session/marker12/query6/QUIT6/
+outside0 raw/API and actual headless Edge details. The bounded native repair is
+supported by R22 disorder and R23 native replay; the R24 live input itself was
+ordered, so it is not live evidence of disorder correction or loss-free generality.
+All earlier failures remain unchanged and all temporary resources are restored.
+See [the finite qualification](evidence/2026-10-29/fast-mysql-qualified/README.md).
+
+Once both main refs match this delivery, only M16 becomes active: **managed eBPF
+UDP DNS query/error navigation**. M13 established TCP-only DNS, while ordinary
+UDP collection is still unproven. Expand this core protocol path before unrelated
+microbenchmarks, asset/profile matrices or complete async tracing.
+
+- M16-01: verify actual UDP syscall/input/inference/parser, native fields/units,
+  protocol/config/license and strict namespace FD/map support. Select the smallest
+  real supported own endpoint; fix a direct input blocker if needed.
+- M16-02: bounded real UDP success/error and outside-scope queries with independent
+  wire/application identities and complete source3 population. Do not relabel TCP,
+  packet source0, synthetic ingestion or an ACK as UDP eBPF capture.
+- M16-03: reuse bounded DNS/protocol/source/error/detail APIs and console, add only
+  missing mainline behavior; counts/transactions/time/TXID scope stay explicit.
+- M16-04: independent two-host raw/API positive-negative and actual browser gate,
+  with no hidden filters dropping unsupported or orphan observations.
+- M16-05: public prepare/run/verify/stop, exact recovery and both main refs match;
+  only then select the next single milestone.
+
+The fresh e1daf artifact is qualified for M15's finite MySQL path and scope;
+older protocol gates remain historical. New input/runtime claims require their
+own necessary gate, without rerunning unrelated HTTP/OTLP/profile/L4/performance
+matrices. Keep onCPU/DWARF/proc/profile/OTLP disabled and normal kernel licensing;
+never widen to management traffic/unrelated processes or use the Controller DB
+as a workload. The local file is the execution authority.
 
 ## Recurring execution policy
 

@@ -35,11 +35,11 @@ def tracer(lost=0):
             'SUM dequeue 10 enqueue 11 lost 2 alloc failed 3 burst count 4\n')
 
 
-def constructed_capture(folder, diagnostic=False):
+def constructed_capture(folder, diagnostic=False, fast=False):
     """Only synthetic local unit documents; never runtime/native qualification."""
     root = Path(folder)
     run = 'my-'+'a'*24
-    schema = 'traflens.ebpf-mysql'+('-diagnostic' if diagnostic else '')
+    schema = 'traflens.ebpf-mysql'+('-fast' if fast else '-diagnostic' if diagnostic else '')
     cid = 'a'*64
     anchor = 'b'*64
     def write(path, value):
@@ -216,6 +216,28 @@ class NativeObserverTests(unittest.TestCase):
             state = json.loads((root/'state.json').read_text())
             for schema in ['prefix.'+state['schema'], state['schema']+'.extra', 'traflens.ebpf-dns.capture.v1']:
                 with self.assertRaises(ValueError): M.capture_contract(dict(state, schema=schema), root)
+
+    def test_fast_has_its_own_exact_scope_worker_and_purpose_without_fallback(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root, cid, original_scope = constructed_capture(folder, fast=True)
+            scope, _ = M.capture_binding(root, cid)
+            self.assertEqual(scope, original_scope)
+            self.assertEqual(M.roster(root, cid, scope)[0], IDENTITIES)
+            path = root/'positive-server-runtime.json'
+            original = json.loads(path.read_text())
+            for field, value in [('schema', 'traflens.ebpf-mysql.worker-runtime.v1'),
+                                 ('schema', 'traflens.ebpf-mysql-diagnostic.worker-runtime.v1')]:
+                changed = json.loads(json.dumps(original));changed[field] = value
+                path.write_text(json.dumps(changed))
+                with self.assertRaises(ValueError): M.roster(root, cid, scope)
+            changed = json.loads(json.dumps(original))
+            changed['inspect']['labels']['io.traflens.purpose'] = 'traflens.ebpf-mysql-diagnostic.worker'
+            path.write_text(json.dumps(changed))
+            with self.assertRaises(ValueError): M.roster(root, cid, scope)
+            for suffix in ['.extra', '-extra']:
+                state = json.loads((root/'state.json').read_text())
+                state['schema'] += suffix
+                with self.assertRaises(ValueError): M.capture_contract(state, root)
 
     def test_first_unowned_uid0_close_requires_no_roster_and_saves_only_anonymous_count(self):
         raw = (header(0, pid=999, socket=0, cap=0, close=True, proto='Unknown')+'\n'+header(1)+'\n').encode()

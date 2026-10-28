@@ -13,6 +13,7 @@ import signal
 import struct
 import sys
 import time
+from typing import NamedTuple
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -34,6 +35,90 @@ PLUGIN=b'mysql_native_password'
 SCRAMBLE=b'12345678abcdefghijkl'
 OK=b'\x00\x00\x00\x02\x00\x00\x00'
 EOF=b'\xfe\x00\x00\x02\x00'
+
+
+class AcceptanceContract(NamedTuple):
+    stem: str = 'mysql'
+    native_source: object = None
+    native_sha256: object = None
+
+
+DEFAULT_CONTRACT = AcceptanceContract()
+ARCHIVED_SOURCE_SHA256 = 'd097917c05cfb5de5e8a0f5fe91cfc4181ae7653e4b3c11b4488333dab17c06f'
+ARCHIVED_ARTIFACT_SHA256 = '1c17c2cec2808c20c220e64e483a4ce5e213c1b2f37959b4dd6c42e0f7163136'
+OLD_NATIVE_SOURCE = '3dec20af5ce6ff25c696d136b5477f5310b4962c'
+OLD_NATIVE_SHA256 = '8dd5ec668a09dcdac10068727fb47f282cf8091a93a11fb71cbbc33db3853763'
+
+
+def validate_acceptance_contract(contract, executing=False):
+    require(isinstance(contract, AcceptanceContract) and contract.stem in ('mysql', 'mysql-fast'),
+            'Explicit supported MySQL acceptance contract required')
+    if contract.stem == 'mysql':
+        require(contract == DEFAULT_CONTRACT, 'Default MySQL acceptance contract cannot be overridden')
+    elif executing:
+        require(isinstance(contract.native_source, str) and re.fullmatch('[0-9a-f]{40}', contract.native_source)
+                and contract.native_source != OLD_NATIVE_SOURCE
+                and isinstance(contract.native_sha256, str) and re.fullmatch('[0-9a-f]{64}', contract.native_sha256)
+                and contract.native_sha256 != OLD_NATIVE_SHA256,
+                'Fast acceptance requires the independently qualified new native source and binary SHA')
+
+
+def fast_capture_provenance(folder, meta, current, contract, report):
+    validate_acceptance_contract(contract, executing=True)
+    require(meta.get('unpaced_fast_candidate') is True and meta.get('pacing_only_qualification') is False
+            and meta.get('archived_workload_source_sha256') == ARCHIVED_SOURCE_SHA256
+            and meta.get('archived_workload_binary_sha256') == ARCHIVED_ARTIFACT_SHA256,
+            'Explicit archived unpaced fast candidate metadata required')
+    state = read_json(folder/'state.json')
+    args = state.get('args', {})
+    require(state.get('schema') == 'traflens.ebpf-mysql-fast.capture.v1' and state.get('output') == str(folder)
+            and args.get('workload_sha256') == ARCHIVED_ARTIFACT_SHA256
+            and isinstance(args.get('workload_source'), str)
+            and digest(read_file(Path(args['workload_source']))) == ARCHIVED_SOURCE_SHA256
+            and isinstance(args.get('workload_bin'), str)
+            and digest(read_file(Path(args['workload_bin']), 64 << 20)) == ARCHIVED_ARTIFACT_SHA256,
+            'Actual archived unpaced source/binary provenance differs')
+    require(current.get('source') == contract.native_source and current.get('binary_sha256') == contract.native_sha256,
+            'Actual Agent differs from independently qualified new native artifact')
+    names = ('ebpf-mysql-fast.py', 'ebpf-mysql-diagnostic.py', 'ebpf-mysql.py', 'ebpf-dns.py',
+             'verify-ebpf-mysql-fast.py', 'verify-ebpf-mysql.py', 'native-mysql-observer.py', 'ebpf-mysql-fast-observed.py')
+    manifest = read_json(folder/'capture-source-sha256.json')
+    here = Path(__file__).resolve().parent
+    require(all(manifest.get(name) == digest(read_file(here/name)) for name in names),
+            'Fast capture/acceptance public stage code SHA differs')
+    observer = load_module('fast_acceptance_observer_ack', 'ebpf-mysql-diagnostic.py')
+    proof_path = Path(current['folder'])/'coordinator-scope-proof.json'
+    proof = read_json(proof_path)
+    times = {}
+    for stage in ('before-first-wire', 'after-final-wire'):
+        gate = state.get('observer_gates', {}).get(stage, {})
+        stage_folder = folder/'observer'/stage
+        request = observer.private_json(stage_folder/'request.json')
+        bound = request.get('agent', {})
+        require(gate.get('status') == 'completed' and request.get('schema') == 'traflens.scoped-observer-request.v1'
+                and request.get('stage') == stage and request.get('run') == meta['run']
+                and re.fullmatch('[0-9a-f]{32}', request.get('nonce', ''))
+                and bound.get('container_id') == current['id'] and bound.get('agent_id') == current['agent_id']
+                and bound.get('hostname') == current['hostname'] and bound.get('scope_inode') == current['scope_inode']
+                and bound.get('pid') == proof['agent_pid'] and re.fullmatch('[1-9][0-9]*', bound.get('start_ticks', ''))
+                and bound.get('native_source_commit') == contract.native_source
+                and bound.get('native_binary_sha256') == contract.native_sha256
+                and bound.get('scope_proof_sha256') == digest(read_file(proof_path)),
+                'Fast observer gate is not bound to this actual Agent/run/scope')
+        ack = observer.validate_ack(stage_folder, request)
+        require(gate.get('manifest_sha256') == ack['manifest_sha256'], 'Completed observer manifest SHA differs')
+        times[stage] = {'requested': number(request.get('requested_at_unix_ns'), 1),
+                        'acknowledged': number(ack.get('acknowledged_at_unix_ns'), 1)}
+    report.update(unpaced_fast_contract=True, archived_workload_source_sha256=ARCHIVED_SOURCE_SHA256,
+                  archived_workload_binary_sha256=ARCHIVED_ARTIFACT_SHA256,
+                  native_source_commit=contract.native_source, native_binary_sha256=contract.native_sha256,
+                  public_stage_sha256={name: manifest[name] for name in names}, observer_gate_times=times)
+
+
+def require_unpaced_workload(folder, process, receipt):
+    keys = ('pacing_only_qualification', 'pacing_ms', 'pacing_waits', 'pacing_duration_ns', 'waits_sha256')
+    require(not (folder/'waits.jsonl').exists() and all(not any(k in value for k in keys) for value in (process, receipt)),
+            'Fast acceptance forbids paced or fabricated partial pacing evidence')
 
 
 def require(ok, message):
@@ -314,13 +399,14 @@ def workload_oracle(folder,full_role,run):
     return process,receipt,pairs,digest(raw)
 
 
-def application_oracle(folder,report):
+def application_oracle(folder,report,contract=DEFAULT_CONTRACT):
+    validate_acceptance_contract(contract, executing=True)
     meta,result=read_json(folder/'ingestion-metadata.json'),read_json(folder/'result.json')
     run,negative=meta.get('run'),meta.get('negative_run')
     require(isinstance(run,str) and re.fullmatch('my-[0-9a-f]{24}',run) and isinstance(negative,str)
             and re.fullmatch('my-[0-9a-f]{24}',negative) and run!=negative, 'Independent actual MySQL markers required')
     agent=number(meta.get('agent_id'),1,65535)
-    require(meta.get('schema')=='traflens.ebpf-mysql.capture.v1' and meta.get('runtime_receipts_required') is True
+    require(meta.get('schema')=='traflens.ebpf-'+contract.stem+'.capture.v1' and meta.get('runtime_receipts_required') is True
             and meta.get('integration_mode')=='kernel_mysql' and meta.get('signal_source')==3 and meta.get('l7_protocol')==60
             and meta.get('transport')=='tcp' and meta.get('port')==18080, 'Public MySQL capture mode differs')
     require(result.get('schema')==meta['schema'] and result.get('run')==run and result.get('negative_run')==negative
@@ -337,7 +423,7 @@ def application_oracle(folder,report):
                 'preexisting_containers_still_running','released_by_coordinator','scope_proof_approved'):
         require(restoration.get(key) is True, 'Original namespace/BPF restoration failed: '+key)
     scope,current=read_json(folder/'scope-runtime.json'),read_json(folder/'agent/current.json')
-    require(scope.get('schema')=='traflens.ebpf-mysql.scope.v1' and scope.get('agent_container_id')==current.get('id')
+    require(scope.get('schema')=='traflens.ebpf-'+contract.stem+'.scope.v1' and scope.get('agent_container_id')==current.get('id')
             and re.fullmatch('[0-9a-f]{64}',current.get('id','')) and current.get('agent_id')==agent
             and scope.get('lease_path')==current.get('lease_path'), 'Public MySQL Agent/namespace lease identity differs')
     runtime=Path(current['folder'])
@@ -349,6 +435,8 @@ def application_oracle(folder,report):
             and all(type(fd) is int and fd>=0 for fd in proof['agent_scope_fds']) and number(proof.get('agent_pid'),1)>0
             and all(proof.get(k) is True for k in ('scope_fd_pinned','safe_profile_verified','native_collector_started','fresh_three_listener_sync')),
             'Actual native collector/FD/no-AF_PACKET readiness proof failed')
+    if contract.stem == 'mysql-fast':
+        fast_capture_provenance(folder, meta, current, contract, report)
     exit_state,stopped=read_json(runtime/'exit-state.json'),read_json(runtime/'stopped.json')
     require(exit_state.get('ExitCode')==0 and exit_state.get('OOMKilled') is False and exit_state.get('Running') is False
             and all(stopped.get(k) is True for k in ('agent_stopped','container_removed','bpf_inventory_restored','tracefs_restored')),
@@ -377,11 +465,14 @@ def application_oracle(folder,report):
             and profile['inputs']['ebpf']['profile']['on_cpu']['disabled'] is True
             and profile['inputs']['ebpf']['profile']['unwinding']['dwarf_disabled'] is True, 'MySQL-only safe profile differs')
     shared=load_module('mysql_actual_worker_helpers','verify-ebpf-dns.py')
-    policy=shared.WorkerContract('traflens.ebpf-mysql.worker-runtime.v1','traflens.ebpf-mysql.worker','mysqld','traflens-mysql')
+    policy=shared.WorkerContract('traflens.ebpf-'+contract.stem+'.worker-runtime.v1',
+                               'traflens.ebpf-'+contract.stem+'.worker','mysqld','traflens-mysql')
     processes,pairs,hashes,workers,lifetimes,pacing={}, {}, {}, [], [], []
     for full_role in ROLES:
         phase,_=full_role.split('-',1);nonce=run if phase=='positive' else negative
         process,receipt,wire,sha=workload_oracle(folder/full_role,full_role,nonce)
+        if contract.stem == 'mysql-fast':
+            require_unpaced_workload(folder/full_role,process,receipt)
         require(process['netns']==helpers.namespace(scope[phase]['inode'],'net')
                 and process['pidns']==os.readlink('/proc/1/ns/pid'), 'Actual worker escaped declared isolated NET/host PID namespace')
         processes[full_role],pairs[full_role],hashes[full_role]=process,wire,sha
@@ -390,11 +481,18 @@ def application_oracle(folder,report):
         workers.append(shared.checked_worker_runtime(folder,full_role,run,nonce,process,scope,helpers,policy))
     require(len({p['pid'] for p in processes.values()})==4 and len({w[0] for w in workers})==4
             and len({w[1] for w in workers})==len({w[2] for w in workers})==1, 'Four actual isolated workers with one exact executable/image required')
+    if contract.stem == 'mysql-fast':
+        require({w[2] for w in workers} == {ARCHIVED_ARTIFACT_SHA256}, 'Actual worker runtime executable is not the archived unpaced fixture')
     require(all(pacing) or not any(pacing), 'Four worker pacing qualifications must agree')
     require(type(proof.get('observed_at_unix')) in (int,float) and type(stopped.get('observed_at_unix')) in (int,float)
             and 0<proof['observed_at_unix']<=min(v[0] for v in lifetimes)/10**9
             and stopped['observed_at_unix']>=max(v[1] for v in lifetimes)/10**9,
             'Actual MySQL workers did not run after kernel readiness and before Agent restoration')
+    if contract.stem == 'mysql-fast':
+        gates = report['observer_gate_times']
+        require(gates['before-first-wire']['acknowledged'] <= min(v[0] for v in lifetimes)
+                and gates['after-final-wire']['requested'] >= max(v[1] for v in lifetimes),
+                'Actual fast worker lifetime escaped the acknowledged observer stages')
     expected=[]
     for phase in ('positive','negative'):
         for scenario in SCENARIOS:
@@ -544,17 +642,27 @@ def acceptance(client,args,run,negative,agent,expected,report):
         query_atomicity='Two entire unchanged marker and Agent/window populations bracket API reads; no database snapshot transaction')
 
 
-def main(argv=None):
+def main(argv=None,contract=DEFAULT_CONTRACT):
+    validate_acceptance_contract(contract)
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--execute',action='store_true');parser.add_argument('--capture-dir',type=Path)
     parser.add_argument('--query-base');parser.add_argument('--console-base')
     parser.add_argument('--from',dest='time_from',type=int);parser.add_argument('--to',dest='time_to',type=int)
     parser.add_argument('--agent',type=int);parser.add_argument('--output',type=Path)
+    if contract.stem == 'mysql-fast':
+        parser.add_argument('--native-source');parser.add_argument('--native-sha256')
     args=parser.parse_args(argv)
     if not args.execute:
-        print(json.dumps({'execute':False,'reads_files':False,'starts_network':False,'new_capture':False,'new_ingestion':False,
-                          'max_rows':MAX_ROWS,'max_requests':MAX_REQUESTS,'total_seconds':60,'per_request_seconds':12,'legacy_fallback':False}))
+        plan={'execute':False,'reads_files':False,'starts_network':False,'new_capture':False,'new_ingestion':False,
+              'max_rows':MAX_ROWS,'max_requests':MAX_REQUESTS,'total_seconds':60,'per_request_seconds':12,'legacy_fallback':False}
+        if contract.stem == 'mysql-fast':
+            plan.update(unpaced_fast_contract=True, unpaced_completeness_proven=False, pacing_only_qualification=False,
+                        requires_independently_qualified_native_source_and_sha256=True)
+        print(json.dumps(plan))
         return 0
+    if contract.stem == 'mysql-fast':
+        contract=contract._replace(native_source=args.native_source,native_sha256=args.native_sha256)
+    validate_acceptance_contract(contract,executing=True)
     args.query_base,args.console_base=loopback(args.query_base),loopback(args.console_base)
     folder,output=args.capture_dir,args.output
     require(folder and folder.is_absolute() and folder==folder.resolve() and folder.is_dir()
@@ -569,10 +677,13 @@ def main(argv=None):
     def expired(*_):raise TimeoutError('Finite60second MySQL acceptance deadline exceeded')
     previous=signal.signal(signal.SIGALRM,expired);signal.setitimer(signal.ITIMER_REAL,60)
     try:
-        run,negative,agent,expected=application_oracle(folder,report)
+        run,negative,agent,expected=application_oracle(folder,report,contract)
         require(args.agent is None or args.agent==agent, 'Explicit Agent differs from original capture')
         report.update(run=run,negative_run=negative,agent_id=agent,time_from=args.time_from,time_to=args.time_to)
         acceptance(Client(output,started+60),args,run,negative,agent,expected,report);report['passed']=True
+        if contract.stem == 'mysql-fast':
+            report.update(unpaced_completeness_proven=True,pacing_only_qualification=False,
+                          performance_measurement=False,qualification='One bounded unpaced fixture slice with independently qualified native artifact')
     except Exception as error:report['error']=type(error).__name__+': '+str(error)
     finally:
         signal.setitimer(signal.ITIMER_REAL,0);signal.signal(signal.SIGALRM,previous)

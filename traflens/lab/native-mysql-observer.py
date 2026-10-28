@@ -32,6 +32,11 @@ CAPTURE_CONTRACTS = {
         'worker_purpose': 'traflens.ebpf-mysql-diagnostic.worker',
         'scope_schema': 'traflens.ebpf-mysql-diagnostic.scope.v1',
     },
+    'traflens.ebpf-mysql-fast.capture.v1': {
+        'worker_schema': 'traflens.ebpf-mysql-fast.worker-runtime.v1',
+        'worker_purpose': 'traflens.ebpf-mysql-fast.worker',
+        'scope_schema': 'traflens.ebpf-mysql-fast.scope.v1',
+    },
 }
 HEADER = re.compile(
     r'^.*?\[datadump\] SEQ (?P<seq>\d+) <(?P<proto>[^<>\s]{1,24})> '

@@ -13,7 +13,37 @@ priority is a reproducible product entry point and minimal real-data console
 topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
 performance work. Review priorities after each milestone or three half-hourly runs.
 
-## M15-03a bounded ordering code/replay gate (2026-10-29)
+## M15 finite unpaced product gate complete (2026-10-29)
+
+A real default-libtrace release Agent from e1daf16b1 (SHA0544bd9c5dc10bf8f75e9495086922a6b018ee0cee3b06d03cbf3b629a31b8de)
+passes the public fast-observed lifecycle, actual81-program/24-byte scope ARRAY,
+held namespace FD/no-AF_PACKET and native merged INFO MySQL/cache256/100ms gates.
+Three positive and three outside conversations use the original unpaced wire
+fixture with no phase waits and no SQL execution. The independent oracle proves
+18source3 Sessions (Login6/Query6/empty QUIT6), marker12/query6/outside0, source0/4
+zero, two complete same-ID/raw-field populations and18exact API details. Actual
+headless Edge checks all18details and protocol/source/error/negative controls;
+page errors0. 101targeted/offline checks pass; the prior43native tests are not
+repeated and remote CI was not checked. All owned resources and forwards are
+removed and original Controller/YAML, Server/config, hardware/routes and
+BPF/tracefs restored.
+
+R24's six C callback sequences are already ordered0..6. This finite live gate
+does not witness correction of live disorder. R22's actual2,3,4,5,6close,0,1 and
+R23's actual MetaPacket/replay tests remain separate evidence; R21's Query/QUIT
+failure is not exclusively explained. No lifetime-zero-loss, full MySQL,
+executed SQL, complete native drain or performance conclusion follows. The old
+3dec/8dd5 artifact and every earlier failed/paced result remain unchanged.
+Only the metadata parser discards payload; original private native console logs
+can retain owned fixture payload.
+
+See [anonymous qualification](evidence/2026-10-29/fast-mysql-qualified/README.md)
+and [public entry](MYSQL_FAST.md). After both main refs match this delivery,
+activate only M16: managed eBPF UDP DNS. First verify actual UDP input/inference,
+parser/schema and safe namespace support; do not substitute the M13 TCP or M6
+packet gate. The primary local plan determines the exact current checkpoint.
+
+## Historical M15-03a bounded ordering code/replay gate (2026-10-29)
 
 The no-op Reorder now holds missing capture sequences by full socket UID/source
 and emits only contiguous ranges, including CLOSE. Default native preprocess
@@ -39,7 +69,7 @@ fast qualification or use the unit-test executable as a deployment Agent.
 See [source/test evidence](evidence/2026-10-29/mysql-ordering/README.md) and
 [the native contract](../agent/plugins/reorder/README.md). M15 remains active.
 
-## M15 fast MySQL ordering diagnosis (2026-10-29, active)
+## Historical M15 fast MySQL ordering diagnosis (2026-10-29)
 
 A separate default-offline unpaced diagnostic entry adds nonce-bound before/after
 observer gates and bounded metadata parsing without changing DNS/paced defaults

@@ -109,11 +109,12 @@ def live_agent_binding(work):
     return binding, current
 
 
-def gate_request(work, stage):
+def gate_request(work, stage, contract=None):
+    contract = CONTRACT if contract is None else contract
     require(stage in STAGES, 'Unknown observer stage')
     value = private_json(work / 'observer' / stage / 'request.json')
     state = CORE.read(work / 'state.json')
-    require(state.get('schema') == CONTRACT.schema and state.get('output') == str(work)
+    require(state.get('schema') == contract.schema and state.get('output') == str(work)
             and value.get('schema') == 'traflens.scoped-observer-request.v1'
             and value.get('stage') == stage and value.get('run') == state.get('run')
             and re.fullmatch('my-[0-9a-f]{24}', value.get('run', '')) is not None
@@ -170,9 +171,9 @@ def validate_ack(folder, request):
     return value
 
 
-def acknowledge(work, stage):
+def acknowledge(work, stage, contract=None):
     work = private_dir(work)
-    request = gate_request(work, stage)
+    request = gate_request(work, stage, contract)
     require(time.time_ns() <= request['deadline_unix_ns'], 'Observer gate deadline passed')
     binding, _ = live_agent_binding(work)
     require(binding == request['agent'], 'Observer Agent identity differs from current live process')
@@ -190,9 +191,10 @@ def acknowledge(work, stage):
     return 0
 
 
-def observer_gate(work, state, stage):
+def observer_gate(work, state, stage, contract=None):
+    contract = CONTRACT if contract is None else contract
     require(stage in STAGES, 'Unknown observer stage')
-    require(state.get('schema') == CONTRACT.schema, 'Observer gates require an unqualified diagnostic lifecycle')
+    require(state.get('schema') == contract.schema, 'Observer gates require the exact explicit lifecycle')
     if stage == 'before-first-wire':
         require(not state['workers'], 'Before-first-wire gate must precede every workload container')
     else:
@@ -214,7 +216,7 @@ def observer_gate(work, state, stage):
                'nonce': secrets.token_hex(16), 'agent': binding, 'requested_at_unix_ns': now,
                'deadline_unix_ns': now + timeout * 1_000_000_000, 'timeout_seconds': timeout,
                'diagnostic_only': True, 'counter_read_may_reset': True, 'counter_completeness_claimed': False,
-               'coordinator_source_sha256': CORE.file_hash(Path(__file__).resolve())}
+               'coordinator_source_sha256': CORE.file_hash(HERE / contract.script)}
     CORE.write(folder / 'request.json', request)
     state.setdefault('observer_gates', {})[stage] = {'status': 'waiting', 'request': str(folder / 'request.json')}
     CORE.persist(work, state)
