@@ -1,6 +1,7 @@
 # TrafLens distribution
 
-Current validation and next steps: [STATE.md](STATE.md).
+Current validation: [STATE.md](STATE.md). Mainline priorities and acceptance:
+[ROADMAP.md](ROADMAP.md).
 See [API validation and real HTTP acceptance](README-api-validation.md) and
 [the bounded no-payload eBPF runtime gate](README-ebpf-runtime.md).
 The complete configuration race gate and plugin merge safeguards are documented

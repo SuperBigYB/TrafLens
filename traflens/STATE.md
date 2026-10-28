@@ -5,6 +5,14 @@ performance. Read this file, `git status --short --branch`, and the latest evide
 before each hourly iteration. Source presence, a successful build and a healthy
 process are separate from successful collection and product parity.
 
+## User priority: mainline product first (2026-10-28)
+
+Follow [ROADMAP.md](ROADMAP.md) before historical next-step suggestions. The next
+priority is a reproducible product entry point and minimal real-data console
+(Agent status, overview, request list/detail), then managed eBPF ingestion,
+topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
+performance work. Review priorities after each milestone or three hourly runs.
+
 ## Current checkpoint: stable packet profile (2026-10-28)
 
 Community license allocation periodically restores all functions; the former
@@ -23,8 +31,8 @@ Controller YAML/link/route/BPF and existing service identities restore exactly.
 The original zero-row diagnostic failure and its independent count-only follow-up
 are retained. See `README-agent-shutdown.md` and the dated evidence JSON.
 The older pre-signal disable/absent-registration cause remains unproven.
-Next gates include active/incomplete flow shutdown, more protocols and sustained
-load; these results are not a maximum-throughput or full-parity claim.
+Next work follows the mainline roadmap above. These results are not a
+maximum-throughput or full-parity claim.
 
 ## Checkout and source
 
