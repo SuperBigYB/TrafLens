@@ -1,0 +1,65 @@
+{
+  "milestone": "M9 CPU profiling",
+  "milestone_complete": false,
+  "qualified": [
+    "single owned Go process real runtime CPU artifact",
+    "independent pprof sample/hot-function decoding",
+    "isolated native HTTP acknowledgment and resource restoration"
+  ],
+  "unqualified": [
+    "actual profile storage/ingestion",
+    "bounded product profile queries",
+    "actual console inspection and reusable integration lifecycle"
+  ],
+  "sampling": {
+    "verified": true,
+    "actual_pprof_sample_count": 800,
+    "actual_cpu_nanoseconds": 8000000000,
+    "period_nanoseconds": 10000000,
+    "sample_types": [
+      "samples/count",
+      "cpu/nanoseconds"
+    ],
+    "hot_function_observed": "main.traflensCPUHotLoop",
+    "sample_source": "Go runtime/pprof current-process self sampling",
+    "not_native_ebpf": true,
+    "no_cpu_percentage_claim": true
+  },
+  "execution": {
+    "seconds": 8,
+    "cpus": 1,
+    "memory_bytes": 134217728,
+    "pids_limit": 32,
+    "network": "none",
+    "capabilities": "none",
+    "container_exit_code": 0,
+    "profile_bytes": 799
+  },
+  "module_race_tests": 3,
+  "integration": {
+    "source": "external Go runtime pprof integration, not eBPF",
+    "receiver_isolated_no_published_ports": true,
+    "supported_registration_function": 11,
+    "http_acknowledged": true,
+    "ingestion_verified": false,
+    "whole_marker_storage_rows": 0,
+    "bounded_oracle_seconds": 90,
+    "same_agent_and_no_time_diagnostics": "successful query responses with no rows",
+    "first_attempt_failure": "packet registration functions omitted PROFILE_INT11 and readiness was not actual listener; restored",
+    "second_attempt": {
+      "pass": true,
+      "error": null,
+      "cleanup_errors": [],
+      "http_ack_only": true,
+      "agent_exit_code": 0,
+      "agent_oom": false,
+      "owned_controller_resources_removed": true,
+      "owned_network_removed": true,
+      "original_resources_preserved": true
+    },
+    "no_profile_rows_inserted_by_fixture": true
+  },
+  "remaining_task": "Diagnose actual receiver/profile ingestion and effective routing/configuration before any retry/closed product claim",
+  "remote_ci": "not checked",
+  "publication": "Implementation and anonymous status only; raw profile/runtime identity/query/configuration artifacts stay private"
+}

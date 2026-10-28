@@ -13,6 +13,28 @@ priority is a reproducible product entry point and minimal real-data console
 topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
 performance work. Review priorities after each milestone or three half-hourly runs.
 
+## M9 CPU profiling partial checkpoint (2026-10-28)
+
+M9 remains the sole active milestone. Native on-CPU capture is system-wide before
+user-space matching, so this strict single-process slice uses real Go runtime
+self sampling. A new public finite fixture, tested under1CPU/128MiB/32PIDs with
+no capabilities/network, exits0 and yields a799-byte gzip profile. Independent
+pprof decoding verifies800 samples/count,8e9 CPU nanoseconds,10ms period and the
+actual known hot function.3 new-module race tests pass; no kernel profiler runs.
+
+A separate registration/group and no-published-port network namespace isolate
+native profile-only integration. Correct supported PROFILE_INT11 and an actual
+listener gate fix the first pre-upload failure without changing old resources.
+The following HTTP200/Agent-exit0/drain-success still does not establish storage:
+90s exact whole-marker queries, same-Agent and no-time diagnostics return0 rows.
+No rows are synthesized, filters widened for acceptance, or uploads repeated to
+hide the failure. All owned registrations/groups, containers and networks restore;
+existing management route/BPF/identities/configuration remain. Next M9-02c is the
+actual profile receiver/decoder/routing diagnosis, followed by strict stored-sample
+oracle, bounded API/console and public reusable lifecycle. Do not rerun CPU sampling
+or the old packet/eBPF/HTTP matrix just to recreate the retained valid artifact.
+See README-cpu-profiling.md and dated cpu-profiling evidence. M9 is not closed.
+
 ## M8 observation time trends functional acceptance (2026-10-28)
 
 The console adds a fixed two-query Session trend API and actual chart/table

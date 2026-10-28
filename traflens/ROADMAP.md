@@ -29,7 +29,7 @@ requalifying it when unrelated work changes.
    service relationships and per-request paths, exposed in the console.
    Acceptance: a small multi-service scenario can be followed from a service
    dependency to its requests and associated spans/records.
-4. **Metrics, profiles and resource correlation (M5 service RED slice complete; M7 current Agent resource slice complete; M8 time trends complete; M9 single-process CPU profiling next).** Add useful metric views,
+4. **Metrics, profiles and resource correlation (M5 service RED slice complete; M7 current Agent resource slice complete; M8 time trends complete; M9 real self-CPU artifact qualified; ingestion/console in progress).** Add useful metric views,
    continuous-profile entry points and host/container/Kubernetes associations.
    Acceptance: each implemented signal can be queried and navigated from the
    relevant service or resource in an actual scenario.
