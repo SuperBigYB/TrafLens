@@ -25,7 +25,7 @@ requalifying it when unrelated work changes.
    query for the core HTTP/DNS/database scenarios, then extend TLS coverage.
    Acceptance: known real requests appear with the correct protocol and source
    metadata under a repeatable setup. Carry blocking collection fixes here.
-3. **Topology and request tracing (M3 service relationship slice next).** Connect resource/service identities to
+3. **Topology and request tracing (M3 relationships complete; M4 Trace ID correlation next).** Connect resource/service identities to
    service relationships and per-request paths, exposed in the console.
    Acceptance: a small multi-service scenario can be followed from a service
    dependency to its requests and associated spans/records.
@@ -69,21 +69,23 @@ sealing; fine-grained CPU/RSS tuning and maximum-rate searches. Preserve existin
 failure records and revisit these systematically during reliability/performance
 work rather than letting them displace the product backbone.
 
-## Next milestone after M2 delivery: M3 service relationships
+## Next milestone after M3 delivery: M4 Trace ID correlation
 
-M1 and M2 functional gates pass: real-data console plus publicly repeatable,
-bounded namespace-scoped eBPF HTTP startup/readiness/ingestion/UI/cleanup. See
-README-managed-http-runtime.md and the dated managed-runtime evidence. Complete
-both remote synchronizations before closing M2 in the authoritative local plan.
+M1/M2 and the M3 service relationship functional gate pass. M3 has real two-host
+400-record acceptance, scoped relationship-to-list/detail navigation and precise
+restoration. Complete both remote synchronizations before recording M3 closure
+in the authoritative local plan. See README-service-relations.md.
 
-Then activate only M3: real service relationships and request drill-down. Reuse
-stored L7 data and the console. First confirm available client/server/resource
-fields and counting semantics; provide a fixed aggregate API and service view;
-click a real service relationship to open requests with the same filters and
-exact-ID details. Verify a small two-host scenario with at least two identifiable
-service endpoints. Clearly label observation records; do not infer unrecorded
-spans or claim complete distributed tracing from a topology view.
+Then activate only M4: correlate real requests across service endpoints by
+Trace ID. First confirm actual trace/span fields, HTTP propagation and parser
+configuration. Reuse the existing collector and lab to generate a bounded
+multi-service scenario with explicit trace context; implement safe exact trace
+lookup and console navigation. Acceptance requires related real endpoint records
+with the intended Trace ID, an unrelated-trace negative control and browser
+navigation to exact details. Show only recorded parent/span relationships;
+Trace ID membership alone does not prove a complete causal call tree.
 
-DNS/database/TLS eBPF expansion and sustained performance remain subsequent
-work. Do not reopen completed milestones for styling or repeat their full
-kernel/benchmark matrices. The local execution file controls task breakdown.
+Zero-header AutoTracing, broader protocols/resource identities, metrics/profiling
+and sustained performance remain later work. Preserve completed evidence and
+avoid repeating full M2 kernel or performance matrices. The local execution
+file controls current task breakdown and the single active milestone.

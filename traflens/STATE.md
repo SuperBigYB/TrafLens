@@ -13,6 +13,34 @@ priority is a reproducible product entry point and minimal real-data console
 topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
 performance work. Review priorities after each milestone or three half-hourly runs.
 
+## M3 service relationship functional acceptance (2026-10-28)
+
+The console aggregates real L7 records into scoped client -> service endpoint
+relationships. Exact Agent/EPC/IP/port/transport/protocol/source/observation
+filters are shared by relationships, list, overview and details. Top100 plus a
+sentinel exposes truncation; UInt64 counts stay strings. Unknown values and
+observation counts are not reinterpreted as universal service names or spans.
+
+A fresh two-host, two-port trial completes200 requests per endpoint. All400 rows
+pass exact scans twice per endpoint. Real Edge verifies two groups/total400,
+relationship navigation to100 latest rows/total200, all scope predicates,
+exact detail, protocol drill-down, clear selection, empty/error and zero page
+errors. Existing eBPF data splits40 records into20c-p/20s-p groups without a
+new capture run.10 module race tests and build pass. Agent exit0, exact YAML,
+link/route/BPF/tracefs, owned console/forwarding and existing services restore.
+
+The initial shortened readiness wait yields121/200 on the first endpoint and
+200/200 on the second. Retained failure evidence leads to an actual dispatcher
+and three-listener readiness gate; a fresh sample then passes all400. Earlier
+private coordinator path/directory failures do not start an Agent. See
+README-service-relations.md and dated service-relations evidence.
+
+M3 functional acceptance is complete; close it after both remote synchronizations.
+The sole next milestone is M4: Trace ID correlation across real service requests.
+Confirm stored trace/span fields and propagation first, then provide a bounded
+multi-service fixture and safe trace navigation. Do not invent causal spans
+from an aggregate relationship. Full AutoTracing/parity remains future work.
+
 ## M2 portable runtime functional acceptance (2026-10-28)
 
 The public bounded runtime in `lab/managed-http-agent.py` and

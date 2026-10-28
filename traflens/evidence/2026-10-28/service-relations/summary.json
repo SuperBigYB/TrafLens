@@ -1,0 +1,77 @@
+{
+  "milestone": "M3",
+  "native_source": "3dec20af5ce6ff25c696d136b5477f5310b4962c",
+  "module_checks": {
+    "race_tests_passed": 10,
+    "new_test_cases": 4,
+    "build_passed": true
+  },
+  "real_two_host_trial": {
+    "service_endpoints": 2,
+    "requests_per_endpoint": 200,
+    "total": 400,
+    "generator_failures": 0,
+    "generator_skips": 0,
+    "exact_complete_scans_per_endpoint": 2,
+    "agent_exit_code": 0
+  },
+  "edge": {
+    "passed": true,
+    "relationships": 2,
+    "total_observation_records": 400,
+    "relationship_drilldown_total": 200,
+    "list_rows": 100,
+    "scope_predicates_preserved": true,
+    "exact_string_id_detail": true,
+    "protocol_drilldown": true,
+    "clear_selection": true,
+    "unused_port_empty": true,
+    "wrong_source_empty": true,
+    "empty_error_distinct": true,
+    "page_errors": 0
+  },
+  "existing_ebpf_data": {
+    "reused_without_capture": true,
+    "total_records": 40,
+    "observation_groups": {
+      "c-p": 20,
+      "s-p": 20
+    },
+    "selected_group_records": 20
+  },
+  "api": {
+    "max_relationships": 100,
+    "truncation_sentinel": 101,
+    "counts_decimal_strings": true,
+    "shared_exact_filters": true,
+    "observation_records_not_transactions": true
+  },
+  "restoration": {
+    "controller_yaml_exact": true,
+    "agent_and_workers_removed": true,
+    "source_test_link": true,
+    "management_route": true,
+    "bpf_and_tracefs": true,
+    "existing_services": true,
+    "console_and_forwarding_stopped": true
+  },
+  "retained_failures": {
+    "preparation_failures_without_agent": 2,
+    "incomplete_first_endpoint_records": 121,
+    "expected_first_endpoint_records": 200,
+    "second_endpoint_records": 200,
+    "initial_ui_failed": true,
+    "fresh_trial_after_actual_policy_readiness_passed": true
+  },
+  "limitations": [
+    "Endpoint tuple scoped by Agent/EPC; overlapping namespaces/interfaces can still collide",
+    "All counts are observation records, not deduplicated transactions",
+    "No invented Span tree, complete distributed tracing or performance parity"
+  ],
+  "source_files_sha256": {
+    "traflens/console/main.go": "e0200ddfa0d6597e208fe4ad34cbb0cdd754ae2e53a33ad70118cd3659ab6d48",
+    "traflens/console/services.go": "f3c07291e258fccd15b4fefa4f0b1acf78896f624b504710194d9b3a24357be7",
+    "traflens/console/services_test.go": "30e426351ebba52b4cbadca320c1bd02d4454bfee832f62882bd13e90cd4164a",
+    "traflens/console/index.html": "f706832f0a26eb016ae8cb9e82a52405869ca0daae7411167f9b0c4056cfa422"
+  }
+}

@@ -111,6 +111,17 @@ total40 and correct source3 detail; source0 for the same marker returns zero.
 Source-filter/race tests pass. See
 [ebpf-console/summary.json](../evidence/2026-10-28/ebpf-console/summary.json).
 
-This validates collection-to-console, but M2 remains open until a reusable
-scoped managed startup/stop workflow is packaged. Current preparation is private
-and must not be presented as a portable deployment entry point.
+M2 is now closed with the public [bounded managed runtime](../README-managed-http-runtime.md),
+including a fresh trial through its startup/readiness/stop entry. The earlier
+collection/UI result above remains a historical checkpoint.
+
+
+## Service relationships
+
+The shared filters also drive `GET /api/services` and the directed endpoint
+relationship view. Click a relationship to inspect its matching requests,
+overview and exact-ID details; clear it to return to all matching endpoints.
+Agent/EPC/IP/port/transport/protocol/source/observation context stays explicit.
+Groups are observation records, not unique transactions; top100 truncation is
+shown. UInt64 relation counts and request IDs remain strings. See the full
+[service relationship API and acceptance](../README-service-relations.md).

@@ -21,7 +21,7 @@ import (
 //go:embed index.html
 var assets embed.FS
 
-const fields = "toString(_id) AS id,time,request_resource,request_type,response_code,response_duration,l7_protocol,agent_id,protocol,type,signal_source,tap_side,response_status"
+const fields = "toString(_id) AS id,time,request_resource,request_type,response_code,response_duration,l7_protocol,agent_id,protocol,type,signal_source,tap_side,response_status,l3_epc_id_0,l3_epc_id_1,ip_0,ip_1,server_port,observation_point"
 
 var resourceFilter = regexp.MustCompile(`^[A-Za-z0-9/_:.?=&%+ -]{0,200}$`)
 
@@ -42,7 +42,7 @@ type envelope struct {
 
 func selection(v url.Values, now int64) (string, error) {
 	for k, values := range v {
-		if k != "from" && k != "to" && k != "q" && k != "limit" && k != "id" && k != "proto" && k != "source" {
+		if k != "from" && k != "to" && k != "q" && k != "limit" && k != "id" && k != "proto" && k != "source" && !isRelationshipFilter(k) {
 			return "", errors.New("unknown filter")
 		}
 		if len(values) != 1 {
@@ -93,6 +93,15 @@ func selection(v url.Values, now int64) (string, error) {
 	}
 	if q != "" {
 		where += " AND request_resource LIKE '%" + q + "%'"
+	}
+	for _, key := range []string{"client_ip", "server_ip", "client_epc", "server_epc", "agent", "server_port", "transport", "point"} {
+		if v.Has(key) {
+			predicate, e := relationshipFilter(key, v.Get(key))
+			if e != nil {
+				return "", e
+			}
+			where += " AND " + predicate
+		}
 	}
 	limit := 100
 	if v.Has("limit") {
@@ -145,6 +154,7 @@ func writeJSON(w http.ResponseWriter, status int, v any) {
 }
 func (c *console) handler() http.Handler {
 	mux := http.NewServeMux()
+	mux.HandleFunc("GET /api/services", c.services)
 	mux.HandleFunc("GET /api/requests", func(w http.ResponseWriter, r *http.Request) {
 		sql, err := selection(r.URL.Query(), time.Now().Unix())
 		if err != nil {
@@ -171,13 +181,11 @@ func (c *console) handler() http.Handler {
 			writeJSON(w, 400, map[string]string{"error": "overview does not accept id or limit"})
 			return
 		}
-		sql, err := selection(v, time.Now().Unix())
+		where, err := selectionWhere(v, time.Now().Unix())
 		if err != nil {
 			writeJSON(w, 400, map[string]string{"error": err.Error()})
 			return
 		}
-		where := strings.TrimPrefix(sql, "SELECT "+fields+" FROM l7_flow_log WHERE ")
-		where = where[:strings.LastIndex(where, " ORDER BY time DESC LIMIT ")]
 		ctx, cancel := context.WithTimeout(r.Context(), 12*time.Second)
 		defer cancel()
 		results := make([]*result, 0, 2)
