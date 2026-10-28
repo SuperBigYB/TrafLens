@@ -42,7 +42,7 @@ type envelope struct {
 
 func selection(v url.Values, now int64) (string, error) {
 	for k, values := range v {
-		if k != "from" && k != "to" && k != "q" && k != "limit" && k != "id" && k != "proto" && k != "source" && k != "trace" && !isRelationshipFilter(k) {
+		if k != "from" && k != "to" && k != "q" && k != "limit" && k != "id" && k != "proto" && k != "source" && k != "trace" && k != "session" && k != "error" && k != "min_ms" && !isRelationshipFilter(k) {
 			return "", errors.New("unknown filter")
 		}
 		if len(values) != 1 {
@@ -92,6 +92,31 @@ func selection(v url.Values, now int64) (string, error) {
 			return "", errors.New("trace must be a nonzero lowercase32-hex W3C ID")
 		}
 		where += " AND trace_id = '" + v.Get("trace") + "'"
+	}
+	if v.Has("session") && v.Get("session") != "1" {
+		return "", errors.New("session must be 1")
+	}
+	if v.Has("session") || v.Has("error") || v.Has("min_ms") {
+		where += " AND type = 2"
+	}
+	if v.Has("error") {
+		switch v.Get("error") {
+		case "any":
+			where += " AND response_status IN (3,4)"
+		case "client":
+			where += " AND response_status = 4"
+		case "server":
+			where += " AND response_status = 3"
+		default:
+			return "", errors.New("error must be any, client or server")
+		}
+	}
+	if v.Has("min_ms") {
+		milliseconds, e := strconv.ParseUint(v.Get("min_ms"), 10, 32)
+		if e != nil || milliseconds < 1 || milliseconds > 600000 {
+			return "", errors.New("min_ms must be an integer in 1..600000")
+		}
+		where += fmt.Sprintf(" AND response_duration >= %d", milliseconds*1000)
 	}
 	q := v.Get("q")
 	if !resourceFilter.MatchString(q) {
@@ -162,6 +187,7 @@ func (c *console) handler() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/services", c.services)
 	mux.HandleFunc("GET /api/trace", c.trace)
+	mux.HandleFunc("GET /api/red", c.red)
 	mux.HandleFunc("GET /api/requests", func(w http.ResponseWriter, r *http.Request) {
 		sql, err := selection(r.URL.Query(), time.Now().Unix())
 		if err != nil {

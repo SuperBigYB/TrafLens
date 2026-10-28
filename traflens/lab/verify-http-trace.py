@@ -27,6 +27,7 @@ def expected_records(value):
     if not isinstance(rows, list) or len(rows) % 2 or not 4 <= len(rows) <= 42:
         raise ValueError('Expected two legs for1..20 primary requests plus one control')
     count = len(rows) // 2 - 1
+    red = value.get('red_pattern') is True
     expected = {}
     for leg, port, offset in [('front', 18080, 0x1000), ('back', 18081, 0x2000)]:
         for sequence in range(count + 1):
@@ -34,6 +35,11 @@ def expected_records(value):
             expected[resource] = {'request_resource': resource,
                 'trace_id': value['primary_trace'] if sequence < count else value['unrelated_trace'],
                 'span_id': format(offset + sequence + 1, '016x'), 'server_port': port}
+    if red:
+        for resource, row in expected.items():
+            sequence = int(resource.rsplit('/', 1)[1])
+            code = (404 if sequence % 3 == 1 else 503 if sequence % 3 == 2 else 200) if sequence < count else 200
+            row.update(response_code=code, response_status=4 if code == 404 else 3 if code == 503 else 0)
     if len({r['request_resource'] for r in rows}) != len(rows) or any(expected.get(r['request_resource']) != r for r in rows):
         raise ValueError('Actual fixture receipts differ from independent context/sequence contract')
     return expected
@@ -58,7 +64,7 @@ def validate_rows(result, expected, agent):
             raise ValueError('Invalid or duplicate exact record ID')
         identities.add(identity)
         for key, value in [('agent_id', agent), ('signal_source', 0), ('l7_protocol', 20),
-                           ('type', 2), ('response_code', 200), ('response_status', 0)]:
+                           ('type', 2), ('response_code', expected[resource].get('response_code', 200)), ('response_status', expected[resource].get('response_status', 0))]:
             if type(row.get(key)) is not int or row[key] != value:
                 raise ValueError('Unexpected stored metadata: ' + key)
     return identities
@@ -86,7 +92,7 @@ def main():
     expected = expected_records(value)
     os.umask(0o077)
     args.output.mkdir(mode=0o700)
-    fields = 'toString(_id) AS id,request_resource,trace_id,span_id,parent_span_id,server_port,agent_id,signal_source,l7_protocol,type,response_code,response_status,observation_point'
+    fields = 'toString(_id) AS id,request_resource,trace_id,span_id,parent_span_id,server_port,agent_id,signal_source,l7_protocol,type,response_code,response_status,observation_point,response_duration'
     sql = "SELECT " + fields + " FROM l7_flow_log WHERE request_resource LIKE '%" + value['marker'] + "%' ORDER BY _id ASC LIMIT 43"
     deadline = time.monotonic() + args.timeout
     previous = None
@@ -114,6 +120,15 @@ def main():
         time.sleep(1)
     summary = {'passed': passed, 'expected_records': len(expected), 'consecutive_passing_reads': 2 if passed else 0,
                'expected_trace_counts': dict(Counter(r['trace_id'] for r in expected.values())), 'attempts': attempts}
+    if passed and value.get('red_pattern') is True:
+        observed = [dict(zip(result['result']['columns'], row)) for row in result['result']['values']]
+        durations = [r['response_duration'] for r in observed if r['response_duration'] > 0]
+        if any(type(r['response_duration']) is not int or r['response_duration'] < 0 for r in observed):
+            raise ValueError('Invalid actual duration')
+        summary['red_stats'] = {'records': len(observed), 'client_errors': sum(r['response_status'] == 4 for r in observed),
+            'server_errors': sum(r['response_status'] == 3 for r in observed), 'duration_samples': len(durations),
+            'avg_us': sum(durations) / len(durations) if durations else None,
+            'max_us': str(max(durations)) if durations else None, 'slow_100ms': sum(r['response_duration'] >= 100000 for r in observed)}
     with (args.output / 'result.json').open('x') as output:
         json.dump(summary, output, indent=2)
     print(json.dumps({'passed': passed, 'records': len(expected), 'consecutive_passing_reads': summary['consecutive_passing_reads']}))

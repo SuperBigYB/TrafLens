@@ -137,3 +137,11 @@ aggregates/software fingerprints; actual IDs, addresses, requests, SQL and raw
 reports/screenshots remain private. The next product milestone is service RED
 metrics and navigation to error/slow observations, with actual unit/aggregation
 semantics verified first.
+
+
+## Optional RED scenario
+
+The default successful Trace fixture remains unchanged. Add `--red-pattern` to
+all roles only for the explicit200/404/delayed503 scenario; expected application
+errors are accepted as fixture outcomes. The oracle requires the corresponding
+`red_pattern=true` expected contract. See [service RED workflow](README-service-red.md).

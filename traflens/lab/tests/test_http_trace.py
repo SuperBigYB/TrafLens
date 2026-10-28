@@ -49,6 +49,14 @@ class HTTPTraceTests(unittest.TestCase):
         self.assertEqual(record['trace_id'], body['trace_id'])
         self.assertNotEqual(record['span_id'], body['span_id'])
 
+    def test_explicit_red_pattern_keeps_control_successful(self):
+        c = self.config()
+        self.assertEqual([fixture.outcome(c, i) for i in range(6)], [(200, 0)] * 6)
+        c.red_pattern = True
+        self.assertEqual([fixture.outcome(c, i)[0] for i in range(6)], [200, 404, 503, 200, 404, 200])
+        self.assertEqual(fixture.outcome(c, 2)[1], .25)
+        self.assertEqual(fixture.outcome(c, 5), (200, 0))
+
     def test_wrong_trace_path_and_sequence_never_relay(self):
         c = self.config()
         def forbidden(*_args):

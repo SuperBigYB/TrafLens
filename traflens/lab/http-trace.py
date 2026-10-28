@@ -52,6 +52,13 @@ def validate(c):
         raise ValueError('New canonical output under an owned private POSIX directory required')
 
 
+def outcome(c, sequence):
+    if getattr(c, 'red_pattern', False) and sequence < c.count:
+        kind = sequence % 3
+        return (404, 0) if kind == 1 else (503, .25) if kind == 2 else (200, 0)
+    return 200, 0
+
+
 def exchange(c, sequence, leg):
     _, _, header = context(c, sequence, leg)
     port = c.front_port if leg == 'front' else c.back_port
@@ -66,7 +73,7 @@ def exchange(c, sequence, leg):
         conn.request('GET', resource(c, sequence, leg), headers={'traceparent': header, 'Connection': 'close'})
         response = conn.getresponse()
         raw = response.read(4097)
-        if response.status != 200 or len(raw) > 4096:
+        if response.status != outcome(c, sequence)[0] or len(raw) > 4096:
             raise RuntimeError('HTTP response rejected or oversized')
         body = json.loads(raw)
         trace, span, _ = context(c, sequence, 'back')
@@ -128,7 +135,10 @@ def serve(c, report):
                 if any(row['sequence'] == record['sequence'] for row in report['records']):
                     raise ValueError('Duplicate counted exchange')
                 raw = json.dumps(body).encode()
-                self.send_response(200)
+                status, delay = outcome(c, record['sequence'])
+                if delay:
+                    time.sleep(delay)
+                self.send_response(status)
                 self.send_header('Content-Type', 'application/json')
                 self.send_header('Content-Length', str(len(raw)))
                 self.send_header('Connection', 'close')
@@ -136,6 +146,8 @@ def serve(c, report):
                 self.wfile.write(raw)
                 self.wfile.flush()
                 self.close_connection = True
+                if getattr(c, 'red_pattern', False):
+                    record['response_code'] = status
                 report['records'].append(record)
             except Exception:
                 report['rejected'] += 1
@@ -161,6 +173,7 @@ def interrupted(_signal, _frame):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--execute', action='store_true')
+    parser.add_argument('--red-pattern', action='store_true', help='Explicit deterministic 200/404/503 plus delayed503 scenario')
     parser.add_argument('--mode', choices=['front', 'back', 'client'], default='client')
     for key in ('interface', 'bind', 'peer', 'marker', 'trace-id', 'other-trace-id'):
         parser.add_argument('--' + key)

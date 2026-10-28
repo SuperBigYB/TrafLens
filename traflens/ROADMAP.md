@@ -29,7 +29,7 @@ requalifying it when unrelated work changes.
    service relationships and per-request paths, exposed in the console.
    Acceptance: a small multi-service scenario can be followed from a service
    dependency to its requests and associated spans/records.
-4. **Metrics, profiles and resource correlation (M5 service RED slice next).** Add useful metric views,
+4. **Metrics, profiles and resource correlation (M5 service RED slice complete).** Add useful metric views,
    continuous-profile entry points and host/container/Kubernetes associations.
    Acceptance: each implemented signal can be queried and navigated from the
    relevant service or resource in an actual scenario.
@@ -69,26 +69,24 @@ sealing; fine-grained CPU/RSS tuning and maximum-rate searches. Preserve existin
 failure records and revisit these systematically during reliability/performance
 work rather than letting them displace the product backbone.
 
-## Next milestone after M4 delivery: M5 service RED metrics
+## Next milestone after M5 delivery: M6 DNS/MySQL product slice
 
-M1-M4 functional gates pass through the real-data console, managed eBPF HTTP,
-scoped service relationships and exact header-based cross-service Trace lookup.
-M4 has a finite real two-hop HTTP scenario, independent10+2 record acceptance,
-actual Edge navigation and restored resources. Complete both remote
-synchronizations before recording M4 closure in the authoritative local plan.
-See README-http-trace.md. No complete causal tree or zero-header AutoTracing is
-claimed from shared Trace membership.
+M1-M5 functional gates pass through the real-data console, managed eBPF HTTP,
+service relationships, header-based Trace correlation and service RED/error/slow
+navigation. M5 has a bounded12-record known-outcome sample, independent repeated
+storage acceptance, stored-duration recomputation and real Edge navigation.
+Complete both remote synchronizations before recording M5 closure in the local
+execution plan. See README-service-red.md.
 
-Then activate only M5: service RED metrics and error/slow-observation drill-down.
-First verify real duration units, response-status meanings and supported query
-aggregations. Reuse the existing console/scopes to expose counts or rates,
-errors and duration metrics with explicit observation-point semantics. Generate
-a bounded scenario with known successes/errors/delays and verify API/UI metrics
-against the actual stored records, then navigate to the corresponding requests.
-Avoid summing repeated observations as distinct transactions. Document null/empty,
-partial/truncated and query-window semantics rather than inventing precision.
+Then activate only M6: real DNS/MySQL requests through the existing collector,
+storage/query and console. First inspect existing protocol fixtures, previous
+acceptance and native capabilities. Reuse verified work; produce one necessary
+finite two-host positive/negative scenario per protocol, confirm actual protocol,
+resource/status/source semantics and expose readable protocol navigation/details.
+Do not repurpose the Controller's production database or unrelated services for
+the workload. Use only owned bounded fixtures and restore owned configuration.
 
-Full automatic trace assembly, broader protocols/resource identities, continuous
-profiles and sustained performance remain later work. The local execution file
-controls the single active milestone and task breakdown. Do not re-run completed
-M2 kernel or throughput matrices for these console changes.
+This expands the usable protocol backbone. Full automatic Span assembly, global
+resource identities, continuous profiles and sustained performance remain later
+work. The authoritative local file controls the single active milestone and
+its dependent tasks; do not repeatedly requalify the completed HTTP matrices.

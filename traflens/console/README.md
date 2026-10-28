@@ -135,3 +135,13 @@ cross-endpoint view while preserving time/source and removing the selected
 relationship/resource/protocol restrictions for that view. Detail navigation
 keeps the exact Trace context. Empty parent-span values stay unrecorded; order
 is not a causal tree. See [HTTP Trace workflow and API](../README-http-trace.md).
+
+
+## Service RED and error/slow records
+
+`GET /api/red` and the service RED panel share the current scope and explicitly
+use complete Session observations. Error/slow buttons retain that scope through
+list/overview/detail; Trace navigation opens the complete selected Trace scope.
+Counts remain strings, duration is measured in us and displayed in ms, latency
+uses positive samples, and window rate is not measured business throughput.
+See [RED semantics and real acceptance](../README-service-red.md).

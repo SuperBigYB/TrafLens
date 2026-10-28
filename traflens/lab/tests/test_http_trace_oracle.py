@@ -31,6 +31,22 @@ class HTTPTraceOracleTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 oracle.expected_records(changed)
 
+    def test_red_expected_outcomes_are_recomputed_not_trusted(self):
+        value = self.manifest()
+        value['red_pattern'] = True
+        value['records'] = []
+        for leg, port, offset in [('front', 18080, 0x1000), ('back', 18081, 0x2000)]:
+            for sequence in range(6):
+                code = [200, 404, 503, 200, 404, 200][sequence]
+                value['records'].append({'request_resource': '/traflens-trace/' + value['marker'] + '/' + leg + '/' + str(sequence),
+                    'trace_id': value['primary_trace'] if sequence < 5 else value['unrelated_trace'],
+                    'span_id': format(offset + sequence + 1, '016x'), 'server_port': port,
+                    'response_code': code, 'response_status': 4 if code == 404 else 3 if code == 503 else 0})
+        self.assertEqual(len(oracle.expected_records(value)), 12)
+        value['records'][1]['response_status'] = 0
+        with self.assertRaises(ValueError):
+            oracle.expected_records(value)
+
     def test_whole_marker_rejects_wrong_trace_metadata_missing_or_duplicate(self):
         expected = oracle.expected_records(self.manifest())
         rows = []

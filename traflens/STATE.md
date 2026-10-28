@@ -13,6 +13,35 @@ priority is a reproducible product entry point and minimal real-data console
 topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
 performance work. Review priorities after each milestone or three half-hourly runs.
 
+## M5 service RED functional acceptance (2026-10-28)
+
+The console now shows Session observation volume/window rate, client/server
+errors and positive latency, with shared service/Trace scope and error/slow
+request navigation. Live probes and source definitions verify us units, server3/
+client4 statuses and native mean exclusion of zero durations. A positive-sample
+count makes that exclusion explicit. Empty means/maxima/error ratio stay null;
+UInt64 counters/maxima remain strings. Two supported bounded queries replace an
+unsupported conditional-Sum probe (HTTP500); failed/missing/contradictory second
+aggregates do not become partial healthy metrics. Queries are not atomic.
+
+An opt-in real two-host HTTP scenario yields12 Sessions:4 client errors,2 server
+errors,6 successes, mean64101.5us, maximum503264us and2 records >=100ms. The unchanged
+native Agent plus extended independent whole-marker oracle pass two exact reads.
+Actual Edge recomputes from records and verifies service-scoped3-error navigation,
+exact detail/full Trace,2 slow records, successful unrelated control and null
+empty states; no page errors.19 module race tests/build and245 lab tests pass.
+
+Agent exit0, fixture processes, exact YAML, source test link/management route,
+BPF/tracefs and owned console restore; existing services remain. No native/kernel
+or throughput matrix is repeated. See README-service-red.md and dated service-red
+evidence. Complete both remote synchronizations before recording M5 closure.
+
+The sole next milestone is M6: DNS/MySQL requests from real capture to console.
+Reuse existing protocol sources, fixtures and evidence before selecting one
+necessary bounded two-host acceptance; expose real protocol names/fields and
+shared filters/details. Do not turn source presence into runtime qualification
+or mix full AutoTracing/performance goals into that protocol product slice.
+
 ## M4 exact HTTP Trace functional acceptance (2026-10-28)
 
 A new public finite HTTP fixture sends client -> frontend -> backend across the

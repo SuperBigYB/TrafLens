@@ -1,0 +1,81 @@
+{
+  "milestone": "M5",
+  "native_source": "3dec20af5ce6ff25c696d136b5477f5310b4962c",
+  "checks": {
+    "console_race_tests": 19,
+    "new_console_tests": 5,
+    "lab_tests": 245,
+    "new_fixture_oracle_tests": 2,
+    "console_build": true
+  },
+  "verified_semantics": {
+    "duration_unit": "us",
+    "session_type": 2,
+    "client_error_status": 4,
+    "server_error_status": 3,
+    "latency_positive_only": true,
+    "empty_latency_ratio_null": true,
+    "inclusive_second_window": true,
+    "counts_and_maximum_decimal_strings": true,
+    "atomic_snapshot": false
+  },
+  "existing_data_probe": {
+    "sessions": 2813,
+    "positive_duration_samples": 2808,
+    "duration_sum_us": 455711,
+    "native_avg_us": 162.29024216524218,
+    "unsupported_conditional_sum_http_status": 500,
+    "unsupported_response_body_captured": false
+  },
+  "real_trial": {
+    "session_records": 12,
+    "client_errors": 4,
+    "server_errors": 2,
+    "successes": 6,
+    "error_ratio": 0.5,
+    "duration_samples": 12,
+    "avg_us": 64101.5,
+    "max_us": "503264",
+    "slow_100ms_records": 2,
+    "independent_complete_reads": 2,
+    "agent_exit_code": 0
+  },
+  "edge": {
+    "passed": true,
+    "metrics_recomputed_from_actual_records": true,
+    "service_error_drilldown_records": 3,
+    "slow_drilldown_records": 2,
+    "exact_detail_and_full_trace": true,
+    "window_rate_checked": true,
+    "scope_preserved": true,
+    "unrelated_success_control": true,
+    "null_empty_states": true,
+    "error_empty_distinct": true,
+    "page_errors": 0
+  },
+  "restoration": {
+    "agent_fixture_processes": true,
+    "controller_yaml_exact": true,
+    "test_link_management_route": true,
+    "bpf_tracefs": true,
+    "existing_services": true,
+    "console_actual_exit_verified": true
+  },
+  "limitations": [
+    "Session observation metrics, not deduplicated transactions or maximum throughput",
+    "Classified client/server errors do not cover all timeout/unknown/parse-failure health cases",
+    "Latency excludes zero/unmeasured samples; means/rates/ratios are floating aggregates",
+    "Two bounded queries are not a transactional snapshot",
+    "Finite HTTP functional sample, not full protocol/kernel/performance parity"
+  ],
+  "source_files_sha256": {
+    "traflens/console/main.go": "48104c2b7a08fda9e76f5923fb2582f2fe8454e51b0c75f761d53e4ef0d11705",
+    "traflens/console/index.html": "b33ea558c82c1b10c073b28d775241c88bf27a0a89ddc4f35b7653c3aa274bd5",
+    "traflens/console/red.go": "9b16b4a713dc7d3e7695275d0ca154fb177caa30f6438e2a32391147c4bb06fe",
+    "traflens/console/red_test.go": "864ec553861df641ae15947908c0f99cba04402617e6c88d52189da50b495a4a",
+    "traflens/lab/http-trace.py": "d7850e049d89fea23225a4a5b22310ec72052d4783d01fa7659332893bee8d3b",
+    "traflens/lab/verify-http-trace.py": "f820695d3248c3745bd72ec4d5b0367d1623c36ccc4d9b70c3f827cc37c0eb5c",
+    "traflens/lab/tests/test_http_trace.py": "de7c041122c485c5e69aeefd1189e341248029d0d964133747498acd43200365",
+    "traflens/lab/tests/test_http_trace_oracle.py": "45c10d5f54a48227472a97d5d1372ca42aac1fdab6b05742c98a18ba8c80ec91"
+  }
+}
