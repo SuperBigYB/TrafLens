@@ -1,0 +1,157 @@
+{
+  "schema": "traflens.fast-mysql.diagnostic-evidence.v1",
+  "milestone": "M15 active; native repair not delivered",
+  "native_source_commit": "3dec20af5ce6ff25c696d136b5477f5310b4962c",
+  "native_binary_sha256": "8dd5ec668a09dcdac10068727fb47f282cf8091a93a11fb71cbbc33db3853763",
+  "native_changed": false,
+  "unpaced_workload_sha256": "1c17c2cec2808c20c220e64e483a4ce5e213c1b2f37959b4dd6c42e0f7163136",
+  "control_client_sha256": "599d82f845e2d2e36f5fca86884780b447068affe182592445a4ef39a27ddd4b",
+  "sql_executed": false,
+  "new_wire_scenarios": 1,
+  "positive_conversations": 3,
+  "negative_conversations": 3,
+  "data_io_matched": 36,
+  "close_headers_matched": 6,
+  "callback_input_missing": [],
+  "c_workers": 1,
+  "control_client_cap_seq_print_order": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    0,
+    1
+  ],
+  "close_cap_seq": 6,
+  "same_socket_auth_before_login": true,
+  "same_socket_close_before_greeting_login": true,
+  "per_event_rust_queue_or_parser_instrumented": false,
+  "population": {
+    "owned_count": 18,
+    "sessions": 17,
+    "by_type": {
+      "2": 17,
+      "0": 1
+    },
+    "by_request_type": {
+      "": 6,
+      "COM_QUERY": 6,
+      "COM_QUIT": 6
+    },
+    "by_point": {
+      "s-p": 9,
+      "c-p": 9
+    },
+    "empty_resource_count": 6,
+    "whole_marker_count": 12,
+    "negative_count": 0,
+    "marker_source_counts": {
+      "0": 0,
+      "3": 12,
+      "4": 0
+    },
+    "marker_query_count": 6,
+    "all_ids_and_fields_unchanged": true,
+    "complete18_gate": false
+  },
+  "all_owned_source3": true,
+  "orphan": {
+    "case": "control",
+    "point": "c-p",
+    "phase": "Login",
+    "type": 0,
+    "response_status": 0,
+    "response_code": null,
+    "response_trace_id": 0,
+    "bound_by": "exact actual socket/flowID/tuple/process and wire timestamps, not resource name"
+  },
+  "numeric_periods": {
+    "collector_rows": 2,
+    "collector_in": [
+      0,
+      42
+    ],
+    "c_enqueue": [
+      0,
+      42
+    ],
+    "c_dequeue": [
+      0,
+      42
+    ],
+    "observed_kern_lost": [
+      0,
+      0
+    ],
+    "observed_user_enqueue_lost": [
+      0,
+      0
+    ],
+    "observed_token_failed": [
+      0,
+      0
+    ],
+    "observed_period_push_conflict": [
+      0,
+      0
+    ],
+    "time_backtrack_max_ns": 6936700,
+    "flow_unknown_protocol_sample": 3,
+    "sender_observed_items": 17,
+    "sender_tail_coverage_proved": false,
+    "session_rows": 3,
+    "queue_rows": 13,
+    "worker_index_available": false,
+    "worker_index_value": null,
+    "whole_lifetime_zero_loss_proved": false
+  },
+  "failed_runtime_receipts_preserved": true,
+  "live_observer_pass": false,
+  "live_failure": "observer initially rejected legitimate cap_seq0; fixed only after the capture",
+  "offline_recovery_only": true,
+  "derived_from_existing_owned_console_headers": true,
+  "live_eof_proved": false,
+  "native_post_snapshot_available": false,
+  "protocol_counter_delta": null,
+  "original_failure_or_paced_result_rewritten": false,
+  "unpaced_fast_gate_pass": false,
+  "public_targeted_tests": 50,
+  "private_sampler_tests": 10,
+  "unchanged_console_tests_not_repeated": true,
+  "remote_ci_checked": false,
+  "private_evidence_sha256": {
+    "event-wire-reconciliation.json": "5754d38a9c36cbce6201f9b37bd1bfaaea23945a329c0c1dbcbc562604c4fc74",
+    "population-1/result.json": "a3c6079e55b6cf7c9de2b9a49df09bfa9c4a315d42b5028aab4a06bde46244c0",
+    "metadata-offline-recovery-2/result.json": "a18d9eb5f983d438f47cdb4265b0d14a71cd3f3ec3e8aadccbb3b9c725f663bc",
+    "metadata-offline-recovery-2/events.json": "ebc4b0eb84144fbe9a09f352b1645a5ed1ed09649a0b5077f4e26ce43b6341ef",
+    "numeric-1/result.json": "6ec70ff7b7d77ed7d545892937cf3adb1ec801214147606cf5a0897c4f30fc98",
+    "numeric-offline-interpretation-1.json": "88f39cc66565222ea25eaf922081f50c651aed1e35c9655becfcb2efc6c8b23e",
+    "observer-supervisor-result.json": "92595fe22c8d3eb44e58d89e9e1de85f2fd07eef7a2f2475bcd081fba7e8c89d",
+    "observer-attempt-2/observer-supervisor-result.json": "f7473fc217b32c4744ed8356b789c2bb22682dc416af9bae15f49daf161772cc"
+  },
+  "next": "bounded socket/cap-sequence ordering repair, including first observed seq>0, missing/duplicate data, timeout, CLOSE and memory budget; qualify new native artifact before a necessary finite unpaced rerun",
+  "limitations": [
+    "No exclusive cause inferred for the different R21 unpaced sample.",
+    "No new native binary, performance/parity or whole-run zero-loss qualification.",
+    "The recovered callback order does not individually instrument Rust acceptance/parser branches.",
+    "Two native lifecycle failures remain failures despite successful cleanup and offline recovery."
+  ],
+  "restoration": {
+    "pass": true,
+    "original_failed_results_unchanged": true,
+    "owned_agents_workers_holders_and_pins_removed": true,
+    "exact_recorded_processes_inactive": true,
+    "physical_interface_device_routes_unchanged": true,
+    "controller_original_agents": 0,
+    "controller_original_groups": 1,
+    "controller_yaml_unchanged": true,
+    "original_server_id_image_network_config_unchanged": true,
+    "final_bpf_and_tracefs_match_original_inventories": true,
+    "transient_type15_program_absent_at_final_read": true,
+    "transient_program_owner_and_cause_known": false,
+    "unknown_program_detached": false,
+    "loopback_comparison_origin": "explicit R19 historical baseline; no new R22 pre-state asserted",
+    "private_proof_sha256": "ddc1662d53ab6eed53683183ee578e355ae193e9dc26d7134a32d3f21dafa922"
+  }
+}

@@ -44,6 +44,17 @@ product slice or remove a direct blocker to the active milestone. Existing
 upstream source alone is not completion. Keep source/build/runtime/benchmark
 qualification distinct. Preserve upstream licensing and attribution.
 
+## Active M15: fast MySQL completeness
+
+M15-01 observability and the necessary M15-02 fresh diagnosis now have real
+wire/callback/period-counter/storage evidence. The actual control/client socket
+arrives2,3,4,5,6(CLOSE),0,1; all36IO are present but one Login remains an orphan.
+Next implement bounded per-socket/cap-sequence ordering and meaningful gap,
+close, timeout and memory regressions; qualify a new native artifact before
+fast18complete-session/API/browser acceptance. Keep M15 active. Do not expand
+protocols, add wire sleeps, hide orphan/QUIT records, or repeat old matrices.
+Live observer failures and subsequent same-data offline recovery remain distinct.
+
 ## Recurring execution policy
 
 - Run every30 minutes in the existing task; inspect current repository state before work.

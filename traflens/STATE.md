@@ -13,6 +13,36 @@ priority is a reproducible product entry point and minimal real-data console
 topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
 performance work. Review priorities after each milestone or three half-hourly runs.
 
+## M15 fast MySQL ordering diagnosis (2026-10-29, active)
+
+A separate default-offline unpaced diagnostic entry adds nonce-bound before/after
+observer gates and bounded metadata parsing without changing DNS/paced defaults
+or native3dec20af5. One actual fresh scenario reproduced incompleteness:18rows
+are17Sessions plus a control/client Login Request; marker12/query6/QUIT6 and
+outside0 are retained by two full same-ID/field reads. All36actual data IO and
+6CLOSE callbacks match existing same-run wire. One socket arrives2,3,4,5,6close,
+0,1 in the single C worker; exact socket/flow/tuple/PID/time binds that orphan.
+This proves the observed pre-callback disorder, not an exclusive explanation
+for R21 or a native repair. Sampled counters show42input/enqueue/dequeue;
+period loss zeros cannot prove lifetime zero loss. Worker-index NULL and
+missing post/trailing counters remain explicit.
+
+The first runtime failed before wire at socket binding; the second passed the
+exact native-root/run SO_PEERCRED gate and then its live observer wrongly
+rejected legal cap_seq0. Original failures remain failed. The parser correction
+and50combined targeted tests pass;42headers were recovered only offline from
+the original owned console. No recapture, native build, UI/matrix rerun or
+remote-CI verification was used. M15-03 should address bounded per-socket
+cap-sequence ordering, initial gaps, timeout/memory and CLOSE, then qualify
+a new artifact and perform the necessary complete fast gate.
+
+Both original failed results remain unchanged; final exact owned resource,
+BPF/tracefs, Controller/YAML, physical hardware/routes and old Server restoration
+checks pass. No unknown program was detached.
+
+See [diagnostic entry](README-ebpf-mysql-diagnostic.md) and
+[anonymous evidence](evidence/2026-10-29/fast-mysql/README.md).
+
 ## M14 paced eBPF MySQL wire functional gate (2026-10-29)
 
 The explicit100ms-paced finite protocol fixture passes. Typed immutable

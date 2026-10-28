@@ -49,6 +49,13 @@ class ProtocolContract(NamedTuple):
     receipt_validator: object = None
     server_comm: object = None
     client_comm: object = None
+    diagnostic: bool = False
+    preflight_validator: object = None
+    observer_gate: object = None
+
+    @property
+    def stem(self):
+        return self.name + ('-diagnostic' if self.diagnostic else '')
 
     @property
     def label(self):
@@ -56,19 +63,19 @@ class ProtocolContract(NamedTuple):
 
     @property
     def schema(self):
-        return 'traflens.ebpf-' + self.name + '.capture.v1'
+        return 'traflens.ebpf-' + self.stem + '.capture.v1'
 
     @property
     def role_schema(self):
-        return 'traflens.ebpf-' + self.name + '.worker-runtime.v1'
+        return 'traflens.ebpf-' + self.stem + '.worker-runtime.v1'
 
     @property
     def purpose(self):
-        return 'traflens.ebpf-' + self.name + '.worker'
+        return 'traflens.ebpf-' + self.stem + '.worker'
 
     @property
     def script(self):
-        return 'ebpf-' + self.name + '.py'
+        return 'ebpf-' + self.stem + '.py'
 
 
 DNS_CONTRACT = ProtocolContract('dns', 'dns-', 'kernel_dns', 120, kernel_dns_profile, 'managed-dns.py', 6)
@@ -80,6 +87,9 @@ def validate_contract(contract):
                 in (('dns', 'dns-', 'kernel_dns', 120, 'managed-dns.py'),
                     ('mysql', 'my-', 'kernel_mysql', 60, 'managed-mysql.py')),
             'Unsupported fixed scoped protocol contract')
+    require(type(contract.diagnostic) is bool and (not contract.diagnostic or
+            (contract.name == 'mysql' and callable(contract.preflight_validator) and callable(contract.observer_gate))),
+            'Diagnostic contract requires explicit fixed preflight and observer gates')
 
 
 def worker_selection(state, role):
@@ -296,6 +306,8 @@ def cleanup(work, state):
 def execute(args, contract=DNS_CONTRACT):
     validate_controller_url(args.controller_url)
     validate_contract(contract)
+    if contract.preflight_validator is not None:
+        contract.preflight_validator(args)
     require(os.geteuid() == 0 and os.uname().machine == 'x86_64', 'Qualified Linux x86_64 root required')
     require(re.fullmatch('[A-Za-z0-9][A-Za-z0-9_.@-]{0,127}', args.backend_host or ''), 'Explicit SSH alias required')
     for key in ('work', 'backend_root', 'backend_work', 'backend_code', 'artifacts', 'workload_bin'):
@@ -333,6 +345,9 @@ def execute(args, contract=DNS_CONTRACT):
         CORE.write(work / 'supervisor.json', dict(CORE.proc_identity(os.getpid()), argv=sys.argv))
         result = {'schema': contract.schema, 'run': state['run'], 'negative_run': state['negative_run'], 'pass': False,
                   'storage_verified': False, 'runtime_receipts_required': True, 'performance_measurement': False}
+        if contract.diagnostic:
+            result.update(diagnostic_only=True, integrity_qualified=False, pacing_only_qualification=False,
+                          unpaced_completeness_proven=False, native_fix_claimed=False)
         def interrupted(*_):
             raise InterruptedError('Owned DNS capture interrupted; public stop can resume')
         signal.signal(signal.SIGTERM, interrupted)
@@ -345,6 +360,10 @@ def execute(args, contract=DNS_CONTRACT):
                             'controller_ip': args.controller_ip, 'controller_port': args.controller_port,
                             'ingester_port': args.ingester_port, 'ctrl_ip': args.ctrl_ip, 'ctrl_mac': args.ctrl_mac,
                             'profile': profile, 'signal_source': 3, 'l7_protocol': contract.protocol_id, 'transport': 'tcp', 'port': 18080}
+                if contract.diagnostic:
+                    metadata.update(diagnostic_only=True, integrity_qualified=False, pacing_only_qualification=False,
+                                    observer_gates_required=True, observer_timeout_seconds=args.observer_timeout_seconds,
+                                    archived_workload_source_sha256=CORE.file_hash(args.workload_source))
                 CORE.write(work / 'metadata.json', metadata)
                 state['controller_attempted'] = True
                 CORE.persist(work, state)
@@ -362,7 +381,7 @@ def execute(args, contract=DNS_CONTRACT):
                 lease = CORE.locate_lease(work, state, 20)
                 require(lease is not None and holder.poll() is None, 'Quiet DNS namespaces are not ready')
                 state['scope'] = CORE.scope_identity(lease, state)
-                state['scope']['schema'] = 'traflens.ebpf-' + contract.name + '.scope.v1'
+                state['scope']['schema'] = 'traflens.ebpf-' + contract.stem + '.scope.v1'
                 CORE.persist(work, state)
                 with socket.socket() as probe:
                     probe.bind(('127.0.0.1', args.forward_port))
@@ -383,6 +402,8 @@ def execute(args, contract=DNS_CONTRACT):
                 state['scope']['agent_container_id'] = current['id']
                 CORE.persist(work, state)
                 CORE.write(work / 'scope-runtime.json', state['scope'])
+                if contract.observer_gate is not None:
+                    contract.observer_gate(work, state, 'before-first-wire')
                 run_phase(work, state, 'negative', contract)
                 run_phase(work, state, 'positive', contract)
                 result.update(pass_execution=True, positive_queries=3, negative_queries=3,
@@ -393,6 +414,8 @@ def execute(args, contract=DNS_CONTRACT):
                     result.update(expected_query_observations=6, whole_population_requires_independent_oracle=True,
                                   wire_fixture=True, sql_executed=False)
                 time.sleep(5)
+                if contract.observer_gate is not None:
+                    contract.observer_gate(work, state, 'after-final-wire')
                 result['pass'] = True
             except Exception as error:
                 result['error'] = type(error).__name__ + ': ' + str(error)
@@ -405,6 +428,8 @@ def execute(args, contract=DNS_CONTRACT):
                              and CORE.read(work / 'scope-restoration.json').get('pass') is True)
                 result['pass'] = bool(result['pass'] and qualified and restoration['cleaned']
                     and all(restoration['worker_exits'].get(role) == {'exit_code': 0, 'oom': False} for role in ROLES))
+                if contract.diagnostic:
+                    result['diagnostic_execution_completed'] = result['pass']
                 CORE.write(work / 'result.json', result)
         print(json.dumps(result))
         return 0 if result['pass'] else 1
@@ -448,11 +473,17 @@ def main(argv=None, contract=DNS_CONTRACT):
     p.add_argument('--controller-port', type=int, default=20035)
     p.add_argument('--ingester-port', type=int, default=20033)
     p.add_argument('--forward-port', type=int, default=24017)
+    if contract.diagnostic:
+        p.add_argument('--workload-source')
+        p.add_argument('--observer-timeout-seconds', type=int, default=30)
     a = p.parse_args(argv)
     if not a.execute or a.action == 'plan':
-        print(json.dumps({'execute': False, 'starts_network': False, 'creates_resources': False,
+        plan = {'execute': False, 'starts_network': False, 'creates_resources': False,
                           'protocol': contract.label, 'port': 18080, 'positive_queries': 3, 'negative_queries': 3,
-                          'scope': 'exact positive namespace FD/inode/map', 'source': 3, 'storage_verified': False}))
+                          'scope': 'exact positive namespace FD/inode/map', 'source': 3, 'storage_verified': False}
+        if contract.diagnostic:
+            plan.update(diagnostic_only=True, integrity_qualified=False, observer_gates_required=True)
+        print(json.dumps(plan))
         return 0
     os.umask(0o077)
     require(a.work, 'Explicit private work required')
