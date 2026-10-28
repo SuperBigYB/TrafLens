@@ -33,7 +33,8 @@ requalifying it when unrelated work changes.
    continuous-profile entry points and host/container/Kubernetes associations.
    Acceptance: each implemented signal can be queried and navigated from the
    relevant service or resource in an actual scenario.
-5. **Sustained performance and parity gaps.** With the main workflow usable,
+5. **TCP/network observations (M12 finite functional gate complete).** Provide bounded native packet L4 reports, actual close-code/counter/RTT semantics and exact same-flow HTTP navigation. Three real owned socket outcomes and outside-filter controls pass the public lifecycle, independent raw comparison and actual browser. This does not establish physical10G performance, loss-free capture or eBPF/packet identity interchangeability.
+6. **Sustained performance and parity gaps.** With the main workflow usable,
    compare pinned implementations under matched resources and representative
    sustained workloads; improve the measured bottlenecks and remaining features.
    Retain correctness and loss measurements alongside throughput/resource cost.
@@ -111,3 +112,15 @@ No unproven L4/source/flow-ID equivalence or broad management-interface collecti
 is authorized by a field name. Reuse qualified inputs where supported, keep one
 active milestone and defer old protocol/kernel/performance matrices. The local
 file becomes M12-active only after both repository refs match M11's delivery.
+
+## Next single milestone after M12 synchronization
+
+M13 selects a finite managed eBPF DNS query/error product loop. Inspect actual
+parser/transport/FD/map namespace scope and normal license support first; use
+only owned bounded endpoints and an independent wire/application oracle. Prove
+real source3 data, whole-population positive/negative controls, exact API/detail
+and actual browser, then public stop/restoration and both repository refs. Do
+not assume UDP capture or claim all protocols/AutoTracing/performance. Keep
+other profiling/process/integration inputs disabled and reuse qualified native
+artifacts; if a necessary capability is absent, record the direct blocker rather
+than silently substituting packet input or widening collection.

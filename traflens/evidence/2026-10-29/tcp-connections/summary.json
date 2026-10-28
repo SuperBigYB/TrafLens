@@ -1,0 +1,191 @@
+{
+  "milestone": "M12",
+  "functional_gate": true,
+  "complete_deepflow_parity": false,
+  "pipeline": "owned loopback packet Agent on dev-79 to existing Server on dev-240",
+  "physical_10g_or_maximum_performance_tested": false,
+  "capture": {
+    "pass_execution": true,
+    "actual_positive_connections": 3,
+    "actual_negative_connections": 3,
+    "cleaned": true,
+    "collector_stopped": true,
+    "controller_cleaned": true,
+    "fixtures_stopped": true
+  },
+  "agent_exit": {
+    "exit_code": 0,
+    "oom_killed": false,
+    "immutable_finished_at_recorded": true
+  },
+  "natural_drain_seconds": 50,
+  "exact_bpf_restore_wait_cap_seconds": 90,
+  "strict_oracle": {
+    "passed": true,
+    "new_capture": false,
+    "new_traffic": false,
+    "source": "native packet source0; three actual owned socket outcomes",
+    "limitations": "Finite report-level connection observations; not deduplicated business throughput, automatic causal tracing or RTT precision validation.",
+    "agent_runtime_provenance_verified": true,
+    "native_binary_sha256": "8dd5ec668a09dcdac10068727fb47f282cf8091a93a11fb71cbbc33db3853763",
+    "native_source_commit": "3dec20af5ce6ff25c696d136b5477f5310b4962c",
+    "actual_packet_socket_count": 1,
+    "dispatcher_and_three_listener_gate": true,
+    "installed_fixed_custom_bpf_verified": true,
+    "kernel_accepts_only_lo": true,
+    "actual_all_interface_bound_socket_count": 1,
+    "current_container_absence_and_original_kernel_baseline_verified": true,
+    "native_records": 3,
+    "whole_tuple_reads": 2,
+    "row_fingerprint": "bdb8f9500f2e57bdccb0c2593920ac4fb865198fefdba013495983b750fb5bb8",
+    "exact_detail_reads": 3,
+    "actual_connections": 3,
+    "final_close_types": {
+      "normal": 1,
+      "reset": 2,
+      "refused": 15
+    },
+    "normal_http_same_flow_linked": true,
+    "reset_and_refused_no_http_session": true,
+    "negative_scopes_passed": 3,
+    "socket_events_sha256": "68a00d3ab725cd54ed00feb2b6212cb2d8003c8db2d94b827487455617e02b68",
+    "request_count": 20,
+    "outside_filter_actual_connections": 3,
+    "outside_filter_stored_records": 0,
+    "negative_socket_events_sha256": "fe6264f6f6a84e0e4d3df9b71df7ebf4ba7a9bbba1915819fb18e856327e34f6",
+    "raw_population_scope": "entire Agent/time window; no source/protocol/tuple/port/close filter",
+    "native_time_epoch_equals_end_us_floor": true,
+    "periodic_reports": 0,
+    "query_time_semantics": "native report EndTime seconds; may extend beyond capture exit by at most60s alignment",
+    "rtt_unit": "microseconds; zero means unavailable/not proven, not health",
+    "count_scope": "observed report counters; lifetime total counters are not summed across reports",
+    "elapsed_seconds": 0.449
+  },
+  "anonymous_original_metrics": [
+    {
+      "close_type": 1,
+      "signal_source": 0,
+      "protocol": 6,
+      "packet_tx": 6,
+      "packet_rx": 4,
+      "byte_tx": 513,
+      "byte_rx": 446,
+      "total_packet_tx": 6,
+      "total_packet_rx": 4,
+      "rtt": 17,
+      "rtt_client": 6,
+      "rtt_server": 11,
+      "retrans_tx": 0,
+      "retrans_rx": 0
+    },
+    {
+      "close_type": 15,
+      "signal_source": 0,
+      "protocol": 6,
+      "packet_tx": 1,
+      "packet_rx": 1,
+      "byte_tx": 74,
+      "byte_rx": 54,
+      "total_packet_tx": 1,
+      "total_packet_rx": 1,
+      "rtt": 0,
+      "rtt_client": 0,
+      "rtt_server": 0,
+      "retrans_tx": 0,
+      "retrans_rx": 0
+    },
+    {
+      "close_type": 2,
+      "signal_source": 0,
+      "protocol": 6,
+      "packet_tx": 3,
+      "packet_rx": 3,
+      "byte_tx": 262,
+      "byte_rx": 206,
+      "total_packet_tx": 3,
+      "total_packet_rx": 3,
+      "rtt": 9,
+      "rtt_client": 4,
+      "rtt_server": 5,
+      "retrans_tx": 0,
+      "retrans_rx": 0
+    }
+  ],
+  "browser": {
+    "pass": true,
+    "browser": "headless Microsoft Edge",
+    "page_errors": [],
+    "full_capture_metadata_copied_locally": false,
+    "actual_source0_tcp_reports": 3,
+    "periodic_reports": 0,
+    "terminal_reports": 3,
+    "native_flow_count": 3,
+    "all_raw_reports_shown": true,
+    "close_codes": [
+      1,
+      2,
+      15
+    ],
+    "exact_l4_details": 3,
+    "native_flow_http_details": 1,
+    "reset_refused_http_empty": true,
+    "zero_rtt_not_health": true,
+    "wrong_agent_time_id_empty": true,
+    "over_budget_distinct_error": true,
+    "initial_form_handler_and_inclusive_window": true
+  },
+  "restoration": {
+    "query3_containers_absent": true,
+    "query3_loopback_ports_released": true,
+    "old_server_id_image_network_unchanged": true,
+    "old_server_config_matches_historical_M9_round14_sha": true,
+    "controller_shared_verify_baseline": true,
+    "controller_exact_baseline_inventory": true,
+    "controller_agent_count": 0,
+    "controller_group_count": 1,
+    "original_default_group_identity_membership_yaml_preserved": true,
+    "new_capture_started": false
+  },
+  "hardware": {
+    "interface_identity_matches": true,
+    "physical_device_matches": true,
+    "management_route_matches": true,
+    "loopback_identity_flags_match": true,
+    "loopback_addresses_match": true
+  },
+  "source_forwards": {
+    "forward_identity_matched": true,
+    "forward_stopped": true,
+    "port_20819_closed": true,
+    "port_20820_closed": true,
+    "port_24017_closed": true
+  },
+  "workstation_forward_22880_closed": true,
+  "checks": {
+    "console_full_race_tests": 64,
+    "console_build": true,
+    "targeted_tcp_tool_tests": 49,
+    "independent_readonly_review": true,
+    "remote_ci_checked": false
+  },
+  "failures_preserved": [
+    "runtime1 rejected unsupported Controller template keys before collector or fixture execution; restored",
+    "runtime2 rejected native AF_PACKET bind0 before fixtures; actual installed IFINDEX control-flow guard now proved",
+    "runtime3 stdout-only readiness missed actual owned native file logs; no fixtures; restored",
+    "runtime4 actual sockets ran but15s restoration gate failed; unchanged public stop later restored; original failure unchanged",
+    "runtime4 short drain and fixture-only query window did not cover native expiry/report time; retained as failed diagnostic data",
+    "oracle1 rejected actual exact native JSON UInt64 flow_id; separate oracle2 uses precision-preserving integer contract on same capture",
+    "Edge1 exposed actual same-flow HTTP502 from native UInt64 encoding; exact raw-decimal normalization fixed, Edge2 passes on same capture"
+  ],
+  "security_alternatives": [
+    "automatic review rejected raw private log-tail export; not executed; local structural analysis used",
+    "automatic review rejected copying a diagnostic script into old evidence; not executed; independent fresh directory used"
+  ],
+  "limits": [
+    "report counts are not deduplicated business connection totals; lifetime counters are not summed",
+    "RTT zero is unavailable, not health; close type alone is not a root cause",
+    "source0 native flow evidence is not interchangeable with source3 eBPF flow identities",
+    "row/byte/deadline caps do not bound all database scanning or driver memory",
+    "no physical cross-host application hop, packet-loss accuracy, generic connection inventory or maximum throughput claim"
+  ]
+}

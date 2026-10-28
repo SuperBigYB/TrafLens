@@ -13,6 +13,47 @@ priority is a reproducible product entry point and minimal real-data console
 topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
 performance work. Review priorities after each milestone or three half-hourly runs.
 
+## M12 finite TCP connection product gate complete (2026-10-29)
+
+The public finite packet lifecycle, strict independent oracle and real Edge
+pass three owned socket outcomes: normal HTTP, actual server abort/reset and
+bound-but-not-listening refusal. Three source0 L4 reports have native close
+codes1/2/15; three outside-filter sockets produce zero rows. Two complete
+Agent/time populations preserve all records without hiding source/protocol/
+tuple/port/close-code filters. Native counters/units and API values match;
+all three exact L4 details and one exact same-native-flow HTTP record pass.
+
+The kernel proof retains actual AF_PACKET bind0 plus the complete installed
+address/port prefix and IFINDEX control-flow guard accepting only lo; it does
+not call bind0 a physical lo bind. Native time=floor(end_time), deletion
+deadlines2/5/35s, packet duration and minute-aligned periodic reports are distinct.
+The public50s natural drain and immutable actual FinishedAt+60s report bound
+avoid truncating them. Raw periodic reports are retained and period counters
+conserve final lifetime totals; report count is not business connection count.
+
+The first template/bind/log gates, short-drain/restoration failure, overly strict
+native UInt64 oracle and actual HTTP-link502 are preserved separately. The last
+two fixes parse exact raw integer bytes without float conversion and reuse the
+same real capture; they do not replay traffic or edit stored rows/times. Native
+Agent exits0, public and idempotent stop restore actual BPF/tracefs/lo/Controller
+identity/membership/YAML. Old Server ID/image/network and historical M9 round14
+config SHA match; physical device/interface/routes are unchanged. All owned
+query/console/forwards are removed.64 full console race tests/build,49 targeted
+TCP tool tests and independent review pass; remote CI was not checked.
+
+See [public workflow](README-tcp-connections.md) and
+[anonymous evidence](evidence/2026-10-29/tcp-connections/README.md).
+This is a finite loopback packet-to-peer-Server product slice, not physical10G
+performance, loss-free capture, health/root-cause proof, generic host connection
+inventory or interchangeability with eBPF flow IDs. Row/byte/deadline bounds do
+not cap all database scanning or driver memory.
+
+After both main refs match this delivery, close M12 in the local plan and select
+M13: finite managed eBPF DNS query/error navigation. First inspect actual parser,
+transport and strict scope support; do not presume UDP or full protocol coverage.
+Keep CPU/DWARF/process/profile/OTLP inputs off and normal kernel permissions.
+Completed HTTP/OTLP/profile/packet-protocol/performance matrices stay historical.
+
 ## M11 public headerless association lifecycle functional gate complete (2026-10-28)
 
 The public plan/run/stop capture coordinator and strict independent verifier now

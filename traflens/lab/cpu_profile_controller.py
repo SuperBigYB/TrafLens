@@ -16,6 +16,10 @@ WORK = None
 GROUP_MEMBER_KEYS = ('VTAP_LCUUIDS', 'DISABLE_VTAP_LCUUIDS', 'PENDING_VTAP_LCUUIDS')
 AGENT_IDENTITY = ('ID', 'LCUUID', 'NAME', 'CTRL_IP', 'CTRL_MAC', 'TYPE', 'TEAM_ID', 'VTAP_GROUP_LCUUID', 'ENABLE', 'LICENSE_FUNCTIONS')
 GROUP_IDENTITY = ('ID', 'LCUUID', 'NAME', 'SHORT_UUID', 'TEAM_ID', 'USER_ID', 'LICENSE_FUNCTIONS')
+PACKET_TCP_FILTER = ('tcp and ((src host 127.77.0.1 and dst host 127.77.0.2 and '
+                     '(dst port 18081 or dst port 18082 or dst port 18083)) or '
+                     '(src host 127.77.0.2 and dst host 127.77.0.1 and '
+                     '(src port 18081 or src port 18082 or src port 18083)))')
 
 def read_json_argument(value):
     if value.lstrip().startswith('{'):
@@ -75,13 +79,13 @@ def verify_baseline(api, baseline):
 
 def integration_mode(value):
     mode = value.get('integration_mode', 'profile')
-    require(mode in ('profile', 'otel_trace', 'kernel_http'), 'Unknown integration mode')
+    require(mode in ('profile', 'otel_trace', 'kernel_http', 'packet_tcp'), 'Unknown integration mode')
     return mode
 
 
 def license_functions(value):
     # Normal feature management only; callers cannot supply license overrides.
-    return {'profile': [11], 'otel_trace': [6], 'kernel_http': [2, 4, 5]}[integration_mode(value)]
+    return {'profile': [11], 'otel_trace': [6], 'kernel_http': [2, 4, 5], 'packet_tcp': [2, 4, 5]}[integration_mode(value)]
 
 
 def kernel_http_profile(controller_ip, controller_port, ingester_port):
@@ -100,6 +104,33 @@ def kernel_http_profile(controller_ip, controller_port, ingester_port):
     return value
 
 
+def packet_tcp_profile(controller_ip, controller_port, ingester_port):
+    value = kernel_http_profile(controller_ip, controller_port, ingester_port)
+    inputs = value['inputs']
+    inputs['ebpf']['disabled'] = True
+    inputs['proc']['enabled'] = False
+    inputs['integration']['enabled'] = False
+    # This Controller template does not expose Vector; native default is off.
+    inputs.pop('vector', None)
+    inputs['integration']['feature_control'] = {key: True for key in inputs['integration']['feature_control']}
+    packet = inputs['cbpf']['af_packet']
+    # extra_netns_regex is also not exposed; its native default is empty.
+    packet.pop('extra_netns_regex', None)
+    packet.update(interface_regex='^lo$', inner_interface_capture_enabled=False,
+                  src_interfaces=[], bond_interfaces=[], bpf_filter_disabled=False,
+                  extra_bpf_filter=PACKET_TCP_FILTER)
+    packet.setdefault('tunning', {})['interface_promisc_enabled'] = False
+    request_filters = value['processors']['request_log']['filters']
+    request_filters['cbpf_disabled'] = False
+    request_filters['port_number_prefilters'] = {'HTTP': '18081'}
+    output = value['outputs']
+    output['flow_metrics']['enabled'] = True
+    output['flow_metrics']['filters'].update(npm_metrics=True, apm_metrics=True)
+    output['flow_log']['filters'].update(l4_capture_network_types=[0], l7_capture_network_types=[0],
+                                       l4_ignored_observation_points=[], l7_ignored_observation_points=[])
+    return value
+
+
 def trace_only_profile(controller_ip, controller_port, ingester_port):
     value = profile_only(Path(__file__).resolve().parent, controller_ip, controller_port, ingester_port)
     integration = value['inputs']['integration']
@@ -112,10 +143,10 @@ def trace_only_profile(controller_ip, controller_port, ingester_port):
 def validate_metadata(value):
     require(isinstance(value, dict), 'Controller metadata must be an object')
     mode = integration_mode(value)
-    prefix = {'profile': 'cpu-', 'otel_trace': 'span-', 'kernel_http': 'nh-'}[mode]
+    prefix = {'profile': 'cpu-', 'otel_trace': 'span-', 'kernel_http': 'nh-', 'packet_tcp': 'tcp-'}[mode]
     require(re.fullmatch(prefix + '[0-9a-f]{24}', value.get('run', '')), 'Run prefix differs from integration mode')
-    if mode == 'kernel_http':
-        require(not any('license' in str(key).lower() for key in value), 'Kernel HTTP uses only fixed normal feature functions')
+    if mode in ('kernel_http', 'packet_tcp'):
+        require(not any('license' in str(key).lower() for key in value), 'Packet/kernel modes use only fixed normal feature functions')
     address = ipaddress.ip_address(value['ctrl_ip'])
     require(address.version == 4 and address.is_private and (not address.is_loopback) and (not address.is_link_local) and (not address.is_unspecified), 'Controller identity or scope mismatch')
     require(re.fullmatch('(?:[0-9a-f]{2}:){5}[0-9a-f]{2}', value['ctrl_mac']), 'Controller identity or scope mismatch')
@@ -125,6 +156,8 @@ def validate_metadata(value):
         expected = trace_only_profile(value['controller_ip'], value['controller_port'], value['ingester_port'])
     elif mode == 'kernel_http':
         expected = kernel_http_profile(value['controller_ip'], value['controller_port'], value['ingester_port'])
+    elif mode == 'packet_tcp':
+        expected = packet_tcp_profile(value['controller_ip'], value['controller_port'], value['ingester_port'])
     else:
         expected = profile_only(Path(__file__).resolve().parent, value['controller_ip'], value['controller_port'], value['ingester_port'])
     require(value['profile'] == expected, 'Configuration differs from the fixed integration mode')
