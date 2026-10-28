@@ -1,0 +1,142 @@
+{
+  "milestone": "M14",
+  "paced_functional_gate": true,
+  "unpaced_completeness_proven": false,
+  "native_fix_claimed": false,
+  "sql_executed": false,
+  "complete_deepflow_or_performance_parity": false,
+  "source": "native eBPF MySQL60/TCP6 source3, qualified core3dec20af5",
+  "scope": "two owned namespaces on source and Agent-to-peer-Server pipeline; no physical10G benchmark",
+  "paced_oracle": {
+    "actual_raw_scope_map_verified": true,
+    "actual_wire_sha256": {
+      "negative-client": "b010af2184dafcefd441eda83b8fa3c128572e0a205cf21561ffa41031588bd7",
+      "negative-server": "01a664005d047c76f76d11ff379c25965a4dfb0380aa0830ac656d7776266ee2",
+      "positive-client": "63f6ed140f35e877d2f5fcd749cb2e67052f75eaf4cd75dc2625bf5be8cccc90",
+      "positive-server": "5850da834b78bf5641dc25def869044e79e38c35d3dc2cf725587fe19f8411c7"
+    },
+    "actual_worker_runtime_receipts_passed": true,
+    "all_observations": 18,
+    "application_negative_queries": 3,
+    "application_positive_queries": 3,
+    "counting": "18 actual login/query/QUIT observations for three positive fixture conversations; not eighteen business SQL requests",
+    "elapsed_seconds": 0.625,
+    "exact_detail_reads": 18,
+    "limitations": "Finite no-SQL-execution wire fixture; no real database authentication, executed SQL, complete MySQL compatibility or performance parity.",
+    "login_observations": 6,
+    "marked_observations": 12,
+    "negative_stored_records": 0,
+    "new_capture": false,
+    "new_ingestion": false,
+    "original_projection_sha256": "e121dabbd9e9a26438659eac0b3d5e77c03605b1d53c57bebc7c0ffb5fa97913",
+    "original_runtime_sha256": {
+      "coordinator-scope-proof.json": "5d7a80b273247a1b823a0b8bba28b5d7e26054e11781e95e19a63ddefea03585",
+      "scope-map.json": "6434c59faf771558c963c0b27ba6ef8f835e8b7849ee709ebaa1a16026732088",
+      "scope-runtime.json": "32e3e488a5e0ed8ce2924a79b26d77e0f82db703532e3943801008b07124af4f"
+    },
+    "paced_finite_wire_qualification": true,
+    "pacing_ms": 100,
+    "pacing_waits_per_worker": 21,
+    "passed": true,
+    "query_atomicity": "Two entire unchanged marker and Agent/window populations bracket API reads; no database snapshot transaction",
+    "query_observations": 6,
+    "request_count": 38,
+    "response_code_semantics": "NULL for OK/EOF/QUIT, ERR1064 status3; not HTTP00/fe codes",
+    "scope_receipt_passed": true,
+    "source": "native eBPF MySQL classic TCP source3",
+    "sql_executed": false,
+    "standalone_quit_observations": 6,
+    "storage_acceptance_passed": true,
+    "unpaced_completeness_proven": false,
+    "whole_agent_window_reads": 2,
+    "whole_marker_reads": 2
+  },
+  "marked_source_counts": {
+    "0": 0,
+    "3": 12,
+    "4": 0
+  },
+  "whole_agent_source_counts": {
+    "3": 18,
+    "0": 0,
+    "4": 0
+  },
+  "browser": {
+    "pass": true,
+    "browser": "headless Microsoft Edge",
+    "page_errors": [],
+    "full_capture_metadata_copied_locally": false,
+    "sql_executed": false,
+    "actual_source3_mysql_sessions": 18,
+    "marked_login_and_query_observations": 12,
+    "query_observations": 6,
+    "query_resources": 3,
+    "successful_query_observations": 4,
+    "error1064_observations": 2,
+    "all_phases_exact_details": 18,
+    "all_login_query_quit_population_shown": true,
+    "existing_protocol_source_and_error_controls": true,
+    "normal_null_and_native_error_semantics_preserved": true,
+    "wrong_source_agent_time_id_empty": true
+  },
+  "restoration": {
+    "query2_containers_absent": true,
+    "query2_loopback_ports_released": true,
+    "old_server_id_image_network_unchanged": true,
+    "old_server_config_matches_historical_M9_round14_sha": true,
+    "controller_shared_verify_baselines": true,
+    "controller_exact_baseline_inventory": true,
+    "controller_agent_count": 0,
+    "controller_group_count": 1,
+    "original_default_group_identity_membership_yaml_preserved": true
+  },
+  "hardware": {
+    "physical_device_matches": true,
+    "interface_matches": true,
+    "management_route_matches": true
+  },
+  "source_forwards": {
+    "exact_forward_identity": true,
+    "forward_stopped": true,
+    "port_20819_closed": true,
+    "port_20820_closed": true,
+    "port_24017_closed": true
+  },
+  "workstation22880_closed": true,
+  "checks": {
+    "targeted_tests": 100,
+    "new_mysql_tests": 34,
+    "shared_regressions": 66,
+    "static_c_build": true,
+    "independent_review": true,
+    "unchanged_console64_baseline_not_repeated": true,
+    "remote_ci_checked": false
+  },
+  "unpaced_failure": {
+    "execution_and_cleanup_passed": true,
+    "wire_data_events_per_role": 18,
+    "actual_tcp_eof_events_per_role": 3,
+    "classic_packet_copies_per_role": 26,
+    "expected_complete_sessions": 18,
+    "actual_all_records": 17,
+    "complete_sessions": 16,
+    "orphan_requests": 1,
+    "missing_server_main_quit": true,
+    "client_control_query_response_missing": true,
+    "strict_oracle_passed": false,
+    "edge_passed": false,
+    "original_results_unchanged": true,
+    "sender_drain_successful": true,
+    "numerical_final_loss_counters_saved": false,
+    "root_cause_proven": false,
+    "historical_unpaced_source_sha256": "d097917c05cfb5de5e8a0f5fe91cfc4181ae7653e4b3c11b4488333dab17c06f"
+  },
+  "next_mainline_priority": "M15 bounded fast-path completeness and event-order/loss localization; no further protocol expansion first",
+  "limits": [
+    "fixed100ms actual waits after data phase and connection close;21 verified waits per worker",
+    "real classic protocol fixture, not database SQL execution/authentication or general MySQL compatibility",
+    "18 login/query/QUIT observations describe three actual positive conversations, not18 business SQL requests",
+    "self comm mysqld is a pinned inference direction hint, not process/database identity proof",
+    "perCPU/no-op Reorder/close hypotheses are not an established cause; pacing is not a native reliability repair"
+  ]
+}

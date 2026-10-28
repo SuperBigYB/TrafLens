@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Read-only finite DNS/TCP source3 acceptance; default is an offline plan."""
 import argparse
+from dataclasses import dataclass
 import errno
 import hashlib
 import importlib.util
@@ -237,11 +238,23 @@ def workload_oracle(folder,full_role,run):
     return process,receipt,pairs,digest(raw)
 
 
-def worker_runtime(folder,full_role,run,workload_run,process,scope,helpers):
+@dataclass(frozen=True)
+class WorkerContract:
+    schema: str
+    purpose: str
+    server_comm: object = None
+    client_comm: object = None
+
+
+DNS_WORKER = WorkerContract('traflens.ebpf-dns.worker-runtime.v1','traflens.ebpf-dns.worker')
+
+
+def checked_worker_runtime(folder,full_role,run,workload_run,process,scope,helpers,contract):
+    require(isinstance(contract,WorkerContract), 'Explicit immutable worker protocol contract required')
     document=read_json(folder/(full_role+'-runtime.json'))
     created=read_json(folder/(full_role+'-created.json'))
     phase,role=full_role.split('-',1)
-    require(document.get('schema')=='traflens.ebpf-dns.worker-runtime.v1' and document.get('role')==full_role
+    require(document.get('schema')==contract.schema and document.get('role')==full_role
             and document.get('scope_role')==phase and document.get('run')==run and document.get('workload_run')==workload_run
             and document.get('scope_receipt')=='scope-runtime.json'
             and document.get('agent_container_id')==scope['agent_container_id'], 'Actual DNS worker runtime identity differs')
@@ -249,7 +262,7 @@ def worker_runtime(folder,full_role,run,workload_run,process,scope,helpers):
     normalized=create.get('normalized',{})
     image=normalized.get('image')
     require(isinstance(image,str) and re.fullmatch('sha256:[0-9a-f]{64}',image), 'Immutable actual worker image required')
-    labels={'io.traflens.purpose':'traflens.ebpf-dns.worker','io.traflens.run':run,
+    labels={'io.traflens.purpose':contract.purpose,'io.traflens.run':run,
             'io.traflens.role':full_role,'io.traflens.output':str(folder)}
     network='container:'+scope[phase]['container_id']
     command=['--execute','--role',role,'--run',workload_run,'--output','/output','--seconds','90','--port','18080']
@@ -262,6 +275,10 @@ def worker_runtime(folder,full_role,run,workload_run,process,scope,helpers):
                 and type(actual.get(key)) is type(expected) and actual[key]==expected,
                 'Actual DNS worker Docker intent/inspect scope differs: '+key)
     helpers.security_option_receipt(actual)
+    comm=contract.server_comm if role=='server' else contract.client_comm
+    if comm is not None:
+        require(actual.get('comm')==process.get('comm')==comm and actual.get('comm_direction_hint_only') is True,
+                'Owned worker comm direction hint differs; PID/executable remains the identity')
     mounts=normalized.get('mounts')
     require(isinstance(mounts,list) and len(mounts)==2 and actual.get('mounts')==mounts and created.get('mounts')==mounts,
             'Actual DNS worker mount intent differs')
@@ -285,6 +302,10 @@ def worker_runtime(folder,full_role,run,workload_run,process,scope,helpers):
             and helpers.namespace(actual.get('netns'),'net')==process['netns']
             and helpers.namespace(actual.get('pidns'),'pid')==process['pidns'], 'Actual Docker/proc identity does not bind the C wire producer')
     return actual['id'],image,sha
+
+
+def worker_runtime(folder,full_role,run,workload_run,process,scope,helpers):
+    return checked_worker_runtime(folder,full_role,run,workload_run,process,scope,helpers,DNS_WORKER)
 
 
 def application_oracle(folder,report):

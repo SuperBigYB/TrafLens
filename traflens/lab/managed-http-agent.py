@@ -215,7 +215,7 @@ def verified_preparation(path):
     path=canonical_private(path,directory=True)
     manifest=load(canonical_private(path/'manifest.json'))
     names={'group-profile.json','bootstrap.yaml'}
-    if manifest.get('schema') not in ('traflens.managed-http-preparation.v1','traflens.managed-dns-preparation.v1') or set(manifest['files'])!=names:
+    if manifest.get('schema') not in ('traflens.managed-http-preparation.v1','traflens.managed-dns-preparation.v1','traflens.managed-mysql-preparation.v1') or set(manifest['files'])!=names:
         raise ValueError('Unsupported preparation manifest')
     for name in names:
         file=canonical_private(path/name)
@@ -226,13 +226,20 @@ def verified_preparation(path):
     if manifest['schema']=='traflens.managed-http-preparation.v1':
         expected=preparation.documents(boot['controller-ips'][0],boot['vtap-group-id-request'],
             boot['controller-port'],comm['ingester_ip'],comm['ingester_port'],manifest['http_port'])
-    else:
+    elif manifest['schema']=='traflens.managed-dns-preparation.v1':
         spec=importlib.util.spec_from_file_location('managed_dns_prepare',HERE/'managed-dns.py')
         dns=importlib.util.module_from_spec(spec);spec.loader.exec_module(dns)
         if manifest.get('protocol')!='DNS/TCP' or 'http_port' in manifest:
             raise ValueError('DNS manifest protocol differs')
         expected=dns.documents(boot['controller-ips'][0],boot['vtap-group-id-request'],
             boot['controller-port'],comm['ingester_ip'],comm['ingester_port'],manifest['dns_port'])
+    else:
+        spec=importlib.util.spec_from_file_location('managed_mysql_prepare',HERE/'managed-mysql.py')
+        mysql=importlib.util.module_from_spec(spec);spec.loader.exec_module(mysql)
+        if manifest.get('protocol')!='MySQL/TCP' or 'http_port' in manifest or 'dns_port' in manifest:
+            raise ValueError('MySQL manifest protocol differs')
+        expected=mysql.documents(boot['controller-ips'][0],boot['vtap-group-id-request'],
+            boot['controller-port'],comm['ingester_ip'],comm['ingester_port'],manifest['mysql_port'])
     if (profile,boot)!=expected or manifest.get('namespace_target')!=preparation.SCOPE_TARGET:
         raise ValueError('Only the exact restricted prepared protocol profile/bootstrap is supported')
     return boot,profile
@@ -243,6 +250,8 @@ def prepared_protocol(profile):
     ports=profile['processors']['request_log']['filters']['port_number_prefilters']
     if protocols==['DNS'] and ports=={'DNS':'18080'}:
         return 'DNS/TCP',18080
+    if protocols==['MySQL'] and ports=={'MySQL':'18080'}:
+        return 'MySQL/TCP',18080
     if protocols==['HTTP'] and set(ports)=={'HTTP'}:
         return 'HTTP',int(ports['HTTP'])
     raise ValueError('Unsupported restricted protocol/port selection')

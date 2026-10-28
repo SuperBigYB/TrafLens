@@ -240,7 +240,7 @@ class DNSRuntimeGuards(unittest.TestCase):
 
     def test_client_start_failure_still_unpauses_exact_owned_server(self):
         calls = []
-        def create(w, s, role):
+        def create(w, s, role, contract=runtime.DNS_CONTRACT):
             if role.endswith('-client'):
                 raise RuntimeError('client startup failed')
         with mock.patch.object(runtime, 'create_worker', side_effect=create), \

@@ -21,7 +21,7 @@ requalifying it when unrelated work changes.
    Acceptance: a fresh bounded workload on the two hosts is visible through the
    product entry point, with usable filtering and a drill-down to real records;
    document how to start and access it. Do not substitute mock data for this gate.
-2. **Core eBPF ingestion (HTTP and finite TCP DNS M13 gates complete; further protocols deferred).** Complete managed eBPF capture through ingestion and
+2. **Core eBPF ingestion (HTTP, finite TCP DNS M13 and paced MySQL M14 slices complete; fast-MySQL completeness open).** Complete managed eBPF capture through ingestion and
    query for the core HTTP/DNS/database scenarios, then extend TLS coverage.
    Acceptance: known real requests appear with the correct protocol and source
    metadata under a repeatable setup. Carry blocking collection fixes here.
@@ -113,14 +113,14 @@ is authorized by a field name. Reuse qualified inputs where supported, keep one
 active milestone and defer old protocol/kernel/performance matrices. The local
 file becomes M12-active only after both repository refs match M11's delivery.
 
-## Next single milestone after M13 synchronization
+## Next single milestone after paced M14 synchronization
 
-M13 completes the finite managed eBPF DNS/TCP product slice with strict raw,
-actual-browser and public-restoration gates; UDP/encrypted/general DNS remain
-unqualified. M14 selects managed eBPF MySQL request/error navigation: inspect
-actual native parser/handshake/cache/port support and exact scope first, then
-finite real owned wire execution with independent oracle, complete source3
-population, existing API/detail/error navigation, public stop and both refs.
-Do not treat M6's packet MySQL fixture or source availability as eBPF acceptance.
-No Controller database or unrelated service is a workload target. Preserve one
-active milestone and defer nonblocking compatibility/performance matrices.
+M14 qualifies only the100ms-paced finite MySQL wire product loop. The original
+unpaced17-versus18 failure remains open and has priority over protocol expansion.
+M15 will collect bounded actual kernel/input/queue/parse/session/writer evidence
+for the same owned three-conversation case, localize missing or misordered
+events, implement the direct bounded fix and verify unpaced complete populations,
+negative scope, exact details and actual browser before delivery. Do not claim
+that waits or a no-op reorder configuration solve native reliability. Preserve
+all original failures and stop/restoration boundaries; no host-wide tracing,
+profile/stack collection or unrelated benchmark matrix is needed for this task.

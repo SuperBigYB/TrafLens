@@ -15,6 +15,7 @@ import socket
 import stat
 import sys
 import time
+from typing import NamedTuple
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
@@ -37,13 +38,58 @@ PURPOSE = 'traflens.ebpf-dns.worker'
 ROLES = ('negative-client', 'negative-server', 'positive-client', 'positive-server')
 
 
+class ProtocolContract(NamedTuple):
+    name: str
+    prefix: str
+    integration_mode: str
+    protocol_id: int
+    profile_factory: object
+    prepare_file: str
+    expected_observations: object
+    receipt_validator: object = None
+    server_comm: object = None
+    client_comm: object = None
+
+    @property
+    def label(self):
+        return {'dns': 'DNS/TCP', 'mysql': 'MySQL/TCP'}[self.name]
+
+    @property
+    def schema(self):
+        return 'traflens.ebpf-' + self.name + '.capture.v1'
+
+    @property
+    def role_schema(self):
+        return 'traflens.ebpf-' + self.name + '.worker-runtime.v1'
+
+    @property
+    def purpose(self):
+        return 'traflens.ebpf-' + self.name + '.worker'
+
+    @property
+    def script(self):
+        return 'ebpf-' + self.name + '.py'
+
+
+DNS_CONTRACT = ProtocolContract('dns', 'dns-', 'kernel_dns', 120, kernel_dns_profile, 'managed-dns.py', 6)
+
+
+def validate_contract(contract):
+    require(isinstance(contract, ProtocolContract)
+            and (contract.name, contract.prefix, contract.integration_mode, contract.protocol_id, contract.prepare_file)
+                in (('dns', 'dns-', 'kernel_dns', 120, 'managed-dns.py'),
+                    ('mysql', 'my-', 'kernel_mysql', 60, 'managed-mysql.py')),
+            'Unsupported fixed scoped protocol contract')
+
+
 def worker_selection(state, role):
     scope_role, worker_role = role.split('-', 1)
     require(scope_role in ('positive', 'negative') and worker_role in ('server', 'client'), 'Unknown DNS worker role')
     return scope_role, worker_role, state['run'] if scope_role == 'positive' else state['negative_run']
 
 
-def worker_spec(state, role):
+def worker_spec(state, role, contract=DNS_CONTRACT):
+    validate_contract(contract)
     scope_role, worker_role, run = worker_selection(state, role)
     a, work = state['args'], Path(state['output'])
     return {'name': 'traflens-' + state['run'] + '-' + role, 'image': a['image'],
@@ -52,7 +98,7 @@ def worker_spec(state, role):
             'memory_bytes': 67108864, 'memory_swap_bytes': 67108864, 'pids_limit': 16,
             'privileged': False, 'port_bindings': {}, 'publish_all_ports': False,
             'security_opt': ['no-new-privileges'], 'restart_policy': 'no',
-            'labels': {'io.traflens.purpose': PURPOSE, 'io.traflens.run': state['run'],
+            'labels': {'io.traflens.purpose': contract.purpose, 'io.traflens.run': state['run'],
                        'io.traflens.role': role, 'io.traflens.output': str(work)},
             'entrypoint': ['/workload'],
             'command': ['--execute', '--role', worker_role, '--run', run, '--output', '/output',
@@ -97,10 +143,20 @@ def live_executable_sha(actual):
         os.close(fd)
 
 
-def create_worker(work, state, role):
+def comm_direction_hint(actual, process, worker_role, contract=DNS_CONTRACT):
+    expected = contract.server_comm if worker_role == 'server' else contract.client_comm
+    if expected is None:
+        return None
+    actual_comm = Path('/proc', str(actual['pid']), 'comm').read_text().strip()
+    require(actual_comm == expected and process.get('comm') == actual_comm,
+            'Actual owned process comm direction hint differs')
+    return actual_comm
+
+
+def create_worker(work, state, role, contract=DNS_CONTRACT):
     scope_role, worker_role, run = worker_selection(state, role)
     (work / role).mkdir(mode=0o700)
-    spec = worker_spec(state, role)
+    spec = worker_spec(state, role, contract)
     require(CORE.inspect('container', spec['name']) is None, 'Fresh DNS worker name already exists')
     argv = CORE.docker_argv(spec)
     intent = {'spec': spec, 'argv': argv, 'argv_sha256': CORE.digest(argv)}
@@ -133,6 +189,7 @@ def create_worker(work, state, role):
             and actual['pidns'] == os.readlink('/proc/self/ns/pid'), 'DNS worker namespace differs from intent')
     require(live_executable_sha(actual) == state['args']['workload_sha256'],
             'DNS actual executable SHA differs')
+    actual_comm = comm_direction_hint(actual, process, worker_role, contract)
     require(CORE.UTIL.process_start(actual['pid']) == actual['start_ticks']
             and worker_info(state, role)['State']['Pid'] == actual['pid'], 'DNS actual process changed during proof')
     observed = CORE.normalized_worker(info)
@@ -140,7 +197,10 @@ def create_worker(work, state, role):
     observed.update(actual, id=info['Id'], started_at=info['State']['StartedAt'], running=True,
                     executable_sha256=state['args']['workload_sha256'],
                     security_opt_raw=info['HostConfig'].get('SecurityOpt') or [], security_opt_normalization=security_context)
-    CORE.write(work / (role + '-runtime.json'), {'schema': ROLE_SCHEMA, 'role': role, 'scope_role': scope_role,
+    if actual_comm is not None:
+        observed['comm'] = actual_comm
+        observed['comm_direction_hint_only'] = True
+    CORE.write(work / (role + '-runtime.json'), {'schema': contract.role_schema, 'role': role, 'scope_role': scope_role,
                'run': state['run'], 'workload_run': run, 'scope_receipt': 'scope-runtime.json',
                'agent_container_id': state['scope']['agent_container_id'],
                'create': {'argv': argv, 'argv_sha256': intent['argv_sha256'], 'normalized': spec}, 'inspect': observed})
@@ -169,8 +229,8 @@ def validate_receipt(receipt, run, role):
             'Actual DNS socket/application receipt is incomplete')
 
 
-def run_phase(work, state, phase):
-    create_worker(work, state, phase + '-server')
+def run_phase(work, state, phase, contract=DNS_CONTRACT):
+    create_worker(work, state, phase + '-server', contract)
     started = time.monotonic()
     def expired(*_):
         raise TimeoutError('DNS client identity pause gate exceeded5 seconds')
@@ -178,7 +238,7 @@ def run_phase(work, state, phase):
     signal.setitimer(signal.ITIMER_REAL, 5)
     try:
         pause_server(work, state, phase, True)
-        create_worker(work, state, phase + '-client')
+        create_worker(work, state, phase + '-client', contract)
         require(time.monotonic() - started <= 5, 'DNS identity gate exceeded5 seconds')
     finally:
         signal.setitimer(signal.ITIMER_REAL, 0)
@@ -190,8 +250,9 @@ def run_phase(work, state, phase):
                 'Finite DNS worker exit failed')
         receipt = CORE.read(work / role / 'receipt.json')
         _, worker_role, run = worker_selection(state, role)
-        validate_receipt(receipt, run, worker_role)
-    CORE.event(work, phase + '-completed', {'queries': 3, 'transport': 'tcp', 'port': 18080})
+        validator = contract.receipt_validator or validate_receipt
+        validator(receipt, run, worker_role)
+    CORE.event(work, phase + '-completed', {'queries': 3, 'transport': 'tcp', 'port': 18080, 'protocol': contract.label})
 
 
 def cleanup(work, state):
@@ -232,8 +293,9 @@ def cleanup(work, state):
     return CORE.cleanup(work, state)
 
 
-def execute(args):
+def execute(args, contract=DNS_CONTRACT):
     validate_controller_url(args.controller_url)
+    validate_contract(contract)
     require(os.geteuid() == 0 and os.uname().machine == 'x86_64', 'Qualified Linux x86_64 root required')
     require(re.fullmatch('[A-Za-z0-9][A-Za-z0-9_.@-]{0,127}', args.backend_host or ''), 'Explicit SSH alias required')
     for key in ('work', 'backend_root', 'backend_work', 'backend_code', 'artifacts', 'workload_bin'):
@@ -249,27 +311,27 @@ def execute(args):
             and not address.is_unspecified, 'Verified host Controller IPv4 required')
     require(re.fullmatch('(?:[0-9a-f]{2}:){5}[0-9a-f]{2}', args.ctrl_mac or '')
             and not int(args.ctrl_mac[:2], 16) & 1 and args.ctrl_mac != '00:00:00:00:00:00', 'Verified unicast MAC required')
-    profile = kernel_dns_profile(args.controller_ip, args.controller_port, args.ingester_port)
+    profile = contract.profile_factory(args.controller_ip, args.controller_port, args.ingester_port)
     require(CORE.file_hash(args.workload_bin) == args.workload_sha256, 'Workload hash differs')
     require(CORE.inspect('image', args.image)['Id'] == args.image, 'Exact worker image not cached')
     agent = module('dns_preflight_agent', 'managed-http-agent.py')
     agent.verified_artifacts(Path(args.artifacts))
     hashes = CORE.helper_hashes(args)
     parent = private_dir(Path(args.work).parent)
-    with (parent / '.ebpf-dns.lock').open('a') as run_lock:
+    with (parent / ('.ebpf-' + contract.name + '.lock')).open('a') as run_lock:
         fcntl.flock(run_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         work = private_dir(args.work, fresh=True)
-        state = {'schema': SCHEMA, 'run': 'dns-' + secrets.token_hex(12), 'negative_run': 'dns-' + secrets.token_hex(12),
+        state = {'schema': contract.schema, 'run': contract.prefix + secrets.token_hex(12), 'negative_run': contract.prefix + secrets.token_hex(12),
                  'output': str(work), 'args': vars(args), 'workers': {}, 'controller_attempted': False,
                  'agent_attempted': False, 'lease_attempted': False}
         require(state['run'] != state['negative_run'], 'Positive/negative DNS nonces must differ')
         CORE.persist(work, state)
         CORE.write(work / 'helper-code-sha256.json', hashes)
         CORE.write(work / 'capture-source-sha256.json', {name: CORE.file_hash(HERE / name) for name in
-                   ('ebpf-dns.py', 'managed-dns.py', 'managed-http-agent.py', 'association-lease.py',
-                    'ebpf-association.py', 'managed_http_scope.py', 'managed_http_scope_validation.py', 'managed-http-scope-abi.json')})
+                   dict.fromkeys((contract.script, contract.prepare_file, 'ebpf-dns.py', 'managed-http-agent.py', 'association-lease.py',
+                    'ebpf-association.py', 'managed_http_scope.py', 'managed_http_scope_validation.py', 'managed-http-scope-abi.json'))})
         CORE.write(work / 'supervisor.json', dict(CORE.proc_identity(os.getpid()), argv=sys.argv))
-        result = {'schema': SCHEMA, 'run': state['run'], 'negative_run': state['negative_run'], 'pass': False,
+        result = {'schema': contract.schema, 'run': state['run'], 'negative_run': state['negative_run'], 'pass': False,
                   'storage_verified': False, 'runtime_receipts_required': True, 'performance_measurement': False}
         def interrupted(*_):
             raise InterruptedError('Owned DNS capture interrupted; public stop can resume')
@@ -278,18 +340,19 @@ def execute(args):
         with (work / 'lifecycle.lock').open('a') as lock:
             fcntl.flock(lock, fcntl.LOCK_EX)
             try:
-                metadata = {'schema': SCHEMA, 'runtime_receipts_required': True, 'run': state['run'],
-                            'negative_run': state['negative_run'], 'integration_mode': 'kernel_dns',
+                metadata = {'schema': contract.schema, 'runtime_receipts_required': True, 'run': state['run'],
+                            'negative_run': state['negative_run'], 'integration_mode': contract.integration_mode,
                             'controller_ip': args.controller_ip, 'controller_port': args.controller_port,
                             'ingester_port': args.ingester_port, 'ctrl_ip': args.ctrl_ip, 'ctrl_mac': args.ctrl_mac,
-                            'profile': profile, 'signal_source': 3, 'l7_protocol': 120, 'transport': 'tcp', 'port': 18080}
+                            'profile': profile, 'signal_source': 3, 'l7_protocol': contract.protocol_id, 'transport': 'tcp', 'port': 18080}
                 CORE.write(work / 'metadata.json', metadata)
                 state['controller_attempted'] = True
                 CORE.persist(work, state)
                 context = CORE.backend(state, 'prepare', metadata)
                 metadata['agent_id'] = context['agent_id']
                 CORE.write(work / 'ingestion-metadata.json', metadata)
-                PREPARE.prepare(work / 'prepared', controller_ip=args.controller_ip, group_id=context['group_short_uuid'],
+                preparation = PREPARE if contract.name == 'dns' else module('mysql_scoped_preparation', contract.prepare_file)
+                preparation.prepare(work / 'prepared', controller_ip=args.controller_ip, group_id=context['group_short_uuid'],
                                 controller_port=args.controller_port, ingester_port=args.ingester_port)
                 require(CORE.read(work / 'prepared/group-profile.json') == profile, 'DNS preparation differs from Controller profile')
                 state['lease_attempted'] = True
@@ -299,7 +362,7 @@ def execute(args):
                 lease = CORE.locate_lease(work, state, 20)
                 require(lease is not None and holder.poll() is None, 'Quiet DNS namespaces are not ready')
                 state['scope'] = CORE.scope_identity(lease, state)
-                state['scope']['schema'] = 'traflens.ebpf-dns.scope.v1'
+                state['scope']['schema'] = 'traflens.ebpf-' + contract.name + '.scope.v1'
                 CORE.persist(work, state)
                 with socket.socket() as probe:
                     probe.bind(('127.0.0.1', args.forward_port))
@@ -320,10 +383,15 @@ def execute(args):
                 state['scope']['agent_container_id'] = current['id']
                 CORE.persist(work, state)
                 CORE.write(work / 'scope-runtime.json', state['scope'])
-                run_phase(work, state, 'negative')
-                run_phase(work, state, 'positive')
+                run_phase(work, state, 'negative', contract)
+                run_phase(work, state, 'positive', contract)
                 result.update(pass_execution=True, positive_queries=3, negative_queries=3,
-                              expected_observations=6, agent_id=context['agent_id'])
+                              agent_id=context['agent_id'])
+                if contract.expected_observations is not None:
+                    result['expected_observations'] = contract.expected_observations
+                if contract.name == 'mysql':
+                    result.update(expected_query_observations=6, whole_population_requires_independent_oracle=True,
+                                  wire_fixture=True, sql_executed=False)
                 time.sleep(5)
                 result['pass'] = True
             except Exception as error:
@@ -342,11 +410,12 @@ def execute(args):
         return 0 if result['pass'] else 1
 
 
-def stop(work):
+def stop(work, contract=DNS_CONTRACT):
+    validate_contract(contract)
     work = private_dir(work)
     state = CORE.read(work / 'state.json')
-    require(state.get('schema') == SCHEMA and state.get('output') == str(work)
-            and re.fullmatch('dns-[0-9a-f]{24}', state.get('run', '')), 'Invalid DNS lifecycle receipt')
+    require(state.get('schema') == contract.schema and state.get('output') == str(work)
+            and re.fullmatch(contract.prefix + '[0-9a-f]{24}', state.get('run', '')), 'Invalid scoped protocol lifecycle receipt')
     supervisor = CORE.read(work / 'supervisor.json')
     pid = supervisor['pid']
     if Path('/proc', str(pid)).exists():
@@ -354,8 +423,8 @@ def stop(work):
         if Path('/proc', str(pid), 'stat').read_text().rsplit(')', 1)[1].split()[0] != 'Z':
             command = Path('/proc', str(pid), 'cmdline').read_bytes().split(b'\0')
             cwd = Path('/proc', str(pid), 'cwd').resolve()
-            helpers = [(cwd / os.fsdecode(v)).resolve() for v in command if v and os.fsdecode(v).endswith('ebpf-dns.py')]
-            require(Path(__file__).resolve() in helpers and any(v in (str(work).encode(), ('--work=' + str(work)).encode()) for v in command),
+            helpers = [(cwd / os.fsdecode(v)).resolve() for v in command if v and os.fsdecode(v).endswith(contract.script)]
+            require((HERE / contract.script).resolve() in helpers and any(v in (str(work).encode(), ('--work=' + str(work)).encode()) for v in command),
                     'DNS supervisor command differs')
             os.kill(pid, signal.SIGTERM)
     with (work / 'lifecycle.lock').open('a') as lock:
@@ -366,8 +435,9 @@ def stop(work):
     return 0 if result['cleaned'] else 1
 
 
-def main(argv=None):
-    p = argparse.ArgumentParser(description=__doc__)
+def main(argv=None, contract=DNS_CONTRACT):
+    validate_contract(contract)
+    p = argparse.ArgumentParser(description='Finite scoped eBPF ' + contract.label + ' capture. Default is an offline plan.')
     p.add_argument('action', nargs='?', choices=('plan', 'run', 'stop'), default='plan')
     p.add_argument('--execute', action='store_true')
     for key in ('work', 'backend-host', 'backend-root', 'backend-work', 'backend-code', 'controller-ip',
@@ -381,12 +451,12 @@ def main(argv=None):
     a = p.parse_args(argv)
     if not a.execute or a.action == 'plan':
         print(json.dumps({'execute': False, 'starts_network': False, 'creates_resources': False,
-                          'protocol': 'DNS/TCP', 'port': 18080, 'positive_queries': 3, 'negative_queries': 3,
+                          'protocol': contract.label, 'port': 18080, 'positive_queries': 3, 'negative_queries': 3,
                           'scope': 'exact positive namespace FD/inode/map', 'source': 3, 'storage_verified': False}))
         return 0
     os.umask(0o077)
     require(a.work, 'Explicit private work required')
-    return stop(a.work) if a.action == 'stop' else execute(a)
+    return stop(a.work, contract) if a.action == 'stop' else execute(a, contract)
 
 
 if __name__ == '__main__':

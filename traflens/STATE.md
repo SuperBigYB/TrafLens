@@ -13,6 +13,44 @@ priority is a reproducible product entry point and minimal real-data console
 topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
 performance work. Review priorities after each milestone or three half-hourly runs.
 
+## M14 paced eBPF MySQL wire functional gate (2026-10-29)
+
+The explicit100ms-paced finite protocol fixture passes. Typed immutable
+contracts reuse namespaceFD/map/no-AF_PACKET and four actual limited workers;
+MySQL-only18080/normal kernel2/4/5 and a strict managed-MySQL manifest retain
+HTTP/DNS default contracts. Native core3dec20af5 is unchanged. The self comm
+mysqld is only its inference direction hint, bound to real PID/exe/ns, not SQL
+database identity. No SQL executes and no existing database is a workload.
+
+Three positive conversations produce18source3 Sessions:6Login/6Query/6QUIT.
+Two full Agent/time reads include empty QUIT without hidden filters; whole
+marker12/query subset6 and all18 precise API details match actual complete
+classic wire/PID/TID/Docker/FD-map proof and21real100ms waits per worker.
+Negative namespace3conversations yields0; marked source0/4=0. Normal codes
+are NULL; ERR1064 has native status3. Actual Edge shows18/12/6 and all18details,
+error/NULL/empty controls with no page errors.100targeted checks and independent
+review pass; console64 is unchanged historical and remote CI was not checked.
+
+The unpaced first sample remains a genuine failed completeness gate:17records,
+16Sessions plus1orphan QueryRequest, missing server mainQUIT and client control
+response. Sender drain succeeded but no final numeric lost/drop counters exist.
+Reorder is a no-op; perCPU/close/parser ordering are hypotheses, not a proved
+cause. Pacing is not a native fix or a throughput/reliability qualification.
+The exact original workload source is archived in public evidence; its original
+raw result/wire/artifacts remain private and unchanged.
+
+Public/idempotent stop restores all owned resources, BPF/tracefs/pins and original
+Controller0/1/YAML; old Server identity/network/historical M9 configSHA, physical
+device/interface/routes remain, temporary query/console/forwards are gone.
+See [workflow](README-ebpf-mysql.md) and
+[paced and failed evidence](evidence/2026-10-29/ebpf-mysql/README.md).
+
+After both refs match, close this explicitly paced M14 slice and activate M15:
+bounded fast-MySQL completeness and event-order/loss diagnosis. Obtain actual
+input/kernel/queue/parse/session/writer counter evidence on the finite owned
+scope, localize the unpaced loss and implement a supported direct fix before
+claiming the original18-observation path or expanding protocols further.
+
 ## M13 scoped eBPF DNS/TCP product gate complete (2026-10-29)
 
 Public managed-DNS preparation, normal kernel2/4/5 Controller mode and an explicit
