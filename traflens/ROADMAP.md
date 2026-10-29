@@ -46,45 +46,59 @@ qualification distinct. Preserve upstream licensing and attribution.
 
 ## Active M16 checkpoint
 
-M16-01's native/source audit and minimum single-peer scenario are prepared.
-The new typed UDP entry, real C fixture and public execution/restore pass;
-74targeted/offline checks support this software checkpoint. M16-02..05 remain
-open until actual complete raw/API and browser results are reviewed. The private
-same-capture verification result is retained pending specific permission to
-return test data/results to the workstation. Do not repeat capture or bypass
-that boundary. Preserve the pre-query oracle bug/source and its explicit repair.
+The finite single-peer UDP DNS raw/API and actual console gates now pass. R31's
+specific authorization allowed the retained R25 acceptance result to be reviewed
+without new capture: six source3 Session observations, UDP17/L7 DNS120, three
+positive/three outside exchanges, outside0, source0/4zero, two whole-marker and
+two unfiltered Agent/time populations, wire/host PID/TID/tuple checks and six
+exact API details in25data requests.
 
-## M15 finite fast MySQL gate complete; next single M16 after dual sync
+Restricted actual Edge navigation passes six details, four normal/two NXDOMAIN
+observations and source0/4 empty controls with page errors0. Its29data requests
+stay in scope; seven initialization API calls are blocked, with no out-of-scope
+or fabricated requests. Full metadata is not persisted on the workstation.
+The earlier pre-query oracle declaration failure, its source and the explicit
+planned-source archive repair bridge remain history; no failed result is relabeled.
+
+The prior74targeted/offline checks, public typed entry, real C fixture and original
+execution/stop evidence remain recorded. M16 stays the sole active milestone
+until both repository pushes are verified. This round's final resource checks pass:
+all temporary Query/forward resources are stopped and original Server/config/
+Controller baselines are unchanged. The next candidate is finite same-server-FD multi-peer UDP DNS
+identity and transaction isolation, beginning with real bounded reproduction.
+It is not active; the source-derived risk is not yet an observed failure or fix.
+
+## Historical M15 completion and selection of M16
 
 The real new Agent e1daf16b1/0544bd9c passes actual scope/merged configuration,
 public unpaced lifecycle, independent complete18Session/marker12/query6/QUIT6/
 outside0 raw/API and actual headless Edge details. The bounded native repair is
 supported by R22 disorder and R23 native replay; the R24 live input itself was
 ordered, so it is not live evidence of disorder correction or loss-free generality.
-All earlier failures remain unchanged and all temporary resources are restored.
+All earlier failures remain unchanged and all temporary resources were restored.
 See [the finite qualification](evidence/2026-10-29/fast-mysql-qualified/README.md).
 
-Once both main refs match this delivery, only M16 becomes active: **managed eBPF
-UDP DNS query/error navigation**. M13 established TCP-only DNS, while ordinary
-UDP collection is still unproven. Expand this core protocol path before unrelated
-microbenchmarks, asset/profile matrices or complete async tracing.
+After M15 synchronization, M16 was selected for **managed eBPF UDP DNS query/error
+navigation**. M13 had established TCP-only DNS; ordinary UDP collection was still
+unproven at that selection. The following gates describe M16's finite scope:
 
-- M16-01: verify actual UDP syscall/input/inference/parser, native fields/units,
-  protocol/config/license and strict namespace FD/map support. Select the smallest
-  real supported own endpoint; fix a direct input blocker if needed.
-- M16-02: bounded real UDP success/error and outside-scope queries with independent
-  wire/application identities and complete source3 population. Do not relabel TCP,
-  packet source0, synthetic ingestion or an ACK as UDP eBPF capture.
-- M16-03: reuse bounded DNS/protocol/source/error/detail APIs and console, add only
-  missing mainline behavior; counts/transactions/time/TXID scope stay explicit.
-- M16-04: independent two-host raw/API positive-negative and actual browser gate,
-  with no hidden filters dropping unsupported or orphan observations.
-- M16-05: public prepare/run/verify/stop, exact recovery and both main refs match;
-  only then select the next single milestone.
+- M16-01 passes native/source and minimum single-peer scenario checks: actual UDP
+  syscall/input/inference/parser, fields/units, profile/license and strict FD/map
+  readiness. No new native change/rebuild is required for this slice.
+- M16-02 passes real bounded UDP success/error and outside-scope capture with
+  independent wire/process/tuple identities and the complete source3 population.
+  TCP, packet source0, synthetic ingestion and ACKs are not substituted.
+- M16-03 passes reused bounded protocol/source/error/detail APIs and console;
+  counts/transactions/time and flow-scoped16bit TXID semantics stay explicit.
+- M16-04 passes independent two-host raw/API positive-negative and actual restricted
+  browser checks without filters hiding unsupported or orphan observations.
+- M16-05 passes public prepare/run/verify/stop and final resource/restoration checks.
+  Equal dual-repository refs remain the final delivery gate. Close M16 and select
+  only one next milestone after that delivery is verified.
 
-The fresh e1daf artifact is qualified for M15's finite MySQL path and scope;
-older protocol gates remain historical. New input/runtime claims require their
-own necessary gate, without rerunning unrelated HTTP/OTLP/profile/L4/performance
+The e1daf artifact was built and qualified for M15's finite MySQL path/scope;
+M16 adds this finite single-peer UDP gate without rebuilding it. Older protocol
+gates remain historical. Do not rerun unrelated HTTP/OTLP/profile/L4/performance
 matrices. Keep onCPU/DWARF/proc/profile/OTLP disabled and normal kernel licensing;
 never widen to management traffic/unrelated processes or use the Controller DB
 as a workload. The local file is the execution authority.

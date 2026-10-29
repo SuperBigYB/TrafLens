@@ -11,17 +11,35 @@ not a latency/performance measurement.
 ## Current qualification checkpoint
 
 The new C fixture passes static build and targeted offline/isolated wire checks.
-The public two-host capture lifecycle passes actual namespace/FD/map/noAF_PACKET
-readiness, four owned worker exits and exact cleanup. These are preparation and
-execution gates, not proof that the expected six UDP source3 Sessions were stored.
-Raw/API and actual browser acceptance remain unqualified at this checkpoint.
+The retained R25 two-host capture passes actual namespace/FD/map/noAF_PACKET
+readiness and four owned worker exits. In R31, specific authorization allowed the
+same capture's corrected acceptance result to be read and its finite console
+workflow checked; no new capture was made.
 
-The first planned oracle failed before issuing data queries because a worker
-contract declaration was missing. That source, result and capture stay unchanged.
-The corrected oracle has direct contract/source-repair regressions and can verify
-that same stored population without a new capture. Its private result is retained
-on the development host pending explicit authorization to return test results.
-Do not call this complete UDP collection or full DeepFlow parity.
+The independent acceptance passes six source3 Session observations with UDP17 and
+L7 DNS120 for three real positive DNS exchanges. Three outside-scope exchanges
+produce zero stored records; source0/4 controls are empty. Both whole-marker and
+unfiltered Agent/time populations pass twice with unchanged records, wire/host
+PID/TID/tuple checks and six exact API details, using25data requests.
+
+An actual restricted Edge run passes all six details, four normal/two NXDOMAIN
+observations and empty source0/4 controls with no page errors. Its29data requests
+stay in the authorized scope; seven initialization API requests are blocked,
+with zero out-of-scope or fabricated requests. Full metadata is not persisted on
+the workstation; the reviewed screenshot is masked.
+
+The first planned oracle failed before queries because a worker declaration was
+missing. That source, failed result and original capture remain unchanged. The
+corrected verifier's explicit planned-source archive bridge and direct regressions
+remain recorded; R31 resolves the earlier result-return authorization checkpoint
+without relabeling the original failure or changing the captured population.
+
+This round's final resource/restoration checks pass: temporary Query containers,
+supervisor and all forwards are stopped, validation ports are closed, and the
+original Server/config/Controller baselines are unchanged. M16 remains active
+until both repository pushes are verified. The same-server-FD multi-peer case is only a
+candidate for the next single milestone after that closure. These results qualify
+this finite single-peer slice, not full UDP compatibility or DeepFlow parity.
 
 ## Prepare and run
 

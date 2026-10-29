@@ -13,31 +13,41 @@ priority is a reproducible product entry point and minimal real-data console
 topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
 performance work. Review priorities after each milestone or three half-hourly runs.
 
-## Active M16 UDP DNS preparation/execution checkpoint (2026-10-29)
+## Active M16 finite UDP DNS product gate reviewed (2026-10-29)
 
-The existing native UDP sendto/recvfrom/inference/Rust DNS path is audited. No
-native change/rebuild is needed for the selected single-peer scenario. Separate
-UDP prepare/run/stop and independent oracle schemas preserve DNS/TCP/MySQL
-defaults and normal kernel licensing/scope. A real bounded C datagram fixture,
-74distinct targeted/offline checks and the actual public scoped worker/Agent
-execution/cleanup pass. Both roles own one explicitly bound socket; the client
-connects while the server uses recvfrom/sendto. This is not three connections.
+The existing native UDP sendto/recvfrom/inference/Rust DNS path needs no native
+change/rebuild for the selected single-peer scenario. Separate UDP preparation,
+runtime and oracle schemas retain DNS/TCP/MySQL defaults, normal kernel licensing
+and strict namespace scope. The prior74distinct targeted/offline software checks
+and real C datagram fixture remain recorded. Both roles explicitly bind one
+socket; the client connects and the server uses recvfrom/sendto. Three exchanges
+are transactions on that pair of sockets, not three connections.
 
-Store/API/browser acceptance remains **unqualified**. The first planned oracle
-failed before queries due to missing immutable worker declarations. The corrected
-oracle has direct regressions and an explicit read-only planned-source archive
-bridge; original source/result/capture stay unchanged, with all ten producer/
-runtime/C/scope hashes still exact. Same-capture private validation runs on the
-owned development host, but its result has not been read back while specific
-result-return authorization is pending. Do not recapture, hide records or claim
-source3 UDP ingestion from successful execution/restore.
+R31's specific authorization resolves the retained R25 result-return checkpoint.
+Without a new capture, the corrected strict acceptance passes six source3 Session
+observations, UDP17/L7 DNS120, three positive/three outside exchanges, outside0
+and source0/4zero. Two whole-marker and two unfiltered Agent/time populations,
+wire/host PID/TID/tuple validation and six exact API details pass in25data requests.
+An actual restricted Edge run checks all six details, four normal/two NXDOMAIN
+observations and empty source0/4 controls with page errors0. Its29data requests
+stay in scope; seven initialization API calls are blocked, with out-of-scope0
+and fabricated0. Full metadata is not persisted locally; its screenshot is masked.
 
-Only M16 remains active. Resume with authorized read-only result/API/browser
-verification of the same finite data; if no authorization, retain the checkpoint
-and avoid repeated outbound attempts/notifications. Same-server-FD multi-peer
-identity is only a source-derived risk and is not validated here. See
-[public UDP entry](UDP_DNS.md) and
-[anonymous partial checkpoint](evidence/2026-10-29/udp-dns-preparation/README.md).
+The first oracle's missing worker declarations failed before data queries. That
+source/result and the original capture remain unchanged. The corrected verifier
+keeps direct regressions and the explicit read-only planned-source archive bridge;
+the other ten producer/runtime/C/scope declarations remain exact. The original
+failed result is not reclassified by the same-capture acceptance pass.
+
+The final resource checks pass: temporary Query containers, supervisor and all
+forwards are gone, validation ports are closed, and original Server/config and
+Controller baselines are unchanged. Only M16 remains active until both repository
+pushes are verified; do not activate a second milestone before that gate passes. The next candidate is a finite
+same-server-FD UDP multi-peer identity/transaction investigation, starting with a
+real bounded reproduction. Its source-derived risk is not an observed failure or
+an implemented fix. See [public UDP entry](UDP_DNS.md) and the retained
+[anonymous preparation checkpoint](evidence/2026-10-29/udp-dns-preparation/README.md)
+and [finite functional qualification](evidence/2026-10-29/udp-dns-qualified/README.md).
 
 ## M15 finite unpaced product gate complete (2026-10-29)
 

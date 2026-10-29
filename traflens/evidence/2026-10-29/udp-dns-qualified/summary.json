@@ -1,0 +1,93 @@
+{
+  "schema": "traflens.managed-dns-udp-qualified.v1",
+  "milestone": "M16",
+  "status": "finite_functional_acceptance_passed",
+  "capture_reused": true,
+  "new_sampling_this_round": false,
+  "native_rebuilt_this_milestone": false,
+  "native": {
+    "source": "e1daf16b1dceb2d38ee1ad90de34e4a380111e74",
+    "sha256": "0544bd9c5dc10bf8f75e9495086922a6b018ee0cee3b06d03cbf3b629a31b8de"
+  },
+  "fixture": {
+    "sha256": "8858c47a1546427f563dafeeef2a10e237441290ae8c0d893d86db1cc0807ee8",
+    "source_sha256": "dd82818b93477b7b2276dca1b3459b4651e4c8f81e35d70f88a0c6dfb11c391e"
+  },
+  "scope": {
+    "transport": "UDP",
+    "ip_protocol": 17,
+    "l7_protocol": 120,
+    "signal_source": 3,
+    "single_peer": true,
+    "one_bound_socket_per_role": true,
+    "normal_kernel_functions": [
+      2,
+      4,
+      5
+    ],
+    "strict_namespace_fd_inode_map": true,
+    "no_af_packet": true
+  },
+  "stored_acceptance": {
+    "passed": true,
+    "observations": 6,
+    "positive_queries": 3,
+    "negative_queries": 3,
+    "negative_stored_records": 0,
+    "whole_marker_reads": 2,
+    "whole_agent_time_reads": 2,
+    "exact_detail_reads": 6,
+    "request_count": 25,
+    "source0": 0,
+    "source3": 6,
+    "source4": 0,
+    "wire_fields_verified": true,
+    "actual_host_pid_tid_tuple_verified": true,
+    "planned_verifier_repair_applied": true
+  },
+  "browser": {
+    "pass": true,
+    "browser": "headless Microsoft Edge",
+    "exact_details": 6,
+    "successful_observations": 4,
+    "nxdomain_observations": 2,
+    "page_errors": 0,
+    "allowed_data_requests": 29,
+    "blocked_initial_requests": 7,
+    "out_of_scope_requests_forwarded": 0,
+    "fabricated_api_responses": 0,
+    "source0_same_scope_empty": true,
+    "source4_same_scope_empty": true,
+    "masked_screenshot_reviewed": true,
+    "full_capture_metadata_copied_locally": false,
+    "owned_forward_stopped": true
+  },
+  "historical_tests": {
+    "distinct_r25": 74,
+    "repeated_this_round": false,
+    "remote_ci_checked": false
+  },
+  "preserved_failure": {
+    "first_oracle": "missing WorkerContract/DNS_WORKER before data query",
+    "original_capture_and_failure_unchanged": true,
+    "archive_hash_only_not_executed": true,
+    "producer_source_checks_unchanged": true
+  },
+  "limitations": [
+    "single fixed peer and serial distinct TXIDs only",
+    "six observations represent three positive queries at two processes",
+    "not multi-peer, retries, fragmentation, DoT/DoH or full DNS compatibility",
+    "not maximum throughput, zero-loss guarantee or full DeepFlow parity"
+  ],
+  "restoration": {
+    "passed": true,
+    "query_containers_removed": true,
+    "supervisor_and_source_forward_stopped": true,
+    "source_and_peer_ports_closed": true,
+    "workstation_forward_port_closed": true,
+    "owned_server_and_controller_baselines_preserved": true,
+    "new_capture_or_bpf_changes_this_round": false,
+    "proof_sha256": "6c528495602ba23864252815830226731635c099e65a75adf6a2b91e59e6e159"
+  },
+  "dual_repository_delivery": "pending final commit and remote main verification"
+}
