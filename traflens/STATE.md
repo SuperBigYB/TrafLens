@@ -48,6 +48,19 @@ unrelated matrices. Mainline delivery and the authoritative local execution file
 remain the priority; assets, performance work and more protocols stay deferred.
 See [ROADMAP.md](ROADMAP.md) for the dependent acceptance gates.
 
+### R32 source/fixture checkpoint
+
+M17-01's source audit confirms that eBPF node identity uses generated socket/source
+flow ID, direction uses the initial peer, log tuples use flow peer metrics and
+DNS exposes its16-bit TXID. These are risks to test, not a reproduced failure.
+A separate default-offline three-process/four-exchange wire fixture now has six
+passing targeted contract tests, including same-TXID distinct questions and a
+reverse-response pair. Its socket path is not yet executed or integrated with the
+strict managed worker contract. Next is M17-01c: dedicated scoped worker/receipt
+integration and isolated wire readiness, then the single necessary M17-02 capture.
+No Agent/native/Controller/Query/BPF/network setup changed and no L7 was read.
+See [the explicit boundary and next step](UDP_DNS_MULTIPEER.md).
+
 ## Closed M16 finite single-peer UDP DNS product gate (2026-10-29)
 
 The existing native UDP sendto/recvfrom/inference/Rust DNS path needs no native
