@@ -89,5 +89,11 @@
     "new_capture_or_bpf_changes_this_round": false,
     "proof_sha256": "6c528495602ba23864252815830226731635c099e65a75adf6a2b91e59e6e159"
   },
-  "dual_repository_delivery": "pending final commit and remote main verification"
+  "dual_repository_delivery": {
+    "qualification_commit": "bd5c659e8886a352f8430c670d652969323e5af4",
+    "github_main_verified": true,
+    "gitlab_main_verified": true,
+    "normal_fast_forward": true
+  },
+  "milestone_closed": true
 }

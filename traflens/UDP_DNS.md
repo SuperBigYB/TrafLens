@@ -36,10 +36,11 @@ without relabeling the original failure or changing the captured population.
 
 This round's final resource/restoration checks pass: temporary Query containers,
 supervisor and all forwards are stopped, validation ports are closed, and the
-original Server/config/Controller baselines are unchanged. M16 remains active
-until both repository pushes are verified. The same-server-FD multi-peer case is only a
-candidate for the next single milestone after that closure. These results qualify
-this finite single-peer slice, not full UDP compatibility or DeepFlow parity.
+original Server/config/Controller baselines are unchanged. Both main refs were
+independently verified at qualification commit bd5c659e8886a352f8430c670d652969323e5af4,
+so M16 is closed. M17 now covers same-server-FD multi-peer transaction isolation;
+that risk remains unobserved until its own finite reproduction. These results
+qualify this single-peer slice, not full UDP compatibility or DeepFlow parity.
 
 ## Prepare and run
 

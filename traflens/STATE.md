@@ -13,7 +13,42 @@ priority is a reproducible product entry point and minimal real-data console
 topology/tracing and metrics/profiling. Defer nonblocking edge cases and detailed
 performance work. Review priorities after each milestone or three half-hourly runs.
 
-## Active M16 finite UDP DNS product gate reviewed (2026-10-29)
+## Active M17: one UDP DNS server socket, two-client transaction isolation
+
+M16 is closed. M17 is the only active milestone; the next task is **M17-01**.
+The same-server-FD multi-peer issue remains a source-derived risk: no real
+multi-peer failure has been reproduced and no fix is claimed. First establish
+actual socket/peer/TXID behavior before selecting any repair.
+
+The minimum scenario keeps one owned server UDP socket and two independently
+proved client ports. Send one query from each port with different TXIDs, then
+interleave one query from each with the same TXID: four fresh real exchanges with
+controlled success/error outcomes. Actual wire, tuples, PID/TID/socket generations
+and namespace receipts determine identity; names, nearby time or TXID alone do
+not establish an association. Keep tuple conflicts and orphan/excess observations.
+
+- [ ] M17-01: inspect actual native keys, peer/direction and transaction scope;
+  freeze the smallest real two-client-port fixture and bounded acceptance plan.
+- [ ] M17-02 (after01): execute four fresh real exchanges and an outside-scope
+  control with complete independent wire/tuple/PID identities and all observations.
+- [ ] M17-03 (after02): localize and fix only a demonstrated direct blocker. If the
+  scenario is already correct, record that evidence without inventing a repair.
+  Any necessary new native artifact needs its real committed source/release ELF
+  and minimum actual ABI/namespace FD/map readiness qualification.
+- [ ] M17-04 (after03): prove two complete unchanged populations, the expected
+  eight source3 observations for four exchanges, exact raw/API identities and
+  actual restricted Edge navigation, including errors/outside/source controls.
+- [ ] M17-05 (after04): deliver public prepare/run/verify/stop, exact restoration
+  and independently verified synchronization of both repositories.
+
+Preserve the existing DNS-only normal-kernel license, strict namespace scope and
+closed AF_PACKET/proc/onCPU/DWARF/profile/OTLP paths. Do not substitute packet
+records for eBPF observations, hide tuple conflicts, broaden collection, or rerun
+unrelated matrices. Mainline delivery and the authoritative local execution file
+remain the priority; assets, performance work and more protocols stay deferred.
+See [ROADMAP.md](ROADMAP.md) for the dependent acceptance gates.
+
+## Closed M16 finite single-peer UDP DNS product gate (2026-10-29)
 
 The existing native UDP sendto/recvfrom/inference/Rust DNS path needs no native
 change/rebuild for the selected single-peer scenario. Separate UDP preparation,
@@ -39,13 +74,13 @@ keeps direct regressions and the explicit read-only planned-source archive bridg
 the other ten producer/runtime/C/scope declarations remain exact. The original
 failed result is not reclassified by the same-capture acceptance pass.
 
-The final resource checks pass: temporary Query containers, supervisor and all
-forwards are gone, validation ports are closed, and original Server/config and
-Controller baselines are unchanged. Only M16 remains active until both repository
-pushes are verified; do not activate a second milestone before that gate passes. The next candidate is a finite
-same-server-FD UDP multi-peer identity/transaction investigation, starting with a
-real bounded reproduction. Its source-derived risk is not an observed failure or
-an implemented fix. See [public UDP entry](UDP_DNS.md) and the retained
+The final resource/restoration checks pass: temporary Query containers, supervisor
+and forwards are gone, validation ports are closed, and original Server/config
+and Controller baselines are unchanged. The qualification delivery commit
+`bd5c659e8886a352f8430c670d652969323e5af4` was verified on both repository main refs
+before this milestone handoff. M16 is closed; this finite single-peer result does
+not qualify multi-peer DNS or full compatibility/performance. The original
+failures and preparation remain history. See [public UDP entry](UDP_DNS.md),
 [anonymous preparation checkpoint](evidence/2026-10-29/udp-dns-preparation/README.md)
 and [finite functional qualification](evidence/2026-10-29/udp-dns-qualified/README.md).
 

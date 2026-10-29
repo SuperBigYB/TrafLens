@@ -21,7 +21,7 @@ requalifying it when unrelated work changes.
    Acceptance: a fresh bounded workload on the two hosts is visible through the
    product entry point, with usable filtering and a drill-down to real records;
    document how to start and access it. Do not substitute mock data for this gate.
-2. **Core eBPF ingestion (HTTP, finite TCP DNS M13 and finite paced/unpaced MySQL M14/M15 slices complete).** Complete managed eBPF capture through ingestion and
+2. **Core eBPF ingestion (HTTP, finite TCP DNS M13, MySQL M14/M15 and single-peer UDP DNS M16 slices complete).** Complete managed eBPF capture through ingestion and
    query for the core HTTP/DNS/database scenarios, then extend TLS coverage.
    Acceptance: known real requests appear with the correct protocol and source
    metadata under a repeatable setup. Carry blocking collection fixes here.
@@ -44,7 +44,50 @@ product slice or remove a direct blocker to the active milestone. Existing
 upstream source alone is not completion. Keep source/build/runtime/benchmark
 qualification distinct. Preserve upstream licensing and attribution.
 
-## Active M16 checkpoint
+## Active M17: one UDP DNS server socket, two-client transaction isolation
+
+M16 is closed and M17 is the sole active milestone. **M17-01 is next.** The
+same-server-FD peer/key concern is still source-derived; no real multi-peer failure
+or repair has been established. First obtain the smallest actual reproduction.
+
+Use one owned UDP DNS server socket and two real client ports in the existing
+strict namespace. First send one exchange from each port with different TXIDs;
+then interleave one from each with the same TXID. Four fresh exchanges with
+controlled success/error replies exercise peer and transaction isolation. All
+wire and actual peer/tuple/PID/TID/socket-generation identities remain independent
+oracles; qnames, neighboring timestamps or a16bit TXID alone cannot create an
+association. An initial conflict, missing response or orphan stays a failure.
+
+1. **M17-01 - actual identity and minimum plan.** Inspect current native input,
+   flow/session/log keys, real peer/direction fields and TXID scope; define the
+   smallest safe fixture and exact whole-population contract. No fix is preselected.
+2. **M17-02 - real reproduction (depends on01).** Run four fresh positive exchanges
+   and a bounded outside-scope control. Retain every actual wire/tuple/process
+   receipt and complete population, including tuple conflicts, orphans and excess
+   records. Separate original input facts from later flow/session/store behavior.
+3. **M17-03 - evidence-led direct repair (depends on02).** Localize any observed
+   identity/transaction failure and change only its blocking layer with meaningful
+   bounded regressions. If no failure reproduces, document the finite positive
+   result rather than inventing a patch. A necessary new native build must have
+   real committed source, a production release ELF/version/hash and minimum actual
+   scope ABI/FD/map qualification; a test ELF or old artifact is not a substitute.
+4. **M17-04 - product acceptance (depends on03).** Read two complete unchanged raw
+   populations and prove the expected eight source3 observations for four real
+   exchanges, exact per-peer/TXID identities, bounded API/details and actual
+   restricted Edge navigation. Keep controlled error, outside-scope and source
+   controls explicit; no filter may conceal tuple conflicts or orphan records.
+5. **M17-05 - repeatable delivery (depends on04).** Provide default-offline public
+   prepare/run/verify/stop, exact owned-resource/config/network/BPF restoration,
+   anonymous evidence and independent verification of both repository pushes.
+   Only after this gate closes select one further milestone.
+
+Keep normal kernel licensing, DNS-only18080 and the exact owned namespace scope;
+AF_PACKET/proc/onCPU/DWARF/profile/OTLP stay closed. Preserve unrelated services and
+all historical failures. Do not expand asset discovery, performance searches,
+protocols or unrelated kernel/HTTP/MySQL/OTLP matrices. Follow the local
+file-driven, mainline-first half-hour plan.
+
+## Closed M16: finite single-peer UDP DNS
 
 The finite single-peer UDP DNS raw/API and actual console gates now pass. R31's
 specific authorization allowed the retained R25 acceptance result to be reviewed
@@ -61,12 +104,13 @@ The earlier pre-query oracle declaration failure, its source and the explicit
 planned-source archive repair bridge remain history; no failed result is relabeled.
 
 The prior74targeted/offline checks, public typed entry, real C fixture and original
-execution/stop evidence remain recorded. M16 stays the sole active milestone
-until both repository pushes are verified. This round's final resource checks pass:
+execution/stop evidence remain recorded. Final recovery/resource checks pass:
 all temporary Query/forward resources are stopped and original Server/config/
-Controller baselines are unchanged. The next candidate is finite same-server-FD multi-peer UDP DNS
-identity and transaction isolation, beginning with real bounded reproduction.
-It is not active; the source-derived risk is not yet an observed failure or fix.
+Controller baselines are unchanged. Qualification delivery commit
+`bd5c659e8886a352f8430c670d652969323e5af4` was verified on both repository main refs.
+M16 is closed. Its single-peer limit remains; this does not establish multi-peer
+correctness, general UDP compatibility or performance. See
+[the finite qualification](evidence/2026-10-29/udp-dns-qualified/README.md).
 
 ## Historical M15 completion and selection of M16
 
@@ -92,9 +136,9 @@ unproven at that selection. The following gates describe M16's finite scope:
   counts/transactions/time and flow-scoped16bit TXID semantics stay explicit.
 - M16-04 passes independent two-host raw/API positive-negative and actual restricted
   browser checks without filters hiding unsupported or orphan observations.
-- M16-05 passes public prepare/run/verify/stop and final resource/restoration checks.
-  Equal dual-repository refs remain the final delivery gate. Close M16 and select
-  only one next milestone after that delivery is verified.
+- M16-05 passes public prepare/run/verify/stop, final resource/restoration checks
+  and dual-repository qualification delivery at
+  `bd5c659e8886a352f8430c670d652969323e5af4`. M16 is closed.
 
 The e1daf artifact was built and qualified for M15's finite MySQL path/scope;
 M16 adds this finite single-peer UDP gate without rebuilding it. Older protocol
